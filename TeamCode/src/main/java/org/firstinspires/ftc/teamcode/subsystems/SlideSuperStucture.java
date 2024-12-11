@@ -110,6 +110,7 @@ public class SlideSuperStucture extends SubsystemBase {
   }
 
   public void wristUp() {
+    // Up to avoid the collision with the clip
     wristServo.setPosition(0.75);
   }
 

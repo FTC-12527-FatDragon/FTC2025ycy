@@ -105,25 +105,24 @@ public class TXBetaBot extends CommandOpMode {
                 .beforeStarting(liftClaw::openClaw)
                 .andThen(new InstantCommand(() -> liftClaw.closeClaw()))
                 .andThen(new WaitCommand(300))
-                .andThen(new InstantCommand(() -> slide.openIntakeClaw()));
+                .andThen(new InstantCommand(() -> slide.openIntakeClaw()))
+                .andThen(new WaitCommand(50))
+                .andThen(new InstantCommand(() -> isPureHandoffCompelte = true));
 
     new FunctionalButton(
             () ->
                 gamepadEx1.getButton(GamepadKeys.Button.DPAD_RIGHT)
-                    && slide.getGoal() == SlideSuperStucture.Goal.AIM)
-        .whenPressed(
-            handoffCommand
-                .get()
-                .andThen(new WaitCommand(50))
-                .andThen(new InstantCommand(() -> isPureHandoffCompelte = true)),
-            false);
+                    && slide.getGoal() == SlideSuperStucture.Goal.AIM
+                    && lift.getGoal() == Lift.Goal.STOW)
+        .whenPressed(handoffCommand.get(), false);
 
     // Handoff from Aim
     // Chamber Command
     new FunctionalButton(
             () ->
                 gamepadEx1.getButton(GamepadKeys.Button.DPAD_UP)
-                    && slide.getGoal() == SlideSuperStucture.Goal.AIM)
+                    && slide.getGoal() == SlideSuperStucture.Goal.AIM
+                    && lift.getGoal() == Lift.Goal.STOW)
         .whenPressed(
             handoffCommand
                 .get()
@@ -144,7 +143,10 @@ public class TXBetaBot extends CommandOpMode {
         .whenPressed(new InstantCommand(() -> lift.setGoal(Lift.Goal.PRE_HANG)));
 
     new FunctionalButton(
-            () -> gamepadEx1.getButton(GamepadKeys.Button.DPAD_UP) && isPureHandoffCompelte)
+            () ->
+                gamepadEx1.getButton(GamepadKeys.Button.DPAD_UP)
+                    && lift.getGoal() == Lift.Goal.STOW
+                    && isPureHandoffCompelte)
         .whenPressed(
             new InstantCommand(() -> slide.wristUp())
                 .andThen(new WaitCommand(200))
@@ -170,13 +172,13 @@ public class TXBetaBot extends CommandOpMode {
     new FunctionalButton(
             () ->
                 gamepadEx1.getTrigger(GamepadKeys.Trigger.LEFT_TRIGGER) > 0.5
-                    && slide.getGoal() != SlideSuperStucture.Goal.HANDOFF)
+                    && slide.getGoal() == SlideSuperStucture.Goal.AIM)
         .whenPressed(new InstantCommand(slide::forwardSlideExtension));
 
     new FunctionalButton(
             () ->
                 gamepadEx1.getTrigger(GamepadKeys.Trigger.RIGHT_TRIGGER) > 0.5
-                    && slide.getGoal() != SlideSuperStucture.Goal.HANDOFF)
+                    && slide.getGoal() == SlideSuperStucture.Goal.AIM)
         .whenPressed(new InstantCommand(slide::backwardSlideExtension));
 
     new FunctionalButton(
