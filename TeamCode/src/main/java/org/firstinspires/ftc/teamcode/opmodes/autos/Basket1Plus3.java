@@ -8,7 +8,6 @@ import com.arcrobotics.ftclib.command.CommandScheduler;
 import com.arcrobotics.ftclib.command.SequentialCommandGroup;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import org.firstinspires.ftc.teamcode.commands.AutoDriveCommand;
 import org.firstinspires.ftc.teamcode.lib.roadrunner.trajectorysequence.TrajectorySequence;
 import org.firstinspires.ftc.teamcode.subsystems.Lift;
 import org.firstinspires.ftc.teamcode.subsystems.LiftClaw;
@@ -24,7 +23,7 @@ public class Basket1Plus3 extends LinearOpMode {
   public static double yValue1 = 20;
   public static double heading1 = -45;
 
-  // The rightmost sample
+  // The right sample
   public static double xValue2 = 25;
   public static double yValue2 = 9.5;
   public static double heading2 = 0;
@@ -34,12 +33,12 @@ public class Basket1Plus3 extends LinearOpMode {
   public static double yValue3 = 0;
   public static double heading3 = 0;
 
-  // The leftmost sample
+  // The left sample
   public static double xValue4 = 0;
   public static double yValue4 = 0;
   public static double heading4 = 0;
 
-  // The Ascent zone
+  // Ascent zone
   public static double xValue5 = 0;
   public static double yValue5 = 0;
   public static double heading5 = 0;
@@ -114,29 +113,28 @@ public class Basket1Plus3 extends LinearOpMode {
         .schedule(
             new SequentialCommandGroup(
                 initialize(liftClaw, slide),
-
-                new AutoDriveCommand(drive, trajs1).alongWith(upLiftToBasket(lift, liftClaw)),
+                followTrajectory(drive, trajs1).alongWith(upLiftToBasket(lift, liftClaw)),
                 stowArmFromBasket(lift, liftClaw),
 
-                new AutoDriveCommand(drive, trajs2),
+                followTrajectory(drive, trajs2),
                 slide.grabCommand(),
-                new AutoDriveCommand(drive, trajs3)
+                followTrajectory(drive, trajs3)
                     .alongWith(handoff(slide, liftClaw).andThen(upLiftToBasket(lift, liftClaw))),
                 stowArmFromBasket(lift, liftClaw),
 
-                new AutoDriveCommand(drive, trajs4).alongWith(slide.aimCommand()),
+                followTrajectory(drive, trajs4).alongWith(slide.aimCommand()),
                 slide.grabCommand(),
-                new AutoDriveCommand(drive, trajs5)
+                followTrajectory(drive, trajs5)
                     .alongWith(handoff(slide, liftClaw).andThen(upLiftToBasket(lift, liftClaw))),
                 stowArmFromBasket(lift, liftClaw),
 
-                new AutoDriveCommand(drive, trajs6).alongWith(slide.aimCommand()),
+                followTrajectory(drive, trajs6).alongWith(slide.aimCommand()),
                 slide.grabCommand(),
-                new AutoDriveCommand(drive, trajs7)
+                followTrajectory(drive, trajs7)
                     .alongWith(handoff(slide, liftClaw).andThen(upLiftToBasket(lift, liftClaw))),
                 stowArmFromBasket(lift, liftClaw),
 
-                new AutoDriveCommand(drive, trajs8).alongWith(autoFinish(liftClaw, lift, slide))));
+                followTrajectory(drive, trajs8).alongWith(autoFinish(liftClaw, lift, slide))));
 
     // spotless:on
     waitForStart();

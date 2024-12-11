@@ -8,8 +8,8 @@ import org.firstinspires.ftc.teamcode.subsystems.drivetrain.SampleMecanumDrive;
 
 public class AutoDriveCommand extends CommandBase {
   private final SampleMecanumDrive drive;
-  private Trajectory trajectory = null;
-  private TrajectorySequence trajectorySequence = null;
+  private final Trajectory trajectory;
+  private final TrajectorySequence trajectorySequence;
 
   public AutoDriveCommand(
       SampleMecanumDrive drive, Optional<Trajectory> traj, Optional<TrajectorySequence> trajs) {
@@ -22,7 +22,7 @@ public class AutoDriveCommand extends CommandBase {
   }
 
   public AutoDriveCommand(SampleMecanumDrive drive, TrajectorySequence trajs) {
-    this(drive, Optional.ofNullable(null), Optional.ofNullable(trajs));
+    this(drive, Optional.empty(), Optional.ofNullable(trajs));
   }
 
   @Override
@@ -40,9 +40,6 @@ public class AutoDriveCommand extends CommandBase {
   public void execute() {
     drive.update();
   }
-
-  @Override
-  public void end(boolean interrupted) {}
 
   public boolean isFinished() {
     return !drive.isBusy();

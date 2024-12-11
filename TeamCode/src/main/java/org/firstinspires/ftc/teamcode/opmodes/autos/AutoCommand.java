@@ -6,9 +6,12 @@ import com.arcrobotics.ftclib.command.ParallelCommandGroup;
 import com.arcrobotics.ftclib.command.SequentialCommandGroup;
 import com.arcrobotics.ftclib.command.WaitCommand;
 import com.arcrobotics.ftclib.command.WaitUntilCommand;
+import org.firstinspires.ftc.teamcode.commands.AutoDriveCommand;
+import org.firstinspires.ftc.teamcode.lib.roadrunner.trajectorysequence.TrajectorySequence;
 import org.firstinspires.ftc.teamcode.subsystems.Lift;
 import org.firstinspires.ftc.teamcode.subsystems.LiftClaw;
 import org.firstinspires.ftc.teamcode.subsystems.SlideSuperStucture;
+import org.firstinspires.ftc.teamcode.subsystems.drivetrain.SampleMecanumDrive;
 
 public class AutoCommand {
   public static Command upLiftToBasket(Lift lift, LiftClaw liftClaw) {
@@ -16,6 +19,11 @@ public class AutoCommand {
         new InstantCommand(() -> lift.setGoal(Lift.Goal.BASKET)),
         new WaitUntilCommand(() -> lift.getCurrentPosition() > 400)
             .andThen(new InstantCommand(liftClaw::upLiftArm)));
+  }
+
+  public static Command followTrajectory(
+      SampleMecanumDrive drive, TrajectorySequence trajectorySequence) {
+    return new AutoDriveCommand(drive, trajectorySequence);
   }
 
   public static Command stowArmFromBasket(Lift lift, LiftClaw liftClaw) {
