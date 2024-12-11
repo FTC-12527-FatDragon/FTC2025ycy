@@ -109,9 +109,7 @@ public class SlideSuperStucture extends SubsystemBase {
     intakeClawServo.setPosition(0);
   }
 
-  /**
-   * Up to avoid the collision with the clip
-   */
+  /** Up to avoid the collision with the clip */
   public void wristUp() {
     wristServo.setPosition(0.75);
   }
