@@ -64,15 +64,18 @@ public class TXBetaBot extends CommandOpMode {
             new SequentialCommandGroup(
                 new ConditionalCommand(
                     new InstantCommand(() -> slide.slideArmDown())
-                        .andThen(new WaitCommand(100))
                         .andThen(
-                            new InstantCommand(() -> slide.setGoal(SlideSuperStucture.Goal.AIM))),
-                    new InstantCommand(),
+                            new WaitCommand(100),
+                            new InstantCommand(() -> slide.setGoal(SlideSuperStucture.Goal.AIM)),
+                            new InstantCommand(liftClaw::openClaw),
+                            new WaitCommand(100),
+                            new InstantCommand(liftClaw::foldLiftArm)),
+                    new InstantCommand(liftClaw::openClaw)
+                        .andThen(
+                            new WaitCommand(100),
+                            new InstantCommand(liftClaw::foldLiftArm),
+                            new WaitCommand(500)),
                     () -> lift.getGoal() == Lift.Goal.HANG),
-                new InstantCommand(liftClaw::openClaw),
-                new WaitCommand(100),
-                new InstantCommand(liftClaw::foldLiftArm),
-                new WaitCommand(500),
                 new InstantCommand(() -> lift.setGoal(Lift.Goal.STOW)),
                 new InstantCommand(() -> isPureHandoffCompelte = false)));
 
