@@ -102,8 +102,7 @@ public class TXBetaBot extends CommandOpMode {
         () ->
             slide
                 .handoffCommand()
-                .alongWith(new InstantCommand(liftClaw::openClaw))
-                .andThen(new WaitCommand(600))
+                .beforeStarting(liftClaw::openClaw)
                 .andThen(new InstantCommand(() -> liftClaw.closeClaw()))
                 .andThen(new WaitCommand(300))
                 .andThen(new InstantCommand(() -> slide.openIntakeClaw()));

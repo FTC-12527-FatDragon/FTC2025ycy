@@ -5,16 +5,26 @@ import com.arcrobotics.ftclib.command.InstantCommand;
 import com.arcrobotics.ftclib.command.SequentialCommandGroup;
 import com.arcrobotics.ftclib.command.SubsystemBase;
 import com.arcrobotics.ftclib.command.WaitCommand;
+import com.arcrobotics.ftclib.command.WaitUntilCommand;
+import com.arcrobotics.ftclib.controller.PIDController;
+import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.Range;
 import lombok.Getter;
 import lombok.Setter;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.firstinspires.ftc.teamcode.utils.MathUtils;
 
 public class SlideSuperStucture extends SubsystemBase {
   private final Servo intakeClawServo, wristServo, wristTurnServo;
-  private final Servo slideArmServo, slideRightServo;
+  private final Servo slideArmServo;
+  private final DcMotorEx slideMotor;
+
+  private final PIDController pidController;
+  private final double kP = 0.0, kI = 0.0, kD = 0.0;
+
   private boolean hasGamepiece = false;
   private static double slideExtensionVal = 0.875;
 
@@ -22,7 +32,6 @@ public class SlideSuperStucture extends SubsystemBase {
   private TurnServo turnServo = TurnServo.DEG_0;
 
   @Setter @Getter private Goal goal = Goal.STOW;
-  private boolean isIntakeClawOpen = false;
 
   private final Telemetry telemetry; // 0 0.5 0.8
 
@@ -31,17 +40,22 @@ public class SlideSuperStucture extends SubsystemBase {
   public SlideSuperStucture(final HardwareMap hardwareMap, final Telemetry telemetry) {
     slideArmServo = hardwareMap.get(Servo.class, "slideArmServo"); // 0.5 up 0.9 half 1 down
 
-    slideRightServo = hardwareMap.get(Servo.class, "slideRightServo"); // 1 stow
-
     intakeClawServo = hardwareMap.get(Servo.class, "intakeClawServo"); // 0.3 close 0.7 open
     wristServo = hardwareMap.get(Servo.class, "wristServo"); // 0.05 up 0.75 down
 
     wristTurnServo = hardwareMap.get(Servo.class, "wristTurnServo");
+
+    slideMotor = hardwareMap.get(DcMotorEx.class, "slideMotor");
+    slideMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+    slideMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+    slideMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+
+    pidController = new PIDController(kP, kI, kD);
+
     this.telemetry = telemetry;
     goal = Goal.STOW;
     telemetry.addData("Current State", goal);
     // telemetry.update();
-
   }
 
   public Command aimCommand() {
@@ -83,17 +97,17 @@ public class SlideSuperStucture extends SubsystemBase {
         new WaitCommand(200),
         new InstantCommand(() -> slideArmServo.setPosition(Goal.HANDOFF.slideArmPos)),
         new WaitCommand(300),
-        new InstantCommand(() -> slideExtensionVal = Goal.HANDOFF.slideExtension));
+        new InstantCommand(() -> slideExtensionVal = Goal.HANDOFF.slideExtension),
+            new WaitUntilCommand(this::slideMotorAtGoal));
   }
+
 
   public void openIntakeClaw() {
     intakeClawServo.setPosition(0.7);
-    isIntakeClawOpen = true;
   }
 
   public void closeIntakeClaw() {
     intakeClawServo.setPosition(0);
-    isIntakeClawOpen = false;
   }
 
   public void wristUp() {
@@ -188,18 +202,18 @@ public class SlideSuperStucture extends SubsystemBase {
     DEG_08
   }
 
+
+  private boolean slideMotorAtGoal() {
+    return MathUtils.isNear(goal.slideExtension, slideMotor.getCurrentPosition(), 10);
+  }
+
   @Override
   public void periodic() {
-
     wristTurnServo.setPosition(Range.clip(turnAngleDeg, 0, 1));
-    slideRightServo.setPosition(Range.clip(slideExtensionVal, 0, 1));
 
-    //        telemetry.addData("Current State", goal);
-    //        telemetry.addData("Bur Gemen", goal == Goal.HANDOFF);
-    //        telemetry.addData("Claw Position", intakeClawServo.getPosition());
-    //        telemetry.addData("Slide Extension", slideExtensionVal);
-    //        telemetry.addData("Turn Angle", turnAngleDeg);
-    //        telemetry.addData("SLideServo Position",slideRightServo.getPosition());
-    // telemetry.update();
+    slideMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+    double setpointTicks = goal.slideExtension;
+    double pidPower = pidController.calculate(slideMotor.getCurrentPosition(), setpointTicks);
+    slideMotor.setPower(Range.clip(pidPower, -1, 1));
   }
 }
