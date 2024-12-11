@@ -98,9 +98,8 @@ public class SlideSuperStucture extends SubsystemBase {
         new InstantCommand(() -> slideArmServo.setPosition(Goal.HANDOFF.slideArmPos)),
         new WaitCommand(300),
         new InstantCommand(() -> slideExtensionVal = Goal.HANDOFF.slideExtension),
-            new WaitUntilCommand(this::slideMotorAtGoal));
+        new WaitUntilCommand(this::slideMotorAtGoal));
   }
-
 
   public void openIntakeClaw() {
     intakeClawServo.setPosition(0.7);
@@ -201,7 +200,6 @@ public class SlideSuperStucture extends SubsystemBase {
     DEG_05,
     DEG_08
   }
-
 
   private boolean slideMotorAtGoal() {
     return MathUtils.isNear(goal.slideExtension, slideMotor.getCurrentPosition(), 10);
