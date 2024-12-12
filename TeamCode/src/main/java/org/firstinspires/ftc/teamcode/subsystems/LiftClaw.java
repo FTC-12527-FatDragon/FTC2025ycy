@@ -38,4 +38,9 @@ public class LiftClaw extends SubsystemBase {
   public void foldLiftArm() {
     liftArmServo.setPosition(0.76);
   }
+
+  public void stop() {
+    liftArmServo.getController().pwmDisable();
+    liftClawServo.getController().pwmDisable();
+  }
 }

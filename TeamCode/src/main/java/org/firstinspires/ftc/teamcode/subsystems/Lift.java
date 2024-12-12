@@ -74,7 +74,7 @@ public class Lift extends SubsystemBase {
           goal = Goal.STOW;
           telemetry.addData("Lift Current Position", liftMotorUp.getCurrentPosition());
           telemetry.addData("Error", pidController.getPositionError());
-          //telemetry.update();
+          // telemetry.update();
         },
         this);
   }
@@ -95,8 +95,8 @@ public class Lift extends SubsystemBase {
     return MathUtils.isNear(Goal.PRE_HANG.setpointTicks, liftMotorUp.getCurrentPosition(), 10);
   }
 
-
-  public void periodicTest() {
+  @Override
+  public void periodic() {
     if (goal == Goal.OPEN_LOOP) return;
 
     if (lastSetpoint != goal.setpointTicks) {
@@ -122,7 +122,7 @@ public class Lift extends SubsystemBase {
     telemetry.addData("At Goal", atGoal());
     telemetry.addData("Current Position", liftMotorUp.getCurrentPosition());
     telemetry.addData("PID Power", pidPower);
-    //telemetry.update();
+    // telemetry.update();
   }
 
   public enum Goal {
@@ -138,4 +138,5 @@ public class Lift extends SubsystemBase {
       this.setpointTicks = setpointTicks;
     }
   }
+
 }

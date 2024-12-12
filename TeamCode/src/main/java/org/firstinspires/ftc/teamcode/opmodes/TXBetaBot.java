@@ -96,6 +96,7 @@ public class TXBetaBot extends CommandOpMode {
             slide
                 .handoffCommand()
                 .beforeStarting(liftClaw::openClaw)
+                .andThen(new WaitCommand(150))
                 .andThen(new InstantCommand(() -> liftClaw.closeClaw()))
                 .andThen(new WaitCommand(200))
                 .andThen(new InstantCommand(() -> slide.openIntakeClaw()))
@@ -189,7 +190,14 @@ public class TXBetaBot extends CommandOpMode {
 
   @Override
   public void run() {
-    lift.periodicTest();
+//    lift.periodicTest();
     CommandScheduler.getInstance().run();
+  }
+
+  @Override
+  public void reset() {
+    CommandScheduler.getInstance().reset();
+    slide.stop();
+    liftClaw.stop();
   }
 }

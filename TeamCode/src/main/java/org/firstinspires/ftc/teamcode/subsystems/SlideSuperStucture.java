@@ -133,27 +133,20 @@ public class SlideSuperStucture extends SubsystemBase {
   }
 
   public enum Goal {
-    STOW(0, 0, 0, 0, 0.6),
-    AIM(slideExtensionVal, 0.4, 0.65, turnAngleDeg, 0.6),
-    GRAB(slideExtensionVal, 0.53, 0.65, turnAngleDeg, 0.36),
-    HANDOFF(0, 0.25, 0.175, 0, 0.36);
+    STOW(0, 0, 0, 0.6),
+    AIM(slideExtensionVal, 0.4, 0.65, 0.6),
+    GRAB(slideExtensionVal, 0.53, 0.65, 0.36),
+    HANDOFF(0, 0.25, 0.175, 0.36);
 
     private final double slideExtension;
     private final double slideArmPos;
     private final double wristPos;
-    private final double turnAngle;
     private final double clawAngle;
 
-    Goal(
-        double slideExtension,
-        double slideArmPos,
-        double wristPos,
-        double turnAngle,
-        double clawAngle) {
+    Goal(double slideExtension, double slideArmPos, double wristPos, double clawAngle) {
       this.slideExtension = slideExtension;
       this.slideArmPos = slideArmPos;
       this.wristPos = wristPos;
-      this.turnAngle = turnAngle;
       this.clawAngle = clawAngle;
     }
   }
@@ -223,5 +216,12 @@ public class SlideSuperStucture extends SubsystemBase {
 
     double pidPower = pidController.calculate(slideMotor.getCurrentPosition(), setpointTicks);
     slideMotor.setPower(Range.clip(pidPower, -1, 1));
+  }
+
+  public void stop() {
+    intakeClawServo.getController().pwmDisable();
+    wristTurnServo.getController().pwmDisable();
+    wristTurnServo.getController().pwmDisable();
+    slideArmServo.getController().pwmDisable();
   }
 }
