@@ -29,9 +29,10 @@ public class MecanumDrive extends SubsystemBase {
         GoBildaPinpointDriver.EncoderDirection.FORWARD);
     od.setEncoderResolution(GoBildaPinpointDriver.GoBildaOdometryPods.goBILDA_4_BAR_POD);
     od.setOffsets(0, 0);
-
-    leftFrontMotor.setDirection(DcMotorSimple.Direction.REVERSE);
+    rightFrontMotor.setDirection(DcMotorSimple.Direction.REVERSE);
     rightBackMotor.setDirection(DcMotorSimple.Direction.REVERSE);
+    leftFrontMotor.setDirection(DcMotorSimple.Direction.FORWARD);
+    leftBackMotor.setDirection(DcMotorSimple.Direction.FORWARD);
   }
 
   public void reset() {
@@ -41,6 +42,7 @@ public class MecanumDrive extends SubsystemBase {
   public void moveRobotFieldRelatice(double forward, double fun, double turn) {
     od.update();
 
+    turn *= 0.8;
     double botHeading = od.getHeading() - yawOffset;
     // Rotate the movement direction counter to the bot's rotation\\
     double rotX = fun * Math.cos(-botHeading) - forward * Math.sin(-botHeading);

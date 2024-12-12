@@ -49,7 +49,7 @@ public class Lift extends SubsystemBase {
     feedforward = new ElevatorFeedforward(kS, kG, kV);
     this.telemetry = new MultipleTelemetry(FtcDashboard.getInstance().getTelemetry(), telemetry);
 
-    profile = new TrapezoidProfile(new TrapezoidProfile.Constraints(13000, 13000));
+    profile = new TrapezoidProfile(new TrapezoidProfile.Constraints(15000, 15000));
     timer = new ElapsedTime();
     timer.reset();
     lastTime = timer.time(TimeUnit.MILLISECONDS);
@@ -65,14 +65,12 @@ public class Lift extends SubsystemBase {
   public Command resetCommand() {
     return new StartEndCommand(
         () -> {
-          runLiftOpen(-0.6);
+          runLiftOpen(-0.3);
         },
         () -> {
           pidController.reset();
           pidController.calculate(0);
           runLiftOpen(0);
-          liftMotorUp.stopAndResetEncoder();
-          liftMotorDown.stopAndResetEncoder();
           goal = Goal.STOW;
           telemetry.addData("Lift Current Position", liftMotorUp.getCurrentPosition());
           telemetry.addData("Error", pidController.getPositionError());
