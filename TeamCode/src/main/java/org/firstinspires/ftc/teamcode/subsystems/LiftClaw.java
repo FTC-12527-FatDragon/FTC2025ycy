@@ -28,7 +28,7 @@ public class LiftClaw extends SubsystemBase {
   }
 
   public void closeClaw() {
-    liftClawServo.setPosition(0.52);
+    liftClawServo.setPosition(0.575);
   }
 
   public void upLiftArm() {

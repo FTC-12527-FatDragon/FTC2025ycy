@@ -98,9 +98,9 @@ public class SlideSuperStucture extends SubsystemBase {
             }),
         new WaitCommand(100),
         new InstantCommand(() -> wristServo.setPosition(Goal.HANDOFF.wristPos)),
-        new WaitCommand(200),
+        new WaitCommand(400),
         new InstantCommand(() -> slideArmServo.setPosition(Goal.HANDOFF.slideArmPos)),
-        new WaitCommand(300),
+        new WaitCommand(200),
         new InstantCommand(() -> slideExtensionVal = Goal.HANDOFF.slideExtension),
         new WaitUntilCommand(this::slideMotorAtGoal));
   }

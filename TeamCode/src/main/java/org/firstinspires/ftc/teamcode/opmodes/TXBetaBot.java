@@ -75,7 +75,7 @@ public class TXBetaBot extends CommandOpMode {
                         .andThen(
                             new WaitCommand(100),
                             new InstantCommand(liftClaw::foldLiftArm),
-                            new WaitCommand(500)),
+                            new WaitCommand(300)),
                     () -> lift.getGoal() == Lift.Goal.HANG),
                 new InstantCommand(() -> lift.setGoal(Lift.Goal.STOW)),
                 new InstantCommand(() -> isPureHandoffCompelte = false)));
@@ -97,7 +97,7 @@ public class TXBetaBot extends CommandOpMode {
                 .handoffCommand()
                 .beforeStarting(liftClaw::openClaw)
                 .andThen(new InstantCommand(() -> liftClaw.closeClaw()))
-                .andThen(new WaitCommand(300))
+                .andThen(new WaitCommand(200))
                 .andThen(new InstantCommand(() -> slide.openIntakeClaw()))
                 .andThen(new WaitCommand(50))
                 .andThen(new InstantCommand(() -> isPureHandoffCompelte = true));

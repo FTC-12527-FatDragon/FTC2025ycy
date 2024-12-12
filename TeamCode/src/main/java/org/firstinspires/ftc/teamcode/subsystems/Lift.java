@@ -128,7 +128,7 @@ public class Lift extends SubsystemBase {
   public enum Goal {
     BASKET(760.0),
     STOW(0.0),
-    PRE_HANG(300.0),
+    PRE_HANG(150.0),
     HANG(0),
     OPEN_LOOP(0.0);
 
