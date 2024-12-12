@@ -116,11 +116,32 @@ public class Chamber1Plus3 extends LinearOpMode {
         .schedule(
             new SequentialCommandGroup(
                 initialize(liftClaw, slide),
+
                 new AutoDriveCommand(drive, trajs1).alongWith(upLiftToChamber(lift, liftClaw)),
                 hangAndStowLift(lift, liftClaw, slide),
+                
                 new AutoDriveCommand(drive, trajs2),
                 slide.grabCommand(),
-                new AutoDriveCommand(drive, trajs3)));
+                new AutoDriveCommand(drive, trajs3)
+                    .alongWith(handoff(slide, liftClaw))
+                    .andThen(upLiftToChamber(lift, liftClaw)),
+                hangAndStowLift(lift, liftClaw, slide),
+
+                new AutoDriveCommand(drive, trajs4),
+                slide.grabCommand(),
+                new AutoDriveCommand(drive, trajs5)
+                    .alongWith(handoff(slide, liftClaw))
+                    .andThen(upLiftToChamber(lift, liftClaw)),
+                hangAndStowLift(lift, liftClaw, slide),
+
+                new AutoDriveCommand(drive, trajs6),
+                slide.grabCommand(),
+                new AutoDriveCommand(drive, trajs7)
+                    .alongWith(handoff(slide, liftClaw))
+                    .andThen(upLiftToChamber(lift, liftClaw)),
+                hangAndStowLift(lift, liftClaw, slide),
+
+                new AutoDriveCommand(drive, trajs8).alongWith(autoFinish(liftClaw, lift, slide))));
 
     waitForStart();
 
