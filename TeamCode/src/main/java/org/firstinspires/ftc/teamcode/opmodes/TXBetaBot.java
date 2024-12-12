@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.opmodes;
 
 import com.arcrobotics.ftclib.command.Command;
 import com.arcrobotics.ftclib.command.CommandOpMode;
+import com.arcrobotics.ftclib.command.CommandScheduler;
 import com.arcrobotics.ftclib.command.ConditionalCommand;
 import com.arcrobotics.ftclib.command.InstantCommand;
 import com.arcrobotics.ftclib.command.ParallelCommandGroup;
@@ -54,7 +55,7 @@ public class TXBetaBot extends CommandOpMode {
         .whenPressed(
             new ParallelCommandGroup(
                 new InstantCommand(() -> lift.setGoal(Lift.Goal.BASKET)),
-                new WaitUntilCommand(() -> lift.getCurrentPosition() > 600)
+                new WaitUntilCommand(() -> lift.getCurrentPosition() > 300)
                     .andThen(new InstantCommand(liftClaw::upLiftArm))));
 
     // Basket Drop and Back
@@ -124,7 +125,7 @@ public class TXBetaBot extends CommandOpMode {
                 .andThen(
                     new ParallelCommandGroup(
                         new InstantCommand(() -> lift.setGoal(Lift.Goal.PRE_HANG)),
-                        new WaitUntilCommand(() -> lift.getCurrentPosition() > 200)
+                        new WaitUntilCommand(() -> lift.getCurrentPosition() > 100)
                             .andThen(new InstantCommand(liftClaw::upLiftArm)))),
             false);
 
@@ -145,7 +146,7 @@ public class TXBetaBot extends CommandOpMode {
                 .andThen(
                     new ParallelCommandGroup(
                         new InstantCommand(() -> lift.setGoal(Lift.Goal.PRE_HANG)),
-                        new WaitUntilCommand(() -> lift.getCurrentPosition() > 200)
+                        new WaitUntilCommand(() -> lift.getCurrentPosition() > 100)
                             .andThen(new InstantCommand(liftClaw::upLiftArm)))),
             false);
 
@@ -165,13 +166,13 @@ public class TXBetaBot extends CommandOpMode {
             () ->
                 gamepadEx1.getTrigger(GamepadKeys.Trigger.LEFT_TRIGGER) > 0.5
                     && slide.getGoal() == SlideSuperStucture.Goal.AIM)
-        .whenPressed(new InstantCommand(slide::forwardSlideExtension));
+        .whenPressed(new InstantCommand(slide::backwardSlideExtension));
 
     new FunctionalButton(
             () ->
                 gamepadEx1.getTrigger(GamepadKeys.Trigger.RIGHT_TRIGGER) > 0.5
                     && slide.getGoal() == SlideSuperStucture.Goal.AIM)
-        .whenPressed(new InstantCommand(slide::backwardSlideExtension));
+        .whenPressed(new InstantCommand(slide::forwardSlideExtension));
 
     new FunctionalButton(
             () ->
@@ -184,5 +185,11 @@ public class TXBetaBot extends CommandOpMode {
                 gamepadEx1.getButton(GamepadKeys.Button.RIGHT_BUMPER)
                     && slide.getGoal() == SlideSuperStucture.Goal.AIM)
         .whenPressed(new InstantCommand(() -> slide.rightTurnServo()));
+  }
+
+  @Override
+  public void run() {
+    lift.periodicTest();
+    CommandScheduler.getInstance().run();
   }
 }

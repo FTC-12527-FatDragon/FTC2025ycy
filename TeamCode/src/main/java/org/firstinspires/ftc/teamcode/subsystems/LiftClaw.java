@@ -24,18 +24,18 @@ public class LiftClaw extends SubsystemBase {
   }
 
   public void openClaw() {
-    liftClawServo.setPosition(0.5);
+    liftClawServo.setPosition(0.8);
   }
 
   public void closeClaw() {
-    liftClawServo.setPosition(0.25);
+    liftClawServo.setPosition(0.52);
   }
 
   public void upLiftArm() {
-    liftArmServo.setPosition(0.725);
+    liftArmServo.setPosition(0.315);
   }
 
   public void foldLiftArm() {
-    liftArmServo.setPosition(0.15);
+    liftArmServo.setPosition(0.76);
   }
 }

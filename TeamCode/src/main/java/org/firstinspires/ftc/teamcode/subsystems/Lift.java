@@ -6,42 +6,60 @@ import com.arcrobotics.ftclib.command.Command;
 import com.arcrobotics.ftclib.command.StartEndCommand;
 import com.arcrobotics.ftclib.command.SubsystemBase;
 import com.arcrobotics.ftclib.controller.PIDController;
-import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorEx;
+import com.arcrobotics.ftclib.controller.wpilibcontroller.ElevatorFeedforward;
+import com.arcrobotics.ftclib.hardware.motors.Motor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
+import edu.wpi.first.math.trajectory.TrapezoidProfile;
+import java.util.concurrent.TimeUnit;
 import lombok.Getter;
 import lombok.Setter;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
-import org.firstinspires.ftc.robotcore.external.navigation.CurrentUnit;
 import org.firstinspires.ftc.teamcode.utils.MathUtils;
 
 public class Lift extends SubsystemBase {
-  private final double kP = 0.02, kI = 0.0, kD = 0.0, kG = 0.0;
+  private final double kP = 0.01, kI = 0.0, kD = 0.0, kV = 0.0003, kS = 0.12, kG = 0.15;
   private final PIDController pidController;
-  private final DcMotorEx liftMotor;
-  private double setpointTicks = 0.0;
+  private final Motor liftMotorUp;
+  private final Motor liftMotorDown;
   private MultipleTelemetry telemetry;
+
+  private double lastSetpoint = 0;
+
+  private final TrapezoidProfile profile;
+  private TrapezoidProfile.State goalState = new TrapezoidProfile.State();
+  private TrapezoidProfile.State setpointState = new TrapezoidProfile.State();
+  private final ElapsedTime timer;
+  private double lastTime;
+
+  private final ElevatorFeedforward feedforward;
 
   @Getter @Setter private Goal goal = Goal.STOW;
 
   public Lift(final HardwareMap hardwareMap, Telemetry telemetry) {
-    liftMotor = hardwareMap.get(DcMotorEx.class, "liftMotor");
-    liftMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-    liftMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+    liftMotorUp = new Motor(hardwareMap, "liftMotorUp");
+    liftMotorDown = new Motor(hardwareMap, "liftMotorDown");
+    liftMotorUp.stopAndResetEncoder();
+    liftMotorDown.stopAndResetEncoder();
+    liftMotorUp.setRunMode(Motor.RunMode.RawPower);
+    liftMotorDown.setRunMode(Motor.RunMode.RawPower);
 
     pidController = new PIDController(kP, kI, kD);
-
+    feedforward = new ElevatorFeedforward(kS, kG, kV);
     this.telemetry = new MultipleTelemetry(FtcDashboard.getInstance().getTelemetry(), telemetry);
-  }
 
-  public void runSetpoint(double ticks) {
-    setpointTicks = Range.clip(ticks, 0.0, 1500.0);
+    profile = new TrapezoidProfile(new TrapezoidProfile.Constraints(13000, 13000));
+    timer = new ElapsedTime();
+    timer.reset();
+    lastTime = timer.time(TimeUnit.MILLISECONDS);
   }
 
   public void runLiftOpen(double percent) {
     goal = Goal.OPEN_LOOP;
-    liftMotor.setPower(Range.clip(percent, -1, 1));
+    double output = Range.clip(percent, -1, 1);
+    liftMotorUp.set(output);
+    liftMotorDown.set(output);
   }
 
   public Command resetCommand() {
@@ -53,57 +71,64 @@ public class Lift extends SubsystemBase {
           pidController.reset();
           pidController.calculate(0);
           runLiftOpen(0);
-          liftMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+          liftMotorUp.stopAndResetEncoder();
+          liftMotorDown.stopAndResetEncoder();
           goal = Goal.STOW;
-          telemetry.addData("Lift Current Position", liftMotor.getCurrentPosition());
+          telemetry.addData("Lift Current Position", liftMotorUp.getCurrentPosition());
           telemetry.addData("Error", pidController.getPositionError());
-          telemetry.update();
+          //telemetry.update();
         },
         this);
   }
 
   public double getCurrentPosition() {
-    return liftMotor.getCurrentPosition();
+    return liftMotorUp.getCurrentPosition();
   }
 
   public boolean atGoal() {
-    return MathUtils.isNear(goal.setpointTicks, liftMotor.getCurrentPosition(), 5);
+    return MathUtils.isNear(goal.setpointTicks, liftMotorUp.getCurrentPosition(), 10);
   }
 
   public boolean atHome() {
-    return MathUtils.isNear(Goal.STOW.setpointTicks, liftMotor.getCurrentPosition(), 5);
+    return MathUtils.isNear(Goal.STOW.setpointTicks, liftMotorUp.getCurrentPosition(), 10);
   }
 
   public boolean atPreHang() {
-    return MathUtils.isNear(Goal.PRE_HANG.setpointTicks, liftMotor.getCurrentPosition(), 5);
+    return MathUtils.isNear(Goal.PRE_HANG.setpointTicks, liftMotorUp.getCurrentPosition(), 10);
   }
 
-  @Override
-  public void periodic() {
-    //
-    //        telemetry.addData("Lift Current Position", liftMotor.getCurrentPosition());
-    //        telemetry.addData("Error", pidController.getPositionError());
-    //        telemetry.update();
+
+  public void periodicTest() {
     if (goal == Goal.OPEN_LOOP) return;
 
-    liftMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-    setpointTicks = goal.setpointTicks;
-    double pidPower = pidController.calculate(liftMotor.getCurrentPosition(), setpointTicks);
-    liftMotor.setPower(Range.clip(pidPower + kG, -1, 1));
+    if (lastSetpoint != goal.setpointTicks) {
+      goalState = new TrapezoidProfile.State(goal.setpointTicks, 0);
+      lastSetpoint = goal.setpointTicks;
+    }
 
-    telemetry.addData("Lift Current Power", liftMotor.getPower());
-    telemetry.addData("Lift Goal", goal);
-    telemetry.addData("Lift At Home", atHome());
-    telemetry.addData("controller", pidController.atSetPoint());
-    telemetry.addData("Lift Current Position", liftMotor.getCurrentPosition());
-    telemetry.addData("Error", pidController.getPositionError());
+    double timeInterval =
+        Range.clip((timer.time(TimeUnit.MILLISECONDS) - lastTime) * 0.001, 0.001, 0.05);
 
-    telemetry.addData("Current", liftMotor.getCurrent(CurrentUnit.AMPS));
-    telemetry.update();
+    telemetry.addData("Time Interval", timeInterval);
+    setpointState = profile.calculate(timeInterval, setpointState, goalState);
+
+    double pidPower =
+        pidController.calculate(liftMotorUp.getCurrentPosition(), setpointState.position);
+    double output = Range.clip(pidPower + feedforward.calculate(setpointState.velocity), -1, 1);
+    liftMotorUp.set(output);
+    liftMotorDown.set(output);
+
+    lastTime = timer.time(TimeUnit.MILLISECONDS);
+
+    telemetry.addData("Current Goal", goal);
+    telemetry.addData("At Goal", atGoal());
+    telemetry.addData("Current Position", liftMotorUp.getCurrentPosition());
+    telemetry.addData("PID Power", pidPower);
+    //telemetry.update();
   }
 
   public enum Goal {
-    BASKET(1500.0),
+    BASKET(760.0),
     STOW(0.0),
     PRE_HANG(300.0),
     HANG(0),

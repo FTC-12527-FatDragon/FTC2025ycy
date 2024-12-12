@@ -62,8 +62,9 @@ public class AutoCommand {
 
   public static Command hangAndStowLift(Lift lift, LiftClaw liftClaw, SlideSuperStucture slide) {
     return new SequentialCommandGroup(
-        new InstantCommand(() -> lift.setGoal(Lift.Goal.HANG)),
-        new InstantCommand(slide::slideArmDown).alongWith(new InstantCommand(liftClaw::openClaw)),
+        new InstantCommand(() -> lift.setGoal(Lift.Goal.HANG))
+            .alongWith(new InstantCommand(slide::slideArmDown)),
+        new WaitUntilCommand(lift::atGoal).andThen(new InstantCommand(liftClaw::openClaw)),
         new WaitCommand(200),
         new InstantCommand(liftClaw::foldLiftArm),
         new InstantCommand(() -> lift.setGoal(Lift.Goal.STOW)));

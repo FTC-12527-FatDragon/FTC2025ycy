@@ -31,7 +31,7 @@ public class MecanumDrive extends SubsystemBase {
     od.setOffsets(0, 0);
 
     leftFrontMotor.setDirection(DcMotorSimple.Direction.REVERSE);
-    leftBackMotor.setDirection(DcMotorSimple.Direction.REVERSE);
+    rightBackMotor.setDirection(DcMotorSimple.Direction.REVERSE);
   }
 
   public void reset() {
