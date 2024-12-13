@@ -31,7 +31,7 @@ public class SlideSuperStucture extends SubsystemBase {
   private boolean hasGamepiece = false;
   private static double slideExtensionVal = 0;
 
-  private static double turnAngleDeg = 0.8;
+  private static double turnAngleDeg = 0.21;
   private TurnServo turnServo = TurnServo.DEG_0;
 
   @Setter @Getter private Goal goal = Goal.STOW;
@@ -48,7 +48,6 @@ public class SlideSuperStucture extends SubsystemBase {
     wristServo = hardwareMap.get(Servo.class, "wristServo"); // 0.05 up 0.75 down
 
     wristTurnServo = hardwareMap.get(Servo.class, "wristTurnServo");
-    wristTurnServo.setDirection(Servo.Direction.REVERSE);
 
     setServoController(true);
 
@@ -69,7 +68,7 @@ public class SlideSuperStucture extends SubsystemBase {
         new InstantCommand(() -> goal = Goal.AIM),
         new InstantCommand(
             () -> {
-              turnAngleDeg = 0.8;
+              turnAngleDeg = 0.21;
               turnServo = TurnServo.DEG_0;
             }),
         new WaitCommand(100),
@@ -86,7 +85,7 @@ public class SlideSuperStucture extends SubsystemBase {
         new WaitCommand(100),
         new InstantCommand(() -> intakeClawServo.setPosition(Goal.GRAB.clawAngle)),
         new WaitCommand(100),
-        new InstantCommand(() -> slideArmServo.setPosition(0.3)),
+        new InstantCommand(() -> slideArmServo.setPosition(0.5)),
         new InstantCommand(() -> goal = Goal.AIM));
   }
 
@@ -95,7 +94,7 @@ public class SlideSuperStucture extends SubsystemBase {
         new InstantCommand(() -> goal = Goal.HANDOFF),
         new InstantCommand(
             () -> {
-              turnAngleDeg = 0.8;
+              turnAngleDeg = 0.21;
               turnServo = TurnServo.DEG_0;
             }),
         new WaitCommand(100),
@@ -108,11 +107,11 @@ public class SlideSuperStucture extends SubsystemBase {
   }
 
   public void openIntakeClaw() {
-    intakeClawServo.setPosition(0.6);
+    intakeClawServo.setPosition(Goal.AIM.clawAngle);
   }
 
   public void closeIntakeClaw() {
-    intakeClawServo.setPosition(0.36);
+    intakeClawServo.setPosition(Goal.GRAB.clawAngle);
   }
 
   /** Up to avoid the collision with the clip */
@@ -126,7 +125,7 @@ public class SlideSuperStucture extends SubsystemBase {
 
   public void slideArmDown() {
     // This is down for stowing the liftArm when scoring the speciemen
-    slideArmServo.setPosition(0.45);
+    slideArmServo.setPosition(Goal.AIM.slideArmPos);
   }
 
   public void slideArmUp() {
@@ -136,9 +135,9 @@ public class SlideSuperStucture extends SubsystemBase {
 
   public enum Goal {
     STOW(0, 0, 0, 0.6),
-    AIM(slideExtensionVal, 0.4, 0.65, 0.6),
-    GRAB(slideExtensionVal, 0.53, 0.65, 0.36),
-    HANDOFF(0, 0.25, 0.175, 0.36);
+    AIM(slideExtensionVal, 0.625, 0.65, 0.6),
+    GRAB(slideExtensionVal, 0.71, 0.65, 0.36),
+    HANDOFF(0, 0.45, 0.175, 0.36);
 
     private final double slideExtension;
     private final double slideArmPos;
@@ -164,15 +163,15 @@ public class SlideSuperStucture extends SubsystemBase {
   public void leftTurnServo() {
     switch (turnServo) {
       case DEG_0:
-        turnAngleDeg = 0.6;
+        turnAngleDeg = 0.375;
         turnServo = TurnServo.DEG_05;
         break;
       case DEG_05:
-        turnAngleDeg = 0.2;
+        turnAngleDeg = 0.7;
         turnServo = TurnServo.DEG_08;
         break;
       case DEG_08:
-        turnAngleDeg = 0.2;
+        turnAngleDeg = 0.7;
         turnServo = TurnServo.DEG_08;
         break;
     }
@@ -181,15 +180,15 @@ public class SlideSuperStucture extends SubsystemBase {
   public void rightTurnServo() {
     switch (turnServo) {
       case DEG_0:
-        turnAngleDeg = 0.8;
+        turnAngleDeg = 0.21;
         turnServo = TurnServo.DEG_0;
         break;
       case DEG_05:
-        turnAngleDeg = 0.8;
+        turnAngleDeg = 0.21;
         turnServo = TurnServo.DEG_0;
         break;
       case DEG_08:
-        turnAngleDeg = 0.6;
+        turnAngleDeg = 0.375;
         turnServo = TurnServo.DEG_05;
         break;
     }

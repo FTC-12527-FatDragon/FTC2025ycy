@@ -20,8 +20,8 @@ import org.firstinspires.ftc.teamcode.subsystems.SlideSuperStucture;
 import org.firstinspires.ftc.teamcode.subsystems.drivetrain.SampleMecanumDrive;
 import org.firstinspires.ftc.teamcode.utils.FunctionalButton;
 
-@TeleOp(name = "TXTeleop")
-public class TXBetaBot extends CommandOpMode {
+@TeleOp(name = "Solo")
+public class TXBetaBotSolo extends CommandOpMode {
   private GamepadEx gamepadEx1;
   private Lift lift;
   private LiftClaw liftClaw;
@@ -194,7 +194,7 @@ public class TXBetaBot extends CommandOpMode {
 
   @Override
   public void run() {
-    //    lift.periodicTest();
+    lift.periodicTest();
     CommandScheduler.getInstance().run();
   }
 

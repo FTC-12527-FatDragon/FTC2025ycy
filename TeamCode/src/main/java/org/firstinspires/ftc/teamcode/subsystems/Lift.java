@@ -95,8 +95,7 @@ public class Lift extends SubsystemBase {
     return MathUtils.isNear(Goal.PRE_HANG.setpointTicks, liftMotorUp.getCurrentPosition(), 10);
   }
 
-  @Override
-  public void periodic() {
+  public void periodicTest() {
     if (goal == Goal.OPEN_LOOP) return;
 
     if (lastSetpoint != goal.setpointTicks) {
