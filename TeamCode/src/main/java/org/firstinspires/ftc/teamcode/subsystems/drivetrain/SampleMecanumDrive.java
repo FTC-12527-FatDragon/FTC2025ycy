@@ -30,6 +30,7 @@ import com.acmerobotics.roadrunner.trajectory.constraints.TrajectoryAcceleration
 import com.acmerobotics.roadrunner.trajectory.constraints.TrajectoryVelocityConstraint;
 import com.arcrobotics.ftclib.command.CommandScheduler;
 import com.arcrobotics.ftclib.command.Subsystem;
+import com.arcrobotics.ftclib.geometry.Translation2d;
 import com.qualcomm.hardware.lynx.LynxModule;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
@@ -107,7 +108,7 @@ public class SampleMecanumDrive extends MecanumDrive implements Subsystem {
     }
 
     // TODO: adjust the names of the following hardware devices to match your configuration
-    od = new GoBildaLocalizer(hardwareMap, new Pose2d(-100, 40));
+    od = new GoBildaLocalizer(hardwareMap, DriveConstants.GoBildaLocalizerPerpendicularOffset);
 
     leftFront = hardwareMap.get(DcMotorEx.class, "leftFrontMotor");
     leftRear = hardwareMap.get(DcMotorEx.class, "leftBackMotor");

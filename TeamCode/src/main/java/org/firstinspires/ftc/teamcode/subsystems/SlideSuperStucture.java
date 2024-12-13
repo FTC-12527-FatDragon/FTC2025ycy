@@ -63,9 +63,13 @@ public class SlideSuperStucture extends SubsystemBase {
     goal = Goal.STOW;
   }
 
+  public Command setGoalCommand(Goal newGoal) {
+    return new InstantCommand(() -> goal = newGoal);
+  }
+
   public Command aimCommand() {
     return new SequentialCommandGroup(
-        new InstantCommand(() -> goal = Goal.AIM),
+        setGoalCommand(Goal.AIM),
         new InstantCommand(
             () -> {
               turnAngleDeg = 0.21;
@@ -80,18 +84,18 @@ public class SlideSuperStucture extends SubsystemBase {
 
   public Command grabCommand() {
     return new SequentialCommandGroup(
-        new InstantCommand(() -> goal = Goal.GRAB),
+        setGoalCommand(Goal.GRAB),
         new InstantCommand(() -> slideArmServo.setPosition(Goal.GRAB.slideArmPos)),
         new WaitCommand(100),
         new InstantCommand(() -> intakeClawServo.setPosition(Goal.GRAB.clawAngle)),
         new WaitCommand(100),
         new InstantCommand(() -> slideArmServo.setPosition(0.5)),
-        new InstantCommand(() -> goal = Goal.AIM));
+        setGoalCommand(Goal.AIM));
   }
 
   public Command handoffCommand() {
     return new SequentialCommandGroup(
-        new InstantCommand(() -> goal = Goal.HANDOFF),
+        setGoalCommand(Goal.HANDOFF),
         new InstantCommand(
             () -> {
               turnAngleDeg = 0.21;
