@@ -1,10 +1,16 @@
 package org.firstinspires.ftc.teamcode.subsystems;
 
+import com.acmerobotics.dashboard.config.Config;
 import com.arcrobotics.ftclib.command.SubsystemBase;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 
+@Config
 public class LiftClaw extends SubsystemBase {
+  public static double LiftArmServo_UP = 0.315;
+  public static double LiftArmServo_FOLD = 0.76;
+  public static double ClawServo_CLOSE = 0.55;
+  public static double ClawServo_OPEN = 0.8;
   private final Servo liftArmServo;
   private final Servo liftClawServo;
   private boolean isClawOpen;
@@ -17,27 +23,27 @@ public class LiftClaw extends SubsystemBase {
 
   public void switchLiftClaw() {
     if (isClawOpen) {
-      liftClawServo.setPosition(0.8);
+      liftClawServo.setPosition(ClawServo_CLOSE);
     } else {
-      liftClawServo.setPosition(0.55);
+      liftClawServo.setPosition(ClawServo_OPEN);
     }
     isClawOpen = !isClawOpen;
   }
 
   public void openClaw() {
-    liftClawServo.setPosition(0.8);
+    liftClawServo.setPosition(ClawServo_OPEN);
   }
 
   public void closeClaw() {
-    liftClawServo.setPosition(0.55);
+    liftClawServo.setPosition(ClawServo_CLOSE);
   }
 
   public void upLiftArm() {
-    liftArmServo.setPosition(0.315);
+    liftArmServo.setPosition(LiftArmServo_UP);
   }
 
   public void foldLiftArm() {
-    liftArmServo.setPosition(0.76);
+    liftArmServo.setPosition(LiftArmServo_FOLD);
   }
 
   public void setServoController(boolean enable) {
