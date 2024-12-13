@@ -106,19 +106,19 @@ public class SlideSuperStucture extends SubsystemBase {
 
   public void slideArmDown() {
     // This is down for stowing the liftArm when scoring the speciemen
-    slideArmServo.setPosition(0.85);
+    slideArmServo.setPosition(Goal.GRAB.slideArmPos);
   }
 
   public void slideArmUp() {
     // This is up for the auto
-    slideArmServo.setPosition(0.8);
+    slideArmServo.setPosition(Goal.AIM.slideArmPos);
   }
 
   public enum Goal {
     STOW(1, 0, 0, 0, 0.5),
     AIM(slideExtensionVal, 0.35, 0.75, turnAngleDeg, 0.5),
     GRAB(slideExtensionVal, 0.5, 0.75, turnAngleDeg, 0.18),
-    HANDOFF(0.92, 0.26, 0.05, 0, 0.18);
+    HANDOFF(0.92, 0.2, 0.05, 0, 0.18);
 
     private final double slideExtension;
     private final double slideArmPos;
