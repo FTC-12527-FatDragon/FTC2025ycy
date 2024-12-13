@@ -44,8 +44,8 @@ public class TXBetaBot extends CommandOpMode {
         new TeleopDriveCommand(
             drive,
             () -> -gamepadEx1.getLeftY(),
-            () -> -gamepadEx1.getLeftX(),
-            () -> gamepadEx1.getRightX(),
+            () -> gamepadEx1.getLeftX(),
+            () -> -gamepadEx1.getRightX(),
             () -> gamepadEx1.getButton(GamepadKeys.Button.LEFT_STICK_BUTTON),
             () -> gamepadEx1.getButton(GamepadKeys.Button.DPAD_LEFT)));
 
