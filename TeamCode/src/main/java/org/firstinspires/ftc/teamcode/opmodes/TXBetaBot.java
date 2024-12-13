@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.opmodes;
 
+import com.acmerobotics.dashboard.config.Config;
 import com.arcrobotics.ftclib.command.Command;
 import com.arcrobotics.ftclib.command.CommandOpMode;
 import com.arcrobotics.ftclib.command.ConditionalCommand;
@@ -17,18 +18,18 @@ import org.firstinspires.ftc.teamcode.commands.TeleopDriveCommand;
 import org.firstinspires.ftc.teamcode.subsystems.Lift;
 import org.firstinspires.ftc.teamcode.subsystems.LiftClaw;
 import org.firstinspires.ftc.teamcode.subsystems.SlideSuperStucture;
-import org.firstinspires.ftc.teamcode.subsystems.Vision;
-import org.firstinspires.ftc.teamcode.subsystems.drivetrain.MecanumDrive;
+import org.firstinspires.ftc.teamcode.subsystems.drivetrain.SampleMecanumDrive;
 import org.firstinspires.ftc.teamcode.utils.FunctionalButton;
 
+@Config
 @TeleOp(name = "TXTeleop")
 public class TXBetaBot extends CommandOpMode {
+  public static boolean isHeadless = true;
   private GamepadEx gamepadEx1;
   private Lift lift;
   private LiftClaw liftClaw;
   private SlideSuperStucture slide;
-  private MecanumDrive drive;
-  private Vision vision;
+  private SampleMecanumDrive drive;
 
   private boolean isPureHandoffCompelte = false;
 
@@ -39,11 +40,8 @@ public class TXBetaBot extends CommandOpMode {
     lift = new Lift(hardwareMap, telemetry);
     liftClaw = new LiftClaw(hardwareMap);
     slide = new SlideSuperStucture(hardwareMap, telemetry);
-    drive = new MecanumDrive(hardwareMap);
+    drive = new SampleMecanumDrive(hardwareMap);
 
-    vision = new Vision(hardwareMap, telemetry);
-    vision.initializeCamera();
-    vision.setDetectionColor(Vision.SampleColor.RED);
 
     // Teleop Drive Command
     drive.setDefaultCommand(
@@ -53,11 +51,12 @@ public class TXBetaBot extends CommandOpMode {
             () -> -gamepadEx1.getLeftX(),
             () -> gamepadEx1.getRightX(),
             () -> gamepadEx1.getButton(GamepadKeys.Button.LEFT_STICK_BUTTON),
-            () -> gamepadEx1.getButton(GamepadKeys.Button.DPAD_LEFT)));
+            () -> gamepadEx1.getButton(GamepadKeys.Button.DPAD_LEFT),
+            () -> isHeadless));
 
-    gamepadEx1
-        .getGamepadButton(GamepadKeys.Button.DPAD_LEFT)
-        .whenPressed(new AutoAlignCommand(drive, vision));
+//    gamepadEx1
+//        .getGamepadButton(GamepadKeys.Button.DPAD_LEFT)
+//        .whenPressed(new AutoAlignCommand(drive, vision));
 
     // Basket Up Command
     gamepadEx1
