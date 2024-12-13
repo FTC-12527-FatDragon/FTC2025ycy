@@ -57,10 +57,9 @@ public class ServoTest extends LinearOpMode {
         // servo1.setPosition(0.5);
       }
 
-      if(shouldStop) {
+      if (shouldStop) {
         controller.setStatus(false);
-      }
-      else {
+      } else {
         controller.setStatus(true);
       }
 

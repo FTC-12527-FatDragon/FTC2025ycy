@@ -30,7 +30,6 @@ import com.acmerobotics.roadrunner.trajectory.constraints.TrajectoryAcceleration
 import com.acmerobotics.roadrunner.trajectory.constraints.TrajectoryVelocityConstraint;
 import com.arcrobotics.ftclib.command.CommandScheduler;
 import com.arcrobotics.ftclib.command.Subsystem;
-import com.arcrobotics.ftclib.geometry.Translation2d;
 import com.qualcomm.hardware.lynx.LynxModule;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
@@ -96,7 +95,7 @@ public class SampleMecanumDrive extends MecanumDrive implements Subsystem {
             TRANSLATIONAL_PID,
             TRANSLATIONAL_PID,
             HEADING_PID,
-            new Pose2d(0.5, 0.5, Math.toRadians(5.0)), // Pose Error
+            new Pose2d(0.2, 0.2, Math.toRadians(2.0)), // Pose Error
             0.1);
 
     LynxModuleUtil.ensureMinimumFirmwareVersion(hardwareMap);

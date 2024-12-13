@@ -2,10 +2,15 @@ package org.firstinspires.ftc.teamcode.opmodes.autos;
 
 import static org.firstinspires.ftc.teamcode.opmodes.autos.AutoCommand.*;
 
+import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
+import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.arcrobotics.ftclib.command.CommandScheduler;
+import com.arcrobotics.ftclib.command.InstantCommand;
+import com.arcrobotics.ftclib.command.ParallelCommandGroup;
 import com.arcrobotics.ftclib.command.SequentialCommandGroup;
+import com.arcrobotics.ftclib.command.WaitCommand;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import org.firstinspires.ftc.teamcode.lib.roadrunner.trajectorysequence.TrajectorySequence;
@@ -20,7 +25,7 @@ import org.firstinspires.ftc.teamcode.subsystems.drivetrain.TrajectoryManager;
 public class Basket1Plus3 extends LinearOpMode {
   // For Basket Scoring
   public static double xValue1 = 10;
-  public static double yValue1 = 20;
+  public static double yValue1 = 16;
   public static double heading1 = -45;
 
   // The right sample
@@ -29,19 +34,21 @@ public class Basket1Plus3 extends LinearOpMode {
   public static double heading2 = 0;
 
   // The middle sample
-  public static double xValue3 = 0;
-  public static double yValue3 = 0;
+  public static double xValue3 = 26;
+  public static double yValue3 = 20.8;
   public static double heading3 = 0;
 
   // The left sample
-  public static double xValue4 = 0;
-  public static double yValue4 = 0;
-  public static double heading4 = 0;
+  public static double xValue4 = 8;
+  public static double yValue4 = 16;
+  public static double heading4 = 5;
 
-  // Ascent zone
-  public static double xValue5 = 0;
-  public static double yValue5 = 0;
-  public static double heading5 = 0;
+  public static long BasketWaitMs = 1000;
+
+  //  // Ascent zone
+  //  public static double xValue5 = 60;
+  //  public static double yValue5 = -16;
+  //  public static double heading5 = 0;
 
   LiftClaw liftClaw;
   Lift lift;
@@ -91,14 +98,15 @@ public class Basket1Plus3 extends LinearOpMode {
           .lineToLinearHeading(new Pose2d(xValue1, yValue1, Math.toRadians(heading1)))
           .build();
 
-  // basket to ascent zone
-  TrajectorySequence trajs8 =
-      TrajectoryManager.trajectorySequenceBuilder(trajs7.end())
-          .lineToLinearHeading(new Pose2d(xValue5, yValue5, Math.toRadians(heading5)))
-          .build();
+  //  // basket to ascent zone
+  //  TrajectorySequence trajs8 =
+  //      TrajectoryManager.trajectorySequenceBuilder(trajs7.end())
+  //          .lineToLinearHeading(new Pose2d(xValue5, yValue5, Math.toRadians(heading5)))
+  //          .build();
 
   @Override
   public void runOpMode() throws InterruptedException {
+    this.telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
     CommandScheduler.getInstance().reset();
 
     // Subsystems Initialized
@@ -112,35 +120,50 @@ public class Basket1Plus3 extends LinearOpMode {
     CommandScheduler.getInstance()
         .schedule(
             new SequentialCommandGroup(
-                initialize(liftClaw, slide),
-                followTrajectory(drive, trajs1).alongWith(upLiftToBasket(lift, liftClaw)),
+                slide.aimCommand().beforeStarting(liftClaw::closeClaw).beforeStarting(()->telemetry.addData("HH", "11")),
+                followTrajectory(drive, trajs1).alongWith(
+                        upLiftToBasket(lift, liftClaw)),
+                new WaitCommand(BasketWaitMs),
                 stowArmFromBasket(lift, liftClaw),
 
                 followTrajectory(drive, trajs2),
                 slide.grabCommand(),
                 followTrajectory(drive, trajs3)
                     .alongWith(handoff(slide, liftClaw).andThen(upLiftToBasket(lift, liftClaw))),
+                new WaitCommand(BasketWaitMs),
                 stowArmFromBasket(lift, liftClaw),
 
                 followTrajectory(drive, trajs4).alongWith(slide.aimCommand()),
                 slide.grabCommand(),
                 followTrajectory(drive, trajs5)
                     .alongWith(handoff(slide, liftClaw).andThen(upLiftToBasket(lift, liftClaw))),
+                new WaitCommand(BasketWaitMs),
                 stowArmFromBasket(lift, liftClaw),
 
                 followTrajectory(drive, trajs6).alongWith(slide.aimCommand()),
+                new WaitCommand(300),
+                new ParallelCommandGroup(
+                        new InstantCommand(slide::forwardSlideExtension),
+                        slide.setServoPosCommand(SlideSuperStucture.TurnServo.DEG_08)
+                ),
                 slide.grabCommand(),
-                followTrajectory(drive, trajs7)
-                    .alongWith(handoff(slide, liftClaw).andThen(upLiftToBasket(lift, liftClaw))),
-                stowArmFromBasket(lift, liftClaw),
+                new WaitCommand(300),
+                handoff(slide, liftClaw),
+                new WaitCommand(300),
+                followTrajectory(drive, trajs7),
+                upLiftToBasket(lift, liftClaw)),
+                new WaitCommand(BasketWaitMs),
+                stowArmFromBasket(lift, liftClaw)
 
-                followTrajectory(drive, trajs8).alongWith(autoFinish(liftClaw, lift, slide))));
+//                followTrajectory(drive, trajs8).alongWith(autoFinish(liftClaw, lift, slide))
+                );
 
     // spotless:on
     waitForStart();
 
     while (opModeIsActive() && !isStopRequested()) {
       CommandScheduler.getInstance().run();
+      lift.periodicTest();
     }
   }
 }

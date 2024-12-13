@@ -39,6 +39,7 @@ public class AutoCommand {
     return slide
         .handoffCommand()
         .beforeStarting(liftClaw::openClaw)
+        .andThen(new WaitCommand(50))
         .andThen(new InstantCommand(liftClaw::closeClaw))
         .andThen(new WaitCommand(200))
         .andThen(new InstantCommand(slide::openIntakeClaw));
@@ -72,7 +73,7 @@ public class AutoCommand {
 
   public static Command initialize(LiftClaw liftClaw, SlideSuperStucture slide) {
     return new ParallelCommandGroup(
-        new InstantCommand(slide::forwardSlideExtension),
+        //        new InstantCommand(slide::forwardSlideExtension),
         new InstantCommand(liftClaw::closeClaw),
         new InstantCommand(slide::slideArmUp),
         new InstantCommand(slide::wristUp),

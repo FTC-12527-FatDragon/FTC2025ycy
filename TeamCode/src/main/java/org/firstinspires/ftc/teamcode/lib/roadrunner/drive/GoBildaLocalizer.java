@@ -4,7 +4,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.localization.Localizer;
-import com.arcrobotics.ftclib.geometry.Translation2d;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import lombok.experimental.ExtensionMethod;
 import org.firstinspires.ftc.teamcode.lib.GeomUtil;
@@ -15,10 +14,11 @@ import org.firstinspires.ftc.teamcode.subsystems.drivetrain.DriveConstants;
 public class GoBildaLocalizer implements Localizer {
   private final GoBildaPinpointDriver odometry;
 
-  public GoBildaLocalizer(final HardwareMap hardwareMap, final DriveConstants.Translation2dHelperClass mountOffsets) {
+  public GoBildaLocalizer(
+      final HardwareMap hardwareMap, final DriveConstants.Translation2dHelperClass mountOffsets) {
     odometry = hardwareMap.get(GoBildaPinpointDriver.class, "od");
     odometry.setEncoderDirections(
-            DriveConstants.GoBildaXLocalizerDirection, DriveConstants.GoBildaYLocalizerDirection);
+        DriveConstants.GoBildaXLocalizerDirection, DriveConstants.GoBildaYLocalizerDirection);
     odometry.setEncoderResolution(DriveConstants.GoBildaLocalizerEncoderResolution);
     odometry.setOffsets(mountOffsets.getX(), mountOffsets.getY());
     odometry.resetPosAndIMU();

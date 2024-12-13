@@ -140,7 +140,7 @@ public class SlideSuperStucture extends SubsystemBase {
   public enum Goal {
     STOW(0, 0, 0, 0.6),
     AIM(slideExtensionVal, 0.625, 0.65, 0.6),
-    GRAB(slideExtensionVal, 0.71, 0.65, 0.36),
+    GRAB(slideExtensionVal, 0.725, 0.65, 0.36),
     HANDOFF(0, 0.45, 0.175, 0.36);
 
     private final double slideExtension;

@@ -32,21 +32,21 @@ public class DriveConstants {
 
   @Deprecated
   public static final Pose2d xPose =
-          currentRobot == RobotType.ALPHA
-                  ? new Pose2d(Units.mmToInches(-25), Units.mmToInches(155), Units.degreesToRadians(0))
-                  : new Pose2d(Units.mmToInches(0), Units.mmToInches(-100), Units.degreesToRadians(0));
+      currentRobot == RobotType.ALPHA
+          ? new Pose2d(Units.mmToInches(-25), Units.mmToInches(155), Units.degreesToRadians(0))
+          : new Pose2d(Units.mmToInches(0), Units.mmToInches(-100), Units.degreesToRadians(0));
 
   @Deprecated
   public static final Pose2d yPose =
-          currentRobot == RobotType.ALPHA
-                  ? new Pose2d(Units.mmToInches(-25), Units.mmToInches(-155), Units.degreesToRadians(90))
-                  : new Pose2d(Units.mmToInches(40), Units.mmToInches(15), Units.degreesToRadians(90));
+      currentRobot == RobotType.ALPHA
+          ? new Pose2d(Units.mmToInches(-25), Units.mmToInches(-155), Units.degreesToRadians(90))
+          : new Pose2d(Units.mmToInches(40), Units.mmToInches(15), Units.degreesToRadians(90));
 
   /*
    * These are motor constants that should be listed online for your motors.
    */
   public static final double TICKS_PER_REV =
-          537.7; // From https://learnroadrunner.com/drive-constants.html#ticks-per-rev-max-rpm ->
+      537.7; // From https://learnroadrunner.com/drive-constants.html#ticks-per-rev-max-rpm ->
   // https://www.gobilda.com/5203-series-yellow-jacket-planetary-gear-motor-13-7-1-ratio-24mm-length-8mm-rex-shaft-435-rpm-3-3-5v-encoder/
   public static final double MAX_RPM = 312; // From
   // https://www.gobilda.com/5203-series-yellow-jacket-planetary-gear-motor-13-7-1-ratio-24mm-length-8mm-rex-shaft-435-rpm-3-3-5v-encoder/
@@ -55,7 +55,7 @@ public class DriveConstants {
   // https://learnroadrunner.com/drive-constants.html#run-using-encoder-motor-velo-pid
   public static final boolean RUN_USING_ENCODER = false;
   public static PIDFCoefficients MOTOR_VELO_PID =
-          new PIDFCoefficients(0, 0, 0, getMotorVelocityF(MAX_RPM / 60 * TICKS_PER_REV));
+      new PIDFCoefficients(0, 0, 0, getMotorVelocityF(MAX_RPM / 60 * TICKS_PER_REV));
 
   /*
    * These are physical constants that can be determined from your robot (including the track
@@ -67,7 +67,7 @@ public class DriveConstants {
    */
   public static double WHEEL_RADIUS = 2; // INCH!!
   public static double GEAR_RATIO =
-          1; // output (wheel) speed / input (motor) speed, >1 -> 加速 <1 -> 减速
+      1; // output (wheel) speed / input (motor) speed, >1 -> 加速 <1 -> 减速
   public static double TRACK_WIDTH; // INCH!!
 
   /*
@@ -95,10 +95,14 @@ public class DriveConstants {
   /*
    * Adjust the orientations here to match your robot. See the FTC SDK documentation for details.
    */
-  public static RevHubOrientationOnRobot.LogoFacingDirection LOGO_FACING_DIR = currentRobot==RobotType.GAMMA?
-          RevHubOrientationOnRobot.LogoFacingDirection.DOWN:RevHubOrientationOnRobot.LogoFacingDirection.UP;
-  public static RevHubOrientationOnRobot.UsbFacingDirection USB_FACING_DIR = currentRobot==RobotType.GAMMA?
-          RevHubOrientationOnRobot.UsbFacingDirection.LEFT:RevHubOrientationOnRobot.UsbFacingDirection.FORWARD;
+  public static RevHubOrientationOnRobot.LogoFacingDirection LOGO_FACING_DIR =
+      currentRobot == RobotType.GAMMA
+          ? RevHubOrientationOnRobot.LogoFacingDirection.DOWN
+          : RevHubOrientationOnRobot.LogoFacingDirection.UP;
+  public static RevHubOrientationOnRobot.UsbFacingDirection USB_FACING_DIR =
+      currentRobot == RobotType.GAMMA
+          ? RevHubOrientationOnRobot.UsbFacingDirection.LEFT
+          : RevHubOrientationOnRobot.UsbFacingDirection.FORWARD;
 
   public static GoBildaPinpointDriver.EncoderDirection GoBildaXLocalizerDirection;
   public static GoBildaPinpointDriver.EncoderDirection GoBildaYLocalizerDirection;
@@ -120,7 +124,7 @@ public class DriveConstants {
         GoBildaXLocalizerDirection = GoBildaPinpointDriver.EncoderDirection.REVERSED;
         GoBildaYLocalizerDirection = GoBildaPinpointDriver.EncoderDirection.FORWARD;
         GoBildaLocalizerEncoderResolution =
-                GoBildaPinpointDriver.GoBildaOdometryPods.goBILDA_4_BAR_POD;
+            GoBildaPinpointDriver.GoBildaOdometryPods.goBILDA_4_BAR_POD;
         GoBildaLocalizerPerpendicularOffset = new Translation2dHelperClass(0, 4);
         TRACK_WIDTH = 15.44;
         kV = 0.0135;
@@ -133,7 +137,7 @@ public class DriveConstants {
         GoBildaXLocalizerDirection = GoBildaPinpointDriver.EncoderDirection.FORWARD;
         GoBildaYLocalizerDirection = GoBildaPinpointDriver.EncoderDirection.REVERSED;
         GoBildaLocalizerEncoderResolution =
-                GoBildaPinpointDriver.GoBildaOdometryPods.goBILDA_SWINGARM_POD;
+            GoBildaPinpointDriver.GoBildaOdometryPods.goBILDA_SWINGARM_POD;
         GoBildaLocalizerPerpendicularOffset = new Translation2dHelperClass(-92.03742, 104.03742);
         TRACK_WIDTH = 15.21;
         kV = 0.015;
@@ -143,10 +147,10 @@ public class DriveConstants {
         MAX_ANG_VEL = Math.toRadians(142.9192604427183);
         break;
       case GAMMA:
-        GoBildaXLocalizerDirection = GoBildaPinpointDriver.EncoderDirection.FORWARD;
+        GoBildaXLocalizerDirection = GoBildaPinpointDriver.EncoderDirection.REVERSED;
         GoBildaYLocalizerDirection = GoBildaPinpointDriver.EncoderDirection.REVERSED;
         GoBildaLocalizerEncoderResolution =
-                GoBildaPinpointDriver.GoBildaOdometryPods.goBILDA_4_BAR_POD;
+            GoBildaPinpointDriver.GoBildaOdometryPods.goBILDA_4_BAR_POD;
         GoBildaLocalizerPerpendicularOffset = new Translation2dHelperClass(0, 92.5);
         TRACK_WIDTH = 16.19;
         kV = 0.012;
@@ -157,9 +161,9 @@ public class DriveConstants {
         break;
       default:
         RobotLog.ee(
-                "DriveConstants",
-                "GoBildaPinpointDriver not configured for %s.",
-                currentRobot.toString());
+            "DriveConstants",
+            "GoBildaPinpointDriver not configured for %s.",
+            currentRobot.toString());
     }
   }
 
