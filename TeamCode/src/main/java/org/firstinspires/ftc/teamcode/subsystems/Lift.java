@@ -138,5 +138,4 @@ public class Lift extends SubsystemBase {
       this.setpointTicks = setpointTicks;
     }
   }
-
 }

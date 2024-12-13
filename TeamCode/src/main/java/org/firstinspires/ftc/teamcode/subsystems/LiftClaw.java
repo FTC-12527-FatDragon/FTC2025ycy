@@ -12,6 +12,7 @@ public class LiftClaw extends SubsystemBase {
   public LiftClaw(final HardwareMap hardwareMap) {
     liftArmServo = hardwareMap.get(Servo.class, "liftArmServo"); // 0.3 Up 0.7 Down
     liftClawServo = hardwareMap.get(Servo.class, "clawServo"); // 0 Close 0.5 Open
+    setServoController(true);
   }
 
   public void switchLiftClaw() {
@@ -39,8 +40,14 @@ public class LiftClaw extends SubsystemBase {
     liftArmServo.setPosition(0.76);
   }
 
-  public void stop() {
-    liftArmServo.getController().pwmDisable();
-    liftClawServo.getController().pwmDisable();
+  public void setServoController(boolean enable) {
+    if (enable) {
+      liftArmServo.getController().pwmEnable();
+      liftClawServo.getController().pwmEnable();
+    }
+    else {
+      liftArmServo.getController().pwmDisable();
+      liftClawServo.getController().pwmDisable();
+    }
   }
 }

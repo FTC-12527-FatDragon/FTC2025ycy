@@ -81,7 +81,11 @@ public class TXBetaBot extends CommandOpMode {
                 new InstantCommand(() -> isPureHandoffCompelte = false)));
 
     // Aim
-    gamepadEx1.getGamepadButton(GamepadKeys.Button.Y).whenPressed(slide.aimCommand(), false);
+    gamepadEx1
+        .getGamepadButton(GamepadKeys.Button.Y)
+        .whenPressed(
+            slide.aimCommand().alongWith(new InstantCommand(() -> isPureHandoffCompelte = false)),
+            false);
 
     // Grab when aim
     new FunctionalButton(
@@ -190,14 +194,14 @@ public class TXBetaBot extends CommandOpMode {
 
   @Override
   public void run() {
-//    lift.periodicTest();
+    //    lift.periodicTest();
     CommandScheduler.getInstance().run();
   }
 
   @Override
   public void reset() {
     CommandScheduler.getInstance().reset();
-    slide.stop();
-    liftClaw.stop();
+    slide.setServoController(false);
+    liftClaw.setServoController(false);
   }
 }
