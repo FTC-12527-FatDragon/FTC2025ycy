@@ -17,7 +17,7 @@ public class AutoCommand {
   public static Command upLiftToBasket(Lift lift, LiftClaw liftClaw) {
     return new ParallelCommandGroup(
         new InstantCommand(() -> lift.setGoal(Lift.Goal.BASKET)),
-        new WaitUntilCommand(() -> lift.getCurrentPosition() > 400)
+        new WaitUntilCommand(() -> lift.getCurrentPosition() > 300)
             .andThen(new InstantCommand(liftClaw::upLiftArm)));
   }
 
@@ -47,7 +47,7 @@ public class AutoCommand {
   public static Command upLiftToChamber(Lift lift, LiftClaw liftClaw) {
     return new ParallelCommandGroup(
         new InstantCommand(() -> lift.setGoal(Lift.Goal.PRE_HANG)),
-        new WaitUntilCommand(() -> lift.getCurrentPosition() > 200)
+        new WaitUntilCommand(() -> lift.getCurrentPosition() > 100)
             .andThen(new InstantCommand(liftClaw::upLiftArm)));
   }
 

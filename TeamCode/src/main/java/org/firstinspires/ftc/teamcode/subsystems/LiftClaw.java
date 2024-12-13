@@ -44,8 +44,7 @@ public class LiftClaw extends SubsystemBase {
     if (enable) {
       liftArmServo.getController().pwmEnable();
       liftClawServo.getController().pwmEnable();
-    }
-    else {
+    } else {
       liftArmServo.getController().pwmDisable();
       liftClawServo.getController().pwmDisable();
     }

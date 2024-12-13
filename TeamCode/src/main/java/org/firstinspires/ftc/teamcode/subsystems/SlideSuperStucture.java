@@ -51,7 +51,7 @@ public class SlideSuperStucture extends SubsystemBase {
     wristTurnServo.setDirection(Servo.Direction.REVERSE);
 
     setServoController(true);
-    
+
     slideMotor = hardwareMap.get(DcMotorEx.class, "slideMotor");
     slideMotor.setDirection(DcMotorSimple.Direction.REVERSE);
     slideMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -226,8 +226,7 @@ public class SlideSuperStucture extends SubsystemBase {
       wristTurnServo.getController().pwmEnable();
       wristTurnServo.getController().pwmEnable();
       slideArmServo.getController().pwmEnable();
-    }
-    else {
+    } else {
       intakeClawServo.getController().pwmDisable();
       wristTurnServo.getController().pwmDisable();
       wristTurnServo.getController().pwmDisable();

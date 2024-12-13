@@ -17,7 +17,7 @@ import org.firstinspires.ftc.teamcode.commands.TeleopDriveCommand;
 import org.firstinspires.ftc.teamcode.subsystems.Lift;
 import org.firstinspires.ftc.teamcode.subsystems.LiftClaw;
 import org.firstinspires.ftc.teamcode.subsystems.SlideSuperStucture;
-import org.firstinspires.ftc.teamcode.subsystems.drivetrain.MecanumDrive;
+import org.firstinspires.ftc.teamcode.subsystems.drivetrain.SampleMecanumDrive;
 import org.firstinspires.ftc.teamcode.utils.FunctionalButton;
 
 @TeleOp(name = "TXTeleop")
@@ -26,7 +26,7 @@ public class TXBetaBot extends CommandOpMode {
   private Lift lift;
   private LiftClaw liftClaw;
   private SlideSuperStucture slide;
-  private MecanumDrive drive;
+  private SampleMecanumDrive drive;
 
   private boolean isPureHandoffCompelte = false;
 
@@ -37,7 +37,7 @@ public class TXBetaBot extends CommandOpMode {
     lift = new Lift(hardwareMap, telemetry);
     liftClaw = new LiftClaw(hardwareMap);
     slide = new SlideSuperStucture(hardwareMap, telemetry);
-    drive = new MecanumDrive(hardwareMap);
+    drive = new SampleMecanumDrive(hardwareMap);
 
     // Teleop Drive Command
     drive.setDefaultCommand(
@@ -75,7 +75,7 @@ public class TXBetaBot extends CommandOpMode {
                         .andThen(
                             new WaitCommand(100),
                             new InstantCommand(liftClaw::foldLiftArm),
-                            new WaitCommand(300)),
+                            new WaitCommand(200)),
                     () -> lift.getGoal() == Lift.Goal.HANG),
                 new InstantCommand(() -> lift.setGoal(Lift.Goal.STOW)),
                 new InstantCommand(() -> isPureHandoffCompelte = false)));

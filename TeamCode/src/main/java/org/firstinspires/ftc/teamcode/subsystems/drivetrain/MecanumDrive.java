@@ -39,7 +39,7 @@ public class MecanumDrive extends SubsystemBase {
     yawOffset = od.getHeading();
   }
 
-  public void moveRobotFieldRelatice(double forward, double fun, double turn) {
+  public void moveRobotFieldRelative(double forward, double fun, double turn) {
     od.update();
 
     turn *= 0.8;

@@ -28,6 +28,8 @@ import com.acmerobotics.roadrunner.trajectory.constraints.MinVelocityConstraint;
 import com.acmerobotics.roadrunner.trajectory.constraints.ProfileAccelerationConstraint;
 import com.acmerobotics.roadrunner.trajectory.constraints.TrajectoryAccelerationConstraint;
 import com.acmerobotics.roadrunner.trajectory.constraints.TrajectoryVelocityConstraint;
+import com.arcrobotics.ftclib.command.CommandScheduler;
+import com.arcrobotics.ftclib.command.Subsystem;
 import com.qualcomm.hardware.lynx.LynxModule;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
@@ -49,7 +51,7 @@ import org.firstinspires.ftc.teamcode.lib.roadrunner.util.LynxModuleUtil;
  * Simple mecanum drive hardware implementation for REV hardware.
  */
 @Config
-public class SampleMecanumDrive extends MecanumDrive {
+public class SampleMecanumDrive extends MecanumDrive implements Subsystem {
   public static PIDCoefficients TRANSLATIONAL_PID = new PIDCoefficients(2, 0, 0);
   public static PIDCoefficients HEADING_PID = new PIDCoefficients(5, 0, 0.7);
 
@@ -151,6 +153,8 @@ public class SampleMecanumDrive extends MecanumDrive {
             lastEncVels,
             lastTrackingEncPositions,
             lastTrackingEncVels);
+
+    CommandScheduler.getInstance().registerSubsystem(this);
   }
 
   public TrajectoryBuilder trajectoryBuilder(Pose2d startPose) {
