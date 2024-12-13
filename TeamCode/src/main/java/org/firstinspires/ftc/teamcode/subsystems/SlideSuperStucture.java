@@ -104,7 +104,7 @@ public class SlideSuperStucture extends SubsystemBase {
         new InstantCommand(() -> slideArmServo.setPosition(Goal.HANDOFF.slideArmPos)),
         new WaitCommand(200),
         new InstantCommand(() -> slideExtensionVal = Goal.HANDOFF.slideExtension),
-        new WaitUntilCommand(this::slideMotorAtGoal));
+        new WaitUntilCommand(this::slideMotorAtHome));
   }
 
   public void openIntakeClaw() {
@@ -203,6 +203,10 @@ public class SlideSuperStucture extends SubsystemBase {
 
   private boolean slideMotorAtGoal() {
     return MathUtils.isNear(goal.slideExtension, slideMotor.getCurrentPosition(), 10);
+  }
+
+  private boolean slideMotorAtHome() {
+    return MathUtils.isNear(0, slideMotor.getCurrentPosition(), 10);
   }
 
   @Override
