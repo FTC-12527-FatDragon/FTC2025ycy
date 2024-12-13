@@ -152,8 +152,8 @@ public class DriveConstants {
         kV = 0.012;
         kA = 0.003;
         kStatic = 0.065;
-        MAX_VEL = 63.0295389435408;
-        MAX_ANG_VEL = Math.toRadians(142.9192604427183);
+        MAX_VEL = 51.064485597344834;
+        MAX_ANG_VEL = Math.toRadians(143.51011005498376);
         break;
       default:
         RobotLog.ee(
