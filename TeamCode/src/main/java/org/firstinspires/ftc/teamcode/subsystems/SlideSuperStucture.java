@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.subsystems;
 
 import com.acmerobotics.dashboard.FtcDashboard;
+import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.arcrobotics.ftclib.command.Command;
 import com.arcrobotics.ftclib.command.InstantCommand;
@@ -41,7 +42,7 @@ public class SlideSuperStucture extends SubsystemBase {
   @Getter @Setter private boolean normalHandoff = false;
 
   public SlideSuperStucture(final HardwareMap hardwareMap, final Telemetry telemetry) {
-    slideArmServo = hardwareMap.get(Servo.class, "slideArmServo"); // 0.5 up 0.9 half 1 down
+    slideArmServo = hardwareMap.get(Servo.class, "slideArmServo");
 
     intakeClawServo = hardwareMap.get(Servo.class, "intakeClawServo"); // 0.3 close 0.7 open
 
@@ -167,38 +168,53 @@ public class SlideSuperStucture extends SubsystemBase {
   public void leftTurnServo() {
     switch (turnServo) {
       case DEG_0:
-        turnAngleDeg = 0.375;
         turnServo = TurnServo.DEG_05;
         break;
       case DEG_05:
-        turnAngleDeg = 0.7;
         turnServo = TurnServo.DEG_08;
         break;
       case DEG_08:
-        turnAngleDeg = 0.7;
         turnServo = TurnServo.DEG_08;
         break;
     }
+    setServoPos(turnServo);
   }
 
   public void rightTurnServo() {
     switch (turnServo) {
       case DEG_0:
-        turnAngleDeg = 0.21;
         turnServo = TurnServo.DEG_0;
         break;
       case DEG_05:
-        turnAngleDeg = 0.21;
         turnServo = TurnServo.DEG_0;
         break;
       case DEG_08:
-        turnAngleDeg = 0.375;
         turnServo = TurnServo.DEG_05;
         break;
     }
+    setServoPos(turnServo);
   }
 
-  enum TurnServo {
+  public void setServoPos(TurnServo pos){
+    switch (pos) {
+      case DEG_0:
+        turnAngleDeg = 0.21;
+        break;
+      case DEG_05:
+        turnAngleDeg = 0.375;
+        break;
+      case DEG_08:
+        turnAngleDeg = 0.7;
+        break;
+    }
+    turnServo = pos;
+  }
+
+  public Command setServoPosCommand(TurnServo pos){
+    return new InstantCommand(() -> setServoPos(pos));
+  }
+
+  public enum TurnServo {
     DEG_0,
     DEG_05,
     DEG_08

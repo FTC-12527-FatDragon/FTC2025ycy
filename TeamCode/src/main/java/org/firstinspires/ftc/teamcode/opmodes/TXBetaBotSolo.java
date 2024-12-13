@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.opmodes;
 
+import com.acmerobotics.dashboard.FtcDashboard;
+import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.arcrobotics.ftclib.command.Command;
 import com.arcrobotics.ftclib.command.CommandOpMode;
 import com.arcrobotics.ftclib.command.CommandScheduler;
@@ -14,6 +16,7 @@ import com.arcrobotics.ftclib.gamepad.GamepadKeys;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import java.util.function.Supplier;
 import org.firstinspires.ftc.teamcode.commands.TeleopDriveCommand;
+import org.firstinspires.ftc.teamcode.lib.roadrunner.drive.opmode.LocalizationTest;
 import org.firstinspires.ftc.teamcode.subsystems.Lift;
 import org.firstinspires.ftc.teamcode.subsystems.LiftClaw;
 import org.firstinspires.ftc.teamcode.subsystems.SlideSuperStucture;
@@ -196,6 +199,10 @@ public class TXBetaBotSolo extends CommandOpMode {
   public void run() {
     lift.periodicTest();
     CommandScheduler.getInstance().run();
+    TelemetryPacket packet = new TelemetryPacket();
+    packet.fieldOverlay().setStroke("#3F51B5");
+    LocalizationTest.drawRobot(packet.fieldOverlay(), drive.getPoseEstimate());
+    FtcDashboard.getInstance().sendTelemetryPacket(packet);
   }
 
   @Override
