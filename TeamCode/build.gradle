@@ -8,6 +8,34 @@
 // please think carefully as to whether such customizations are really necessary
 // before doing so.
 
+plugins {
+    id "com.diffplug.spotless"
+}
+
+spotless {
+    java {
+        target fileTree('.') {
+            include '**/*.java'
+            exclude '**/build/**', '**/build-cache/**'
+        }
+        toggleOffOn()
+        googleJavaFormat()
+        removeUnusedImports()
+        trimTrailingWhitespace()
+        endWithNewline()
+    }
+    kotlin {
+        target fileTree('.') {
+            include '**/*.kt'
+            exclude '**/build/**', '**/build-cache/**'
+        }
+        ktfmt()
+        trimTrailingWhitespace()
+        endWithNewline()
+    }
+}
+
+
 
 // Custom definitions may go here
 

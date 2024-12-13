@@ -104,9 +104,9 @@ public class AlphaLift extends SubsystemBase {
 
   public enum Goal {
     BASKET(1550.0),
-    STOW(0.0),
+    STOW(10.0),
     PRE_HANG(700.0),
-    HANG(1100.0),
+    HANG(1150.0),
     GRAB(0.0),
     OPEN_LOOP(0.0);
 

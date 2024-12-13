@@ -31,7 +31,7 @@ public class AlphaSlide extends SubsystemBase {
   public AlphaSlide(final HardwareMap hardwareMap, final Telemetry telemetry) {
     slideArmServo = hardwareMap.get(Servo.class, "slideArmServo"); // 0.5 up 0.9 half 1 down
 
-    slideRightServo = hardwareMap.get(Servo.class, "slideRightServo"); // 1 stow
+    slideRightServo = hardwareMap.get(Servo.class, "slideLeftServo"); // 1 stow
 
     intakeClawServo = hardwareMap.get(Servo.class, "intakeClawServo"); // 0.3 close 0.7 open
     wristServo = hardwareMap.get(Servo.class, "wristServo"); // 0.05 up 0.75 down
@@ -207,7 +207,7 @@ public class AlphaSlide extends SubsystemBase {
     telemetry.addData("Slide Extension", slideExtensionVal);
     telemetry.addData("Turn Angle", turnAngleDeg);
     telemetry.addData("SLideServo Position", slideRightServo.getPosition());
-    telemetry.update();
+    //telemetry.update();
   }
 }
 

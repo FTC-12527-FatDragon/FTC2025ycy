@@ -18,7 +18,6 @@ import org.firstinspires.ftc.teamcode.subsystems.AlphaLift;
 import org.firstinspires.ftc.teamcode.subsystems.AlphaLiftClaw;
 import org.firstinspires.ftc.teamcode.subsystems.AlphaSlide;
 import org.firstinspires.ftc.teamcode.subsystems.Lift;
-import org.firstinspires.ftc.teamcode.subsystems.Vision;
 import org.firstinspires.ftc.teamcode.subsystems.drivetrain.MecanumDrive;
 import org.firstinspires.ftc.teamcode.utils.FunctionalButton;
 
@@ -29,7 +28,6 @@ public class AlphaCar extends CommandOpMode {
   private AlphaLiftClaw liftClaw;
   private AlphaSlide slide;
   private MecanumDrive drive;
-  private Vision vision;
 
   private boolean isPureHandoffCompelte = false;
 
@@ -42,10 +40,6 @@ public class AlphaCar extends CommandOpMode {
     slide = new AlphaSlide(hardwareMap, telemetry);
     drive = new MecanumDrive(hardwareMap);
 
-    vision = new Vision(hardwareMap, telemetry);
-    vision.initializeCamera();
-    vision.setDetectionColor(Vision.SampleColor.RED);
-
     // Teleop Drive Command
     drive.setDefaultCommand(
         new TeleopDriveCommand(
@@ -54,11 +48,8 @@ public class AlphaCar extends CommandOpMode {
             () -> -gamepadEx1.getLeftX(),
             () -> gamepadEx1.getRightX(),
             () -> gamepadEx1.getButton(GamepadKeys.Button.LEFT_STICK_BUTTON),
-            () -> gamepadEx1.getButton(GamepadKeys.Button.DPAD_LEFT)));
+            () -> gamepadEx1.getButton(GamepadKeys.Button.START)));
 
-    gamepadEx1
-        .getGamepadButton(GamepadKeys.Button.DPAD_LEFT)
-        .whenPressed(new AutoAlignCommand(drive, vision));
 
     // Basket Up Command
     gamepadEx1
@@ -124,11 +115,10 @@ public class AlphaCar extends CommandOpMode {
             () ->
                 gamepadEx1.getButton(GamepadKeys.Button.DPAD_LEFT)
                     && lift.getGoal() == AlphaLift.Goal.GRAB)
-        .whenPressed(
-            new SequentialCommandGroup(new InstantCommand(() -> lift.setGoal(AlphaLift.Goal.PRE_HANG))
+            .whenPressed(
+            new InstantCommand(() -> lift.setGoal(AlphaLift.Goal.PRE_HANG))
                 .alongWith(new InstantCommand(() -> liftClaw.chamberWrist()))
-                .alongWith(new InstantCommand(() -> liftClaw.chamberLiftArm()))
-            ),
+                .andThen(new InstantCommand(() -> liftClaw.chamberLiftArm())),
             false);
 
     new FunctionalButton(
@@ -138,16 +128,17 @@ public class AlphaCar extends CommandOpMode {
         .whenPressed(
                 new InstantCommand(() -> lift.setGoal(AlphaLift.Goal.GRAB))
                         .alongWith(new InstantCommand(() -> liftClaw.openClaw()))
-                        .alongWith(new InstantCommand(() -> liftClaw.grabWrist()))
-                        .alongWith(new InstantCommand(() -> liftClaw.chamberLiftArm()))
-        );
+                        .andThen(new InstantCommand(() -> liftClaw.grabWrist()))
+                        .alongWith(new InstantCommand(() -> liftClaw.grabLiftArm()))
+                ,false);
 
     new FunctionalButton(
-            () -> gamepadEx1.getButton(GamepadKeys.Button.DPAD_LEFT)
-                    && lift.getGoal() == AlphaLift.Goal.HANG)
+            () ->
+                    gamepadEx1.getButton(GamepadKeys.Button.DPAD_LEFT)
+                            && lift.getGoal() == AlphaLift.Goal.HANG)
         .whenPressed(
             new InstantCommand(() -> liftClaw.openClaw())
-                    .alongWith(new InstantCommand(() -> liftClaw.foldLiftArm()))
+                    .andThen(new InstantCommand(() -> liftClaw.foldLiftArm()))
                     .alongWith(new InstantCommand(() -> liftClaw.basketWrist()))
                     .andThen(new InstantCommand(() -> lift.setGoal(AlphaLift.Goal.STOW))),
             false);
