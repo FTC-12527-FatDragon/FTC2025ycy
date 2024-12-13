@@ -43,7 +43,7 @@ public class Basket1Plus3 extends LinearOpMode {
   public static double yValue4 = 16;
   public static double heading4 = 5;
 
-  public static long BasketWaitMs = 1000;
+  public static long BasketWaitMs = 500;
 
   //  // Ascent zone
   //  public static double xValue5 = 60;
@@ -116,11 +116,15 @@ public class Basket1Plus3 extends LinearOpMode {
 
     SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
 
+    liftClaw.closeClaw();
+
+    waitForStart();
+
     // spotless:off
     CommandScheduler.getInstance()
         .schedule(
             new SequentialCommandGroup(
-                slide.aimCommand().beforeStarting(liftClaw::closeClaw).beforeStarting(()->telemetry.addData("HH", "11")),
+                slide.aimCommand().beforeStarting(liftClaw::closeClaw),
                 followTrajectory(drive, trajs1).alongWith(
                         upLiftToBasket(lift, liftClaw)),
                 new WaitCommand(BasketWaitMs),
@@ -129,14 +133,14 @@ public class Basket1Plus3 extends LinearOpMode {
                 followTrajectory(drive, trajs2),
                 slide.grabCommand(),
                 followTrajectory(drive, trajs3)
-                    .alongWith(handoff(slide, liftClaw).andThen(upLiftToBasket(lift, liftClaw))),
+                        .alongWith(handoff(slide, liftClaw).andThen(upLiftToBasket(lift, liftClaw))),
                 new WaitCommand(BasketWaitMs),
                 stowArmFromBasket(lift, liftClaw),
 
                 followTrajectory(drive, trajs4).alongWith(slide.aimCommand()),
                 slide.grabCommand(),
                 followTrajectory(drive, trajs5)
-                    .alongWith(handoff(slide, liftClaw).andThen(upLiftToBasket(lift, liftClaw))),
+                        .alongWith(handoff(slide, liftClaw).andThen(upLiftToBasket(lift, liftClaw))),
                 new WaitCommand(BasketWaitMs),
                 stowArmFromBasket(lift, liftClaw),
 
@@ -151,15 +155,16 @@ public class Basket1Plus3 extends LinearOpMode {
                 handoff(slide, liftClaw),
                 new WaitCommand(300),
                 followTrajectory(drive, trajs7),
-                upLiftToBasket(lift, liftClaw)),
+                upLiftToBasket(lift, liftClaw),
                 new WaitCommand(BasketWaitMs),
                 stowArmFromBasket(lift, liftClaw)
+            )
 
 //                followTrajectory(drive, trajs8).alongWith(autoFinish(liftClaw, lift, slide))
-                );
+        );
+
 
     // spotless:on
-    waitForStart();
 
     while (opModeIsActive() && !isStopRequested()) {
       CommandScheduler.getInstance().run();
