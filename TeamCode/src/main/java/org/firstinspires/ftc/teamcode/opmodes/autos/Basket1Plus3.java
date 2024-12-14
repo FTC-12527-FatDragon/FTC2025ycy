@@ -125,31 +125,30 @@ public class Basket1Plus3 extends LinearOpMode {
         .schedule(
             new SequentialCommandGroup(
                 slide.aimCommand().beforeStarting(liftClaw::closeClaw),
-                followTrajectory(drive, trajs1).alongWith(
-                        upLiftToBasket(lift, liftClaw)),
+
+                followTrajectory(drive, trajs1).alongWith(upLiftToBasket(lift, liftClaw)),
                 new WaitCommand(BasketWaitMs),
                 stowArmFromBasket(lift, liftClaw),
 
                 followTrajectory(drive, trajs2),
                 slide.grabCommand(),
                 followTrajectory(drive, trajs3)
-                        .alongWith(handoff(slide, liftClaw).andThen(upLiftToBasket(lift, liftClaw))),
+                    .alongWith(handoff(slide, liftClaw).andThen(upLiftToBasket(lift, liftClaw))),
                 new WaitCommand(BasketWaitMs),
                 stowArmFromBasket(lift, liftClaw),
 
                 followTrajectory(drive, trajs4).alongWith(slide.aimCommand()),
                 slide.grabCommand(),
                 followTrajectory(drive, trajs5)
-                        .alongWith(handoff(slide, liftClaw).andThen(upLiftToBasket(lift, liftClaw))),
+                    .alongWith(handoff(slide, liftClaw).andThen(upLiftToBasket(lift, liftClaw))),
                 new WaitCommand(BasketWaitMs),
                 stowArmFromBasket(lift, liftClaw),
 
                 followTrajectory(drive, trajs6).alongWith(slide.aimCommand()),
                 new WaitCommand(300),
                 new ParallelCommandGroup(
-                        new InstantCommand(slide::forwardSlideExtension),
-                        slide.setServoPosCommand(SlideSuperStucture.TurnServo.DEG_08)
-                ),
+                    new InstantCommand(slide::forwardSlideExtension),
+                    slide.setServoPosCommand(SlideSuperStucture.TurnServo.DEG_08)),
                 slide.grabCommand(),
                 new WaitCommand(300),
                 handoff(slide, liftClaw),
@@ -157,14 +156,13 @@ public class Basket1Plus3 extends LinearOpMode {
                 followTrajectory(drive, trajs7),
                 upLiftToBasket(lift, liftClaw),
                 new WaitCommand(BasketWaitMs),
-                stowArmFromBasket(lift, liftClaw)
-            )
+                stowArmFromBasket(lift, liftClaw))
 
-//                followTrajectory(drive, trajs8).alongWith(autoFinish(liftClaw, lift, slide))
-        );
+            //                followTrajectory(drive, trajs8).alongWith(autoFinish(liftClaw, lift,
+            // slide))
+            );
 
-
-    // spotless:on
+    // spotless:off
 
     while (opModeIsActive() && !isStopRequested()) {
       CommandScheduler.getInstance().run();

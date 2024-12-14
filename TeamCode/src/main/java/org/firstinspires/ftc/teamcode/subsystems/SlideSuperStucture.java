@@ -1,7 +1,6 @@
 package org.firstinspires.ftc.teamcode.subsystems;
 
 import com.acmerobotics.dashboard.FtcDashboard;
-import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.arcrobotics.ftclib.command.Command;
 import com.arcrobotics.ftclib.command.InstantCommand;
@@ -195,7 +194,7 @@ public class SlideSuperStucture extends SubsystemBase {
     setServoPos(turnServo);
   }
 
-  public void setServoPos(TurnServo pos){
+  public void setServoPos(TurnServo pos) {
     switch (pos) {
       case DEG_0:
         turnAngleDeg = 0.21;
@@ -210,7 +209,7 @@ public class SlideSuperStucture extends SubsystemBase {
     turnServo = pos;
   }
 
-  public Command setServoPosCommand(TurnServo pos){
+  public Command setServoPosCommand(TurnServo pos) {
     return new InstantCommand(() -> setServoPos(pos));
   }
 
