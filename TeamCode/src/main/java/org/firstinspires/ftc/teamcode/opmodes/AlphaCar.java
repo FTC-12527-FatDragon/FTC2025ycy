@@ -12,15 +12,12 @@ import com.arcrobotics.ftclib.command.WaitUntilCommand;
 import com.arcrobotics.ftclib.gamepad.GamepadEx;
 import com.arcrobotics.ftclib.gamepad.GamepadKeys;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-
 import java.util.HashMap;
 import java.util.function.Supplier;
-import org.firstinspires.ftc.teamcode.commands.AutoAlignCommand;
 import org.firstinspires.ftc.teamcode.commands.TeleopDriveCommand;
 import org.firstinspires.ftc.teamcode.subsystems.AlphaLift;
 import org.firstinspires.ftc.teamcode.subsystems.AlphaLiftClaw;
 import org.firstinspires.ftc.teamcode.subsystems.AlphaSlide;
-import org.firstinspires.ftc.teamcode.subsystems.Lift;
 import org.firstinspires.ftc.teamcode.subsystems.drivetrain.MecanumDrive;
 import org.firstinspires.ftc.teamcode.utils.FunctionalButton;
 
@@ -52,7 +49,6 @@ public class AlphaCar extends CommandOpMode {
             () -> gamepadEx1.getRightX(),
             () -> gamepadEx1.getButton(GamepadKeys.Button.LEFT_STICK_BUTTON),
             () -> gamepadEx1.getButton(GamepadKeys.Button.START)));
-
 
     // Basket Up Command
     gamepadEx1
@@ -115,51 +111,55 @@ public class AlphaCar extends CommandOpMode {
 
     // Chamber Command from Grab
     Supplier<Command> preHang =
-            () -> new InstantCommand(() -> lift.setGoal(AlphaLift.Goal.PRE_HANG))
-                    .alongWith(new InstantCommand(()-> liftClaw.chamberWrist()))
-                    .andThen(new InstantCommand(()-> liftClaw.chamberLiftArm()));
+        () ->
+            new InstantCommand(() -> lift.setGoal(AlphaLift.Goal.PRE_HANG))
+                .alongWith(new InstantCommand(() -> liftClaw.chamberWrist()))
+                .andThen(new InstantCommand(() -> liftClaw.chamberLiftArm()));
+
     Supplier<Command> grab =
-            () -> new InstantCommand(() -> lift.setGoal(AlphaLift.Goal.GRAB))
-                    .alongWith(new InstantCommand(()-> liftClaw.openClaw()))
-                    .andThen(new InstantCommand(()->liftClaw.grabWrist()))
-                    .alongWith(new InstantCommand(()-> liftClaw.grabLiftArm()));
-    Supplier<Command> stow = () ->
-            new InstantCommand(()->liftClaw.openClaw())
-                    .andThen(new InstantCommand(()-> liftClaw.foldLiftArm()))
-                    .alongWith(new InstantCommand(()-> liftClaw.basketWrist()))
-                    .andThen(new InstantCommand(()-> lift.setGoal(AlphaLift.Goal.STOW)));
+        () ->
+            new InstantCommand(() -> lift.setGoal(AlphaLift.Goal.GRAB))
+                .alongWith(new InstantCommand(() -> liftClaw.openClaw()))
+                .andThen(new InstantCommand(() -> liftClaw.grabWrist()))
+                .alongWith(new InstantCommand(() -> liftClaw.grabLiftArm()));
+
+    Supplier<Command> stow =
+        () ->
+            new InstantCommand(() -> liftClaw.openClaw())
+                .andThen(new InstantCommand(() -> liftClaw.foldLiftArm()))
+                .alongWith(new InstantCommand(() -> liftClaw.basketWrist()))
+                .andThen(new InstantCommand(() -> lift.setGoal(AlphaLift.Goal.STOW)));
+
     SelectCommand specimenCommands =
-            new SelectCommand(
-                    new HashMap<Object,Command>(){
-                      {
-                        put(AlphaLift.Goal.GRAB, preHang.get());
-                        put(AlphaLift.Goal.STOW,grab.get());
-                        put(AlphaLift.Goal.HANG, stow.get());
-                      }
-                    },
-                    ()-> lift.getGoal());
+        new SelectCommand(
+            new HashMap<Object, Command>() {
+              {
+                put(AlphaLift.Goal.GRAB, preHang.get());
+                put(AlphaLift.Goal.STOW, grab.get());
+                put(AlphaLift.Goal.HANG, stow.get());
+              }
+            },
+            () -> lift.getGoal());
+
     gamepadEx1.getGamepadButton(GamepadKeys.Button.DPAD_LEFT).whenPressed(specimenCommands, false);
 
     new FunctionalButton(
             () ->
-                    gamepadEx1.getButton(GamepadKeys.Button.DPAD_UP)
-                            && lift.getGoal() == AlphaLift.Goal.PRE_HANG)
-            .whenPressed(new InstantCommand(() -> lift.setGoal(AlphaLift.Goal.HANG))
-            );
+                gamepadEx1.getButton(GamepadKeys.Button.DPAD_UP)
+                    && lift.getGoal() == AlphaLift.Goal.PRE_HANG)
+        .whenPressed(new InstantCommand(() -> lift.setGoal(AlphaLift.Goal.HANG)));
 
     new FunctionalButton(
             () ->
-                    gamepadEx1.getButton(GamepadKeys.Button.DPAD_DOWN)
-                            && lift.getGoal() == AlphaLift.Goal.HANG)
-            .whenPressed(new InstantCommand(() -> lift.setGoal(AlphaLift.Goal.PRE_HANG))
-            );
+                gamepadEx1.getButton(GamepadKeys.Button.DPAD_DOWN)
+                    && lift.getGoal() == AlphaLift.Goal.HANG)
+        .whenPressed(new InstantCommand(() -> lift.setGoal(AlphaLift.Goal.PRE_HANG)));
 
     new FunctionalButton(
             () ->
-                    gamepadEx1.getButton(GamepadKeys.Button.DPAD_DOWN)
-                            && lift.getGoal() == AlphaLift.Goal.GRAB)
-            .whenPressed(new InstantCommand(() -> liftClaw.switchLiftClaw())
-            );
+                gamepadEx1.getButton(GamepadKeys.Button.DPAD_DOWN)
+                    && lift.getGoal() == AlphaLift.Goal.GRAB)
+        .whenPressed(new InstantCommand(() -> liftClaw.switchLiftClaw()));
 
     //        // Handoff from Aim
     //        // Chamber Command
@@ -204,7 +204,6 @@ public class AlphaCar extends CommandOpMode {
     //                                                        .andThen(new
     // InstantCommand(liftClaw::upLiftArm)))),
     //                        false);
-
 
     new FunctionalButton(
             () ->
