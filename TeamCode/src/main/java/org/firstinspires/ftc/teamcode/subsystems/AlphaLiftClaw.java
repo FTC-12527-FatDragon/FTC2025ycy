@@ -79,7 +79,7 @@ public class AlphaLiftClaw extends SubsystemBase {
 
     ServoPositions(double liftArmPosition, double liftClawPosition, double liftWristPosition) {
       this.liftArmPosition = liftArmPosition;
-      this.liftClawPosition = liftArmPosition;
+      this.liftClawPosition = liftClawPosition;
       this.liftWristPosition = liftWristPosition;
     }
   }
