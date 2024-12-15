@@ -36,7 +36,7 @@ public class AlphaCar extends CommandOpMode {
     gamepadEx1 = new GamepadEx(gamepad1);
 
     lift = new AlphaLift(hardwareMap, telemetry);
-    liftClaw = new AlphaLiftClaw(hardwareMap);
+    liftClaw = new AlphaLiftClaw(hardwareMap, telemetry);
     slide = new AlphaSlide(hardwareMap, telemetry);
     drive = new MecanumDrive(hardwareMap);
 

@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.subsystems;
 
+import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.arcrobotics.ftclib.command.Command;
 import com.arcrobotics.ftclib.command.InstantCommand;
 import com.arcrobotics.ftclib.command.SequentialCommandGroup;
@@ -37,7 +38,7 @@ public class AlphaSlide extends SubsystemBase {
     wristServo = hardwareMap.get(Servo.class, "wristServo"); // 0.05 up 0.75 down
 
     wristTurnServo = hardwareMap.get(Servo.class, "wristTurnServo");
-    this.telemetry = telemetry;
+    this.telemetry = new MultipleTelemetry();
     goal = Goal.STOW;
     telemetry.addData("Current State", goal);
     // telemetry.update();
@@ -211,15 +212,17 @@ public class AlphaSlide extends SubsystemBase {
   @Override
   public void periodic() {
 
-    wristTurnServo.setPosition(Range.clip(turnAngleDeg, 0, 1));
-    slideRightServo.setPosition(Range.clip(slideExtensionVal, 0, 1));
+    if(wristTurnServo!=null){
+      wristTurnServo.setPosition(Range.clip(turnAngleDeg, 0, 1));
+      slideRightServo.setPosition(Range.clip(slideExtensionVal, 0, 1));
 
-    telemetry.addData("Current State", goal);
-    telemetry.addData("Bur Gemen", goal == Goal.HANDOFF);
-    telemetry.addData("Claw Position", intakeClawServo.getPosition());
-    telemetry.addData("Slide Extension", slideExtensionVal);
-    telemetry.addData("Turn Angle", turnAngleDeg);
-    telemetry.addData("SLideServo Position", slideRightServo.getPosition());
+      telemetry.addData("Current State", goal);
+      telemetry.addData("Bur Gemen", goal == Goal.HANDOFF);
+      telemetry.addData("Claw Position", intakeClawServo.getPosition());
+      telemetry.addData("Slide Extension", slideExtensionVal);
+      telemetry.addData("Turn Angle", turnAngleDeg);
+      telemetry.addData("SLideServo Position", slideRightServo.getPosition());
+    }
     // slidetelemetry.update();
   }
 }

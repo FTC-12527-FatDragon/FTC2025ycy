@@ -32,7 +32,7 @@ public class AlphaLift extends SubsystemBase {
 
     pidController = new PIDController(kP, kI, kD);
 
-    this.telemetry = new MultipleTelemetry(FtcDashboard.getInstance().getTelemetry(), telemetry);
+    this.telemetry = new MultipleTelemetry(FtcDashboard.getInstance().getTelemetry());
   }
 
   public void runSetpoint(double ticks) {
