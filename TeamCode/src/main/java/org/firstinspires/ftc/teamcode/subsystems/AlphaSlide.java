@@ -187,10 +187,9 @@ public class AlphaSlide extends SubsystemBase {
     DEG_45(0.55),
     DEG_90(0.7);
 
-
     private double turnPosition;
 
-    TurnServo(double turnPosition){
+    TurnServo(double turnPosition) {
       this.turnPosition = turnPosition;
     }
   }
@@ -207,7 +206,7 @@ public class AlphaSlide extends SubsystemBase {
     telemetry.addData("Slide Extension", slideExtensionVal);
     telemetry.addData("Turn Angle", turnAngleDeg);
     telemetry.addData("SLideServo Position", slideRightServo.getPosition());
-    //telemetry.update();
+    // telemetry.update();
   }
 }
 
