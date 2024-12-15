@@ -207,7 +207,7 @@ public class AlphaSlide extends SubsystemBase {
     telemetry.addData("Slide Extension", slideExtensionVal);
     telemetry.addData("Turn Angle", turnAngleDeg);
     telemetry.addData("SLideServo Position", slideRightServo.getPosition());
-    //telemetry.update();
+    //slidetelemetry.update();
   }
 }
 
