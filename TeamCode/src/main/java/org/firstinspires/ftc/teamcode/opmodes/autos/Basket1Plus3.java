@@ -43,7 +43,7 @@ public class Basket1Plus3 extends LinearOpMode {
   public static double yValue4 = 16;
   public static double heading4 = 5;
 
-  public static long BasketWaitMs = 500;
+  public static long basketWaitMs = 500;
 
   //  // Ascent zone
   //  public static double xValue5 = 60;
@@ -127,21 +127,21 @@ public class Basket1Plus3 extends LinearOpMode {
                 slide.aimCommand().beforeStarting(liftClaw::closeClaw),
 
                 followTrajectory(drive, trajs1).alongWith(upLiftToBasket(lift, liftClaw)),
-                new WaitCommand(BasketWaitMs),
+                new WaitCommand(200),
                 stowArmFromBasket(lift, liftClaw),
 
                 followTrajectory(drive, trajs2),
                 slide.grabCommand(),
                 followTrajectory(drive, trajs3)
                     .alongWith(handoff(slide, liftClaw).andThen(upLiftToBasket(lift, liftClaw))),
-                new WaitCommand(BasketWaitMs),
+                new WaitCommand(basketWaitMs),
                 stowArmFromBasket(lift, liftClaw),
 
                 followTrajectory(drive, trajs4).alongWith(slide.aimCommand()),
                 slide.grabCommand(),
                 followTrajectory(drive, trajs5)
                     .alongWith(handoff(slide, liftClaw).andThen(upLiftToBasket(lift, liftClaw))),
-                new WaitCommand(BasketWaitMs),
+                new WaitCommand(basketWaitMs),
                 stowArmFromBasket(lift, liftClaw),
 
                 followTrajectory(drive, trajs6).alongWith(slide.aimCommand()),
@@ -155,7 +155,7 @@ public class Basket1Plus3 extends LinearOpMode {
                 new WaitCommand(300),
                 followTrajectory(drive, trajs7),
                 upLiftToBasket(lift, liftClaw),
-                new WaitCommand(BasketWaitMs),
+                new WaitCommand(basketWaitMs),
                 stowArmFromBasket(lift, liftClaw))
 
             //                followTrajectory(drive, trajs8).alongWith(autoFinish(liftClaw, lift,
