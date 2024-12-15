@@ -16,6 +16,12 @@ public class AlphaLiftClaw extends SubsystemBase {
     liftWristServo = hardwareMap.get(Servo.class, "liftWristServo");
   }
 
+  public void initialize() {
+    liftWristServo.setPosition(ServoPositions.STOW.liftWristPosition);
+    liftArmServo.setPosition(ServoPositions.STOW.liftArmPosition);
+    liftClawServo.setPosition(ServoPositions.STOW.liftClawPosition);
+  }
+
   public void grabWrist() {
     liftWristServo.setPosition(0.39);
   }

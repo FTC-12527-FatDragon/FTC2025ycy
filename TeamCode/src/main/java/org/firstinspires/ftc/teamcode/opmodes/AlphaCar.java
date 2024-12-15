@@ -40,6 +40,9 @@ public class AlphaCar extends CommandOpMode {
     slide = new AlphaSlide(hardwareMap, telemetry);
     drive = new MecanumDrive(hardwareMap);
 
+    slide.initialize();
+    liftClaw.initialize();
+
     // Teleop Drive Command
     drive.setDefaultCommand(
         new TeleopDriveCommand(
@@ -103,11 +106,12 @@ public class AlphaCar extends CommandOpMode {
                 gamepadEx1.getButton(GamepadKeys.Button.DPAD_RIGHT)
                     && slide.getGoal() == AlphaSlide.Goal.AIM)
         .whenPressed(
-            handoffCommand
-                .get()
-                .andThen(new WaitCommand(50))
-                .andThen(new InstantCommand(() -> isPureHandoffCompelte = true)),
-            false);
+            new InstantCommand(() -> slide.handoffWristTurn())
+                    .alongWith(handoffCommand
+                            .get()
+                            .andThen(new WaitCommand(50))
+                            .andThen(new InstantCommand(() -> isPureHandoffCompelte = true))),
+                 false);
 
     // Chamber Command from Grab
     Supplier<Command> preHang =

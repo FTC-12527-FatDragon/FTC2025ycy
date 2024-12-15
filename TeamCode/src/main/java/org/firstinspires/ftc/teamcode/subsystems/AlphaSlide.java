@@ -49,7 +49,7 @@ public class AlphaSlide extends SubsystemBase {
         new InstantCommand(() -> goal = Goal.AIM),
         new InstantCommand(
             () -> {
-              turnAngleDeg = 0;
+              handoffWristTurn();
               turnServo = TurnServo.DEG_0;
             }),
         new WaitCommand(100),
@@ -75,7 +75,7 @@ public class AlphaSlide extends SubsystemBase {
         new InstantCommand(() -> goal = Goal.HANDOFF),
         new InstantCommand(
             () -> {
-              turnAngleDeg = 0;
+              handoffWristTurn();
               turnServo = TurnServo.DEG_0;
             }),
         new WaitCommand(100),
@@ -84,6 +84,20 @@ public class AlphaSlide extends SubsystemBase {
         new InstantCommand(() -> slideArmServo.setPosition(Goal.HANDOFF.slideArmPos)),
         new WaitCommand(300),
         new InstantCommand(() -> slideExtensionVal = Goal.HANDOFF.slideExtension));
+  }
+
+  public void initialize() {
+    slideArmServo.setPosition(Goal.HANDOFF.slideArmPos);
+    slideRightServo.setPosition(Goal.HANDOFF.slideExtension);
+    intakeClawServo.setPosition(Goal.HANDOFF.clawAngle);
+    wristServo.setPosition(Goal.HANDOFF.wristPos);
+    wristTurnServo.setPosition(Goal.HANDOFF.turnAngle);
+    handoffWristTurn();
+    turnServo = TurnServo.DEG_0;
+  }
+
+  public void handoffWristTurn() {
+    turnAngleDeg = TurnServo.DEG_0.turnPosition;
   }
 
   public void openIntakeClaw() {
@@ -115,10 +129,10 @@ public class AlphaSlide extends SubsystemBase {
   }
 
   public enum Goal {
-    STOW(1, 0.6, 0, 0.1, 0.5),
+    STOW(0.1, 0.6, 0, 0.4, 0.5),
     AIM(slideExtensionVal, 0.38, 0.78, turnAngleDeg, 0.5),
     GRAB(slideExtensionVal, 0.3, 0.78, turnAngleDeg, 0.23),
-    HANDOFF(0.17, 0.6, 0.35, 0.1, 0.23);
+    HANDOFF(0.17, 0.6, 0.35, 0.4, 0.23);
 
     private final double slideExtension;
     private final double slideArmPos;
@@ -141,25 +155,25 @@ public class AlphaSlide extends SubsystemBase {
   }
 
   public void forwardSlideExtension() {
-    slideExtensionVal = 1;
+    slideExtensionVal = 0.7;
   }
 
   public void backwardSlideExtension() {
-    slideExtensionVal = 0.375;
+    slideExtensionVal = 0.17;
   }
 
   public void leftTurnServo() {
     switch (turnServo) {
       case DEG_0:
-        turnAngleDeg = 0.5;
+        turnAngleDeg = 0.4;
         turnServo = TurnServo.DEG_0;
         break;
       case DEG_45:
-        turnAngleDeg = 0.8;
+        turnAngleDeg = 0.4;
         turnServo = TurnServo.DEG_0;
         break;
       case DEG_90:
-        turnAngleDeg = 0.8;
+        turnAngleDeg = 0.55;
         turnServo = TurnServo.DEG_45;
         break;
     }
@@ -168,15 +182,15 @@ public class AlphaSlide extends SubsystemBase {
   public void rightTurnServo() {
     switch (turnServo) {
       case DEG_0:
-        turnAngleDeg = 0;
+        turnAngleDeg = 0.55;
         turnServo = TurnServo.DEG_45;
         break;
       case DEG_45:
-        turnAngleDeg = 0;
+        turnAngleDeg = 0.7;
         turnServo = TurnServo.DEG_90;
         break;
       case DEG_90:
-        turnAngleDeg = 0.5;
+        turnAngleDeg = 0.7;
         turnServo = TurnServo.DEG_90;
         break;
     }
