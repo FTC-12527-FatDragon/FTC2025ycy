@@ -13,6 +13,7 @@ import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.hardware.VoltageSensor;
 import com.qualcomm.robotcore.util.Range;
 import lombok.Getter;
 import lombok.Setter;
@@ -26,6 +27,7 @@ public class SlideSuperStucture extends SubsystemBase {
 
   private final PIDController pidController;
   private final double kP = 0.04, kI = 0.0, kD = 0.0;
+  private final VoltageSensor batteryVoltageSensor;
 
   private boolean hasGamepiece = false;
   private static double slideExtensionVal = 0;
@@ -57,6 +59,7 @@ public class SlideSuperStucture extends SubsystemBase {
     slideMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
     pidController = new PIDController(kP, kI, kD);
+    batteryVoltageSensor = hardwareMap.voltageSensor.iterator().next();
 
     this.telemetry = telemetry;
     goal = Goal.STOW;
@@ -264,6 +267,7 @@ public class SlideSuperStucture extends SubsystemBase {
     telemetry.update();
 
     double pidPower = pidController.calculate(slideMotor.getCurrentPosition(), setpointTicks);
+    pidPower*=12/batteryVoltageSensor.getVoltage();
     if (!isResettingSlide) slideMotor.setPower(Range.clip(pidPower, -1, 1));
   }
 
