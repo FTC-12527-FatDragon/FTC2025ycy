@@ -80,6 +80,7 @@ public class AlphaCar extends CommandOpMode {
                     new InstantCommand(),
                     () -> lift.getGoal() == AlphaLift.Goal.HANG),
                 new InstantCommand(liftClaw::openClaw),
+                new InstantCommand(liftClaw::basketWrist),
                 new WaitCommand(100),
                 new InstantCommand(liftClaw::foldLiftArm),
                 new WaitCommand(500),
