@@ -28,10 +28,10 @@ public class AutoDriveCommand extends CommandBase {
   @Override
   public void initialize() {
     if (trajectory != null) {
-//      drive.setPoseEstimate(trajectory.start());
+      //      drive.setPoseEstimate(trajectory.start());
       drive.followTrajectoryAsync(trajectory);
     } else if (trajectorySequence != null) {
-//      drive.setPoseEstimate(trajectorySequence.start());
+      //      drive.setPoseEstimate(trajectorySequence.start());
       drive.followTrajectorySequenceAsync(trajectorySequence);
     } else throw new IllegalArgumentException("No Trajectory or TrajectorySequence provide");
   }

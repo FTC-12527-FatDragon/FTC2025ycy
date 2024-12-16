@@ -240,17 +240,17 @@ public class SlideSuperStucture extends SubsystemBase {
 
   public Command resetCommand() {
     return new StartEndCommand(
-            () -> {
-              runLiftOpen(-0.3);
-              isResettingSlide = true;
-            },
-            () -> {
-              pidController.reset();
-              pidController.calculate(0);
-              runLiftOpen(0);
-              isResettingSlide = false;
-            },
-            this);
+        () -> {
+          runLiftOpen(-0.3);
+          isResettingSlide = true;
+        },
+        () -> {
+          pidController.reset();
+          pidController.calculate(0);
+          runLiftOpen(0);
+          isResettingSlide = false;
+        },
+        this);
   }
 
   @Override
@@ -265,7 +265,7 @@ public class SlideSuperStucture extends SubsystemBase {
     telemetry.update();
 
     double pidPower = pidController.calculate(slideMotor.getCurrentPosition(), setpointTicks);
-    if(!isResettingSlide) slideMotor.setPower(Range.clip(pidPower, -1, 1));
+    if (!isResettingSlide) slideMotor.setPower(Range.clip(pidPower, -1, 1));
   }
 
   public void setServoController(boolean enable) {

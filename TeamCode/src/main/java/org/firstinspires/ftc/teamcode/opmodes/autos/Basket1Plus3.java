@@ -5,16 +5,13 @@ import static org.firstinspires.ftc.teamcode.opmodes.autos.AutoCommand.*;
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
-import com.acmerobotics.roadrunner.drive.MecanumDrive;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.arcrobotics.ftclib.command.Command;
 import com.arcrobotics.ftclib.command.CommandScheduler;
 import com.arcrobotics.ftclib.command.FunctionalCommand;
 import com.arcrobotics.ftclib.command.InstantCommand;
-import com.arcrobotics.ftclib.command.ParallelCommandGroup;
 import com.arcrobotics.ftclib.command.ParallelDeadlineGroup;
 import com.arcrobotics.ftclib.command.SequentialCommandGroup;
-import com.arcrobotics.ftclib.command.Subsystem;
 import com.arcrobotics.ftclib.command.WaitCommand;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -24,9 +21,6 @@ import org.firstinspires.ftc.teamcode.subsystems.LiftClaw;
 import org.firstinspires.ftc.teamcode.subsystems.SlideSuperStucture;
 import org.firstinspires.ftc.teamcode.subsystems.drivetrain.SampleMecanumDrive;
 import org.firstinspires.ftc.teamcode.subsystems.drivetrain.TrajectoryManager;
-
-import java.util.Collections;
-import java.util.Set;
 
 @Config
 @Autonomous(name = "Basket 1+3", group = "Autos")
@@ -112,13 +106,16 @@ public class Basket1Plus3 extends LinearOpMode {
   //          .lineToLinearHeading(new Pose2d(xValue5, yValue5, Math.toRadians(heading5)))
   //          .build();
 
-  public Command wait(SampleMecanumDrive drive, long ms){
-    return new ParallelDeadlineGroup(new WaitCommand(ms), new FunctionalCommand(
+  public Command wait(SampleMecanumDrive drive, long ms) {
+    return new ParallelDeadlineGroup(
+        new WaitCommand(ms),
+        new FunctionalCommand(
             () -> {},
             drive::update,
             (b) -> {},
-            () -> {return drive.isBusy() && !isStopRequested();}
-    ));
+            () -> {
+              return drive.isBusy() && !isStopRequested();
+            }));
   }
 
   @Override
@@ -141,32 +138,28 @@ public class Basket1Plus3 extends LinearOpMode {
     CommandScheduler.getInstance()
         .schedule(
             new SequentialCommandGroup(
-                new InstantCommand(() -> drive.setPoseEstimate(trajs1.start())),
-
+                new InstantCommand(() -> drive.setPoseEstimate(trajs1.start()))
+                    .alongWith(slide.resetCommand().withTimeout(200)),
                 slide.aimCommand().beforeStarting(liftClaw::closeClaw),
-
                 followTrajectory(drive, trajs1).alongWith(upLiftToBasket(lift, liftClaw)),
                 wait(drive, 200),
                 stowArmFromBasket(lift, liftClaw),
-
                 followTrajectory(drive, trajs2).alongWith(slide.aimCommand()),
                 slide.grabCommand(),
                 followTrajectory(drive, trajs3)
                     .alongWith(handoff(slide, liftClaw).andThen(upLiftToBasket(lift, liftClaw))),
                 wait(drive, basketWaitMs),
                 stowArmFromBasket(lift, liftClaw),
-
                 followTrajectory(drive, trajs4).alongWith(slide.aimCommand()),
                 slide.grabCommand(),
                 followTrajectory(drive, trajs5)
                     .alongWith(handoff(slide, liftClaw).andThen(upLiftToBasket(lift, liftClaw))),
                 wait(drive, basketWaitMs),
                 stowArmFromBasket(lift, liftClaw),
-
                 followTrajectory(drive, trajs6).alongWith(slide.aimCommand()),
                 wait(drive, 300),
-                new InstantCommand(() -> slide.forwardSlideExtension(440)).alongWith(
-                    slide.setServoPosCommand(SlideSuperStucture.TurnServo.DEG_0)),
+                new InstantCommand(() -> slide.forwardSlideExtension(440))
+                    .alongWith(slide.setServoPosCommand(SlideSuperStucture.TurnServo.DEG_0)),
                 wait(drive, 500),
                 slide.grabCommand(),
                 wait(drive, 300),
@@ -177,8 +170,7 @@ public class Basket1Plus3 extends LinearOpMode {
                 wait(drive, basketWaitMs),
                 stowArmFromBasket(lift, liftClaw),
                 wait(drive, 2000),
-                autoFinish(liftClaw, lift, slide)
-            ));
+                autoFinish(liftClaw, lift, slide)));
 
     // spotless:off
 
