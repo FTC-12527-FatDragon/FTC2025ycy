@@ -34,6 +34,9 @@ public class Lift extends SubsystemBase {
   private final ElapsedTime timer;
   private double lastTime;
 
+  private boolean isResetting = false;
+  public static double resetPower = -0.5;
+
   private final ElevatorFeedforward feedforward;
 
   private final VoltageSensor batteryVoltageSensor;
@@ -60,7 +63,12 @@ public class Lift extends SubsystemBase {
   }
 
   public void runLiftOpen(double percent) {
-    goal = Goal.OPEN_LOOP;
+//    goal = Goal.OPEN_LOOP;
+    if(percent==0){
+      isResetting = false;
+    }else{
+      isResetting = true;
+    }
     double output = Range.clip(percent, -1, 1);
     liftMotorUp.set(output);
     liftMotorDown.set(output);
@@ -74,15 +82,15 @@ public class Lift extends SubsystemBase {
     // TODO: does this work?
     liftMotorUp.resetEncoder();
     liftMotorDown.resetEncoder();
-    telemetry.addData("Lift Current Position", getCurrentPosition());
-    telemetry.addData("Error", pidController.getPositionError());
+    telemetry.addData("Lift.Current Position", getCurrentPosition());
+    telemetry.addData("Lift.Error", pidController.getPositionError());
     // telemetry.update();
   }
 
   public Command manualResetCommand() {
     return new StartEndCommand(
         () -> {
-          runLiftOpen(-0.3);
+          runLiftOpen(resetPower);
         },
         this::resetEncoder,
         this);
@@ -98,8 +106,9 @@ public class Lift extends SubsystemBase {
       public void initialize () {
         lastpos = getCurrentPosition();
         startpos = lastpos;
+        isResetting = true;
         t.reset();
-        runLiftOpen(-0.3);
+        runLiftOpen(resetPower);
       }
       @Override
       public void execute () {
@@ -124,6 +133,7 @@ public class Lift extends SubsystemBase {
         if(!interrupted){
           resetEncoder();
         }
+        isResetting = false;
       }
     };
   }
@@ -145,7 +155,7 @@ public class Lift extends SubsystemBase {
   }
 
   public void periodicTest() {
-    if (goal == Goal.OPEN_LOOP) return;
+    if (goal == Goal.OPEN_LOOP || isResetting) return;
 
     if (lastSetpoint != goal.setpointTicks) {
       goalState = new TrapezoidProfile.State(goal.setpointTicks, 0);
@@ -168,10 +178,12 @@ public class Lift extends SubsystemBase {
 
     lastTime = timer.time(TimeUnit.MILLISECONDS);
 
-    telemetry.addData("Current Goal", goal);
-    telemetry.addData("At Goal", atGoal());
-    telemetry.addData("Current Position", getCurrentPosition());
-    telemetry.addData("PID Power", pidPower);
+    telemetry.addData("Lift.Current Goal", goal);
+    telemetry.addData("Lift.At Goal", atGoal());
+    telemetry.addData("Lift.Current Position", getCurrentPosition());
+    telemetry.addData("Lift.PID Power", pidPower);
+    telemetry.addData("Lift.Is Resetting", isResetting);
+
     // telemetry.update();
   }
 
