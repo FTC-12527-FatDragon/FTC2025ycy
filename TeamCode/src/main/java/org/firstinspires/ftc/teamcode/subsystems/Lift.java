@@ -7,6 +7,7 @@ import com.arcrobotics.ftclib.controller.PIDController;
 import com.arcrobotics.ftclib.controller.wpilibcontroller.ElevatorFeedforward;
 import com.arcrobotics.ftclib.hardware.motors.Motor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.hardware.VoltageSensor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
@@ -33,6 +34,8 @@ public class Lift extends SubsystemBase {
 
   private final ElevatorFeedforward feedforward;
 
+  private final VoltageSensor batteryVoltageSensor;
+
   @Getter @Setter private Goal goal = Goal.STOW;
 
   public Lift(final HardwareMap hardwareMap, Telemetry telemetry) {
@@ -45,6 +48,7 @@ public class Lift extends SubsystemBase {
 
     pidController = new PIDController(kP, kI, kD);
     feedforward = new ElevatorFeedforward(kS, kG, kV);
+    batteryVoltageSensor = hardwareMap.voltageSensor.iterator().next();
     this.telemetry = telemetry;
 
     profile = new TrapezoidProfile(new TrapezoidProfile.Constraints(15000, 15000));
@@ -109,7 +113,9 @@ public class Lift extends SubsystemBase {
 
     double pidPower =
         pidController.calculate(liftMotorUp.getCurrentPosition(), setpointState.position);
-    double output = Range.clip(pidPower + feedforward.calculate(setpointState.velocity), -1, 1);
+    double output = pidPower + feedforward.calculate(setpointState.velocity);
+    output *= 12/batteryVoltageSensor.getVoltage();
+    output = Range.clip(output, -1, 1);
     liftMotorUp.set(output);
     liftMotorDown.set(output);
 
