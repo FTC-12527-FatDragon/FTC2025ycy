@@ -20,27 +20,23 @@ import org.firstinspires.ftc.teamcode.subsystems.drivetrain.TrajectoryManager;
 @Config
 @Autonomous(name = "Chamber 1+3", group = "Autos")
 public class Chamber1Plus3 extends LinearOpMode {
-  // For Basket Scoring
+  // The pose of chamber
   public static double xValue1 = 10;
-  public static double yValue1 = 20;
-  public static double heading1 = -45;
+  public static double yValue1 = 0;
+  public static double heading1 = 0;
 
-  // The rightmost sample
   public static double xValue2 = 25;
   public static double yValue2 = 9.5;
   public static double heading2 = 0;
 
-  // The middle sample
   public static double xValue3 = 0;
   public static double yValue3 = 0;
   public static double heading3 = 0;
 
-  // The leftmost sample
   public static double xValue4 = 0;
   public static double yValue4 = 0;
   public static double heading4 = 0;
 
-  // The Ascent zone
   public static double xValue5 = 0;
   public static double yValue5 = 0;
   public static double heading5 = 0;
@@ -117,7 +113,6 @@ public class Chamber1Plus3 extends LinearOpMode {
     CommandScheduler.getInstance()
         .schedule(
             new SequentialCommandGroup(
-                initialize(liftClaw, slide),
                 followTrajectory(drive, trajs1).alongWith(upLiftToChamber(lift, liftClaw)),
                 hangAndStowLift(lift, liftClaw, slide)));
 

@@ -125,6 +125,7 @@ public class Basket1Plus3 extends LinearOpMode {
     SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
 
     liftClaw.closeClaw();
+    slide.stow();
 
     waitForStart();
 
@@ -132,24 +133,29 @@ public class Basket1Plus3 extends LinearOpMode {
     CommandScheduler.getInstance()
         .schedule(
             new SequentialCommandGroup(
+
                 new InstantCommand(() -> drive.setPoseEstimate(trajs1.start()))
                     .alongWith(slide.resetCommand().withTimeout(200)),
                 slide.aimCommand().beforeStarting(liftClaw::closeClaw),
+
                 followTrajectory(drive, trajs1).alongWith(upLiftToBasket(lift, liftClaw)),
                 wait(drive, 200),
                 stowArmFromBasket(lift, liftClaw),
+
                 followTrajectory(drive, trajs2).alongWith(slide.aimCommand()),
                 slide.grabCommand(),
                 followTrajectory(drive, trajs3)
                     .alongWith(handoff(slide, liftClaw).andThen(upLiftToBasket(lift, liftClaw))),
                 wait(drive, basketWaitMs),
                 stowArmFromBasket(lift, liftClaw),
+
                 followTrajectory(drive, trajs4).alongWith(slide.aimCommand()),
                 slide.grabCommand(),
                 followTrajectory(drive, trajs5)
                     .alongWith(handoff(slide, liftClaw).andThen(upLiftToBasket(lift, liftClaw))),
                 wait(drive, basketWaitMs),
                 stowArmFromBasket(lift, liftClaw),
+
                 followTrajectory(drive, trajs6).alongWith(slide.aimCommand()),
                 wait(drive, 300),
                 new InstantCommand(() -> slide.forwardSlideExtension(440))
@@ -163,10 +169,11 @@ public class Basket1Plus3 extends LinearOpMode {
                 upLiftToBasket(lift, liftClaw),
                 wait(drive, basketWaitMs),
                 stowArmFromBasket(lift, liftClaw),
-                wait(drive, 2000),
+
+                wait(drive, 1500),
                 autoFinish(liftClaw, lift, slide)));
 
-    // spotless:off
+    // spotless:on
 
     while (opModeIsActive() && !isStopRequested()) {
       CommandScheduler.getInstance().run();

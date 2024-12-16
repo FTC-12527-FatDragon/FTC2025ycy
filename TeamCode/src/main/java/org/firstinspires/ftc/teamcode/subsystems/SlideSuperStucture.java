@@ -123,10 +123,6 @@ public class SlideSuperStucture extends SubsystemBase {
     wristServo.setPosition(0.65);
   }
 
-  public void wristDown() {
-    wristServo.setPosition(0.05);
-  }
-
   public void slideArmDown() {
     // This is down for stowing the liftArm when scoring the speciemen
     slideArmServo.setPosition(Goal.AIM.slideArmPos);
@@ -135,6 +131,11 @@ public class SlideSuperStucture extends SubsystemBase {
   public void slideArmUp() {
     // This is up for the auto
     slideArmServo.setPosition(0.35);
+  }
+
+  public void stow() {
+    slideArmServo.setPosition(Goal.HANDOFF.slideArmPos);
+    wristServo.setPosition(Goal.HANDOFF.slideArmPos);
   }
 
   public enum Goal {
@@ -232,7 +233,6 @@ public class SlideSuperStucture extends SubsystemBase {
   }
 
   public void runLiftOpen(double percent) {
-
     double output = Range.clip(percent, -1, 1);
     slideMotor.setPower(output);
   }
@@ -253,6 +253,10 @@ public class SlideSuperStucture extends SubsystemBase {
               isResettingSlide = false;
             },
             this);
+  }
+
+  public boolean atHome() {
+    return MathUtils.isNear(slideMotor.getCurrentPosition(), 0, 5);
   }
 
   @Override
