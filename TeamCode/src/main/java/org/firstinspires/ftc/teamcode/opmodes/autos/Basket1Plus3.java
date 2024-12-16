@@ -109,7 +109,7 @@ public class Basket1Plus3 extends LinearOpMode {
   public Command wait(SampleMecanumDrive drive, long ms) {
     return new ParallelDeadlineGroup(
         new WaitCommand(ms),
-        new RunCommand(drive::update).interruptOn(() -> drive.isBusy() && !isStopRequested()));
+        new RunCommand(drive::update).interruptOn(() -> !drive.isBusy() || isStopRequested()));
   }
 
   @Override
