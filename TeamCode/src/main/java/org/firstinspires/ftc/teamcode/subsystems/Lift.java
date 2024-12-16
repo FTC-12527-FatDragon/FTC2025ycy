@@ -19,7 +19,7 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.utils.MathUtils;
 
 public class Lift extends SubsystemBase {
-  private final double kP = 0.01, kI = 0.0, kD = 0.0, kV = 0.0003, kS = 0.12, kG = 0.15;
+  private final double kP = 0.01, kI = 0.0, kD = 0.0, kV = 0.0003, kS = 0.18, kG = 0.10;
   private final PIDController pidController;
   private final Motor liftMotorUp;
   private final Motor liftMotorDown;
@@ -49,7 +49,7 @@ public class Lift extends SubsystemBase {
     feedforward = new ElevatorFeedforward(kS, kG, kV);
     this.telemetry = new MultipleTelemetry(FtcDashboard.getInstance().getTelemetry(), telemetry);
 
-    profile = new TrapezoidProfile(new TrapezoidProfile.Constraints(15000, 15000));
+    profile = new TrapezoidProfile(new TrapezoidProfile.Constraints(13000, 13000));
     timer = new ElapsedTime();
     timer.reset();
     lastTime = timer.time(TimeUnit.MILLISECONDS);
@@ -87,8 +87,8 @@ public class Lift extends SubsystemBase {
     return MathUtils.isNear(goal.setpointTicks, liftMotorUp.getCurrentPosition(), 10);
   }
 
-  public boolean atHome() {
-    return MathUtils.isNear(Goal.STOW.setpointTicks, liftMotorUp.getCurrentPosition(), 10);
+  public boolean atHome(double tolerance) {
+    return MathUtils.isNear(Goal.STOW.setpointTicks, liftMotorUp.getCurrentPosition(), tolerance);
   }
 
   public boolean atPreHang() {

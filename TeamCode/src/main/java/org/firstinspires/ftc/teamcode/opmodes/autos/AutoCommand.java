@@ -71,19 +71,12 @@ public class AutoCommand {
         new InstantCommand(() -> lift.setGoal(Lift.Goal.STOW)));
   }
 
-  public static Command initialize(LiftClaw liftClaw, SlideSuperStucture slide) {
-    return new ParallelCommandGroup(
-        //        new InstantCommand(slide::forwardSlideExtension),
-        new InstantCommand(liftClaw::closeClaw),
-        new InstantCommand(slide::slideArmUp),
-        new InstantCommand(slide::wristUp),
-        new InstantCommand(slide::openIntakeClaw));
-  }
 
   public static Command autoFinish(LiftClaw liftClaw, Lift lift, SlideSuperStucture slide) {
     return new ParallelCommandGroup(
         slide.aimCommand(),
-        lift.resetCommand().withTimeout(1000),
+        slide.resetCommand().interruptOn(slide::atHome),
+        lift.resetCommand().interruptOn(() -> lift.atHome(3)),
         new InstantCommand(liftClaw::openClaw));
   }
 }
