@@ -8,9 +8,9 @@ import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.arcrobotics.ftclib.command.Command;
 import com.arcrobotics.ftclib.command.CommandScheduler;
-import com.arcrobotics.ftclib.command.FunctionalCommand;
 import com.arcrobotics.ftclib.command.InstantCommand;
 import com.arcrobotics.ftclib.command.ParallelDeadlineGroup;
+import com.arcrobotics.ftclib.command.RunCommand;
 import com.arcrobotics.ftclib.command.SequentialCommandGroup;
 import com.arcrobotics.ftclib.command.WaitCommand;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
@@ -109,13 +109,7 @@ public class Basket1Plus3 extends LinearOpMode {
   public Command wait(SampleMecanumDrive drive, long ms) {
     return new ParallelDeadlineGroup(
         new WaitCommand(ms),
-        new FunctionalCommand(
-            () -> {},
-            drive::update,
-            (b) -> {},
-            () -> {
-              return drive.isBusy() && !isStopRequested();
-            }));
+        new RunCommand(drive::update).interruptOn(() -> drive.isBusy() && !isStopRequested()));
   }
 
   @Override
