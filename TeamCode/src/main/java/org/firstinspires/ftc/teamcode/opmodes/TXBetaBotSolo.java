@@ -170,7 +170,7 @@ public class TXBetaBotSolo extends CommandOpMode {
             () ->
                 gamepadEx1.getButton(GamepadKeys.Button.RIGHT_STICK_BUTTON)
                     && lift.getGoal() == Lift.Goal.STOW)
-        .whenPressed(lift.manualResetCommand());
+            .whenHeld(lift.manualResetCommand());
 
     new FunctionalButton(
             () ->

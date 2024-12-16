@@ -155,6 +155,10 @@ public class Lift extends SubsystemBase {
   }
 
   public void periodicTest() {
+    telemetry.addData("Lift.Current Goal", goal);
+    telemetry.addData("Lift.At Goal", atGoal());
+    telemetry.addData("Lift.Current Position", getCurrentPosition());
+    telemetry.addData("Lift.Is Resetting", isResetting);
     if (goal == Goal.OPEN_LOOP || isResetting) return;
 
     if (lastSetpoint != goal.setpointTicks) {
@@ -178,11 +182,7 @@ public class Lift extends SubsystemBase {
 
     lastTime = timer.time(TimeUnit.MILLISECONDS);
 
-    telemetry.addData("Lift.Current Goal", goal);
-    telemetry.addData("Lift.At Goal", atGoal());
-    telemetry.addData("Lift.Current Position", getCurrentPosition());
     telemetry.addData("Lift.PID Power", pidPower);
-    telemetry.addData("Lift.Is Resetting", isResetting);
 
     // telemetry.update();
   }
