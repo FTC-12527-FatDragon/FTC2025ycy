@@ -38,25 +38,25 @@ public class AutoCommand {
         .andThen(new InstantCommand(slide::openIntakeClaw));
   }
 
-  public static Command upLiftToChamber(AlphaLift lift, AlphaLiftClaw liftClaw) {
-    return new ParallelCommandGroup(
-        new InstantCommand(() -> lift.setGoal(AlphaLift.Goal.PRE_HANG)),
-        new WaitUntilCommand(() -> lift.getCurrentPosition() > 200)
-            .andThen(new InstantCommand(liftClaw::upLiftArm)));
+  public static Command grabToPreHang(AlphaLift lift, AlphaLiftClaw liftClaw) {
+    return new SequentialCommandGroup(
+        new InstantCommand(liftClaw::closeClaw)
+            .andThen(new InstantCommand(() -> lift.setGoal(AlphaLift.Goal.PRE_HANG))
+                    .alongWith(new InstantCommand(liftClaw::chamberWrist))
+                    .andThen(new InstantCommand(liftClaw::chamberLiftArm))
+            )
+    );
   }
 
-  public static Command hangAndStowLift(AlphaLift lift, AlphaLiftClaw liftClaw, AlphaSlide slide) {
-    return new SequentialCommandGroup(
-        new InstantCommand(() -> lift.setGoal(AlphaLift.Goal.HANG)),
-        new WaitCommand(200),
-        new InstantCommand(slide::slideArmDown)
-            .andThen(new WaitCommand(100))
-            .andThen(new InstantCommand(() -> slide.setGoal(AlphaSlide.Goal.AIM))),
-        new InstantCommand(liftClaw::openClaw),
-        new WaitCommand(100),
-        new InstantCommand(liftClaw::foldLiftArm),
-        new WaitCommand(500),
-        new InstantCommand(() -> lift.setGoal(AlphaLift.Goal.STOW)));
+  public static Command upToChamber(AlphaLift lift) {
+    return new InstantCommand(() -> lift.setGoal(AlphaLift.Goal.HANG));
+  }
+
+  public static Command chamberToGrab(AlphaLift lift, AlphaLiftClaw liftClaw) {
+    return new InstantCommand(() -> lift.setGoal(AlphaLift.Goal.GRAB))
+            .alongWith(new InstantCommand(liftClaw::openClaw))
+            .andThen(new InstantCommand(liftClaw::grabWrist))
+            .alongWith(new InstantCommand(liftClaw::grabLiftArm));
   }
 
   public static Command initialize(AlphaLiftClaw liftClaw, AlphaSlide slide) {
@@ -70,7 +70,7 @@ public class AutoCommand {
 
   public static Command autoFinish(AlphaLiftClaw liftClaw, AlphaLift lift, AlphaSlide slide) {
     return new ParallelCommandGroup(
-        slide.aimCommand(),
+        initialize(liftClaw, slide),
         lift.resetCommand().withTimeout(300),
         new InstantCommand(liftClaw::openClaw));
   }

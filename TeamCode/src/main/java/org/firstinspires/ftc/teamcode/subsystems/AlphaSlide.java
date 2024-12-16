@@ -102,12 +102,12 @@ public class AlphaSlide extends SubsystemBase {
   }
 
   public void openIntakeClaw() {
-    intakeClawServo.setPosition(0.5);
+    intakeClawServo.setPosition(Goal.STOW.clawAngle);
     isIntakeClawOpen = true;
   }
 
   public void closeIntakeClaw() {
-    intakeClawServo.setPosition(0.23);
+    intakeClawServo.setPosition(Goal.HANDOFF.clawAngle);
     isIntakeClawOpen = false;
   }
 
@@ -130,10 +130,10 @@ public class AlphaSlide extends SubsystemBase {
   }
 
   public enum Goal {
-    STOW(0.1, 0.6, 0, 0.4, 0.5),
+    STOW(0.1, 0.6, 0.33, 0.4, 0.5),
     AIM(slideExtensionVal, 0.41, 0.80, turnAngleDeg, 0.5),
     GRAB(slideExtensionVal, 0.31, 0.80, turnAngleDeg, 0.23),
-    HANDOFF(0.14, 0.6, 0.38, 0.4, 0.23);
+    HANDOFF(0.14, 0.6, 0.33, 0.4, 0.23);
 
     private final double slideExtension;
     private final double slideArmPos;
@@ -166,15 +166,15 @@ public class AlphaSlide extends SubsystemBase {
   public void leftTurnServo() {
     switch (turnServo) {
       case DEG_0:
-        turnAngleDeg = 0.4;
+        turnAngleDeg = TurnServo.DEG_0.turnPosition;
         turnServo = TurnServo.DEG_0;
         break;
       case DEG_45:
-        turnAngleDeg = 0.4;
+        turnAngleDeg = TurnServo.DEG_0.turnPosition;
         turnServo = TurnServo.DEG_0;
         break;
       case DEG_90:
-        turnAngleDeg = 0.55;
+        turnAngleDeg = TurnServo.DEG_45.turnPosition;
         turnServo = TurnServo.DEG_45;
         break;
     }
@@ -183,15 +183,15 @@ public class AlphaSlide extends SubsystemBase {
   public void rightTurnServo() {
     switch (turnServo) {
       case DEG_0:
-        turnAngleDeg = 0.55;
+        turnAngleDeg = TurnServo.DEG_45.turnPosition;
         turnServo = TurnServo.DEG_45;
         break;
       case DEG_45:
-        turnAngleDeg = 0.7;
+        turnAngleDeg = TurnServo.DEG_90.turnPosition;
         turnServo = TurnServo.DEG_90;
         break;
       case DEG_90:
-        turnAngleDeg = 0.7;
+        turnAngleDeg = TurnServo.DEG_90.turnPosition;
         turnServo = TurnServo.DEG_90;
         break;
     }
