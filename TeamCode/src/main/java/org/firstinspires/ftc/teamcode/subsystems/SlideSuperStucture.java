@@ -5,6 +5,7 @@ import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.arcrobotics.ftclib.command.Command;
 import com.arcrobotics.ftclib.command.InstantCommand;
 import com.arcrobotics.ftclib.command.SequentialCommandGroup;
+import com.arcrobotics.ftclib.command.StartEndCommand;
 import com.arcrobotics.ftclib.command.SubsystemBase;
 import com.arcrobotics.ftclib.command.WaitCommand;
 import com.arcrobotics.ftclib.command.WaitUntilCommand;
@@ -38,7 +39,7 @@ public class SlideSuperStucture extends SubsystemBase {
 
   private final Telemetry telemetry; // 0 0.5 0.8
 
-  @Getter @Setter private boolean normalHandoff = false;
+  private boolean isResettingSlide = false;
 
   public SlideSuperStucture(final HardwareMap hardwareMap, final Telemetry telemetry) {
     slideArmServo = hardwareMap.get(Servo.class, "slideArmServo");
@@ -157,7 +158,11 @@ public class SlideSuperStucture extends SubsystemBase {
   }
 
   public void forwardSlideExtension() {
-    slideExtensionVal = 460;
+    forwardSlideExtension(460);
+  }
+
+  public void forwardSlideExtension(double slideExtension) {
+    slideExtensionVal = slideExtension;
   }
 
   public void backwardSlideExtension() {
@@ -227,6 +232,27 @@ public class SlideSuperStucture extends SubsystemBase {
     return MathUtils.isNear(0, slideMotor.getCurrentPosition(), 10);
   }
 
+  public void runLiftOpen(double percent) {
+
+    double output = Range.clip(percent, -1, 1);
+    slideMotor.setPower(output);
+  }
+
+  public Command resetCommand() {
+    return new StartEndCommand(
+            () -> {
+              runLiftOpen(-0.3);
+              isResettingSlide = true;
+            },
+            () -> {
+              pidController.reset();
+              pidController.calculate(0);
+              runLiftOpen(0);
+              isResettingSlide = false;
+            },
+            this);
+  }
+
   @Override
   public void periodic() {
     wristTurnServo.setPosition(Range.clip(turnAngleDeg, 0, 1));
@@ -239,7 +265,7 @@ public class SlideSuperStucture extends SubsystemBase {
     telemetry.update();
 
     double pidPower = pidController.calculate(slideMotor.getCurrentPosition(), setpointTicks);
-    slideMotor.setPower(Range.clip(pidPower, -1, 1));
+    if(!isResettingSlide) slideMotor.setPower(Range.clip(pidPower, -1, 1));
   }
 
   public void setServoController(boolean enable) {

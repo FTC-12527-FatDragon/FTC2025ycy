@@ -141,10 +141,8 @@ public class Basket1Plus3 extends LinearOpMode {
     CommandScheduler.getInstance()
         .schedule(
             new SequentialCommandGroup(
-                new InstantCommand(() -> {
-                  drive.setPoseEstimate(trajs1.start());
-                  slide.slideOpenloop(-0.5);
-                }),
+                new InstantCommand(() -> drive.setPoseEstimate(trajs1.start())),
+
                 slide.aimCommand().beforeStarting(liftClaw::closeClaw),
 
                 followTrajectory(drive, trajs1).alongWith(upLiftToBasket(lift, liftClaw)),
