@@ -133,7 +133,7 @@ public class AlphaSlide extends SubsystemBase {
     STOW(0.1, 0.6, 0, 0.4, 0.5),
     AIM(slideExtensionVal, 0.41, 0.80, turnAngleDeg, 0.5),
     GRAB(slideExtensionVal, 0.31, 0.80, turnAngleDeg, 0.23),
-    HANDOFF(0.14, 0.6, 0.35, 0.4, 0.23);
+    HANDOFF(0.14, 0.6, 0.38, 0.4, 0.23);
 
     private final double slideExtension;
     private final double slideArmPos;

@@ -6,28 +6,29 @@ import com.arcrobotics.ftclib.command.ParallelCommandGroup;
 import com.arcrobotics.ftclib.command.SequentialCommandGroup;
 import com.arcrobotics.ftclib.command.WaitCommand;
 import com.arcrobotics.ftclib.command.WaitUntilCommand;
-import org.firstinspires.ftc.teamcode.subsystems.Lift;
-import org.firstinspires.ftc.teamcode.subsystems.LiftClaw;
-import org.firstinspires.ftc.teamcode.subsystems.SlideSuperStucture;
+
+import org.firstinspires.ftc.teamcode.subsystems.AlphaLift;
+import org.firstinspires.ftc.teamcode.subsystems.AlphaLiftClaw;
+import org.firstinspires.ftc.teamcode.subsystems.AlphaSlide;
 
 public class AutoCommand {
-  public static Command upLiftToBasket(Lift lift, LiftClaw liftClaw) {
+  public static Command upLiftToBasket(AlphaLift lift, AlphaLiftClaw liftClaw) {
     return new ParallelCommandGroup(
-        new InstantCommand(() -> lift.setGoal(Lift.Goal.BASKET)),
+        new InstantCommand(() -> lift.setGoal(AlphaLift.Goal.BASKET)),
         new WaitUntilCommand(() -> lift.getCurrentPosition() > 400)
             .andThen(new InstantCommand(liftClaw::upLiftArm)));
   }
 
-  public static Command stowArmFromBasket(Lift lift, LiftClaw liftClaw) {
+  public static Command stowArmFromBasket(AlphaLift lift, AlphaLiftClaw liftClaw) {
     return new SequentialCommandGroup(
         new InstantCommand(liftClaw::openClaw),
         new WaitCommand(100),
         new InstantCommand(liftClaw::foldLiftArm),
         new WaitCommand(200),
-        new InstantCommand(() -> lift.setGoal(Lift.Goal.STOW)));
+        new InstantCommand(() -> lift.setGoal(AlphaLift.Goal.STOW)));
   }
 
-  public static Command handoff(SlideSuperStucture slide, LiftClaw liftClaw) {
+  public static Command handoff(AlphaSlide slide, AlphaLiftClaw liftClaw) {
     return slide
         .handoffCommand()
         .alongWith(new InstantCommand(liftClaw::openClaw))
@@ -37,28 +38,28 @@ public class AutoCommand {
         .andThen(new InstantCommand(slide::openIntakeClaw));
   }
 
-  public static Command upLiftToChamber(Lift lift, LiftClaw liftClaw) {
+  public static Command upLiftToChamber(AlphaLift lift, AlphaLiftClaw liftClaw) {
     return new ParallelCommandGroup(
-        new InstantCommand(() -> lift.setGoal(Lift.Goal.PRE_HANG)),
+        new InstantCommand(() -> lift.setGoal(AlphaLift.Goal.PRE_HANG)),
         new WaitUntilCommand(() -> lift.getCurrentPosition() > 200)
             .andThen(new InstantCommand(liftClaw::upLiftArm)));
   }
 
-  public static Command hangAndStowLift(Lift lift, LiftClaw liftClaw, SlideSuperStucture slide) {
+  public static Command hangAndStowLift(AlphaLift lift, AlphaLiftClaw liftClaw, AlphaSlide slide) {
     return new SequentialCommandGroup(
-        new InstantCommand(() -> lift.setGoal(Lift.Goal.HANG)),
+        new InstantCommand(() -> lift.setGoal(AlphaLift.Goal.HANG)),
         new WaitCommand(200),
         new InstantCommand(slide::slideArmDown)
             .andThen(new WaitCommand(100))
-            .andThen(new InstantCommand(() -> slide.setGoal(SlideSuperStucture.Goal.AIM))),
+            .andThen(new InstantCommand(() -> slide.setGoal(AlphaSlide.Goal.AIM))),
         new InstantCommand(liftClaw::openClaw),
         new WaitCommand(100),
         new InstantCommand(liftClaw::foldLiftArm),
         new WaitCommand(500),
-        new InstantCommand(() -> lift.setGoal(Lift.Goal.STOW)));
+        new InstantCommand(() -> lift.setGoal(AlphaLift.Goal.STOW)));
   }
 
-  public static Command initialize(LiftClaw liftClaw, SlideSuperStucture slide) {
+  public static Command initialize(AlphaLiftClaw liftClaw, AlphaSlide slide) {
     return new ParallelCommandGroup(
         new InstantCommand(slide::forwardSlideExtension),
         new InstantCommand(liftClaw::closeClaw),
@@ -67,7 +68,7 @@ public class AutoCommand {
         new InstantCommand(slide::openIntakeClaw));
   }
 
-  public static Command autoFinish(LiftClaw liftClaw, Lift lift, SlideSuperStucture slide) {
+  public static Command autoFinish(AlphaLiftClaw liftClaw, AlphaLift lift, AlphaSlide slide) {
     return new ParallelCommandGroup(
         slide.aimCommand(),
         lift.resetCommand().withTimeout(300),

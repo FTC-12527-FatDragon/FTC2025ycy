@@ -10,9 +10,9 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import org.firstinspires.ftc.teamcode.commands.AutoDriveCommand;
 import org.firstinspires.ftc.teamcode.lib.roadrunner.trajectorysequence.TrajectorySequence;
-import org.firstinspires.ftc.teamcode.subsystems.Lift;
-import org.firstinspires.ftc.teamcode.subsystems.LiftClaw;
-import org.firstinspires.ftc.teamcode.subsystems.SlideSuperStucture;
+import org.firstinspires.ftc.teamcode.subsystems.AlphaLift;
+import org.firstinspires.ftc.teamcode.subsystems.AlphaLiftClaw;
+import org.firstinspires.ftc.teamcode.subsystems.AlphaSlide;
 import org.firstinspires.ftc.teamcode.subsystems.drivetrain.SampleMecanumDrive;
 import org.firstinspires.ftc.teamcode.subsystems.drivetrain.TrajectoryManager;
 
@@ -44,9 +44,9 @@ public class Chamber1Plus3 extends LinearOpMode {
   public static double yValue5 = 0;
   public static double heading5 = 0;
 
-  LiftClaw liftClaw;
-  Lift lift;
-  SlideSuperStucture slide;
+  AlphaLiftClaw liftClaw;
+  AlphaLift lift;
+  AlphaSlide slide;
 
   Pose2d startPose = new Pose2d(0, 0, Math.toRadians(0));
 
@@ -103,9 +103,9 @@ public class Chamber1Plus3 extends LinearOpMode {
     CommandScheduler.getInstance().reset();
 
     // Subsystems Initialized
-    lift = new Lift(hardwareMap, telemetry);
-    liftClaw = new LiftClaw(hardwareMap);
-    slide = new SlideSuperStucture(hardwareMap, telemetry);
+    lift = new AlphaLift(hardwareMap, telemetry);
+    liftClaw = new AlphaLiftClaw(hardwareMap,telemetry);
+    slide = new AlphaSlide(hardwareMap, telemetry);
 
     SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
 
