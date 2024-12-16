@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.subsystems;
 
+import com.acmerobotics.dashboard.config.Config;
 import com.arcrobotics.ftclib.command.Command;
 import com.arcrobotics.ftclib.command.CommandBase;
 import com.arcrobotics.ftclib.command.StartEndCommand;
@@ -19,8 +20,9 @@ import lombok.Setter;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.utils.MathUtils;
 
+@Config
 public class Lift extends SubsystemBase {
-  private final double kP = 0.01, kI = 0.0, kD = 0.0, kV = 0.0003, kS = 0.12, kG = 0.15;
+  public static double kP = 0.01, kI = 0.001, kD = 0.0, kV = 0.0003, kS = 0.12, kG = 0.12;
   private final PIDController pidController;
   private final Motor liftMotorUp;
   private final Motor liftMotorDown;
@@ -52,6 +54,7 @@ public class Lift extends SubsystemBase {
     liftMotorDown.setRunMode(Motor.RunMode.RawPower);
 
     pidController = new PIDController(kP, kI, kD);
+    pidController.setIntegrationBounds(-1/kI, 1/kI);
     feedforward = new ElevatorFeedforward(kS, kG, kV);
     batteryVoltageSensor = hardwareMap.voltageSensor.iterator().next();
     this.telemetry = telemetry;
@@ -183,6 +186,7 @@ public class Lift extends SubsystemBase {
     lastTime = timer.time(TimeUnit.MILLISECONDS);
 
     telemetry.addData("Lift.PID Power", pidPower);
+    telemetry.addData("Lift.output", output);
 
     // telemetry.update();
   }
