@@ -32,7 +32,7 @@ public class SlideSuperStucture extends SubsystemBase {
   private boolean hasGamepiece = false;
   private static double slideExtensionVal = 0;
 
-  private static double turnAngleDeg = 0.21;
+  private static double turnAngleDeg = 0.2;
   private TurnServo turnServo = TurnServo.DEG_0;
 
   @Setter @Getter private Goal goal = Goal.STOW;
@@ -73,8 +73,7 @@ public class SlideSuperStucture extends SubsystemBase {
         setGoalCommand(Goal.AIM),
         new InstantCommand(
             () -> {
-              turnAngleDeg = 0.21;
-              turnServo = TurnServo.DEG_0;
+              setServoPos(TurnServo.DEG_0);
             }),
         new WaitCommand(100),
         new InstantCommand(() -> slideArmServo.setPosition(Goal.AIM.slideArmPos)),
@@ -99,12 +98,11 @@ public class SlideSuperStucture extends SubsystemBase {
         setGoalCommand(Goal.HANDOFF),
         new InstantCommand(
             () -> {
-              turnAngleDeg = 0.21;
-              turnServo = TurnServo.DEG_0;
+              setServoPos(TurnServo.DEG_0);
             }),
         new WaitCommand(100),
         new InstantCommand(() -> wristServo.setPosition(Goal.HANDOFF.wristPos)),
-        new WaitCommand(400),
+        new WaitCommand(300),
         new InstantCommand(() -> slideArmServo.setPosition(Goal.HANDOFF.slideArmPos)),
         new WaitCommand(200),
         new InstantCommand(() -> slideExtensionVal = Goal.HANDOFF.slideExtension),
@@ -202,10 +200,10 @@ public class SlideSuperStucture extends SubsystemBase {
   public void setServoPos(TurnServo pos) {
     switch (pos) {
       case DEG_0:
-        turnAngleDeg = 0.21;
+        turnAngleDeg = 0.2;
         break;
       case DEG_05:
-        turnAngleDeg = 0.375;
+        turnAngleDeg = 0.4;
         break;
       case DEG_08:
         turnAngleDeg = 0.7;
@@ -240,17 +238,20 @@ public class SlideSuperStucture extends SubsystemBase {
 
   public Command resetCommand() {
     return new StartEndCommand(
-        () -> {
-          runLiftOpen(-0.3);
-          isResettingSlide = true;
-        },
-        () -> {
-          pidController.reset();
-          pidController.calculate(0);
-          runLiftOpen(0);
-          isResettingSlide = false;
-        },
-        this);
+            () -> {
+              runLiftOpen(-0.3);
+              isResettingSlide = true;
+            },
+            () -> {
+              pidController.reset();
+              pidController.calculate(0);
+              runLiftOpen(0);
+              // TODO: does this work?
+              slideMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+              slideMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+              isResettingSlide = false;
+            },
+            this);
   }
 
   @Override
