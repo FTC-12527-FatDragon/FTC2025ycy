@@ -1,7 +1,5 @@
 package org.firstinspires.ftc.teamcode.subsystems;
 
-import com.acmerobotics.dashboard.FtcDashboard;
-import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.arcrobotics.ftclib.command.Command;
 import com.arcrobotics.ftclib.command.StartEndCommand;
 import com.arcrobotics.ftclib.command.SubsystemBase;
@@ -23,7 +21,7 @@ public class Lift extends SubsystemBase {
   private final PIDController pidController;
   private final Motor liftMotorUp;
   private final Motor liftMotorDown;
-  private MultipleTelemetry telemetry;
+  private final Telemetry telemetry;
 
   private double lastSetpoint = 0;
 
@@ -47,7 +45,7 @@ public class Lift extends SubsystemBase {
 
     pidController = new PIDController(kP, kI, kD);
     feedforward = new ElevatorFeedforward(kS, kG, kV);
-    this.telemetry = new MultipleTelemetry(FtcDashboard.getInstance().getTelemetry(), telemetry);
+    this.telemetry = telemetry;
 
     profile = new TrapezoidProfile(new TrapezoidProfile.Constraints(15000, 15000));
     timer = new ElapsedTime();
