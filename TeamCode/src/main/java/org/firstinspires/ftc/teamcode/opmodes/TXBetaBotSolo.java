@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.opmodes;
 
 import com.acmerobotics.dashboard.FtcDashboard;
+import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.arcrobotics.ftclib.command.Command;
 import com.arcrobotics.ftclib.command.CommandOpMode;
@@ -35,6 +36,7 @@ public class TXBetaBotSolo extends CommandOpMode {
 
   @Override
   public void initialize() {
+    this.telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
     gamepadEx1 = new GamepadEx(gamepad1);
 
     lift = new Lift(hardwareMap, telemetry);
@@ -168,7 +170,7 @@ public class TXBetaBotSolo extends CommandOpMode {
             () ->
                 gamepadEx1.getButton(GamepadKeys.Button.RIGHT_STICK_BUTTON)
                     && lift.getGoal() == Lift.Goal.STOW)
-        .whenPressed(lift.resetCommand().withTimeout(100));
+        .whenPressed(lift.manualResetCommand().withTimeout(100));
 
     new FunctionalButton(
             () ->

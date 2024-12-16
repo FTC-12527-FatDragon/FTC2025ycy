@@ -2,7 +2,9 @@ package org.firstinspires.ftc.teamcode.opmodes.autos;
 
 import static org.firstinspires.ftc.teamcode.opmodes.autos.AutoCommand.*;
 
+import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
+import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.arcrobotics.ftclib.command.CommandScheduler;
 import com.arcrobotics.ftclib.command.SequentialCommandGroup;
@@ -95,6 +97,7 @@ public class Chamber1Plus3 extends LinearOpMode {
 
   @Override
   public void runOpMode() throws InterruptedException {
+    this.telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
     CommandScheduler.getInstance().reset();
 
     // Subsystems Initialized

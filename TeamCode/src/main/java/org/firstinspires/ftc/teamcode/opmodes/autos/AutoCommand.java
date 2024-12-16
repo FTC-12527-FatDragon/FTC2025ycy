@@ -75,8 +75,12 @@ public class AutoCommand {
   public static Command autoFinish(LiftClaw liftClaw, Lift lift, SlideSuperStucture slide) {
     return new ParallelCommandGroup(
         slide.aimCommand(),
+<<<<<<< HEAD
         slide.resetCommand().interruptOn(slide::atHome),
         lift.resetCommand().interruptOn(() -> lift.atHome(3)),
+=======
+        lift.manualResetCommand().withTimeout(1000),
+>>>>>>> a8c695298fc0e7f664e6a17a680219d09bfa21ee
         new InstantCommand(liftClaw::openClaw));
   }
 }
