@@ -123,6 +123,10 @@ public class SlideSuperStucture extends SubsystemBase {
     wristServo.setPosition(0.65);
   }
 
+  public void wristDown() {
+    wristServo.setPosition(0.05);
+  }
+
   public void slideArmDown() {
     // This is down for stowing the liftArm when scoring the speciemen
     slideArmServo.setPosition(Goal.AIM.slideArmPos);
@@ -233,6 +237,7 @@ public class SlideSuperStucture extends SubsystemBase {
   }
 
   public void runLiftOpen(double percent) {
+
     double output = Range.clip(percent, -1, 1);
     slideMotor.setPower(output);
   }

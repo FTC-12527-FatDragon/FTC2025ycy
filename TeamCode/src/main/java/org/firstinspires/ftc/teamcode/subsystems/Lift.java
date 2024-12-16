@@ -1,7 +1,5 @@
 package org.firstinspires.ftc.teamcode.subsystems;
 
-import com.acmerobotics.dashboard.FtcDashboard;
-import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.arcrobotics.ftclib.command.Command;
 import com.arcrobotics.ftclib.command.CommandBase;
 import com.arcrobotics.ftclib.command.StartEndCommand;
@@ -10,9 +8,11 @@ import com.arcrobotics.ftclib.controller.PIDController;
 import com.arcrobotics.ftclib.controller.wpilibcontroller.ElevatorFeedforward;
 import com.arcrobotics.ftclib.hardware.motors.Motor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.hardware.VoltageSensor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
+
 import java.util.concurrent.TimeUnit;
 import lombok.Getter;
 import lombok.Setter;
@@ -20,11 +20,11 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.utils.MathUtils;
 
 public class Lift extends SubsystemBase {
-  private final double kP = 0.01, kI = 0.0, kD = 0.0, kV = 0.0003, kS = 0.18, kG = 0.10;
+  private final double kP = 0.01, kI = 0.0, kD = 0.0, kV = 0.0003, kS = 0.12, kG = 0.15;
   private final PIDController pidController;
   private final Motor liftMotorUp;
   private final Motor liftMotorDown;
-  private MultipleTelemetry telemetry;
+  private final Telemetry telemetry;
 
   private double lastSetpoint = 0;
 
@@ -39,6 +39,8 @@ public class Lift extends SubsystemBase {
 
   private final ElevatorFeedforward feedforward;
 
+  private final VoltageSensor batteryVoltageSensor;
+
   @Getter @Setter private Goal goal = Goal.STOW;
 
   public Lift(final HardwareMap hardwareMap, Telemetry telemetry) {
@@ -51,9 +53,10 @@ public class Lift extends SubsystemBase {
 
     pidController = new PIDController(kP, kI, kD);
     feedforward = new ElevatorFeedforward(kS, kG, kV);
-    this.telemetry = new MultipleTelemetry(FtcDashboard.getInstance().getTelemetry(), telemetry);
+    batteryVoltageSensor = hardwareMap.voltageSensor.iterator().next();
+    this.telemetry = telemetry;
 
-    profile = new TrapezoidProfile(new TrapezoidProfile.Constraints(13000, 13000));
+    profile = new TrapezoidProfile(new TrapezoidProfile.Constraints(15000, 15000));
     timer = new ElapsedTime();
     timer.reset();
     lastTime = timer.time(TimeUnit.MILLISECONDS);
@@ -89,15 +92,7 @@ public class Lift extends SubsystemBase {
         () -> {
           runLiftOpen(resetPower);
         },
-        () -> {
-          pidController.reset();
-          pidController.calculate(0);
-          runLiftOpen(0);
-          goal = Goal.STOW;
-          telemetry.addData("Lift Current Position", liftMotorUp.getCurrentPosition());
-          telemetry.addData("Error", pidController.getPositionError());
-          // telemetry.update();
-        },
+        this::resetEncoder,
         this);
   }
 
@@ -148,15 +143,15 @@ public class Lift extends SubsystemBase {
   }
 
   public boolean atGoal() {
-    return MathUtils.isNear(goal.setpointTicks, liftMotorUp.getCurrentPosition(), 10);
+    return MathUtils.isNear(goal.setpointTicks, getCurrentPosition(), 10);
   }
 
   public boolean atHome(double tolerance) {
-    return MathUtils.isNear(Goal.STOW.setpointTicks, liftMotorUp.getCurrentPosition(), tolerance);
+    return MathUtils.isNear(Goal.STOW.setpointTicks, getCurrentPosition(), tolerance);
   }
 
   public boolean atPreHang() {
-    return MathUtils.isNear(Goal.PRE_HANG.setpointTicks, liftMotorUp.getCurrentPosition(), 10);
+    return MathUtils.isNear(Goal.PRE_HANG.setpointTicks, getCurrentPosition(), 10);
   }
 
   public void periodicTest() {
@@ -174,8 +169,10 @@ public class Lift extends SubsystemBase {
     setpointState = profile.calculate(timeInterval, setpointState, goalState);
 
     double pidPower =
-        pidController.calculate(liftMotorUp.getCurrentPosition(), setpointState.position);
-    double output = Range.clip(pidPower + feedforward.calculate(setpointState.velocity), -1, 1);
+        pidController.calculate(getCurrentPosition(), setpointState.position);
+    double output = pidPower + feedforward.calculate(setpointState.velocity);
+    output *= 12/batteryVoltageSensor.getVoltage();
+    output = Range.clip(output, -1, 1);
     liftMotorUp.set(output);
     liftMotorDown.set(output);
 
@@ -186,6 +183,7 @@ public class Lift extends SubsystemBase {
     telemetry.addData("Lift.Current Position", getCurrentPosition());
     telemetry.addData("Lift.PID Power", pidPower);
     telemetry.addData("Lift.Is Resetting", isResetting);
+
     // telemetry.update();
   }
 
