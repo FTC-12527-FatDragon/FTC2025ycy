@@ -5,11 +5,16 @@ import static org.firstinspires.ftc.teamcode.opmodes.autos.AutoCommand.*;
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
+import com.acmerobotics.roadrunner.drive.MecanumDrive;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
+import com.arcrobotics.ftclib.command.Command;
 import com.arcrobotics.ftclib.command.CommandScheduler;
+import com.arcrobotics.ftclib.command.FunctionalCommand;
 import com.arcrobotics.ftclib.command.InstantCommand;
 import com.arcrobotics.ftclib.command.ParallelCommandGroup;
+import com.arcrobotics.ftclib.command.ParallelDeadlineGroup;
 import com.arcrobotics.ftclib.command.SequentialCommandGroup;
+import com.arcrobotics.ftclib.command.Subsystem;
 import com.arcrobotics.ftclib.command.WaitCommand;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -20,6 +25,9 @@ import org.firstinspires.ftc.teamcode.subsystems.SlideSuperStucture;
 import org.firstinspires.ftc.teamcode.subsystems.drivetrain.SampleMecanumDrive;
 import org.firstinspires.ftc.teamcode.subsystems.drivetrain.TrajectoryManager;
 
+import java.util.Collections;
+import java.util.Set;
+
 @Config
 @Autonomous(name = "Basket 1+3", group = "Autos")
 public class Basket1Plus3 extends LinearOpMode {
@@ -29,19 +37,19 @@ public class Basket1Plus3 extends LinearOpMode {
   public static double heading1 = -45;
 
   // The right sample
-  public static double xValue2 = 25;
+  public static double xValue2 = 23.5;
   public static double yValue2 = 9.5;
   public static double heading2 = 0;
 
   // The middle sample
-  public static double xValue3 = 26;
-  public static double yValue3 = 20.8;
+  public static double xValue3 = 23.5;
+  public static double yValue3 = 20;
   public static double heading3 = 0;
 
   // The left sample
-  public static double xValue4 = 8;
-  public static double yValue4 = 16;
-  public static double heading4 = 5;
+  public static double xValue4 = 11;
+  public static double yValue4 = 20;
+  public static double heading4 = 20;
 
   public static long basketWaitMs = 500;
 
@@ -59,7 +67,7 @@ public class Basket1Plus3 extends LinearOpMode {
   // Start to Basket
   TrajectorySequence trajs1 =
       TrajectoryManager.trajectorySequenceBuilder(startPose)
-          .lineToLinearHeading(new Pose2d(xValue1, yValue1, Math.toRadians(heading1)))
+          .splineToLinearHeading(new Pose2d(xValue1, yValue1, Math.toRadians(heading1)), heading1)
           .build();
 
   // Basket to the rightmost sample
@@ -104,6 +112,15 @@ public class Basket1Plus3 extends LinearOpMode {
   //          .lineToLinearHeading(new Pose2d(xValue5, yValue5, Math.toRadians(heading5)))
   //          .build();
 
+  public Command wait(SampleMecanumDrive drive, long ms){
+    return new ParallelDeadlineGroup(new WaitCommand(ms), new FunctionalCommand(
+            () -> {},
+            drive::update,
+            (b) -> {},
+            () -> {return drive.isBusy() && !isStopRequested();}
+    ));
+  }
+
   @Override
   public void runOpMode() throws InterruptedException {
     this.telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
@@ -124,43 +141,46 @@ public class Basket1Plus3 extends LinearOpMode {
     CommandScheduler.getInstance()
         .schedule(
             new SequentialCommandGroup(
+                new InstantCommand(() -> {
+                  drive.setPoseEstimate(trajs1.start());
+                  slide.slideOpenloop(-0.5);
+                }),
                 slide.aimCommand().beforeStarting(liftClaw::closeClaw),
 
                 followTrajectory(drive, trajs1).alongWith(upLiftToBasket(lift, liftClaw)),
-                new WaitCommand(200),
+                wait(drive, 200),
                 stowArmFromBasket(lift, liftClaw),
 
-                followTrajectory(drive, trajs2),
+                followTrajectory(drive, trajs2).alongWith(slide.aimCommand()),
                 slide.grabCommand(),
                 followTrajectory(drive, trajs3)
                     .alongWith(handoff(slide, liftClaw).andThen(upLiftToBasket(lift, liftClaw))),
-                new WaitCommand(basketWaitMs),
+                wait(drive, basketWaitMs),
                 stowArmFromBasket(lift, liftClaw),
 
                 followTrajectory(drive, trajs4).alongWith(slide.aimCommand()),
                 slide.grabCommand(),
                 followTrajectory(drive, trajs5)
                     .alongWith(handoff(slide, liftClaw).andThen(upLiftToBasket(lift, liftClaw))),
-                new WaitCommand(basketWaitMs),
+                wait(drive, basketWaitMs),
                 stowArmFromBasket(lift, liftClaw),
 
                 followTrajectory(drive, trajs6).alongWith(slide.aimCommand()),
-                new WaitCommand(300),
-                new ParallelCommandGroup(
-                    new InstantCommand(slide::forwardSlideExtension),
-                    slide.setServoPosCommand(SlideSuperStucture.TurnServo.DEG_08)),
+                wait(drive, 300),
+                new InstantCommand(() -> slide.forwardSlideExtension(440)).alongWith(
+                    slide.setServoPosCommand(SlideSuperStucture.TurnServo.DEG_0)),
+                wait(drive, 500),
                 slide.grabCommand(),
-                new WaitCommand(300),
+                wait(drive, 300),
                 handoff(slide, liftClaw),
-                new WaitCommand(300),
+                wait(drive, 300),
                 followTrajectory(drive, trajs7),
                 upLiftToBasket(lift, liftClaw),
-                new WaitCommand(basketWaitMs),
-                stowArmFromBasket(lift, liftClaw))
-
-            //                followTrajectory(drive, trajs8).alongWith(autoFinish(liftClaw, lift,
-            // slide))
-            );
+                wait(drive, basketWaitMs),
+                stowArmFromBasket(lift, liftClaw),
+                wait(drive, 2000),
+                autoFinish(liftClaw, lift, slide)
+            ));
 
     // spotless:off
 

@@ -83,7 +83,7 @@ public class AutoCommand {
   public static Command autoFinish(LiftClaw liftClaw, Lift lift, SlideSuperStucture slide) {
     return new ParallelCommandGroup(
         slide.aimCommand(),
-        lift.resetCommand().withTimeout(300),
+        lift.resetCommand().withTimeout(1000),
         new InstantCommand(liftClaw::openClaw));
   }
 }
