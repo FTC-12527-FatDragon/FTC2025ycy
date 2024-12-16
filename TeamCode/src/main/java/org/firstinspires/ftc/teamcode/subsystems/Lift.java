@@ -67,9 +67,9 @@ public class Lift extends SubsystemBase {
   }
 
   public void resetEncoder() {
+    runLiftOpen(0);
     pidController.reset();
     pidController.calculate(0);
-    runLiftOpen(0);
     goal = Goal.STOW;
     // TODO: does this work?
     liftMotorUp.resetEncoder();
@@ -120,6 +120,7 @@ public class Lift extends SubsystemBase {
       }
       @Override
       public void end(boolean interrupted) {
+        runLiftOpen(0);
         if(!interrupted){
           resetEncoder();
         }
