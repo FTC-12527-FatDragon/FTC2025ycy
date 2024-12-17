@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.subsystems;
 
+import com.acmerobotics.dashboard.config.Config;
 import com.arcrobotics.ftclib.command.Command;
 import com.arcrobotics.ftclib.command.ConditionalCommand;
 import com.arcrobotics.ftclib.command.InstantCommand;
@@ -19,7 +20,12 @@ import lombok.Setter;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.utils.MathUtils;
 
+@Config
 public class SlideSuperStucture extends MotorPIDSlideSubsystem {
+  // ---- Configs ----
+  // SlideArmServo
+  public static double SlideArmServo_AFTERGRAB = 0.7;
+
   private final Servo intakeClawServo, wristServo, wristTurnServo;
   private final Servo slideArmServo;
   private final DcMotorEx slideMotor;
@@ -39,7 +45,7 @@ public class SlideSuperStucture extends MotorPIDSlideSubsystem {
   //  private final Telemetry telemetry; // 0 0.5 0.8
 
 //  private boolean isResetting = false;
-  public static double resetPower = -0.9;
+  public static double resetPower = -0.5;
 
   public SlideSuperStucture(final HardwareMap hardwareMap, final Telemetry telemetry) {
     slideArmServo = hardwareMap.get(Servo.class, "slideArmServo");
@@ -90,7 +96,7 @@ public class SlideSuperStucture extends MotorPIDSlideSubsystem {
         new WaitCommand(100),
         new InstantCommand(() -> intakeClawServo.setPosition(Goal.GRAB.clawAngle)),
         new WaitCommand(100),
-        new InstantCommand(() -> slideArmServo.setPosition(0.5)),
+        new InstantCommand(() -> slideArmServo.setPosition(SlideArmServo_AFTERGRAB)),
         setGoalCommand(Goal.AIM));
   }
 
@@ -152,7 +158,7 @@ public class SlideSuperStucture extends MotorPIDSlideSubsystem {
 
   public void slideArmUp() {
     // This is up for the auto
-    slideArmServo.setPosition(0.35);
+    slideArmServo.setPosition(Goal.AIM.slideArmPos);
   }
 
   public void stow() {
@@ -160,11 +166,12 @@ public class SlideSuperStucture extends MotorPIDSlideSubsystem {
     wristServo.setPosition(Goal.HANDOFF.wristPos);
   }
 
+  @Config
   public enum Goal {
     STOW(0, 0, 0.2, 0.6),
-    AIM(slideExtensionVal, 0.625, 0.65, 0.6),
-    GRAB(slideExtensionVal, 0.725, 0.65, 0.36),
-    HANDOFF(0, 0.45, 0.175, 0.36);
+    AIM(slideExtensionVal, 0.59, 0.65, 0.6),
+    GRAB(slideExtensionVal, 0.505, 0.65, 0.36),
+    HANDOFF(0, 0.775, 0.175, 0.36);
 
     public final double slideExtension;
     public final double slideArmPos;

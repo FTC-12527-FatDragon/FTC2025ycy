@@ -22,7 +22,7 @@ import org.firstinspires.ftc.teamcode.subsystems.drivetrain.TrajectoryManager;
 @Config
 @Autonomous(name = "Chamber 1+3", group = "Autos")
 public class Chamber1Plus3 extends LinearOpMode {
-  public static double chamberSpacing = 4;
+  public static double chamberSpacing = 2;
   public static long handOff2TrajDelay = 1300;
 
   // Chamber hang location
