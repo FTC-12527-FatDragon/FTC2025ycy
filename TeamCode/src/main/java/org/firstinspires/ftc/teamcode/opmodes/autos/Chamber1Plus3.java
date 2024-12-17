@@ -142,7 +142,9 @@ public class Chamber1Plus3 extends LinearOpMode {
 //                handoffAndLiftToChamber(lift, liftClaw, slide)
 //                    .alongWith(new WaitCommand(2000).andThen(followTrajectory(drive, trajs3))),
                 new WaitCommand(400),
-                hangAndStowLift(lift, liftClaw, slide)));
+                hangAndStowLift(lift, liftClaw, slide),
+                autoFinish(drive, liftClaw, lift, slide)
+            ));
 
     //spotless:on
 

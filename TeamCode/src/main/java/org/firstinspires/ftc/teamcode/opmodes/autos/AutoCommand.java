@@ -9,6 +9,7 @@ import com.arcrobotics.ftclib.command.WaitCommand;
 import com.arcrobotics.ftclib.command.WaitUntilCommand;
 import org.firstinspires.ftc.teamcode.commands.AutoDriveCommand;
 import org.firstinspires.ftc.teamcode.lib.roadrunner.trajectorysequence.TrajectorySequence;
+import org.firstinspires.ftc.teamcode.opmodes.TXBetaBotSolo;
 import org.firstinspires.ftc.teamcode.subsystems.Lift;
 import org.firstinspires.ftc.teamcode.subsystems.LiftClaw;
 import org.firstinspires.ftc.teamcode.subsystems.SlideSuperStucture;
@@ -93,13 +94,14 @@ public class AutoCommand {
         new InstantCommand(slide::openIntakeClaw));
   }
 
-  public static Command autoFinish(LiftClaw liftClaw, Lift lift, SlideSuperStucture slide) {
+  public static Command autoFinish(SampleMecanumDrive drive, LiftClaw liftClaw, Lift lift, SlideSuperStucture slide) {
     return new ParallelCommandGroup(
         slide.aimCommand(),
         // TODO: needs discussion
         slide.manualResetCommand().withTimeout(1000), // interruptOn(slide::atHome),
         // lift.resetCommand().interruptOn(() -> lift.atHome(3)),
         lift.manualResetCommand().withTimeout(1000),
-        new InstantCommand(liftClaw::openClaw));
+        new InstantCommand(liftClaw::openClaw),
+        new InstantCommand(() -> TXBetaBotSolo.autoEndPose = drive.getPoseEstimate()));
   }
 }

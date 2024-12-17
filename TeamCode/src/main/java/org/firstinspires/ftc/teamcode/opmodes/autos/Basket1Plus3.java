@@ -167,7 +167,7 @@ public class Basket1Plus3 extends LinearOpMode {
                 wait(drive, basketWaitMs),
                 stowArmFromBasket(lift, liftClaw),
                 wait(drive, 1500),
-                autoFinish(liftClaw, lift, slide)));
+                autoFinish(drive, liftClaw, lift, slide)));
 
     // spotless:off
 

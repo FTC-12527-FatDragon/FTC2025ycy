@@ -142,7 +142,7 @@ public class AutoTest extends LinearOpMode {
                 slide.aimCommand(),
                 followTrajectory(drive, trajs6).alongWith(slide.aimCommand()),
                 followTrajectory(drive, trajs7),
-                autoFinish(liftClaw, lift, slide)));
+                autoFinish(drive, liftClaw, lift, slide)));
 
     // spotless:off
 

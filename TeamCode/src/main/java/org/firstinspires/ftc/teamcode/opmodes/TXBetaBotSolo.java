@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.opmodes;
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
+import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.arcrobotics.ftclib.command.Command;
 import com.arcrobotics.ftclib.command.CommandOpMode;
 import com.arcrobotics.ftclib.command.CommandScheduler;
@@ -26,6 +27,7 @@ import org.firstinspires.ftc.teamcode.utils.FunctionalButton;
 
 @TeleOp(name = "Solo")
 public class TXBetaBotSolo extends CommandOpMode {
+  public static Pose2d autoEndPose = new Pose2d();
   private GamepadEx gamepadEx1;
   private Lift lift;
   private LiftClaw liftClaw;
@@ -43,6 +45,8 @@ public class TXBetaBotSolo extends CommandOpMode {
     liftClaw = new LiftClaw(hardwareMap);
     slide = new SlideSuperStucture(hardwareMap, telemetry);
     drive = new SampleMecanumDrive(hardwareMap);
+    drive.setPoseEstimate(autoEndPose);
+    autoEndPose = new Pose2d();
 
     // Teleop Drive Command
     drive.setDefaultCommand(
