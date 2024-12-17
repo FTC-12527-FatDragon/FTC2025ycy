@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.subsystems;
 
 import com.arcrobotics.ftclib.command.Command;
+import com.arcrobotics.ftclib.command.ConditionalCommand;
 import com.arcrobotics.ftclib.command.InstantCommand;
 import com.arcrobotics.ftclib.command.SequentialCommandGroup;
 import com.arcrobotics.ftclib.command.WaitCommand;
@@ -93,7 +94,7 @@ public class SlideSuperStucture extends MotorPIDSlideSubsystem {
         setGoalCommand(Goal.AIM));
   }
 
-  public Command handoffCommand() {
+  public Command slowHandoffCommand() {
     return new SequentialCommandGroup(
         setGoalCommand(Goal.HANDOFF),
         new InstantCommand(
@@ -107,6 +108,28 @@ public class SlideSuperStucture extends MotorPIDSlideSubsystem {
         new WaitCommand(200),
         new InstantCommand(() -> slideExtensionVal = Goal.HANDOFF.slideExtension),
         new WaitUntilCommand(this::slideMotorAtHome));
+  }
+
+  public Command fastHandoffCommand() {
+    return new SequentialCommandGroup(
+            setGoalCommand(Goal.HANDOFF),
+            new InstantCommand(
+                    () -> {
+                      setServoPos(TurnServo.DEG_0);
+                    }),
+            new WaitCommand(100),
+            new InstantCommand(() -> wristServo.setPosition(Goal.HANDOFF.wristPos)),
+            new InstantCommand(() -> slideArmServo.setPosition(Goal.HANDOFF.slideArmPos)),
+            new InstantCommand(() -> slideExtensionVal = Goal.HANDOFF.slideExtension),
+            new WaitUntilCommand(this::slideMotorAtHome));
+  }
+
+  public Command handoffCommand() {
+    return new ConditionalCommand(
+            slowHandoffCommand(),
+            fastHandoffCommand(),
+            this::atHome
+    );
   }
 
   public void openIntakeClaw() {

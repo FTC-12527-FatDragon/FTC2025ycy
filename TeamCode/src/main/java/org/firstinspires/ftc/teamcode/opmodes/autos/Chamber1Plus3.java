@@ -7,6 +7,7 @@ import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.arcrobotics.ftclib.command.CommandScheduler;
+import com.arcrobotics.ftclib.command.InstantCommand;
 import com.arcrobotics.ftclib.command.SequentialCommandGroup;
 import com.arcrobotics.ftclib.command.WaitCommand;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
@@ -22,14 +23,13 @@ import org.firstinspires.ftc.teamcode.subsystems.drivetrain.TrajectoryManager;
 @Autonomous(name = "Chamber 1+3", group = "Autos")
 public class Chamber1Plus3 extends LinearOpMode {
   public static double chamberSpacing = 4;
-  // For Basket Scoring
+
   public static double xValue1 = 14;
   public static double yValue1 = -32.425;
   public static double heading1 = 90;
 
-  // The rightmost sample
-  public static double xValue2 = -19;
-  public static double yValue2 = -4.7;
+  public static double xValue2 = -4.5;
+  public static double yValue2 = -5;
   public static double heading2 = -180;
 
   // The middle sample
@@ -125,6 +125,8 @@ public class Chamber1Plus3 extends LinearOpMode {
 
     waitForStart();
 
+    // spotless:off
+
     CommandScheduler.getInstance()
         .schedule(
             new SequentialCommandGroup(
@@ -132,12 +134,18 @@ public class Chamber1Plus3 extends LinearOpMode {
                 new WaitCommand(200),
                 followTrajectory(drive, trajs1).alongWith(upLiftToChamber(lift, liftClaw)),
                 hangAndStowLift(lift, liftClaw, slide),
-                followTrajectory(drive, trajs2).alongWith(slide.aimCommand()),
+                followTrajectory(drive, trajs2).alongWith(slide.aimCommand().andThen(
+                        new InstantCommand(() -> slide.forwardSlideExtension()))),
                 slide.grabCommand(),
-                handoffAndLiftToChamber(lift, liftClaw, slide)
-                    .alongWith(new WaitCommand(2000).andThen(followTrajectory(drive, trajs3))),
+                    new WaitCommand(150),
+                    followTrajectory(drive, trajs3).alongWith(handoffAndLiftToChamber(lift, liftClaw, slide)),
+//                handoffAndLiftToChamber(lift, liftClaw, slide)
+//                    .alongWith(new WaitCommand(2000).andThen(followTrajectory(drive, trajs3))),
                 new WaitCommand(400),
                 hangAndStowLift(lift, liftClaw, slide)));
+
+    //spotless:on
+
     while (opModeIsActive() && !isStopRequested()) {
       lift.periodicTest();
       CommandScheduler.getInstance().run();

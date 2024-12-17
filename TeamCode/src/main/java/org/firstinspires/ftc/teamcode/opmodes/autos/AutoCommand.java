@@ -38,7 +38,7 @@ public class AutoCommand {
 
   public static Command handoff(SlideSuperStucture slide, LiftClaw liftClaw) {
     return slide
-        .handoffCommand()
+        .slowHandoffCommand()
         .beforeStarting(liftClaw::openClaw)
         .andThen(new WaitCommand(50))
         .andThen(new InstantCommand(liftClaw::closeClaw))
