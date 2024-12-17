@@ -36,9 +36,19 @@ public class AutoCommand {
         new InstantCommand(() -> lift.setGoal(Lift.Goal.STOW)));
   }
 
-  public static Command handoff(SlideSuperStucture slide, LiftClaw liftClaw) {
+  public static Command slowHandoff(SlideSuperStucture slide, LiftClaw liftClaw) {
     return slide
         .slowHandoffCommand()
+        .beforeStarting(liftClaw::openClaw)
+        .andThen(new WaitCommand(50))
+        .andThen(new InstantCommand(liftClaw::closeClaw))
+        .andThen(new WaitCommand(200))
+        .andThen(new InstantCommand(slide::openIntakeClaw));
+  }
+
+  public static Command fastHandoff(SlideSuperStucture slide, LiftClaw liftClaw) {
+    return slide
+        .fastHandoffCommand()
         .beforeStarting(liftClaw::openClaw)
         .andThen(new WaitCommand(50))
         .andThen(new InstantCommand(liftClaw::closeClaw))
@@ -55,7 +65,7 @@ public class AutoCommand {
 
   public static Command handoffAndLiftToChamber(
       Lift lift, LiftClaw liftClaw, SlideSuperStucture slide) {
-    return handoff(slide, liftClaw)
+    return fastHandoff(slide, liftClaw)
         .andThen(new WaitCommand(200))
         .andThen(new InstantCommand(slide::wristUp))
         .andThen(new WaitCommand(300))

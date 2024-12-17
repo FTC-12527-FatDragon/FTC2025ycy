@@ -112,24 +112,20 @@ public class SlideSuperStucture extends MotorPIDSlideSubsystem {
 
   public Command fastHandoffCommand() {
     return new SequentialCommandGroup(
-            setGoalCommand(Goal.HANDOFF),
-            new InstantCommand(
-                    () -> {
-                      setServoPos(TurnServo.DEG_0);
-                    }),
-            new WaitCommand(100),
-            new InstantCommand(() -> wristServo.setPosition(Goal.HANDOFF.wristPos)),
-            new InstantCommand(() -> slideArmServo.setPosition(Goal.HANDOFF.slideArmPos)),
-            new InstantCommand(() -> slideExtensionVal = Goal.HANDOFF.slideExtension),
-            new WaitUntilCommand(this::slideMotorAtHome));
+        setGoalCommand(Goal.HANDOFF),
+        new InstantCommand(
+            () -> {
+              setServoPos(TurnServo.DEG_0);
+            }),
+        new WaitCommand(100),
+        new InstantCommand(() -> wristServo.setPosition(Goal.HANDOFF.wristPos)),
+        new InstantCommand(() -> slideArmServo.setPosition(Goal.HANDOFF.slideArmPos)),
+        new InstantCommand(() -> slideExtensionVal = Goal.HANDOFF.slideExtension),
+        new WaitUntilCommand(this::slideMotorAtHome));
   }
 
   public Command handoffCommand() {
-    return new ConditionalCommand(
-            slowHandoffCommand(),
-            fastHandoffCommand(),
-            this::atHome
-    );
+    return new ConditionalCommand(slowHandoffCommand(), fastHandoffCommand(), this::atHome);
   }
 
   public void openIntakeClaw() {
