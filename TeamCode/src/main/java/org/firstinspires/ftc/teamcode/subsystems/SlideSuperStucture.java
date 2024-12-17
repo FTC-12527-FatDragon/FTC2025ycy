@@ -39,7 +39,7 @@ public class SlideSuperStucture extends MotorPIDSlideSubsystem {
 //  private final Telemetry telemetry; // 0 0.5 0.8
 
 //  private boolean isResetting = false;
-  public static double resetPower = -0.5;
+  public static double resetPower = -0.9;
 
   public SlideSuperStucture(final HardwareMap hardwareMap, final Telemetry telemetry) {
     slideArmServo = hardwareMap.get(Servo.class, "slideArmServo");
