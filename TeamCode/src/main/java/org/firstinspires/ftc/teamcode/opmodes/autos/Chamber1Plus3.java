@@ -5,7 +5,6 @@ import static org.firstinspires.ftc.teamcode.opmodes.autos.AutoCommand.*;
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.arcrobotics.ftclib.command.CommandScheduler;
-import com.arcrobotics.ftclib.command.InstantCommand;
 import com.arcrobotics.ftclib.command.SequentialCommandGroup;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -21,62 +20,72 @@ import org.firstinspires.ftc.teamcode.subsystems.drivetrain.TrajectoryManager;
 @Autonomous(name = "Chamber 1+3", group = "Autos")
 public class Chamber1Plus3 extends LinearOpMode {
   // For Chamber Scoring
-  public static double xChamber = 10;
-  public static double yChamber = 20;
-  public static double headingChamber = -45;
+  public static double xChamber = 19;
+  public static double yChamber = 0;
+  public static double headingChamber = 0;
 
-  // The rightmost sample
-  public static double xRightMost = 25;
-  public static double yRightMost = 9.5;
-  public static double headingRightMost = 0;
-
-  // The middle sample
-  public static double xMiddle = 0;
-  public static double yMiddle = 0;
-  public static double headingMiddle = 0;
+  // The transfer point
+  public static double xTransfer = 24;
+  public static double yTransfer = 18;
+  public static double headingTransfer = 0;
 
   // The leftmost sample
-  public static double xLeftMost = 0;
-  public static double yLeftMost = 0;
-  public static double headingLeftMost = 0;
+  public static double xRightMost = 30;
+  public static double yRightMost = 20;
+  public static double headingRightMost = -90;
+
+  // The middle sample
+  public static double xMiddle = 30;
+  public static double yMiddle = 26;
+  public static double headingMiddle = -90;
+
+  // The rightmost sample
+  public static double xLeftMost = 30;
+  public static double yLeftMost = 31;
+  public static double headingLeftMost = -90;
 
   // The Observation zone
-  public static double xObservation = 0;
-  public static double yObservation = 0;
-  public static double headingObservation = 0;
+  public static double xObservation = 12;
+  public static double yObservation = 30;
+  public static double headingObservation = -90;
 
   // The Grab position
-  public static double xGrab = 0;
-  public static double yGrab = 0;
-  public static double headingGrab = 0;
+  public static double xGrab = 5;
+  public static double yGrab = 24;
+  public static double headingGrab = -180;
 
   // The Ascent zone
-  public static double xAscent = 0;
-  public static double yAscent = 0;
+  public static double xAscent = 36;
+  public static double yAscent = 12;
   public static double headingAscent = 0;
 
   AlphaLiftClaw liftClaw;
   AlphaLift lift;
   AlphaSlide slide;
 
-  Pose2d startPose = new Pose2d(0, 0, Math.toRadians(0));
+  Pose2d startPose = new Pose2d(19, 0 , Math.toRadians(0));
 
   // Start to Basket
-  TrajectorySequence firstBlock =
+  TrajectorySequence chamberToFirst =
       TrajectoryManager.trajectorySequenceBuilder(startPose)
-          .lineToLinearHeading(new Pose2d(xRightMost, yRightMost, Math.toRadians(headingRightMost)))
+          .splineToLinearHeading(new Pose2d(xTransfer, yTransfer, Math.toRadians(headingTransfer)),
+                  Math.toRadians(0))
+          .splineToLinearHeading(new Pose2d(xLeftMost, yLeftMost, Math.toRadians(headingLeftMost)),
+                  Math.toRadians(-90))
           .build();
 
   // Basket to the rightmost sample
   TrajectorySequence firstToObservation =
-      TrajectoryManager.trajectorySequenceBuilder(firstBlock.end())
+      TrajectoryManager.trajectorySequenceBuilder(chamberToFirst.end())
           .lineToLinearHeading(new Pose2d(xObservation, yObservation, Math.toRadians(headingObservation)))
           .build();
 
   // rightmost sample to basket
   TrajectorySequence observationToSecond =
       TrajectoryManager.trajectorySequenceBuilder(firstToObservation.end())
-          .lineToLinearHeading(new Pose2d(xMiddle, yMiddle, Math.toRadians(headingMiddle)))
+          .lineToLinearHeading(new Pose2d(xTransfer, yTransfer, Math.toRadians(headingTransfer)))
+          .splineToLinearHeading(new Pose2d(xMiddle, yMiddle, Math.toRadians(headingMiddle)),
+                  Math.toRadians(-180))
           .build();
 
   // basket to middle sample
@@ -88,7 +97,9 @@ public class Chamber1Plus3 extends LinearOpMode {
   // middle sample to basket
   TrajectorySequence observationToThird =
       TrajectoryManager.trajectorySequenceBuilder(secondToObservation.end())
-          .lineToLinearHeading(new Pose2d(xLeftMost, yLeftMost, Math.toRadians(headingLeftMost)))
+          .lineToLinearHeading(new Pose2d(xTransfer, yTransfer, Math.toRadians(headingTransfer)))
+          .splineToLinearHeading(new Pose2d(xRightMost, yRightMost, Math.toRadians(headingRightMost)),
+                   Math.toRadians(-180))
           .build();
 
   // basket to leftmost sample
@@ -100,25 +111,33 @@ public class Chamber1Plus3 extends LinearOpMode {
   // leftmost sample to basket
   TrajectorySequence observationToGrab =
       TrajectoryManager.trajectorySequenceBuilder(thirdToObservation.end())
-          .lineToLinearHeading(new Pose2d(xChamber, yChamber, Math.toRadians(headingChamber)))
+          .splineToLinearHeading(new Pose2d(xChamber, yChamber, Math.toRadians(headingChamber)),
+                  Math.toRadians(-180))
           .build();
 
   // basket to ascent zone
   TrajectorySequence grabToChamber =
       TrajectoryManager.trajectorySequenceBuilder(observationToGrab.end())
-          .lineToLinearHeading(new Pose2d(xChamber, yChamber, Math.toRadians(headingChamber)))
+          .splineToLinearHeading(new Pose2d(xChamber, yChamber, Math.toRadians(headingChamber)),
+                  Math.toRadians(0))
+          .forward(3)
+          .strafeLeft(3)
           .build();
 
   // basket to ascent zone
   TrajectorySequence chamberToGrab =
           TrajectoryManager.trajectorySequenceBuilder(grabToChamber.end())
-                  .lineToLinearHeading(new Pose2d(xGrab, yGrab, Math.toRadians(headingGrab)))
-                  .build();
+              .splineToLinearHeading(new Pose2d(xGrab, yGrab, Math.toRadians(headingGrab)),
+                      Math.toRadians(-180))
+              .build();
 
   TrajectorySequence chamberToAscent =
           TrajectoryManager.trajectorySequenceBuilder(grabToChamber.end())
-                  .lineToLinearHeading(new Pose2d(xAscent, yAscent, Math.toRadians(headingAscent)))
-                  .build();
+              .splineToLinearHeading(new Pose2d(xTransfer, yTransfer, Math.toRadians(headingTransfer)),
+                      Math.toRadians(0))
+              .splineToLinearHeading(new Pose2d(xAscent, yAscent, Math.toRadians(headingAscent)),
+                      Math.toRadians(90))
+              .build();
 
   @Override
   public void runOpMode() throws InterruptedException {
@@ -142,7 +161,7 @@ public class Chamber1Plus3 extends LinearOpMode {
                 new AutoDriveCommand(drive, grabToChamber).alongWith(grabToPreHang(lift, liftClaw)),
                 chamberToGrab(lift, liftClaw),
 
-                new AutoDriveCommand(drive, firstBlock),
+                new AutoDriveCommand(drive, chamberToFirst),
                 new AutoDriveCommand(drive, firstToObservation),
                 new AutoDriveCommand(drive, observationToSecond),
                 new AutoDriveCommand(drive, secondToObservation),
