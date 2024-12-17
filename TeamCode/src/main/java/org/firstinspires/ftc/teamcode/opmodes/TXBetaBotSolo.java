@@ -107,7 +107,7 @@ public class TXBetaBotSolo extends CommandOpMode {
     Supplier<Command> handoffCommand =
         () ->
             slide
-                .handoffCommand()
+                .slowHandoffCommand()
                 .beforeStarting(liftClaw::openClaw)
                 .andThen(new WaitCommand(50))
                 .andThen(new InstantCommand(() -> liftClaw.closeClaw()))
