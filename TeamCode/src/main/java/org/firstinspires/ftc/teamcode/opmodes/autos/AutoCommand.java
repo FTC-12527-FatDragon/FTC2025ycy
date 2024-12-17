@@ -78,7 +78,7 @@ public class AutoCommand {
         new InstantCommand(() -> lift.setGoal(Lift.Goal.HANG))
             .alongWith(new InstantCommand(slide::slideArmDown)),
         new ParallelDeadlineGroup(new WaitCommand(500), new WaitUntilCommand(() -> lift.atHome(10)))
-            .andThen(new WaitCommand(150))
+            .andThen(new WaitCommand(500).deadlineWith(lift.manualResetCommand()))
             .andThen(new InstantCommand(liftClaw::openClaw)),
         new WaitCommand(200),
         new InstantCommand(liftClaw::foldLiftArm),

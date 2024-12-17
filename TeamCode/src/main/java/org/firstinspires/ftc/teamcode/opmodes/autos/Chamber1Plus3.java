@@ -23,11 +23,14 @@ import org.firstinspires.ftc.teamcode.subsystems.drivetrain.TrajectoryManager;
 @Autonomous(name = "Chamber 1+3", group = "Autos")
 public class Chamber1Plus3 extends LinearOpMode {
   public static double chamberSpacing = 4;
+  public static long handOff2TrajDelay = 1300;
 
-  public static double xValue1 = 14;
-  public static double yValue1 = -32.425;
+  // Chamber hang location
+  public static double xValue1 = 16;
+  public static double yValue1 = -32;
   public static double heading1 = 90;
 
+  // Grab location
   public static double xValue2 = -4.5;
   public static double yValue2 = -5;
   public static double heading2 = -180;
@@ -75,7 +78,7 @@ public class Chamber1Plus3 extends LinearOpMode {
   // basket to middle sample
   TrajectorySequence trajs4 =
       TrajectoryManager.trajectorySequenceBuilder(trajs3.end())
-          .lineToLinearHeading(new Pose2d(xValue3, yValue3, Math.toRadians(heading3)))
+          .lineToLinearHeading(new Pose2d(xValue2, yValue2, Math.toRadians(heading2)))
           .build();
 
   // middle sample to basket
@@ -88,7 +91,7 @@ public class Chamber1Plus3 extends LinearOpMode {
   // basket to leftmost sample
   TrajectorySequence trajs6 =
       TrajectoryManager.trajectorySequenceBuilder(trajs5.end())
-          .lineToLinearHeading(new Pose2d(xValue4, yValue4, Math.toRadians(heading4)))
+          .lineToLinearHeading(new Pose2d(xValue2, yValue2, Math.toRadians(heading2)))
           .build();
 
   // leftmost sample to basket
@@ -101,7 +104,7 @@ public class Chamber1Plus3 extends LinearOpMode {
   // basket to ascent zone
   TrajectorySequence trajs8 =
       TrajectoryManager.trajectorySequenceBuilder(trajs7.end())
-          .lineToLinearHeading(new Pose2d(xValue5, yValue5, Math.toRadians(heading5)))
+          .lineToLinearHeading(new Pose2d(xValue2, yValue2, Math.toRadians(heading2)))
           .build();
 
   @Override
@@ -134,14 +137,32 @@ public class Chamber1Plus3 extends LinearOpMode {
                 new WaitCommand(200),
                 followTrajectory(drive, trajs1).alongWith(upLiftToChamber(lift, liftClaw)),
                 hangAndStowLift(lift, liftClaw, slide),
+
                 followTrajectory(drive, trajs2).alongWith(slide.aimCommand().andThen(
                         new InstantCommand(() -> slide.forwardSlideExtension()))),
                 slide.grabCommand(),
-                    new WaitCommand(150),
-                    followTrajectory(drive, trajs3).alongWith(handoffAndLiftToChamber(lift, liftClaw, slide)),
+                new WaitCommand(150),
+                handoffAndLiftToChamber(lift, liftClaw, slide).alongWith(
+                        new WaitCommand(handOff2TrajDelay).andThen(followTrajectory(drive, trajs3))
+                ),
 //                handoffAndLiftToChamber(lift, liftClaw, slide)
 //                    .alongWith(new WaitCommand(2000).andThen(followTrajectory(drive, trajs3))),
-                new WaitCommand(400),
+                hangAndStowLift(lift, liftClaw, slide),
+                followTrajectory(drive, trajs4).alongWith(slide.aimCommand().andThen(
+                        new InstantCommand(() -> slide.forwardSlideExtension()))),
+                slide.grabCommand(),
+                new WaitCommand(150),
+                handoffAndLiftToChamber(lift, liftClaw, slide).alongWith(
+                        new WaitCommand(handOff2TrajDelay).andThen(followTrajectory(drive, trajs5))
+                ),
+                hangAndStowLift(lift, liftClaw, slide),
+                followTrajectory(drive, trajs6).alongWith(slide.aimCommand().andThen(
+                        new InstantCommand(() -> slide.forwardSlideExtension()))),
+                slide.grabCommand(),
+                new WaitCommand(150),
+                handoffAndLiftToChamber(lift, liftClaw, slide).alongWith(
+                        new WaitCommand(handOff2TrajDelay).andThen(followTrajectory(drive, trajs7))
+                ),
                 hangAndStowLift(lift, liftClaw, slide),
                 autoFinish(drive, liftClaw, lift, slide)
             ));

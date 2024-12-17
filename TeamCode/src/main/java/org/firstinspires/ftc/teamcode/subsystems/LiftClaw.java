@@ -7,7 +7,7 @@ import com.qualcomm.robotcore.hardware.Servo;
 
 @Config
 public class LiftClaw extends SubsystemBase {
-  public static double LiftArmServo_UP = 0.315;
+  public static double LiftArmServo_UP = 0.31;
   public static double LiftArmServo_FOLD = 0.76;
   public static double ClawServo_CLOSE = 0.5425;
   public static double ClawServo_OPEN = 0.8;
