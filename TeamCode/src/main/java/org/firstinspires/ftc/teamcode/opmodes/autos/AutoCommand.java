@@ -57,18 +57,18 @@ public class AutoCommand {
     return handoff(slide, liftClaw)
         .andThen(new WaitCommand(200))
         .andThen(new InstantCommand(slide::wristUp))
+        .andThen(new WaitCommand(300))
         .andThen(upLiftToChamber(lift, liftClaw));
-            .andThen(new WaitCommand(300))
   }
 
   public static Command hangAndStowLift(Lift lift, LiftClaw liftClaw, SlideSuperStucture slide) {
     return new SequentialCommandGroup(
         new InstantCommand(() -> lift.setGoal(Lift.Goal.HANG))
             .alongWith(new InstantCommand(slide::slideArmDown)),
+        new WaitUntilCommand(lift::atGoal).deadlineWith(new WaitCommand(1000)).andThen(new WaitCommand(150)).andThen(new InstantCommand(liftClaw::openClaw)),
         new WaitCommand(200),
         new InstantCommand(liftClaw::foldLiftArm),
         new InstantCommand(() -> lift.setGoal(Lift.Goal.STOW)));
-            new WaitUntilCommand(lift::atGoal).deadlineWith(new WaitCommand(1000)).andThen(new WaitCommand(150)).andThen(new InstantCommand(liftClaw::openClaw)),
   }
 
   public static Command initialize(LiftClaw liftClaw, SlideSuperStucture slide) {
