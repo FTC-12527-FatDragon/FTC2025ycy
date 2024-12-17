@@ -146,7 +146,7 @@ public class Lift extends SubsystemBase {
   }
 
   public boolean atGoal() {
-    return MathUtils.isNear(goal.setpointTicks, getCurrentPosition(), 10);
+    return MathUtils.isNear(goal.setpointTicks, getCurrentPosition(), 8 );
   }
 
   public boolean atHome(double tolerance) {
@@ -176,8 +176,11 @@ public class Lift extends SubsystemBase {
     setpointState = profile.calculate(timeInterval, setpointState, goalState);
 
     double pidPower =
-        pidController.calculate(getCurrentPosition(), setpointState.position);
+            pidController.calculate(getCurrentPosition(), setpointState.position);
     double output = pidPower + feedforward.calculate(setpointState.velocity);
+    if(goal==Goal.HANG){
+      output -= 1;
+    }
     output *= 12/batteryVoltageSensor.getVoltage();
     output = Range.clip(output, -1, 1);
     liftMotorUp.set(output);
@@ -194,7 +197,7 @@ public class Lift extends SubsystemBase {
   public enum Goal {
     BASKET(760.0),
     STOW(0.0),
-    PRE_HANG(150.0),
+    PRE_HANG(144.0),
     HANG(0),
     OPEN_LOOP(0.0);
 
