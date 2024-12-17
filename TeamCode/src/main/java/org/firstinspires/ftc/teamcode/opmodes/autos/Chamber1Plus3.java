@@ -23,14 +23,13 @@ import org.firstinspires.ftc.teamcode.subsystems.drivetrain.TrajectoryManager;
 @Autonomous(name = "Chamber 1+3", group = "Autos")
 public class Chamber1Plus3 extends LinearOpMode {
   public static double chamberSpacing = 4;
-  // For Basket Scoring
+
   public static double xValue1 = 14;
   public static double yValue1 = -32.425;
   public static double heading1 = 90;
 
-  // The rightmost sample
-  public static double xValue2 = -19;
-  public static double yValue2 = -4.7;
+  public static double xValue2 = -4.5;
+  public static double yValue2 = -5;
   public static double heading2 = -180;
 
   // The middle sample
@@ -56,51 +55,54 @@ public class Chamber1Plus3 extends LinearOpMode {
 
   // Start to Basket
   TrajectorySequence trajs1 =
-          TrajectoryManager.trajectorySequenceBuilder(startPose)
-                  .lineToLinearHeading(new Pose2d(xValue1, yValue1, Math.toRadians(heading1)))
-                  .build();
+      TrajectoryManager.trajectorySequenceBuilder(startPose)
+          .lineToLinearHeading(new Pose2d(xValue1, yValue1, Math.toRadians(heading1)))
+          .build();
 
   // Basket to the rightmost sample
   TrajectorySequence trajs2 =
-          TrajectoryManager.trajectorySequenceBuilder(trajs1.end())
-                  .lineToLinearHeading(new Pose2d(xValue2, yValue2, Math.toRadians(heading2)))
-                  .build();
+      TrajectoryManager.trajectorySequenceBuilder(trajs1.end())
+          .lineToLinearHeading(new Pose2d(xValue2, yValue2, Math.toRadians(heading2)))
+          .build();
 
   // rightmost sample to basket
   TrajectorySequence trajs3 =
-          TrajectoryManager.trajectorySequenceBuilder(trajs2.end())
-                  .lineToLinearHeading(new Pose2d(xValue1-chamberSpacing, yValue1, Math.toRadians(heading1)))
-                  .build();
+      TrajectoryManager.trajectorySequenceBuilder(trajs2.end())
+          .lineToLinearHeading(
+              new Pose2d(xValue1 - chamberSpacing, yValue1, Math.toRadians(heading1)))
+          .build();
 
   // basket to middle sample
   TrajectorySequence trajs4 =
-          TrajectoryManager.trajectorySequenceBuilder(trajs3.end())
-                  .lineToLinearHeading(new Pose2d(xValue3, yValue3, Math.toRadians(heading3)))
-                  .build();
+      TrajectoryManager.trajectorySequenceBuilder(trajs3.end())
+          .lineToLinearHeading(new Pose2d(xValue3, yValue3, Math.toRadians(heading3)))
+          .build();
 
   // middle sample to basket
   TrajectorySequence trajs5 =
-          TrajectoryManager.trajectorySequenceBuilder(trajs4.end())
-                  .lineToLinearHeading(new Pose2d(xValue1-chamberSpacing*2, yValue1, Math.toRadians(heading1)))
-                  .build();
+      TrajectoryManager.trajectorySequenceBuilder(trajs4.end())
+          .lineToLinearHeading(
+              new Pose2d(xValue1 - chamberSpacing * 2, yValue1, Math.toRadians(heading1)))
+          .build();
 
   // basket to leftmost sample
   TrajectorySequence trajs6 =
-          TrajectoryManager.trajectorySequenceBuilder(trajs5.end())
-                  .lineToLinearHeading(new Pose2d(xValue4, yValue4, Math.toRadians(heading4)))
-                  .build();
+      TrajectoryManager.trajectorySequenceBuilder(trajs5.end())
+          .lineToLinearHeading(new Pose2d(xValue4, yValue4, Math.toRadians(heading4)))
+          .build();
 
   // leftmost sample to basket
   TrajectorySequence trajs7 =
-          TrajectoryManager.trajectorySequenceBuilder(trajs6.end())
-                  .lineToLinearHeading(new Pose2d(xValue1-chamberSpacing*3, yValue1, Math.toRadians(heading1)))
-                  .build();
+      TrajectoryManager.trajectorySequenceBuilder(trajs6.end())
+          .lineToLinearHeading(
+              new Pose2d(xValue1 - chamberSpacing * 3, yValue1, Math.toRadians(heading1)))
+          .build();
 
   // basket to ascent zone
   TrajectorySequence trajs8 =
-          TrajectoryManager.trajectorySequenceBuilder(trajs7.end())
-                  .lineToLinearHeading(new Pose2d(xValue5, yValue5, Math.toRadians(heading5)))
-                  .build();
+      TrajectoryManager.trajectorySequenceBuilder(trajs7.end())
+          .lineToLinearHeading(new Pose2d(xValue5, yValue5, Math.toRadians(heading5)))
+          .build();
 
   @Override
   public void runOpMode() throws InterruptedException {
@@ -120,19 +122,30 @@ public class Chamber1Plus3 extends LinearOpMode {
     slide.stow();
     liftClaw.closeClaw();
     liftClaw.foldLiftArm();
+
     waitForStart();
+
+    // spotless:off
+
     CommandScheduler.getInstance()
-            .schedule(
-                    new SequentialCommandGroup(
-                            slide.aimCommand().beforeStarting(liftClaw::closeClaw),
-                            followTrajectory(drive, trajs1).alongWith(upLiftToChamber(lift, liftClaw)),
-                            hangAndStowLift(lift, liftClaw, slide),
-                            followTrajectory(drive, trajs2).alongWith(slide.aimCommand()),
-                            slide.grabCommand(),
-                            handoffAndLiftToChamber(lift, liftClaw, slide).alongWith(new WaitCommand(2000).andThen(followTrajectory(drive, trajs3))),
-                            new WaitCommand(400),
-                            hangAndStowLift(lift, liftClaw, slide)
-                    ));
+        .schedule(
+            new SequentialCommandGroup(
+                slide.aimCommand().beforeStarting(liftClaw::closeClaw),
+                new WaitCommand(200),
+                followTrajectory(drive, trajs1).alongWith(upLiftToChamber(lift, liftClaw)),
+                hangAndStowLift(lift, liftClaw, slide),
+                followTrajectory(drive, trajs2).alongWith(slide.aimCommand().andThen(
+                        new InstantCommand(() -> slide.forwardSlideExtension()))),
+                slide.grabCommand(),
+                    new WaitCommand(150),
+                    followTrajectory(drive, trajs3).alongWith(handoffAndLiftToChamber(lift, liftClaw, slide)),
+//                handoffAndLiftToChamber(lift, liftClaw, slide)
+//                    .alongWith(new WaitCommand(2000).andThen(followTrajectory(drive, trajs3))),
+                new WaitCommand(400),
+                hangAndStowLift(lift, liftClaw, slide)));
+
+    //spotless:on
+
     while (opModeIsActive() && !isStopRequested()) {
       lift.periodicTest();
       CommandScheduler.getInstance().run();

@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.opmodes.autos;
 import com.arcrobotics.ftclib.command.Command;
 import com.arcrobotics.ftclib.command.InstantCommand;
 import com.arcrobotics.ftclib.command.ParallelCommandGroup;
+import com.arcrobotics.ftclib.command.ParallelDeadlineGroup;
 import com.arcrobotics.ftclib.command.SequentialCommandGroup;
 import com.arcrobotics.ftclib.command.WaitCommand;
 import com.arcrobotics.ftclib.command.WaitUntilCommand;
@@ -35,9 +36,19 @@ public class AutoCommand {
         new InstantCommand(() -> lift.setGoal(Lift.Goal.STOW)));
   }
 
-  public static Command handoff(SlideSuperStucture slide, LiftClaw liftClaw) {
+  public static Command slowHandoff(SlideSuperStucture slide, LiftClaw liftClaw) {
     return slide
-        .handoffCommand()
+        .slowHandoffCommand()
+        .beforeStarting(liftClaw::openClaw)
+        .andThen(new WaitCommand(50))
+        .andThen(new InstantCommand(liftClaw::closeClaw))
+        .andThen(new WaitCommand(200))
+        .andThen(new InstantCommand(slide::openIntakeClaw));
+  }
+
+  public static Command fastHandoff(SlideSuperStucture slide, LiftClaw liftClaw) {
+    return slide
+        .fastHandoffCommand()
         .beforeStarting(liftClaw::openClaw)
         .andThen(new WaitCommand(50))
         .andThen(new InstantCommand(liftClaw::closeClaw))
@@ -54,7 +65,7 @@ public class AutoCommand {
 
   public static Command handoffAndLiftToChamber(
       Lift lift, LiftClaw liftClaw, SlideSuperStucture slide) {
-    return handoff(slide, liftClaw)
+    return fastHandoff(slide, liftClaw)
         .andThen(new WaitCommand(200))
         .andThen(new InstantCommand(slide::wristUp))
         .andThen(new WaitCommand(300))
@@ -65,7 +76,9 @@ public class AutoCommand {
     return new SequentialCommandGroup(
         new InstantCommand(() -> lift.setGoal(Lift.Goal.HANG))
             .alongWith(new InstantCommand(slide::slideArmDown)),
-        new WaitUntilCommand(lift::atGoal).deadlineWith(new WaitCommand(1000)).andThen(new WaitCommand(150)).andThen(new InstantCommand(liftClaw::openClaw)),
+        new ParallelDeadlineGroup(new WaitCommand(500), new WaitUntilCommand(() -> lift.atHome(10)))
+            .andThen(new WaitCommand(150))
+            .andThen(new InstantCommand(liftClaw::openClaw)),
         new WaitCommand(200),
         new InstantCommand(liftClaw::foldLiftArm),
         new InstantCommand(() -> lift.setGoal(Lift.Goal.STOW)));
@@ -83,8 +96,8 @@ public class AutoCommand {
   public static Command autoFinish(LiftClaw liftClaw, Lift lift, SlideSuperStucture slide) {
     return new ParallelCommandGroup(
         slide.aimCommand(),
-         // TODO: needs discussion
-         slide.manualResetCommand().withTimeout(1000),//interruptOn(slide::atHome),
+        // TODO: needs discussion
+        slide.manualResetCommand().withTimeout(1000), // interruptOn(slide::atHome),
         // lift.resetCommand().interruptOn(() -> lift.atHome(3)),
         lift.manualResetCommand().withTimeout(1000),
         new InstantCommand(liftClaw::openClaw));

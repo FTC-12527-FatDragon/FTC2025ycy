@@ -1,9 +1,9 @@
 package org.firstinspires.ftc.teamcode.subsystems;
 
 import com.arcrobotics.ftclib.command.Command;
+import com.arcrobotics.ftclib.command.ConditionalCommand;
 import com.arcrobotics.ftclib.command.InstantCommand;
 import com.arcrobotics.ftclib.command.SequentialCommandGroup;
-import com.arcrobotics.ftclib.command.StartEndCommand;
 import com.arcrobotics.ftclib.command.WaitCommand;
 import com.arcrobotics.ftclib.command.WaitUntilCommand;
 import com.arcrobotics.ftclib.controller.PIDController;
@@ -36,7 +36,7 @@ public class SlideSuperStucture extends MotorPIDSlideSubsystem {
 
   @Setter @Getter private Goal goal = Goal.STOW;
 
-//  private final Telemetry telemetry; // 0 0.5 0.8
+  //  private final Telemetry telemetry; // 0 0.5 0.8
 
 //  private boolean isResetting = false;
   public static double resetPower = -0.9;
@@ -94,7 +94,7 @@ public class SlideSuperStucture extends MotorPIDSlideSubsystem {
         setGoalCommand(Goal.AIM));
   }
 
-  public Command handoffCommand() {
+  public Command slowHandoffCommand() {
     return new SequentialCommandGroup(
         setGoalCommand(Goal.HANDOFF),
         new InstantCommand(
@@ -108,6 +108,24 @@ public class SlideSuperStucture extends MotorPIDSlideSubsystem {
         new WaitCommand(200),
         new InstantCommand(() -> slideExtensionVal = Goal.HANDOFF.slideExtension),
         new WaitUntilCommand(this::slideMotorAtHome));
+  }
+
+  public Command fastHandoffCommand() {
+    return new SequentialCommandGroup(
+        setGoalCommand(Goal.HANDOFF),
+        new InstantCommand(
+            () -> {
+              setServoPos(TurnServo.DEG_0);
+            }),
+        new WaitCommand(100),
+        new InstantCommand(() -> wristServo.setPosition(Goal.HANDOFF.wristPos)),
+        new InstantCommand(() -> slideArmServo.setPosition(Goal.HANDOFF.slideArmPos)),
+        new InstantCommand(() -> slideExtensionVal = Goal.HANDOFF.slideExtension),
+        new WaitUntilCommand(this::slideMotorAtHome));
+  }
+
+  public Command handoffCommand() {
+    return new ConditionalCommand(slowHandoffCommand(), fastHandoffCommand(), this::atHome);
   }
 
   public void openIntakeClaw() {
@@ -139,7 +157,7 @@ public class SlideSuperStucture extends MotorPIDSlideSubsystem {
 
   public void stow() {
     slideArmServo.setPosition(Goal.HANDOFF.slideArmPos);
-    wristServo.setPosition(Goal.HANDOFF.slideArmPos);
+    wristServo.setPosition(Goal.HANDOFF.wristPos);
   }
 
   public enum Goal {
@@ -259,18 +277,18 @@ public class SlideSuperStucture extends MotorPIDSlideSubsystem {
     slideMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
   }
 
-//  public Command resetCommand() {
-//    return new StartEndCommand(
-//            () -> {
-//              runOpenLoop();
-//              isResetting = true;
-//            },
-//            () -> {
-//
-//              isResetting = false;
-//            },
-//            this);
-//  }
+  //  public Command resetCommand() {
+  //    return new StartEndCommand(
+  //            () -> {
+  //              runOpenLoop();
+  //              isResetting = true;
+  //            },
+  //            () -> {
+  //
+  //              isResetting = false;
+  //            },
+  //            this);
+  //  }
 
   public boolean atHome() {
     return MathUtils.isNear(getCurrentPosition(), 0, 5);
@@ -288,7 +306,7 @@ public class SlideSuperStucture extends MotorPIDSlideSubsystem {
     telemetry.update();
 
     double pidPower = pidController.calculate(getCurrentPosition(), setpointTicks);
-    pidPower*=12/batteryVoltageSensor.getVoltage();
+    pidPower *= 12 / batteryVoltageSensor.getVoltage();
     if (!isResetting) slideMotor.setPower(Range.clip(pidPower, -1, 1));
   }
 
