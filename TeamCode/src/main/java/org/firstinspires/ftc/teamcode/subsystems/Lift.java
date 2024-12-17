@@ -102,7 +102,7 @@ public class Lift extends SubsystemBase {
   public Command autoResetCommand(){
     return new CommandBase() {
       double minVal = Double.POSITIVE_INFINITY;
-      double velo;
+      double velo, lastvelo;
       double startpos, lastpos, lastTime = 0;
       final ElapsedTime t = new ElapsedTime(ElapsedTime.Resolution.MILLISECONDS);
       @Override
@@ -110,11 +110,13 @@ public class Lift extends SubsystemBase {
         lastpos = getCurrentPosition();
         startpos = lastpos;
         isResetting = true;
+        velo = 0;
         t.reset();
         runLiftOpen(resetPower);
       }
       @Override
       public void execute () {
+        lastvelo = velo;
         double nowpos = getCurrentPosition();
         double nowtime = t.time();
         velo = (nowpos - lastpos) / (nowtime - lastTime);
@@ -123,10 +125,14 @@ public class Lift extends SubsystemBase {
           minVal = nowpos;
         }
         lastpos = nowpos;
+        telemetry.addData("Lift.AutoResetCommand.vel", velo);
+        telemetry.addData("Lift.AutoResetCommand.dt", lastpos - nowtime);
+        telemetry.addData("Lift.AutoResetCommand.minVal", minVal);
+        telemetry.addData("Lift.AutoResetCommand.AvgVel", ((getCurrentPosition() - startpos) / t.time()));
       }
       @Override
       public boolean isFinished() {
-        if(velo<((getCurrentPosition() - startpos) / t.time())*0.9){
+        if(Math.abs(velo)<Math.abs(((getCurrentPosition() - startpos) / t.time())*0.9) && lastvelo>velo){
           return true;
         }else return false;
       }
