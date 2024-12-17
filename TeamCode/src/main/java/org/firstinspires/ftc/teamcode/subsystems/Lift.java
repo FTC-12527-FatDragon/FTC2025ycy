@@ -9,7 +9,6 @@ import com.qualcomm.robotcore.hardware.VoltageSensor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
-
 import java.util.concurrent.TimeUnit;
 import lombok.Getter;
 import lombok.Setter;
@@ -31,7 +30,7 @@ public class Lift extends MotorPIDSlideSubsystem {
   private final ElapsedTime timer;
   private double lastTime;
 
-//  private boolean isResetting = false;
+  //  private boolean isResetting = false;
   public static double resetPower = -0.5;
 
   private final ElevatorFeedforward feedforward;
@@ -49,7 +48,7 @@ public class Lift extends MotorPIDSlideSubsystem {
     liftMotorDown.setRunMode(Motor.RunMode.RawPower);
 
     pidController = new PIDController(kP, kI, kD);
-    pidController.setIntegrationBounds(-1/kI, 1/kI);
+    pidController.setIntegrationBounds(-1 / kI, 1 / kI);
     feedforward = new ElevatorFeedforward(kS, kG, kV);
     batteryVoltageSensor = hardwareMap.voltageSensor.iterator().next();
     this.telemetry = telemetry;
@@ -61,10 +60,10 @@ public class Lift extends MotorPIDSlideSubsystem {
   }
 
   public void runOpenLoop(double percent) {
-//    goal = Goal.OPEN_LOOP;
-    if(percent==0){
+    //    goal = Goal.OPEN_LOOP;
+    if (percent == 0) {
       isResetting = false;
-    }else{
+    } else {
       isResetting = true;
     }
     double output = Range.clip(percent, -1, 1);
@@ -72,7 +71,7 @@ public class Lift extends MotorPIDSlideSubsystem {
     liftMotorDown.set(output);
   }
 
-  public double getResetPower(){
+  public double getResetPower() {
     return resetPower;
   }
 
@@ -94,7 +93,7 @@ public class Lift extends MotorPIDSlideSubsystem {
   }
 
   public boolean atGoal() {
-    return MathUtils.isNear(goal.setpointTicks, getCurrentPosition(), 8 );
+    return MathUtils.isNear(goal.setpointTicks, getCurrentPosition(), 8);
   }
 
   public boolean atHome(double tolerance) {
@@ -123,13 +122,12 @@ public class Lift extends MotorPIDSlideSubsystem {
     telemetry.addData("Time Interval", timeInterval);
     setpointState = profile.calculate(timeInterval, setpointState, goalState);
 
-    double pidPower =
-            pidController.calculate(getCurrentPosition(), setpointState.position);
+    double pidPower = pidController.calculate(getCurrentPosition(), setpointState.position);
     double output = pidPower + feedforward.calculate(setpointState.velocity);
-    if(goal==Goal.HANG){
-      output -= 1;
+    if (goal == Goal.HANG) {
+      output -= 0.5;
     }
-    output *= 12/batteryVoltageSensor.getVoltage();
+    output *= 12 / batteryVoltageSensor.getVoltage();
     output = Range.clip(output, -1, 1);
     liftMotorUp.set(output);
     liftMotorDown.set(output);

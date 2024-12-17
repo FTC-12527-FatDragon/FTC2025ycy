@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.opmodes.autos;
 import com.arcrobotics.ftclib.command.Command;
 import com.arcrobotics.ftclib.command.InstantCommand;
 import com.arcrobotics.ftclib.command.ParallelCommandGroup;
+import com.arcrobotics.ftclib.command.ParallelDeadlineGroup;
 import com.arcrobotics.ftclib.command.SequentialCommandGroup;
 import com.arcrobotics.ftclib.command.WaitCommand;
 import com.arcrobotics.ftclib.command.WaitUntilCommand;
@@ -65,7 +66,9 @@ public class AutoCommand {
     return new SequentialCommandGroup(
         new InstantCommand(() -> lift.setGoal(Lift.Goal.HANG))
             .alongWith(new InstantCommand(slide::slideArmDown)),
-        new WaitUntilCommand(lift::atGoal).deadlineWith(new WaitCommand(1000)).andThen(new WaitCommand(150)).andThen(new InstantCommand(liftClaw::openClaw)),
+        new ParallelDeadlineGroup(new WaitCommand(500), new WaitUntilCommand(() -> lift.atHome(10)))
+            .andThen(new WaitCommand(150))
+            .andThen(new InstantCommand(liftClaw::openClaw)),
         new WaitCommand(200),
         new InstantCommand(liftClaw::foldLiftArm),
         new InstantCommand(() -> lift.setGoal(Lift.Goal.STOW)));
@@ -83,8 +86,8 @@ public class AutoCommand {
   public static Command autoFinish(LiftClaw liftClaw, Lift lift, SlideSuperStucture slide) {
     return new ParallelCommandGroup(
         slide.aimCommand(),
-         // TODO: needs discussion
-         slide.manualResetCommand().withTimeout(1000),//interruptOn(slide::atHome),
+        // TODO: needs discussion
+        slide.manualResetCommand().withTimeout(1000), // interruptOn(slide::atHome),
         // lift.resetCommand().interruptOn(() -> lift.atHome(3)),
         lift.manualResetCommand().withTimeout(1000),
         new InstantCommand(liftClaw::openClaw));
