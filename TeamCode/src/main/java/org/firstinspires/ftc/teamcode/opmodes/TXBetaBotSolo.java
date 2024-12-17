@@ -174,6 +174,12 @@ public class TXBetaBotSolo extends CommandOpMode {
 
     new FunctionalButton(
             () ->
+                    gamepadEx1.getButton(GamepadKeys.Button.RIGHT_STICK_BUTTON)
+                            && slide.getGoal().slideExtension==0)
+            .whenHeld(slide.manualResetCommand());
+
+    new FunctionalButton(
+            () ->
                 gamepadEx1.getTrigger(GamepadKeys.Trigger.LEFT_TRIGGER) > 0.5
                     && slide.getGoal() == SlideSuperStucture.Goal.AIM)
         .whenPressed(new InstantCommand(slide::backwardSlideExtension));

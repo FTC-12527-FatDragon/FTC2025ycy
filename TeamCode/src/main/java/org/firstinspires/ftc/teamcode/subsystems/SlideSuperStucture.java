@@ -148,10 +148,10 @@ public class SlideSuperStucture extends MotorPIDSlideSubsystem {
     GRAB(slideExtensionVal, 0.725, 0.65, 0.36),
     HANDOFF(0, 0.45, 0.175, 0.36);
 
-    private final double slideExtension;
-    private final double slideArmPos;
-    private final double wristPos;
-    private final double clawAngle;
+    public final double slideExtension;
+    public final double slideArmPos;
+    public final double wristPos;
+    public final double clawAngle;
 
     Goal(double slideExtension, double slideArmPos, double wristPos, double clawAngle) {
       this.slideExtension = slideExtension;

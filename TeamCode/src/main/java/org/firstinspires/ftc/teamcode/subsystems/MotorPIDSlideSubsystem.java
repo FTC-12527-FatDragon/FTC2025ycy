@@ -98,9 +98,9 @@ public abstract class MotorPIDSlideSubsystem extends SubsystemBase {
             @Override
             public void end(boolean interrupted) {
                 runOpenLoop(0);
-                if(!interrupted){
+//                if(!interrupted){
                     resetEncoder();
-                }
+//                }
                 isResetting = false;
             }
         };
