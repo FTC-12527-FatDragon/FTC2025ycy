@@ -27,7 +27,7 @@ public class Chamber1Plus3 extends LinearOpMode {
 
   // Chamber hang location
   public static double xValue1 = 16;
-  public static double yValue1 = -32;
+  public static double yValue1 = -32.5;
   public static double heading1 = 90;
 
   // Grab location

@@ -31,7 +31,7 @@ public class Lift extends MotorPIDSlideSubsystem {
   private double lastTime;
 
   //  private boolean isResetting = false;
-  public static double resetPower = -0.5;
+  public static double resetPower = -0.9;
   public static double hangAddtionalPower = 0;
 
   private final ElevatorFeedforward feedforward;
