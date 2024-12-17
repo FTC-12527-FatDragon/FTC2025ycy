@@ -1,10 +1,6 @@
 package org.firstinspires.ftc.teamcode.subsystems;
 
 import com.acmerobotics.dashboard.config.Config;
-import com.arcrobotics.ftclib.command.Command;
-import com.arcrobotics.ftclib.command.CommandBase;
-import com.arcrobotics.ftclib.command.StartEndCommand;
-import com.arcrobotics.ftclib.command.SubsystemBase;
 import com.arcrobotics.ftclib.controller.PIDController;
 import com.arcrobotics.ftclib.controller.wpilibcontroller.ElevatorFeedforward;
 import com.arcrobotics.ftclib.hardware.motors.Motor;
@@ -21,12 +17,11 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.utils.MathUtils;
 
 @Config
-public class Lift extends SubsystemBase {
+public class Lift extends MotorPIDSlideSubsystem {
   public static double kP = 0.01, kI = 0.001, kD = 0.0, kV = 0.0003, kS = 0.12, kG = 0.12;
   private final PIDController pidController;
   private final Motor liftMotorUp;
   private final Motor liftMotorDown;
-  private final Telemetry telemetry;
 
   private double lastSetpoint = 0;
 
@@ -36,7 +31,7 @@ public class Lift extends SubsystemBase {
   private final ElapsedTime timer;
   private double lastTime;
 
-  private boolean isResetting = false;
+//  private boolean isResetting = false;
   public static double resetPower = -0.5;
 
   private final ElevatorFeedforward feedforward;
@@ -65,7 +60,7 @@ public class Lift extends SubsystemBase {
     lastTime = timer.time(TimeUnit.MILLISECONDS);
   }
 
-  public void runLiftOpen(double percent) {
+  public void runOpenLoop(double percent) {
 //    goal = Goal.OPEN_LOOP;
     if(percent==0){
       isResetting = false;
@@ -77,8 +72,12 @@ public class Lift extends SubsystemBase {
     liftMotorDown.set(output);
   }
 
+  public double getResetPower(){
+    return resetPower;
+  }
+
   public void resetEncoder() {
-    runLiftOpen(0);
+    runOpenLoop(0);
     pidController.reset();
     pidController.calculate(0);
     goal = Goal.STOW;
@@ -88,63 +87,6 @@ public class Lift extends SubsystemBase {
     telemetry.addData("Lift.Current Position", getCurrentPosition());
     telemetry.addData("Lift.Error", pidController.getPositionError());
     // telemetry.update();
-  }
-
-  public Command manualResetCommand() {
-    return new StartEndCommand(
-        () -> {
-          runLiftOpen(resetPower);
-        },
-        this::resetEncoder,
-        this);
-  }
-
-  public Command autoResetCommand(){
-    return new CommandBase() {
-      double minVal = Double.POSITIVE_INFINITY;
-      double velo, lastvelo;
-      double startpos, lastpos, lastTime = 0;
-      final ElapsedTime t = new ElapsedTime(ElapsedTime.Resolution.MILLISECONDS);
-      @Override
-      public void initialize () {
-        lastpos = getCurrentPosition();
-        startpos = lastpos;
-        isResetting = true;
-        velo = 0;
-        t.reset();
-        runLiftOpen(resetPower);
-      }
-      @Override
-      public void execute () {
-        lastvelo = velo;
-        double nowpos = getCurrentPosition();
-        double nowtime = t.time();
-        velo = (nowpos - lastpos) / (nowtime - lastTime);
-        lastTime = nowtime;
-        if (minVal > nowpos) {
-          minVal = nowpos;
-        }
-        lastpos = nowpos;
-        telemetry.addData("Lift.AutoResetCommand.vel", velo);
-        telemetry.addData("Lift.AutoResetCommand.dt", lastpos - nowtime);
-        telemetry.addData("Lift.AutoResetCommand.minVal", minVal);
-        telemetry.addData("Lift.AutoResetCommand.AvgVel", ((getCurrentPosition() - startpos) / t.time()));
-      }
-      @Override
-      public boolean isFinished() {
-        if(Math.abs(velo)<Math.abs(((getCurrentPosition() - startpos) / t.time())*0.9) && lastvelo>velo){
-          return true;
-        }else return false;
-      }
-      @Override
-      public void end(boolean interrupted) {
-        runLiftOpen(0);
-        if(!interrupted){
-          resetEncoder();
-        }
-        isResetting = false;
-      }
-    };
   }
 
   public long getCurrentPosition() {

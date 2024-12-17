@@ -135,7 +135,7 @@ public class Basket1Plus3 extends LinearOpMode {
             new SequentialCommandGroup(
 
                 new InstantCommand(() -> drive.setPoseEstimate(trajs1.start()))
-                    .alongWith(slide.resetCommand().withTimeout(200)),
+                    .alongWith(slide.manualResetCommand().withTimeout(200)),
                 slide.aimCommand().beforeStarting(liftClaw::closeClaw),
 
                 followTrajectory(drive, trajs1).alongWith(upLiftToBasket(lift, liftClaw)),

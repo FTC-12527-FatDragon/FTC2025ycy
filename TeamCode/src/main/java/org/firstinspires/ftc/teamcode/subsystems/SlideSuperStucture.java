@@ -4,7 +4,6 @@ import com.arcrobotics.ftclib.command.Command;
 import com.arcrobotics.ftclib.command.InstantCommand;
 import com.arcrobotics.ftclib.command.SequentialCommandGroup;
 import com.arcrobotics.ftclib.command.StartEndCommand;
-import com.arcrobotics.ftclib.command.SubsystemBase;
 import com.arcrobotics.ftclib.command.WaitCommand;
 import com.arcrobotics.ftclib.command.WaitUntilCommand;
 import com.arcrobotics.ftclib.controller.PIDController;
@@ -20,7 +19,7 @@ import lombok.Setter;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.utils.MathUtils;
 
-public class SlideSuperStucture extends SubsystemBase {
+public class SlideSuperStucture extends MotorPIDSlideSubsystem {
   private final Servo intakeClawServo, wristServo, wristTurnServo;
   private final Servo slideArmServo;
   private final DcMotorEx slideMotor;
@@ -37,9 +36,10 @@ public class SlideSuperStucture extends SubsystemBase {
 
   @Setter @Getter private Goal goal = Goal.STOW;
 
-  private final Telemetry telemetry; // 0 0.5 0.8
+//  private final Telemetry telemetry; // 0 0.5 0.8
 
-  private boolean isResettingSlide = false;
+//  private boolean isResetting = false;
+  public static double resetPower = -0.5;
 
   public SlideSuperStucture(final HardwareMap hardwareMap, final Telemetry telemetry) {
     slideArmServo = hardwareMap.get(Servo.class, "slideArmServo");
@@ -229,39 +229,51 @@ public class SlideSuperStucture extends SubsystemBase {
   }
 
   private boolean slideMotorAtGoal() {
-    return MathUtils.isNear(goal.slideExtension, slideMotor.getCurrentPosition(), 10);
+    return MathUtils.isNear(goal.slideExtension, getCurrentPosition(), 10);
   }
 
   private boolean slideMotorAtHome() {
-    return MathUtils.isNear(0, slideMotor.getCurrentPosition(), 10);
+    return MathUtils.isNear(0, getCurrentPosition(), 10);
   }
 
-  public void runLiftOpen(double percent) {
+  public long getCurrentPosition() {
+    return slideMotor.getCurrentPosition();
+  }
 
+  public double getResetPower() {
+    return resetPower;
+  }
+
+  @Override
+  public void runOpenLoop(double percent) {
     double output = Range.clip(percent, -1, 1);
     slideMotor.setPower(output);
   }
 
-  public Command resetCommand() {
-    return new StartEndCommand(
-            () -> {
-              runLiftOpen(-0.3);
-              isResettingSlide = true;
-            },
-            () -> {
-              pidController.reset();
-              pidController.calculate(0);
-              runLiftOpen(0);
-              // TODO: does this work?
-              slideMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-              slideMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-              isResettingSlide = false;
-            },
-            this);
+  public void resetEncoder() {
+    runOpenLoop(0);
+    pidController.reset();
+    pidController.calculate(0);
+    // TODO: does this work?
+    slideMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+    slideMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
   }
 
+//  public Command resetCommand() {
+//    return new StartEndCommand(
+//            () -> {
+//              runOpenLoop();
+//              isResetting = true;
+//            },
+//            () -> {
+//
+//              isResetting = false;
+//            },
+//            this);
+//  }
+
   public boolean atHome() {
-    return MathUtils.isNear(slideMotor.getCurrentPosition(), 0, 5);
+    return MathUtils.isNear(getCurrentPosition(), 0, 5);
   }
 
   @Override
@@ -275,9 +287,9 @@ public class SlideSuperStucture extends SubsystemBase {
     telemetry.addData("Goal Extension", setpointTicks);
     telemetry.update();
 
-    double pidPower = pidController.calculate(slideMotor.getCurrentPosition(), setpointTicks);
+    double pidPower = pidController.calculate(getCurrentPosition(), setpointTicks);
     pidPower*=12/batteryVoltageSensor.getVoltage();
-    if (!isResettingSlide) slideMotor.setPower(Range.clip(pidPower, -1, 1));
+    if (!isResetting) slideMotor.setPower(Range.clip(pidPower, -1, 1));
   }
 
   public void setServoController(boolean enable) {

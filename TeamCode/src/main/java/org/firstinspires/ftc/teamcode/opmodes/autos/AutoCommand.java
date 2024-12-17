@@ -84,7 +84,7 @@ public class AutoCommand {
     return new ParallelCommandGroup(
         slide.aimCommand(),
          // TODO: needs discussion
-         slide.resetCommand().withTimeout(1000),//interruptOn(slide::atHome),
+         slide.manualResetCommand().withTimeout(1000),//interruptOn(slide::atHome),
         // lift.resetCommand().interruptOn(() -> lift.atHome(3)),
         lift.manualResetCommand().withTimeout(1000),
         new InstantCommand(liftClaw::openClaw));
