@@ -19,6 +19,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import java.util.function.Supplier;
 import org.firstinspires.ftc.teamcode.commands.TeleopDriveCommand;
 import org.firstinspires.ftc.teamcode.lib.roadrunner.drive.opmode.LocalizationTest;
+import org.firstinspires.ftc.teamcode.subsystems.Elevator;
 import org.firstinspires.ftc.teamcode.subsystems.Lift;
 import org.firstinspires.ftc.teamcode.subsystems.LiftClaw;
 import org.firstinspires.ftc.teamcode.subsystems.SlideSuperStucture;
@@ -33,6 +34,7 @@ public class TXBetaBotSolo extends CommandOpMode {
   private LiftClaw liftClaw;
   private SlideSuperStucture slide;
   private SampleMecanumDrive drive;
+  private Elevator elevator;
 
   private boolean isPureHandoffCompelte = false;
 
@@ -45,6 +47,7 @@ public class TXBetaBotSolo extends CommandOpMode {
     liftClaw = new LiftClaw(hardwareMap);
     slide = new SlideSuperStucture(hardwareMap, telemetry);
     drive = new SampleMecanumDrive(hardwareMap);
+    elevator = new Elevator(hardwareMap);
     drive.setPoseEstimate(autoEndPose);
     autoEndPose = new Pose2d();
 
@@ -205,6 +208,13 @@ public class TXBetaBotSolo extends CommandOpMode {
                 gamepadEx1.getButton(GamepadKeys.Button.RIGHT_BUMPER)
                     && slide.getGoal() == SlideSuperStucture.Goal.AIM)
         .whenPressed(new InstantCommand(() -> slide.rightTurnServo()));
+
+    new FunctionalButton(
+            () -> gamepad1.dpad_up && gamepad1.right_bumper
+    ).whenHeld(elevator.elevateCommand());
+
+    new FunctionalButton(() -> gamepad1.dpad_down && gamepad1.right_bumper)
+            .whenHeld(elevator.declineCommand());
   }
 
   @Override
