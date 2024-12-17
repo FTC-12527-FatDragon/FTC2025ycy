@@ -63,81 +63,80 @@ public class Chamber1Plus3 extends LinearOpMode {
   AlphaLift lift;
   AlphaSlide slide;
 
-  Pose2d startPose = new Pose2d(19, 0 , Math.toRadians(0));
+  Pose2d chamberPose = new Pose2d(xChamber, yChamber, Math.toRadians(headingChamber));
+  Pose2d leftPose = new Pose2d(xLeftMost, yLeftMost, Math.toRadians(headingLeftMost));
+  Pose2d middlePose = new Pose2d(xMiddle, yMiddle, Math.toRadians(headingMiddle));
+  Pose2d rightPose = new Pose2d(xRightMost, yRightMost, Math.toRadians(headingRightMost));
+  Pose2d grabPose = new Pose2d(xGrab, yGrab, Math.toRadians(headingGrab));
+  Pose2d transferPose = new Pose2d(xTransfer, yTransfer, headingTransfer);
+  Pose2d ascentPose = new Pose2d(xAscent, yAscent, Math.toRadians(headingAscent));
+  Pose2d observationPose =
+          new Pose2d(xObservation, yObservation, Math.toRadians(headingObservation));
 
   // Start to Basket
   TrajectorySequence chamberToFirst =
-      TrajectoryManager.trajectorySequenceBuilder(startPose)
-          .splineToLinearHeading(new Pose2d(xTransfer, yTransfer, Math.toRadians(headingTransfer)),
-                  Math.toRadians(0))
-          .splineToLinearHeading(new Pose2d(xLeftMost, yLeftMost, Math.toRadians(headingLeftMost)),
-                  Math.toRadians(-90))
+      TrajectoryManager.trajectorySequenceBuilder(chamberPose)
+          .splineToLinearHeading(transferPose, Math.toRadians(0))
+          .splineToLinearHeading(leftPose, Math.toRadians(-90))
           .build();
 
-  // Basket to the rightmost sample
+  // Basket to the leftmost sample
   TrajectorySequence firstToObservation =
-      TrajectoryManager.trajectorySequenceBuilder(chamberToFirst.end())
-          .lineToLinearHeading(new Pose2d(xObservation, yObservation, Math.toRadians(headingObservation)))
+      TrajectoryManager.trajectorySequenceBuilder(leftPose)
+          .lineToLinearHeading(observationPose)
           .build();
 
   // rightmost sample to basket
   TrajectorySequence observationToSecond =
-      TrajectoryManager.trajectorySequenceBuilder(firstToObservation.end())
-          .lineToLinearHeading(new Pose2d(xTransfer, yTransfer, Math.toRadians(headingTransfer)))
-          .splineToLinearHeading(new Pose2d(xMiddle, yMiddle, Math.toRadians(headingMiddle)),
-                  Math.toRadians(-180))
+      TrajectoryManager.trajectorySequenceBuilder(observationPose)
+          .lineToLinearHeading(transferPose)
+          .splineToLinearHeading(middlePose, Math.toRadians(-180))
           .build();
 
   // basket to middle sample
   TrajectorySequence secondToObservation =
-      TrajectoryManager.trajectorySequenceBuilder(observationToSecond.end())
-          .lineToLinearHeading(new Pose2d(xObservation, yObservation, Math.toRadians(headingObservation)))
+      TrajectoryManager.trajectorySequenceBuilder(middlePose)
+          .lineToLinearHeading(observationPose)
           .build();
 
   // middle sample to basket
   TrajectorySequence observationToThird =
-      TrajectoryManager.trajectorySequenceBuilder(secondToObservation.end())
-          .lineToLinearHeading(new Pose2d(xTransfer, yTransfer, Math.toRadians(headingTransfer)))
-          .splineToLinearHeading(new Pose2d(xRightMost, yRightMost, Math.toRadians(headingRightMost)),
-                   Math.toRadians(-180))
+      TrajectoryManager.trajectorySequenceBuilder(observationPose)
+          .lineToLinearHeading(transferPose)
+          .splineToLinearHeading(rightPose, Math.toRadians(-180))
           .build();
 
-  // basket to leftmost sample
+  // basket to rightmost sample
   TrajectorySequence thirdToObservation =
-      TrajectoryManager.trajectorySequenceBuilder(observationToThird.end())
-          .lineToLinearHeading(new Pose2d(xObservation, yObservation, Math.toRadians(headingObservation)))
+      TrajectoryManager.trajectorySequenceBuilder(rightPose)
+          .lineToLinearHeading(observationPose)
           .build();
 
   // leftmost sample to basket
   TrajectorySequence observationToGrab =
-      TrajectoryManager.trajectorySequenceBuilder(thirdToObservation.end())
-          .splineToLinearHeading(new Pose2d(xChamber, yChamber, Math.toRadians(headingChamber)),
-                  Math.toRadians(-180))
+      TrajectoryManager.trajectorySequenceBuilder(observationPose)
+          .splineToLinearHeading(chamberPose, Math.toRadians(-180))
           .build();
 
   // basket to ascent zone
   TrajectorySequence grabToChamber =
-      TrajectoryManager.trajectorySequenceBuilder(observationToGrab.end())
-          .splineToLinearHeading(new Pose2d(xChamber, yChamber, Math.toRadians(headingChamber)),
-                  Math.toRadians(0))
+      TrajectoryManager.trajectorySequenceBuilder(grabPose)
+          .splineToLinearHeading(chamberPose, Math.toRadians(0))
           .forward(3)
           .strafeLeft(3)
           .build();
 
   // basket to ascent zone
   TrajectorySequence chamberToGrab =
-          TrajectoryManager.trajectorySequenceBuilder(grabToChamber.end())
-              .splineToLinearHeading(new Pose2d(xGrab, yGrab, Math.toRadians(headingGrab)),
-                      Math.toRadians(-180))
-              .build();
+      TrajectoryManager.trajectorySequenceBuilder(chamberPose)
+          .splineToLinearHeading(grabPose, Math.toRadians(-180))
+          .build();
 
   TrajectorySequence chamberToAscent =
-          TrajectoryManager.trajectorySequenceBuilder(grabToChamber.end())
-              .splineToLinearHeading(new Pose2d(xTransfer, yTransfer, Math.toRadians(headingTransfer)),
-                      Math.toRadians(0))
-              .splineToLinearHeading(new Pose2d(xAscent, yAscent, Math.toRadians(headingAscent)),
-                      Math.toRadians(90))
-              .build();
+      TrajectoryManager.trajectorySequenceBuilder(chamberPose)
+          .splineToLinearHeading(transferPose, Math.toRadians(0))
+          .splineToLinearHeading(ascentPose, Math.toRadians(90))
+          .build();
 
   @Override
   public void runOpMode() throws InterruptedException {
@@ -145,7 +144,7 @@ public class Chamber1Plus3 extends LinearOpMode {
 
     // Subsystems Initialized
     lift = new AlphaLift(hardwareMap, telemetry);
-    liftClaw = new AlphaLiftClaw(hardwareMap,telemetry);
+    liftClaw = new AlphaLiftClaw(hardwareMap, telemetry);
     slide = new AlphaSlide(hardwareMap, telemetry);
 
     SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
@@ -157,37 +156,30 @@ public class Chamber1Plus3 extends LinearOpMode {
         .schedule(
             new SequentialCommandGroup(
                 initialize(liftClaw, slide),
-
-                new AutoDriveCommand(drive, grabToChamber).alongWith(grabToPreHang(lift, liftClaw)),
-                chamberToGrab(lift, liftClaw),
-
+                new AutoDriveCommand(drive, grabToChamber).alongWith(grabToPreHang(lift, liftClaw))
+                        .andThen(upToChamber(lift))
+                        .andThen(chamberToGrab(lift, liftClaw)),
                 new AutoDriveCommand(drive, chamberToFirst),
                 new AutoDriveCommand(drive, firstToObservation),
                 new AutoDriveCommand(drive, observationToSecond),
                 new AutoDriveCommand(drive, secondToObservation),
                 new AutoDriveCommand(drive, observationToThird),
                 new AutoDriveCommand(drive, thirdToObservation),
-
                 new AutoDriveCommand(drive, observationToGrab)
-                        .andThen(grabToPreHang(lift, liftClaw)),
-                new AutoDriveCommand(drive, grabToChamber).andThen(upToChamber(lift))
-                        .andThen(chamberToGrab(lift, liftClaw)),
-
-                new AutoDriveCommand(drive, chamberToGrab)
-                        .andThen(grabToPreHang(lift, liftClaw)),
-                new AutoDriveCommand(drive, grabToChamber).andThen(upToChamber(lift))
-                        .andThen(chamberToGrab(lift, liftClaw)),
-
-                new AutoDriveCommand(drive, chamberToGrab)
-                        .andThen(grabToPreHang(lift, liftClaw)),
-                new AutoDriveCommand(drive, grabToChamber).andThen(upToChamber(lift))
-                        .andThen(chamberToGrab(lift, liftClaw)),
-
-                new AutoDriveCommand(drive, chamberToAscent).alongWith(autoFinish(liftClaw, lift, slide))
-
-            )
-        );
-
+                    .andThen(grabToPreHang(lift, liftClaw)),
+                new AutoDriveCommand(drive, grabToChamber)
+                    .andThen(upToChamber(lift))
+                    .andThen(chamberToGrab(lift, liftClaw)),
+                new AutoDriveCommand(drive, chamberToGrab).andThen(grabToPreHang(lift, liftClaw)),
+                new AutoDriveCommand(drive, grabToChamber)
+                    .andThen(upToChamber(lift))
+                    .andThen(chamberToGrab(lift, liftClaw)),
+                new AutoDriveCommand(drive, chamberToGrab).andThen(grabToPreHang(lift, liftClaw)),
+                new AutoDriveCommand(drive, grabToChamber)
+                    .andThen(upToChamber(lift))
+                    .andThen(chamberToGrab(lift, liftClaw)),
+                new AutoDriveCommand(drive, chamberToAscent)
+                    .alongWith(autoFinish(liftClaw, lift, slide))));
 
     waitForStart();
 

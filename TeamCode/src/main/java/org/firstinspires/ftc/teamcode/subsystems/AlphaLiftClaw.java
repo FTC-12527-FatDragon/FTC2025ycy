@@ -5,14 +5,13 @@ import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.arcrobotics.ftclib.command.SubsystemBase;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
-
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
 public class AlphaLiftClaw extends SubsystemBase {
   private final Servo liftArmServo;
   private final Servo liftClawServo;
   private final Servo liftWristServo;
-  private boolean isClawOpen;
+  private boolean isClawOpen = false;
   private final Telemetry telemetry;
 
   public AlphaLiftClaw(final HardwareMap hardwareMap, Telemetry telemetry) {
@@ -26,6 +25,7 @@ public class AlphaLiftClaw extends SubsystemBase {
     liftWristServo.setPosition(ServoPositions.STOW.liftWristPosition);
     liftArmServo.setPosition(ServoPositions.STOW.liftArmPosition);
     liftClawServo.setPosition(ServoPositions.STOW.liftClawPosition);
+    isClawOpen = false;
   }
 
   public void grabWrist() {
@@ -51,10 +51,12 @@ public class AlphaLiftClaw extends SubsystemBase {
 
   public void openClaw() {
     liftClawServo.setPosition(ServoPositions.GRAB.liftClawPosition);
+    isClawOpen = true;
   }
 
   public void closeClaw() {
     liftClawServo.setPosition(ServoPositions.STOW.liftClawPosition);
+    isClawOpen = false;
   }
 
   public void upLiftArm() {
@@ -79,9 +81,9 @@ public class AlphaLiftClaw extends SubsystemBase {
     BASKET(0.39, 0.27, 0.56),
     GRAB(0.08, 0.5, 0.06);
 
-    private double liftArmPosition;
-    private double liftWristPosition;
-    private double liftClawPosition;
+    private final double liftArmPosition;
+    private final double liftWristPosition;
+    private final double liftClawPosition;
 
     ServoPositions(double liftArmPosition, double liftClawPosition, double liftWristPosition) {
       this.liftArmPosition = liftArmPosition;
@@ -90,12 +92,9 @@ public class AlphaLiftClaw extends SubsystemBase {
     }
   }
 
-
   @Override
   public void periodic() {
     telemetry.addData("Lift Arm Position", liftArmServo.getPosition());
     telemetry.update();
   }
 }
-
-

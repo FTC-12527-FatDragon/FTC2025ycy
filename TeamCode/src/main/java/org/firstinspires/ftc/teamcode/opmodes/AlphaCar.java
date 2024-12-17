@@ -18,7 +18,6 @@ import org.firstinspires.ftc.teamcode.commands.TeleopDriveCommand;
 import org.firstinspires.ftc.teamcode.subsystems.AlphaLift;
 import org.firstinspires.ftc.teamcode.subsystems.AlphaLiftClaw;
 import org.firstinspires.ftc.teamcode.subsystems.AlphaSlide;
-import org.firstinspires.ftc.teamcode.subsystems.Lift;
 import org.firstinspires.ftc.teamcode.subsystems.drivetrain.MecanumDrive;
 import org.firstinspires.ftc.teamcode.utils.FunctionalButton;
 
@@ -59,14 +58,13 @@ public class AlphaCar extends CommandOpMode {
     gamepadEx1
         .getGamepadButton(GamepadKeys.Button.X)
         .whenPressed(
-                new ConditionalCommand(
-                        new InstantCommand(),
-                        new ParallelCommandGroup(
-                                new InstantCommand(() -> lift.setGoal(AlphaLift.Goal.BASKET)),
-                                new WaitUntilCommand(() -> lift.getCurrentPosition() > 600)
-                                        .andThen(new InstantCommand(liftClaw::upLiftArm))),
-                        () -> !isPureHandoffComplete)
-                );
+            new ConditionalCommand(
+                new InstantCommand(),
+                new ParallelCommandGroup(
+                    new InstantCommand(() -> lift.setGoal(AlphaLift.Goal.BASKET)),
+                    new WaitUntilCommand(() -> lift.getCurrentPosition() > 600)
+                        .andThen(new InstantCommand(liftClaw::upLiftArm))),
+                () -> !isPureHandoffComplete));
 
     // Basket Drop and Back
     gamepadEx1
@@ -111,14 +109,22 @@ public class AlphaCar extends CommandOpMode {
     new FunctionalButton(
             () ->
                 gamepadEx1.getButton(GamepadKeys.Button.DPAD_RIGHT)
-                    && slide.getGoal() == AlphaSlide.Goal.AIM && lift.getGoal() == AlphaLift.Goal.STOW)
+                    && slide.getGoal() == AlphaSlide.Goal.AIM
+                    && lift.getGoal() == AlphaLift.Goal.STOW)
         .whenPressed(
-            new InstantCommand(() -> slide.handoffWristTurn())
-                    .alongWith(handoffCommand
-                            .get()
-                            .andThen(new WaitCommand(50))
-                            .andThen(new InstantCommand(() -> isPureHandoffComplete = true))),
-                 false);
+            new ConditionalCommand(
+                    new InstantCommand(() -> slide.preHandoffSlideExtension()),
+                    new InstantCommand(),
+                    () -> !slide.isSlideForward())
+                .alongWith(
+                    new InstantCommand(() -> slide.handoffWristTurn())
+                        .alongWith(
+                            handoffCommand
+                                .get()
+                                .andThen(new WaitCommand(50))
+                                .andThen(new InstantCommand(() -> isPureHandoffComplete = true))),
+                    new InstantCommand()),
+            false);
 
     // Chamber Command from Grab
     Supplier<Command> preHang =
@@ -136,12 +142,14 @@ public class AlphaCar extends CommandOpMode {
 
     Supplier<Command> stow =
         () ->
-            new ConditionalCommand(new InstantCommand() ,
-                    new InstantCommand(() -> liftClaw.openClaw())
-                .andThen(new InstantCommand(() -> liftClaw.foldLiftArm()))
-                .alongWith(new InstantCommand(() -> liftClaw.basketWrist()))
-                .andThen(new InstantCommand(() -> lift.setGoal(AlphaLift.Goal.STOW)))
-                .andThen(new InstantCommand(() -> isHangComplete = false)), () -> !isHangComplete);
+            new ConditionalCommand(
+                new InstantCommand(),
+                new InstantCommand(() -> liftClaw.openClaw())
+                    .andThen(new InstantCommand(() -> liftClaw.foldLiftArm()))
+                    .alongWith(new InstantCommand(() -> liftClaw.basketWrist()))
+                    .andThen(new InstantCommand(() -> lift.setGoal(AlphaLift.Goal.STOW)))
+                    .andThen(new InstantCommand(() -> isHangComplete = false)),
+                () -> !isHangComplete);
 
     SelectCommand specimenCommands =
         new SelectCommand(
@@ -160,19 +168,19 @@ public class AlphaCar extends CommandOpMode {
             () ->
                 gamepadEx1.getButton(GamepadKeys.Button.DPAD_UP)
                     && lift.getGoal() == AlphaLift.Goal.PRE_HANG)
-        .whenPressed(new InstantCommand(() -> lift.setGoal(AlphaLift.Goal.HANG))
+        .whenPressed(
+            new InstantCommand(() -> lift.setGoal(AlphaLift.Goal.HANG))
                 .andThen(new WaitCommand(300))
-                .andThen(new InstantCommand(() -> isHangComplete = true))
-        );
+                .andThen(new InstantCommand(() -> isHangComplete = true)));
 
     new FunctionalButton(
             () ->
                 gamepadEx1.getButton(GamepadKeys.Button.DPAD_DOWN)
                     && lift.getGoal() == AlphaLift.Goal.HANG)
-        .whenPressed(new InstantCommand(() -> lift.setGoal(AlphaLift.Goal.PRE_HANG))
+        .whenPressed(
+            new InstantCommand(() -> lift.setGoal(AlphaLift.Goal.PRE_HANG))
                 .andThen(new WaitCommand(300))
-                .andThen(new InstantCommand(() -> isHangComplete = false))
-        );
+                .andThen(new InstantCommand(() -> isHangComplete = false)));
 
     new FunctionalButton(
             () ->

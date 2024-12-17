@@ -6,7 +6,6 @@ import com.arcrobotics.ftclib.command.ParallelCommandGroup;
 import com.arcrobotics.ftclib.command.SequentialCommandGroup;
 import com.arcrobotics.ftclib.command.WaitCommand;
 import com.arcrobotics.ftclib.command.WaitUntilCommand;
-
 import org.firstinspires.ftc.teamcode.subsystems.AlphaLift;
 import org.firstinspires.ftc.teamcode.subsystems.AlphaLiftClaw;
 import org.firstinspires.ftc.teamcode.subsystems.AlphaSlide;
@@ -41,11 +40,10 @@ public class AutoCommand {
   public static Command grabToPreHang(AlphaLift lift, AlphaLiftClaw liftClaw) {
     return new SequentialCommandGroup(
         new InstantCommand(liftClaw::closeClaw)
-            .andThen(new InstantCommand(() -> lift.setGoal(AlphaLift.Goal.PRE_HANG))
+            .andThen(
+                new InstantCommand(() -> lift.setGoal(AlphaLift.Goal.PRE_HANG))
                     .alongWith(new InstantCommand(liftClaw::chamberWrist))
-                    .andThen(new InstantCommand(liftClaw::chamberLiftArm))
-            )
-    );
+                    .andThen(new InstantCommand(liftClaw::chamberLiftArm))));
   }
 
   public static Command upToChamber(AlphaLift lift) {
@@ -54,18 +52,18 @@ public class AutoCommand {
 
   public static Command chamberToGrab(AlphaLift lift, AlphaLiftClaw liftClaw) {
     return new InstantCommand(() -> lift.setGoal(AlphaLift.Goal.GRAB))
-            .alongWith(new InstantCommand(liftClaw::openClaw))
-            .andThen(new InstantCommand(liftClaw::grabWrist))
-            .alongWith(new InstantCommand(liftClaw::grabLiftArm));
+        .alongWith(new InstantCommand(liftClaw::openClaw))
+        .andThen(new InstantCommand(liftClaw::grabWrist))
+        .alongWith(new InstantCommand(liftClaw::grabLiftArm));
   }
 
   public static Command initialize(AlphaLiftClaw liftClaw, AlphaSlide slide) {
     return new ParallelCommandGroup(
-        new InstantCommand(slide::forwardSlideExtension),
-        new InstantCommand(liftClaw::closeClaw),
-        new InstantCommand(slide::slideArmUp),
-        new InstantCommand(slide::wristUp),
-        new InstantCommand(slide::openIntakeClaw));
+        new InstantCommand(liftClaw::initialize),
+        new InstantCommand(liftClaw::grabWrist),
+        new InstantCommand(liftClaw::grabLiftArm),
+        new InstantCommand(liftClaw::openClaw),
+        new InstantCommand(slide::initialize));
   }
 
   public static Command autoFinish(AlphaLiftClaw liftClaw, AlphaLift lift, AlphaSlide slide) {

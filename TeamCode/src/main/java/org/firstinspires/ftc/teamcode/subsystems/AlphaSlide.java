@@ -133,7 +133,7 @@ public class AlphaSlide extends SubsystemBase {
     STOW(0.1, 0.6, 0.31, 0.4, 0.5),
     AIM(slideExtensionVal, 0.45, 0.80, turnAngleDeg, 0.5),
     GRAB(slideExtensionVal, 0.31, 0.80, turnAngleDeg, 0.23),
-    HANDOFF(0.14, 0.6, 0.31, 0.4, 0.23);
+    HANDOFF(0.17, 0.6, 0.31, 0.4, 0.23);
 
     private final double slideExtension;
     private final double slideArmPos;
@@ -156,11 +156,21 @@ public class AlphaSlide extends SubsystemBase {
   }
 
   public void forwardSlideExtension() {
-    slideExtensionVal = 0.7;
+    slideExtensionVal = 0.76;
   }
 
   public void backwardSlideExtension() {
-    slideExtensionVal = 0.14;
+    slideExtensionVal = 0.17;
+  }
+
+  private final double isSlideExtendedVal = 0.3;
+
+  public void preHandoffSlideExtension() {
+    slideExtensionVal = isSlideExtendedVal;
+  }
+
+  public boolean isSlideForward() {
+    return slideExtensionVal > isSlideExtendedVal;
   }
 
   public void leftTurnServo() {
@@ -212,7 +222,7 @@ public class AlphaSlide extends SubsystemBase {
   @Override
   public void periodic() {
 
-    if(wristTurnServo!=null){
+    if (wristTurnServo != null) {
       wristTurnServo.setPosition(Range.clip(turnAngleDeg, 0, 1));
       slideRightServo.setPosition(Range.clip(slideExtensionVal, 0, 1));
 

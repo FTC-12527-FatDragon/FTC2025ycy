@@ -4,6 +4,8 @@ import com.arcrobotics.ftclib.command.SubsystemBase;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+
+import org.firstinspires.ftc.teamcode.lib.Units;
 import org.firstinspires.ftc.teamcode.lib.gobilda.GoBildaPinpointDriver;
 
 public class MecanumDrive extends SubsystemBase {
@@ -28,7 +30,7 @@ public class MecanumDrive extends SubsystemBase {
         GoBildaPinpointDriver.EncoderDirection.FORWARD,
         GoBildaPinpointDriver.EncoderDirection.FORWARD);
     od.setEncoderResolution(GoBildaPinpointDriver.GoBildaOdometryPods.goBILDA_4_BAR_POD);
-    od.setOffsets(0, 0);
+    od.setOffsets(Units.mmToInches(1000), Units.mmToInches(1100));
 
     leftFrontMotor.setDirection(DcMotorSimple.Direction.REVERSE);
     leftBackMotor.setDirection(DcMotorSimple.Direction.REVERSE);
@@ -38,7 +40,7 @@ public class MecanumDrive extends SubsystemBase {
     yawOffset = od.getHeading();
   }
 
-  public void moveRobotFieldRelatice(double forward, double fun, double turn) {
+  public void moveRobotFieldRelative(double forward, double fun, double turn) {
     od.update();
 
     double botHeading = od.getHeading() - yawOffset;
