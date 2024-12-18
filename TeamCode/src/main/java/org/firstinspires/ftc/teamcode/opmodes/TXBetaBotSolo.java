@@ -210,11 +210,16 @@ public class TXBetaBotSolo extends CommandOpMode {
         .whenPressed(new InstantCommand(() -> slide.rightTurnServo()));
 
     new FunctionalButton(
-            () -> gamepad1.dpad_up && gamepad1.right_bumper
-    ).whenHeld(elevator.elevateCommand());
+            () ->
+                gamepadEx1.getButton(GamepadKeys.Button.DPAD_UP)
+                    && gamepadEx1.getButton(GamepadKeys.Button.RIGHT_BUMPER))
+        .whenHeld(elevator.elevateCommand());
 
-    new FunctionalButton(() -> gamepad1.dpad_down && gamepad1.right_bumper)
-            .whenHeld(elevator.declineCommand());
+    new FunctionalButton(
+            () ->
+                gamepadEx1.getButton(GamepadKeys.Button.DPAD_DOWN)
+                    && gamepadEx1.getButton(GamepadKeys.Button.RIGHT_BUMPER))
+        .whenHeld(elevator.declineCommand());
   }
 
   @Override

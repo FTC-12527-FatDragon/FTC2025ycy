@@ -90,9 +90,8 @@ public abstract class MotorPIDSlideSubsystem extends SubsystemBase {
       @Override
       public boolean isFinished() {
         if (Math.abs(velo) < Math.abs(((getCurrentPosition() - startpos) / t.time()) * 0.9)
-            && lastvelo > velo) {
-          return true;
-        } else return false;
+            && lastvelo > velo) return true;
+        return false;
       }
 
       @Override

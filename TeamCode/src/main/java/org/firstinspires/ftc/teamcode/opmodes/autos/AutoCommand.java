@@ -94,7 +94,8 @@ public class AutoCommand {
         new InstantCommand(slide::openIntakeClaw));
   }
 
-  public static Command autoFinish(SampleMecanumDrive drive, LiftClaw liftClaw, Lift lift, SlideSuperStucture slide) {
+  public static Command autoFinish(
+      SampleMecanumDrive drive, LiftClaw liftClaw, Lift lift, SlideSuperStucture slide) {
     return new ParallelCommandGroup(
         slide.aimCommand(),
         // TODO: needs discussion

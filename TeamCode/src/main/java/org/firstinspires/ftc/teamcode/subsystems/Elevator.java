@@ -7,34 +7,29 @@ import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 public class Elevator extends SubsystemBase {
-    final CRServo elevator;
-    public Elevator(HardwareMap hardwareMap){
-        elevator = hardwareMap.get(CRServo.class, "elevatorMotor");
-    }
+  final CRServo elevator;
 
-    public void elevate(){
-        elevator.setPower(1);
-    }
+  public Elevator(HardwareMap hardwareMap) {
+    elevator = hardwareMap.get(CRServo.class, "elevatorMotor");
+  }
 
-    public void decline(){
-        elevator.setPower(-1);
-    }
+  public void elevate() {
+    elevator.setPower(1);
+  }
 
-    public void stop(){
-        elevator.setPower(0);
-    }
+  public void decline() {
+    elevator.setPower(-1);
+  }
 
-    public Command elevateCommand(){
-        return new StartEndCommand(
-                this::elevate,
-                this::stop
-        );
-    }
+  public void stop() {
+    elevator.setPower(0);
+  }
 
-    public Command declineCommand(){
-        return new StartEndCommand(
-                this::decline,
-                this::stop
-        );
-    }
+  public Command elevateCommand() {
+    return new StartEndCommand(this::elevate, this::stop);
+  }
+
+  public Command declineCommand() {
+    return new StartEndCommand(this::decline, this::stop);
+  }
 }
