@@ -61,6 +61,7 @@ public class AlphaCar extends CommandOpMode {
             new ConditionalCommand(
                 new InstantCommand(),
                 new ParallelCommandGroup(
+                    slide.aimCommand(),
                     new InstantCommand(() -> lift.setGoal(AlphaLift.Goal.BASKET)),
                     new WaitUntilCommand(() -> lift.getCurrentPosition() > 600)
                         .andThen(new InstantCommand(liftClaw::upLiftArm))),
@@ -136,6 +137,7 @@ public class AlphaCar extends CommandOpMode {
     Supplier<Command> grab =
         () ->
             new InstantCommand(() -> lift.setGoal(AlphaLift.Goal.GRAB))
+                .alongWith(slide.aimCommand())
                 .alongWith(new InstantCommand(() -> liftClaw.openClaw()))
                 .andThen(new InstantCommand(() -> liftClaw.grabWrist()))
                 .alongWith(new InstantCommand(() -> liftClaw.grabLiftArm()));

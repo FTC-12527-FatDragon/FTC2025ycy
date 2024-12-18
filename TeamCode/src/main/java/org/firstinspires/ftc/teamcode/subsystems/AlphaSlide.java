@@ -130,10 +130,10 @@ public class AlphaSlide extends SubsystemBase {
   }
 
   public enum Goal {
-    STOW(0.1, 0.6, 0.31, 0.4, 0.5),
-    AIM(slideExtensionVal, 0.45, 0.80, turnAngleDeg, 0.5),
-    GRAB(slideExtensionVal, 0.31, 0.80, turnAngleDeg, 0.23),
-    HANDOFF(0.17, 0.6, 0.31, 0.4, 0.23);
+    STOW(0.1, 0.1, 0.39, 0.4, 0.5),
+    AIM(slideExtensionVal, 0.32, 0.75, turnAngleDeg, 0.5),
+    GRAB(slideExtensionVal, 0.47, 0.75, turnAngleDeg, 0.23),
+    HANDOFF(0.17, 0.1, 0.39, 0.4, 0.23);
 
     private final double slideExtension;
     private final double slideArmPos;

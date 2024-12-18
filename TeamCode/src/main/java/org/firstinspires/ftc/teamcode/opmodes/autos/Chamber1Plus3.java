@@ -158,28 +158,29 @@ public class Chamber1Plus3 extends LinearOpMode {
                 initialize(liftClaw, slide),
                 new AutoDriveCommand(drive, grabToChamber).alongWith(grabToPreHang(lift, liftClaw))
                         .andThen(upToChamber(lift))
-                        .andThen(chamberToGrab(lift, liftClaw)),
-                new AutoDriveCommand(drive, chamberToFirst),
-                new AutoDriveCommand(drive, firstToObservation),
-                new AutoDriveCommand(drive, observationToSecond),
-                new AutoDriveCommand(drive, secondToObservation),
-                new AutoDriveCommand(drive, observationToThird),
-                new AutoDriveCommand(drive, thirdToObservation),
-                new AutoDriveCommand(drive, observationToGrab)
-                    .andThen(grabToPreHang(lift, liftClaw)),
-                new AutoDriveCommand(drive, grabToChamber)
-                    .andThen(upToChamber(lift))
-                    .andThen(chamberToGrab(lift, liftClaw)),
-                new AutoDriveCommand(drive, chamberToGrab).andThen(grabToPreHang(lift, liftClaw)),
-                new AutoDriveCommand(drive, grabToChamber)
-                    .andThen(upToChamber(lift))
-                    .andThen(chamberToGrab(lift, liftClaw)),
-                new AutoDriveCommand(drive, chamberToGrab).andThen(grabToPreHang(lift, liftClaw)),
-                new AutoDriveCommand(drive, grabToChamber)
-                    .andThen(upToChamber(lift))
-                    .andThen(chamberToGrab(lift, liftClaw)),
-                new AutoDriveCommand(drive, chamberToAscent)
-                    .alongWith(autoFinish(liftClaw, lift, slide))));
+                        .andThen(chamberToGrab(lift, liftClaw))
+//                ,new AutoDriveCommand(drive, chamberToFirst),
+//                new AutoDriveCommand(drive, firstToObservation),
+//                new AutoDriveCommand(drive, observationToSecond),
+//                new AutoDriveCommand(drive, secondToObservation),
+//                new AutoDriveCommand(drive, observationToThird),
+//                new AutoDriveCommand(drive, thirdToObservation),
+//                new AutoDriveCommand(drive, observationToGrab)
+//                    .andThen(grabToPreHang(lift, liftClaw)),
+//                new AutoDriveCommand(drive, grabToChamber)
+//                    .andThen(upToChamber(lift))
+//                    .andThen(chamberToGrab(lift, liftClaw)),
+//                new AutoDriveCommand(drive, chamberToGrab).andThen(grabToPreHang(lift, liftClaw)),
+//                new AutoDriveCommand(drive, grabToChamber)
+//                    .andThen(upToChamber(lift))
+//                    .andThen(chamberToGrab(lift, liftClaw)),
+//                new AutoDriveCommand(drive, chamberToGrab).andThen(grabToPreHang(lift, liftClaw)),
+//                new AutoDriveCommand(drive, grabToChamber)
+//                    .andThen(upToChamber(lift))
+//                    .andThen(chamberToGrab(lift, liftClaw)),
+//                new AutoDriveCommand(drive, chamberToAscent)
+//                    .alongWith(autoFinish(liftClaw, lift, slide))
+            ));
 
     waitForStart();
 

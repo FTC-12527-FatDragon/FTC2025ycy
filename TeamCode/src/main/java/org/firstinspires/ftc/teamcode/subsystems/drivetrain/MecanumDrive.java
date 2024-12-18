@@ -1,10 +1,12 @@
 package org.firstinspires.ftc.teamcode.subsystems.drivetrain;
 
+import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.arcrobotics.ftclib.command.SubsystemBase;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
+import org.firstinspires.ftc.robotcore.external.navigation.Pose2D;
 import org.firstinspires.ftc.teamcode.lib.Units;
 import org.firstinspires.ftc.teamcode.lib.gobilda.GoBildaPinpointDriver;
 
@@ -30,7 +32,7 @@ public class MecanumDrive extends SubsystemBase {
         GoBildaPinpointDriver.EncoderDirection.FORWARD,
         GoBildaPinpointDriver.EncoderDirection.FORWARD);
     od.setEncoderResolution(GoBildaPinpointDriver.GoBildaOdometryPods.goBILDA_4_BAR_POD);
-    od.setOffsets(Units.mmToInches(1000), Units.mmToInches(1100));
+    od.setOffsets(Units.mmToInches(-1000), Units.mmToInches(-1100));
 
     leftFrontMotor.setDirection(DcMotorSimple.Direction.REVERSE);
     leftBackMotor.setDirection(DcMotorSimple.Direction.REVERSE);
@@ -82,6 +84,10 @@ public class MecanumDrive extends SubsystemBase {
     leftBackMotor.setPower(leftBackPower);
     rightFrontMotor.setPower(rightFrontPower);
     rightBackMotor.setPower(rightBackPower);
+  }
+
+  public Pose2D getPose() {
+    return od.getPosition();
   }
 
   public void stop() {
