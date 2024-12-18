@@ -6,10 +6,10 @@ import com.arcrobotics.ftclib.command.SubsystemBase;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
-public class Elevator extends SubsystemBase {
+public class Climber extends SubsystemBase {
   final CRServo elevator;
 
-  public Elevator(HardwareMap hardwareMap) {
+  public Climber(HardwareMap hardwareMap) {
     elevator = hardwareMap.get(CRServo.class, "elevatorMotor");
   }
 
