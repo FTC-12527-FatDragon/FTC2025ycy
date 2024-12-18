@@ -26,6 +26,17 @@ public class SlideSuperStucture extends MotorPIDSlideSubsystem {
   // SlideArmServo
   public static double SlideArmServo_AFTERGRAB = 0.7;
 
+  // aimCommand
+  public static long aimCommand_wristTurn2ArmDelayMs = 100;
+  public static long aimCommand_Arm2OpenDelayMs = 100;
+  // grabCommand
+  public static long grabCommand_armDown2GrabDelayMs = 100;
+  public static long grabCommand_grab2AfterGrabDelayMs = 100;
+  // slowHandoffCommand
+  public static long handoffCommand_wristTurn2wristHandoffDelayMs = 100;
+  public static long slowHandoffCommand_wristHandoff2ArmHandoffDelayMs = 300;
+  public static long slowHandoffCommand_ArmHandoff2SlideRetractDelayMs = 200;
+
   private final Servo intakeClawServo, wristServo, wristTurnServo;
   private final Servo slideArmServo;
   private final DcMotorEx slideMotor;
@@ -82,9 +93,9 @@ public class SlideSuperStucture extends MotorPIDSlideSubsystem {
             () -> {
               setServoPos(TurnServo.DEG_0);
             }),
-        new WaitCommand(100),
+        new WaitCommand(aimCommand_wristTurn2ArmDelayMs),
         new InstantCommand(() -> slideArmServo.setPosition(Goal.AIM.slideArmPos)),
-        new WaitCommand(100),
+        new WaitCommand(aimCommand_Arm2OpenDelayMs),
         new InstantCommand(() -> wristServo.setPosition(Goal.AIM.wristPos)),
         new InstantCommand(() -> intakeClawServo.setPosition(Goal.AIM.clawAngle)));
   }
@@ -93,9 +104,9 @@ public class SlideSuperStucture extends MotorPIDSlideSubsystem {
     return new SequentialCommandGroup(
         setGoalCommand(Goal.GRAB),
         new InstantCommand(() -> slideArmServo.setPosition(Goal.GRAB.slideArmPos)),
-        new WaitCommand(100),
+        new WaitCommand(grabCommand_armDown2GrabDelayMs),
         new InstantCommand(() -> intakeClawServo.setPosition(Goal.GRAB.clawAngle)),
-        new WaitCommand(100),
+        new WaitCommand(grabCommand_grab2AfterGrabDelayMs),
         new InstantCommand(() -> slideArmServo.setPosition(SlideArmServo_AFTERGRAB)),
         setGoalCommand(Goal.AIM));
   }
@@ -107,11 +118,11 @@ public class SlideSuperStucture extends MotorPIDSlideSubsystem {
             () -> {
               setServoPos(TurnServo.DEG_0);
             }),
-        new WaitCommand(100),
+        new WaitCommand(handoffCommand_wristTurn2wristHandoffDelayMs),
         new InstantCommand(() -> wristServo.setPosition(Goal.HANDOFF.wristPos)),
-        new WaitCommand(300),
+        new WaitCommand(slowHandoffCommand_wristHandoff2ArmHandoffDelayMs),
         new InstantCommand(() -> slideArmServo.setPosition(Goal.HANDOFF.slideArmPos)),
-        new WaitCommand(200),
+        new WaitCommand(slowHandoffCommand_ArmHandoff2SlideRetractDelayMs),
         new InstantCommand(() -> slideExtensionVal = Goal.HANDOFF.slideExtension),
         new WaitUntilCommand(this::slideMotorAtHome));
   }
@@ -123,7 +134,7 @@ public class SlideSuperStucture extends MotorPIDSlideSubsystem {
             () -> {
               setServoPos(TurnServo.DEG_0);
             }),
-        new WaitCommand(100),
+        new WaitCommand(handoffCommand_wristTurn2wristHandoffDelayMs),
         new InstantCommand(() -> wristServo.setPosition(Goal.HANDOFF.wristPos)),
         new InstantCommand(() -> slideArmServo.setPosition(Goal.HANDOFF.slideArmPos)),
         new InstantCommand(() -> slideExtensionVal = Goal.HANDOFF.slideExtension),
