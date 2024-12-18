@@ -155,8 +155,10 @@ public class Basket1Plus3 extends LinearOpMode {
                 stowArmFromBasket(lift, liftClaw),
                 followTrajectory(drive, trajs6).alongWith(slide.aimCommand()),
                 wait(drive, 300),
-                new InstantCommand(() -> slide.forwardSlideExtension(440))
-                    .alongWith(slide.setServoPosCommand(SlideSuperStucture.TurnServo.DEG_0)),
+                new InstantCommand(() -> {
+                  slide.forwardSlideExtension(440);
+                  slide.setServoPos(SlideSuperStucture.TurnServo.DEG_0);
+                }),
                 wait(drive, 500),
                 slide.grabCommand(),
                 wait(drive, 300),

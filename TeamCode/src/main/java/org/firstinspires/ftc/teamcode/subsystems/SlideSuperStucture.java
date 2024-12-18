@@ -51,7 +51,7 @@ public class SlideSuperStucture extends MotorPIDSlideSubsystem {
   private static double turnAngleDeg = 0.2;
   private TurnServo turnServo = TurnServo.DEG_0;
 
-  private final Command emptyCommand = new InstantCommand(() -> {});
+//  private final Command emptyCommand = new InstantCommand(() -> {});
 
   @Setter @Getter private Goal goal = Goal.STOW;
 
@@ -100,7 +100,7 @@ public class SlideSuperStucture extends MotorPIDSlideSubsystem {
   public Command grabCommand() {
     return new SequentialCommandGroup(
         setGoalCommand(Goal.GRAB),
-        setServoPosCommand(slideArmServo, Goal.GRAB.slideArmPos, grabCommand_armDown2GrabDelayMs)
+        setServoPosCommand(slideArmServo, Goal.GRAB.slideArmPos, grabCommand_armDown2GrabDelayMs),
         setServoPosCommand(intakeClawServo, Goal.GRAB.clawAngle, grabCommand_grab2AfterGrabDelayMs),
         new InstantCommand(() -> slideArmServo.setPosition(SlideArmServo_AFTERGRAB)),
         setGoalCommand(Goal.AIM));
@@ -237,7 +237,7 @@ public class SlideSuperStucture extends MotorPIDSlideSubsystem {
                     }).andThen(
                     new WaitCommand(delay)
             ),
-            emptyCommand,
+            new InstantCommand(() -> {}),
             () -> getServoPos()!=pos
     );
   }
@@ -254,7 +254,7 @@ public class SlideSuperStucture extends MotorPIDSlideSubsystem {
                     }).andThen(
                     new WaitCommand(delay)
             ),
-            emptyCommand,
+            new InstantCommand(() -> {}),
             () -> servo.getPosition()!=pos
     );
   }
