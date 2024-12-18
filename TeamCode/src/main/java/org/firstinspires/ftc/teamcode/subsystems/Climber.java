@@ -7,7 +7,7 @@ import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 public class Climber extends SubsystemBase {
-  final CRServo elevator;
+  private final CRServo elevator;
 
   public Climber(HardwareMap hardwareMap) {
     elevator = hardwareMap.get(CRServo.class, "elevatorMotor");
