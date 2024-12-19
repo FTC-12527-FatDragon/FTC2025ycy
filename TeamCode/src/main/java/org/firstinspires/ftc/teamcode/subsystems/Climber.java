@@ -5,28 +5,49 @@ import com.arcrobotics.ftclib.command.StartEndCommand;
 import com.arcrobotics.ftclib.command.SubsystemBase;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 
 public class Climber extends SubsystemBase {
   private final DcMotorEx climber;
-  private final Servo lockServo;
+  private final Servo climberLockServo;
+  private final Servo slideLockServo;
   private boolean isOpen = false;
 
   public Climber(final HardwareMap hardwareMap) {
     climber = hardwareMap.get(DcMotorEx.class, "elevatorMotor");
     climber.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-    lockServo = hardwareMap.get(Servo.class, "lockServo");
-    lockServo.setPosition(0);
+    climber.setDirection(DcMotorSimple.Direction.REVERSE);
+    climberLockServo = hardwareMap.get(Servo.class, "climberLockServo");
+    slideLockServo = hardwareMap.get(Servo.class, "slideLockServo");
+    climberLockServo.setPosition(0);
+    slideLockServo.setPosition(0);
   }
 
-  public void switchLock() {
+  public void switchClimberLock() {
     if (isOpen) {
-      lockServo.setPosition(1);
+      climberLockServo.setPosition(1);
     } else {
-      lockServo.setPosition(0);
+      climberLockServo.setPosition(0);
     }
     isOpen = !isOpen;
+  }
+
+  public void closeClimberLock() {
+    climberLockServo.setPosition(0);
+  }
+
+  public void openClimberLock() {
+    climberLockServo.setPosition(0);
+  }
+
+  public void closeSlideLock() {
+    slideLockServo.setPosition(0);
+  }
+
+  public void openSlideLock() {
+    slideLockServo.setPosition(0);
   }
 
   public void elevate() {

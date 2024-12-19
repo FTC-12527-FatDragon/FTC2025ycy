@@ -10,7 +10,6 @@ import com.arcrobotics.ftclib.command.SequentialCommandGroup;
 import com.arcrobotics.ftclib.command.WaitCommand;
 import com.arcrobotics.ftclib.command.WaitUntilCommand;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-
 import org.firstinspires.ftc.teamcode.commands.AutoDriveCommand;
 import org.firstinspires.ftc.teamcode.lib.roadrunner.trajectorysequence.TrajectorySequence;
 import org.firstinspires.ftc.teamcode.opmodes.TXBetaBotSolo;
@@ -56,12 +55,12 @@ public abstract class AutoCommandBase extends LinearOpMode {
 
   public static Command slowHandoff(SlideSuperStucture slide, LiftClaw liftClaw) {
     return slide
-            .slowHandoffCommand()
-            .beforeStarting(liftClaw::openClaw)
-            .andThen(new WaitCommand(handoff_slide2LiftCloseDelayMs))
-            .andThen(new InstantCommand(liftClaw::closeClaw))
-            .andThen(new WaitCommand(handoff_liftClose2OpenIntakeDelayMs))
-            .andThen(new InstantCommand(slide::openIntakeClaw));
+        .slowHandoffCommand()
+        .beforeStarting(liftClaw::openClaw)
+        .andThen(new WaitCommand(handoff_slide2LiftCloseDelayMs))
+        .andThen(new InstantCommand(liftClaw::closeClaw))
+        .andThen(new WaitCommand(handoff_liftClose2OpenIntakeDelayMs))
+        .andThen(new InstantCommand(slide::openIntakeClaw));
   }
 
   public Command fastHandoff() {
@@ -96,10 +95,10 @@ public abstract class AutoCommandBase extends LinearOpMode {
         new ParallelDeadlineGroup(new WaitCommand(100), new WaitUntilCommand(() -> lift.atHome(10)))
             .andThen(new WaitCommand(200).deadlineWith(lift.manualResetCommand()))
             .andThen(
-                    new InstantCommand(() -> drive.setWeightedDrivePower(new Pose2d(1, 0, 0)))
-                            .andThen(new WaitCommand(50))
-                            .andThen(new InstantCommand(() -> drive.setWeightedDrivePower(new Pose2d(0, 0, 0))))
-            )
+                new InstantCommand(() -> drive.setWeightedDrivePower(new Pose2d(1, 0, 0)))
+                    .andThen(new WaitCommand(50))
+                    .andThen(
+                        new InstantCommand(() -> drive.setWeightedDrivePower(new Pose2d(0, 0, 0)))))
             .andThen(new InstantCommand(liftClaw::openClaw)),
         new WaitCommand(50),
         new InstantCommand(liftClaw::foldLiftArm),

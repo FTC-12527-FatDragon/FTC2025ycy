@@ -11,7 +11,6 @@ import com.arcrobotics.ftclib.command.ParallelDeadlineGroup;
 import com.arcrobotics.ftclib.command.SequentialCommandGroup;
 import com.arcrobotics.ftclib.command.WaitCommand;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-
 import org.firstinspires.ftc.teamcode.lib.roadrunner.trajectorysequence.TrajectorySequence;
 import org.firstinspires.ftc.teamcode.subsystems.Lift;
 import org.firstinspires.ftc.teamcode.subsystems.LiftClaw;
@@ -30,8 +29,8 @@ public class AutoTest extends AutoCommandBase {
   public static double yValue1 = -32.5;
   public static double heading1 = 90;
 
-  public static double takeoffX = xValue1/5;
-  public static double takeoffY = yValue1/5;
+  public static double takeoffX = xValue1 / 5;
+  public static double takeoffY = yValue1 / 5;
 
   // Grab location
   public static double xValue2 = -4.5;
@@ -61,54 +60,52 @@ public class AutoTest extends AutoCommandBase {
 
   // Start to Basket
   TrajectorySequence trajs1 =
-          TrajectoryManager.trajectorySequenceBuilder(startPose)
-                  .turn(90)
-                  .build();
+      TrajectoryManager.trajectorySequenceBuilder(startPose).turn(90).build();
 
   // Basket to the rightmost sample
   TrajectorySequence trajs2 =
-          TrajectoryManager.trajectorySequenceBuilder(trajs1.end())
-                  .lineToLinearHeading(new Pose2d(xValue2, yValue2, Math.toRadians(heading2)))
-                  .build();
+      TrajectoryManager.trajectorySequenceBuilder(trajs1.end())
+          .lineToLinearHeading(new Pose2d(xValue2, yValue2, Math.toRadians(heading2)))
+          .build();
 
   // rightmost sample to basket
   TrajectorySequence trajs3 =
-          TrajectoryManager.trajectorySequenceBuilder(trajs2.end())
-                  .lineToLinearHeading(
-                          new Pose2d(xValue1 - chamberSpacing, yValue1, Math.toRadians(heading1)))
-                  .build();
+      TrajectoryManager.trajectorySequenceBuilder(trajs2.end())
+          .lineToLinearHeading(
+              new Pose2d(xValue1 - chamberSpacing, yValue1, Math.toRadians(heading1)))
+          .build();
 
   // basket to middle sample
   TrajectorySequence trajs4 =
-          TrajectoryManager.trajectorySequenceBuilder(trajs3.end())
-                  .lineToLinearHeading(new Pose2d(xValue2, yValue2, Math.toRadians(heading2)))
-                  .build();
+      TrajectoryManager.trajectorySequenceBuilder(trajs3.end())
+          .lineToLinearHeading(new Pose2d(xValue2, yValue2, Math.toRadians(heading2)))
+          .build();
 
   // middle sample to basket
   TrajectorySequence trajs5 =
-          TrajectoryManager.trajectorySequenceBuilder(trajs4.end())
-                  .lineToLinearHeading(
-                          new Pose2d(xValue1 - chamberSpacing * 2, yValue1, Math.toRadians(heading1)))
-                  .build();
+      TrajectoryManager.trajectorySequenceBuilder(trajs4.end())
+          .lineToLinearHeading(
+              new Pose2d(xValue1 - chamberSpacing * 2, yValue1, Math.toRadians(heading1)))
+          .build();
 
   // basket to leftmost sample
   TrajectorySequence trajs6 =
-          TrajectoryManager.trajectorySequenceBuilder(trajs5.end())
-                  .lineToLinearHeading(new Pose2d(xValue2, yValue2, Math.toRadians(heading2)))
-                  .build();
+      TrajectoryManager.trajectorySequenceBuilder(trajs5.end())
+          .lineToLinearHeading(new Pose2d(xValue2, yValue2, Math.toRadians(heading2)))
+          .build();
 
   // leftmost sample to basket
   TrajectorySequence trajs7 =
-          TrajectoryManager.trajectorySequenceBuilder(trajs6.end())
-                  .lineToLinearHeading(
-                          new Pose2d(xValue1 - chamberSpacing * 3, yValue1, Math.toRadians(heading1)))
-                  .build();
+      TrajectoryManager.trajectorySequenceBuilder(trajs6.end())
+          .lineToLinearHeading(
+              new Pose2d(xValue1 - chamberSpacing * 3, yValue1, Math.toRadians(heading1)))
+          .build();
 
   // basket to ascent zone
   TrajectorySequence trajs8 =
-          TrajectoryManager.trajectorySequenceBuilder(trajs7.end())
-                  .lineToLinearHeading(new Pose2d(xValue2, yValue2, Math.toRadians(heading2)))
-                  .build();
+      TrajectoryManager.trajectorySequenceBuilder(trajs7.end())
+          .lineToLinearHeading(new Pose2d(xValue2, yValue2, Math.toRadians(heading2)))
+          .build();
 
   public Command wait(SampleMecanumDrive drive, long ms) {
     return new ParallelDeadlineGroup(
@@ -133,7 +130,7 @@ public class AutoTest extends AutoCommandBase {
     slide = new SlideSuperStucture(hardwareMap, telemetry);
 
     SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
-    drive.setPoseEstimate(new Pose2d(xValue5,yValue5,heading5));
+    drive.setPoseEstimate(new Pose2d(xValue5, yValue5, heading5));
 
     // Score the first chamber
     // Push all three samples to the observation zone

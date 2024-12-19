@@ -10,7 +10,6 @@ import com.arcrobotics.ftclib.command.WaitUntilCommand;
 import com.arcrobotics.ftclib.controller.PIDController;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.VoltageSensor;
@@ -119,22 +118,24 @@ public class SlideSuperStucture extends MotorPIDSlideSubsystem {
     return new SequentialCommandGroup(
         setGoalCommand(Goal.HANDOFF),
         setTurnServoPosCommand(TurnServo.DEG_0, handoffCommand_wristTurn2wristHandoffDelayMs),
-        setServoPosCommand(wristServo, Goal.HANDOFF.wristPos, slowHandoffCommand_wristHandoff2ArmHandoffDelayMs),
-        setServoPosCommand(slideArmServo, Goal.HANDOFF.slideArmPos, slowHandoffCommand_ArmHandoff2SlideRetractDelayMs),
+        setServoPosCommand(
+            wristServo, Goal.HANDOFF.wristPos, slowHandoffCommand_wristHandoff2ArmHandoffDelayMs),
+        setServoPosCommand(
+            slideArmServo,
+            Goal.HANDOFF.slideArmPos,
+            slowHandoffCommand_ArmHandoff2SlideRetractDelayMs),
         new InstantCommand(() -> slideExtensionVal = Goal.HANDOFF.slideExtension),
-        new WaitUntilCommand(this::slideMotorAtHome)
-    );
+        new WaitUntilCommand(this::slideMotorAtHome));
   }
 
   public Command fastHandoffCommand() {
     return new SequentialCommandGroup(
-            setGoalCommand(Goal.HANDOFF),
-            setTurnServoPosCommand(TurnServo.DEG_0, handoffCommand_wristTurn2wristHandoffDelayMs),
-            new InstantCommand(() -> wristServo.setPosition(Goal.HANDOFF.wristPos)),
-            new InstantCommand(() -> slideArmServo.setPosition(Goal.HANDOFF.slideArmPos)),
-            new InstantCommand(() -> slideExtensionVal = Goal.HANDOFF.slideExtension),
-            new WaitUntilCommand(this::slideMotorAtHome)
-    );
+        setGoalCommand(Goal.HANDOFF),
+        setTurnServoPosCommand(TurnServo.DEG_0, handoffCommand_wristTurn2wristHandoffDelayMs),
+        new InstantCommand(() -> wristServo.setPosition(Goal.HANDOFF.wristPos)),
+        new InstantCommand(() -> slideArmServo.setPosition(Goal.HANDOFF.slideArmPos)),
+        new InstantCommand(() -> slideExtensionVal = Goal.HANDOFF.slideExtension),
+        new WaitUntilCommand(this::slideMotorAtHome));
   }
 
   public Command handoffCommand() {
@@ -144,10 +145,11 @@ public class SlideSuperStucture extends MotorPIDSlideSubsystem {
 
   public Command swipeCommand() {
     return new SequentialCommandGroup(
-            setGoalCommand(Goal.AUTOSWIPE),
-            setTurnServoPosCommand(TurnServo.DEG_INVERTED_HORIZ, 0),
-            setServoPosCommand(wristServo, Goal.AUTOSWIPE.wristPos, swipeCommand_wrist2ExtendDelayMs),
-            new InstantCommand(() -> {
+        setGoalCommand(Goal.AUTOSWIPE),
+        setTurnServoPosCommand(TurnServo.DEG_INVERTED_HORIZ, 0),
+        setServoPosCommand(wristServo, Goal.AUTOSWIPE.wristPos, swipeCommand_wrist2ExtendDelayMs),
+        new InstantCommand(
+            () -> {
               forwardSlideExtension(Goal.AUTOSWIPE.slideExtension);
               slideArmServo.setPosition(Goal.AUTOSWIPE.slideArmPos);
               intakeClawServo.setPosition(Goal.AUTOSWIPE.clawAngle);
