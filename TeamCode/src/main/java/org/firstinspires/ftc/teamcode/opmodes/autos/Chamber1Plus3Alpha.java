@@ -2,9 +2,7 @@ package org.firstinspires.ftc.teamcode.opmodes.autos;
 
 import static org.firstinspires.ftc.teamcode.opmodes.autos.AlphaAutoCommand.alphaHangAndStowLift;
 import static org.firstinspires.ftc.teamcode.opmodes.autos.AlphaAutoCommand.alphaUpLiftToChamber;
-import static org.firstinspires.ftc.teamcode.opmodes.autos.AutoCommand.hangAndStowLift;
 import static org.firstinspires.ftc.teamcode.opmodes.autos.AutoCommand.initialize;
-import static org.firstinspires.ftc.teamcode.opmodes.autos.AutoCommand.upLiftToChamber;
 
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
@@ -112,7 +110,7 @@ public class Chamber1Plus3Alpha extends LinearOpMode {
     CommandScheduler.getInstance().reset();
 
     lift = new AlphaLift(hardwareMap, telemetry);
-    liftClaw = new AlphaLiftClaw(hardwareMap);
+    liftClaw = new AlphaLiftClaw(hardwareMap, telemetry);
     slide = new AlphaSlide(hardwareMap, telemetry);
     SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
 

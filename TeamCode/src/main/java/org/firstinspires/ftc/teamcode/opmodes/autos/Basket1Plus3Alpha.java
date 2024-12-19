@@ -115,7 +115,7 @@ public class Basket1Plus3Alpha extends LinearOpMode {
 
     // Subsystems Initialized
     lift = new AlphaLift(hardwareMap, telemetry);
-    liftClaw = new AlphaLiftClaw(hardwareMap);
+    liftClaw = new AlphaLiftClaw(hardwareMap, telemetry);
     slide = new AlphaSlide(hardwareMap, telemetry);
 
     SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
