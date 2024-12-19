@@ -27,11 +27,11 @@ public class SlideSuperStucture extends MotorPIDSlideSubsystem {
   public static double SlideArmServo_AFTERGRAB = 0.7;
 
   // aimCommand
-  public static long aimCommand_wristTurn2ArmDelayMs = 100;
-  public static long aimCommand_Arm2OpenDelayMs = 100;
+  public static long aimCommand_wristTurn2ArmDelayMs = 0;
+  public static long aimCommand_Arm2OpenDelayMs = 20;
   // grabCommand
   public static long grabCommand_armDown2GrabDelayMs = 100;
-  public static long grabCommand_grab2AfterGrabDelayMs = 100;
+  public static long grabCommand_grab2AfterGrabDelayMs = 50;
   // slowHandoffCommand
   public static long handoffCommand_wristTurn2wristHandoffDelayMs = 100;
   public static long slowHandoffCommand_wristHandoff2ArmHandoffDelayMs = 300;

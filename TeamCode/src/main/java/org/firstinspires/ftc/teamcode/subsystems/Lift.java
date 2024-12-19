@@ -34,8 +34,8 @@ public class Lift extends MotorPIDSlideSubsystem {
   public static double resetPower = -0.7;
   public static double hangAddtionalPower = 0;
 
-  public static double MAX_VEL = 30000;
-  public static double MAX_ACL = 30000;
+  public static double MAX_VEL = 0;
+  public static double MAX_ACL = 0;
 
   private final ElevatorFeedforward feedforward;
 
