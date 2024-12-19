@@ -25,6 +25,11 @@ public class SlideSuperStucture extends MotorPIDSlideSubsystem {
   // ---- Configs ----
   // SlideArmServo
   public static double SlideArmServo_AFTERGRAB = 0.7;
+  // intakeClawServo
+  public static double IntakeClawServo_OPEN = 0.6;
+  public static double IntakeClawServo_GRAB = 0.36;
+  // slideMotor
+  public static double SlideMotor_atSetPointTolerance = 10;
 
   // aimCommand
   public static long aimCommand_wristTurn2ArmDelayMs = 0;
@@ -36,6 +41,8 @@ public class SlideSuperStucture extends MotorPIDSlideSubsystem {
   public static long handoffCommand_wristTurn2wristHandoffDelayMs = 100;
   public static long slowHandoffCommand_wristHandoff2ArmHandoffDelayMs = 300;
   public static long slowHandoffCommand_ArmHandoff2SlideRetractDelayMs = 200;
+  // swipeCommand
+  public static long swipeCommand_wrist2ExtendDelayMs = 50;
 
   private final Servo intakeClawServo, wristServo, wristTurnServo;
   private final Servo slideArmServo;
@@ -128,7 +135,21 @@ public class SlideSuperStucture extends MotorPIDSlideSubsystem {
   }
 
   public Command handoffCommand() {
-    return new ConditionalCommand(slowHandoffCommand(), fastHandoffCommand(), this::atHome);
+    return new ConditionalCommand(slowHandoffCommand(), fastHandoffCommand(), this::slideMotorAtHome);
+  }
+
+  public Command swipeCommand() {
+    return new SequentialCommandGroup(
+            setGoalCommand(Goal.AUTOSWIPE),
+            setTurnServoPosCommand(TurnServo.DEG_0, 0),
+            setServoPosCommand(wristServo, Goal.AUTOSWIPE.wristPos, swipeCommand_wrist2ExtendDelayMs),
+            new InstantCommand(() -> {
+              forwardSlideExtension(Goal.AUTOSWIPE.slideExtension);
+              slideArmServo.setPosition(Goal.AUTOSWIPE.slideArmPos);
+              intakeClawServo.setPosition(Goal.AUTOSWIPE.clawAngle);
+            }),
+            new WaitUntilCommand(this::slideMotorAtGoal)
+    );
   }
 
   public void openIntakeClaw() {
@@ -165,10 +186,11 @@ public class SlideSuperStucture extends MotorPIDSlideSubsystem {
 
   @Config
   public enum Goal {
-    STOW(0, 0, 0.2, 0.6),
-    AIM(slideExtensionVal, 0.59, 0.65, 0.6),
-    GRAB(slideExtensionVal, 0.505, 0.65, 0.36),
-    HANDOFF(0, 0.775, 0.175, 0.36);
+    STOW(0, 0, 0.2, IntakeClawServo_OPEN),
+    AIM(slideExtensionVal, 0.59, 0.65, IntakeClawServo_OPEN),
+    GRAB(slideExtensionVal, 0.505, 0.65, IntakeClawServo_GRAB),
+    HANDOFF(0, 0.775, 0.175, IntakeClawServo_GRAB),
+    AUTOSWIPE(slideExtensionVal, 0.5, 0.3, IntakeClawServo_OPEN);
 
     public final double slideExtension;
     public final double slideArmPos;
@@ -272,11 +294,11 @@ public class SlideSuperStucture extends MotorPIDSlideSubsystem {
   }
 
   private boolean slideMotorAtGoal() {
-    return MathUtils.isNear(goal.slideExtension, getCurrentPosition(), 10);
+    return MathUtils.isNear(goal.slideExtension, getCurrentPosition(), SlideMotor_atSetPointTolerance);
   }
 
   private boolean slideMotorAtHome() {
-    return MathUtils.isNear(0, getCurrentPosition(), 10);
+    return MathUtils.isNear(0, getCurrentPosition(), SlideMotor_atSetPointTolerance);
   }
 
   public long getCurrentPosition() {
@@ -315,9 +337,9 @@ public class SlideSuperStucture extends MotorPIDSlideSubsystem {
   //            this);
   //  }
 
-  public boolean atHome() {
-    return MathUtils.isNear(getCurrentPosition(), 0, 5);
-  }
+//  public boolean atHome() {
+//    return MathUtils.isNear(getCurrentPosition(), 0, 5);
+//  }
 
   @Override
   public void periodic() {
