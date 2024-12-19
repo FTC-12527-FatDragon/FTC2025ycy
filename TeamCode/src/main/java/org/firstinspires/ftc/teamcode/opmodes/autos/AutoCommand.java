@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.opmodes.autos;
 
+import com.acmerobotics.dashboard.config.Config;
 import com.arcrobotics.ftclib.command.Command;
 import com.arcrobotics.ftclib.command.InstantCommand;
 import com.arcrobotics.ftclib.command.ParallelCommandGroup;
@@ -15,7 +16,10 @@ import org.firstinspires.ftc.teamcode.subsystems.LiftClaw;
 import org.firstinspires.ftc.teamcode.subsystems.SlideSuperStucture;
 import org.firstinspires.ftc.teamcode.subsystems.drivetrain.SampleMecanumDrive;
 
+@Config
 public class AutoCommand {
+  public static long handoff_slide2LiftCloseDelayMs = 0;
+  public static long handoff_liftClose2OpenIntakeDelayMs = 50;
   public static Command upLiftToBasket(Lift lift, LiftClaw liftClaw) {
     return new ParallelCommandGroup(
         new InstantCommand(() -> lift.setGoal(Lift.Goal.BASKET)),
@@ -41,9 +45,9 @@ public class AutoCommand {
     return slide
         .slowHandoffCommand()
         .beforeStarting(liftClaw::openClaw)
-        .andThen(new WaitCommand(50))
+        .andThen(new WaitCommand(handoff_slide2LiftCloseDelayMs))
         .andThen(new InstantCommand(liftClaw::closeClaw))
-        .andThen(new WaitCommand(200))
+        .andThen(new WaitCommand(handoff_liftClose2OpenIntakeDelayMs))
         .andThen(new InstantCommand(slide::openIntakeClaw));
   }
 
@@ -51,9 +55,9 @@ public class AutoCommand {
     return slide
         .fastHandoffCommand()
         .beforeStarting(liftClaw::openClaw)
-        .andThen(new WaitCommand(50))
+        .andThen(new WaitCommand(handoff_slide2LiftCloseDelayMs))
         .andThen(new InstantCommand(liftClaw::closeClaw))
-        .andThen(new WaitCommand(200))
+        .andThen(new WaitCommand(handoff_liftClose2OpenIntakeDelayMs))
         .andThen(new InstantCommand(slide::openIntakeClaw));
   }
 

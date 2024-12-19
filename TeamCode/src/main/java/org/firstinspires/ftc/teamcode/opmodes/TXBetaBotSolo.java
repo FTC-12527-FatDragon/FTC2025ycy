@@ -19,6 +19,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import java.util.function.Supplier;
 import org.firstinspires.ftc.teamcode.commands.TeleopDriveCommand;
 import org.firstinspires.ftc.teamcode.lib.roadrunner.drive.opmode.LocalizationTest;
+import org.firstinspires.ftc.teamcode.opmodes.autos.AutoCommand;
 import org.firstinspires.ftc.teamcode.subsystems.Climber;
 import org.firstinspires.ftc.teamcode.subsystems.Lift;
 import org.firstinspires.ftc.teamcode.subsystems.LiftClaw;
@@ -109,13 +110,7 @@ public class TXBetaBotSolo extends CommandOpMode {
     // Pure Handoff
     Supplier<Command> handoffCommand =
         () ->
-            slide
-                .slowHandoffCommand()
-                .beforeStarting(liftClaw::openClaw)
-                .andThen(new WaitCommand(50))
-                .andThen(new InstantCommand(() -> liftClaw.closeClaw()))
-                .andThen(new WaitCommand(200))
-                .andThen(new InstantCommand(() -> slide.openIntakeClaw()))
+                AutoCommand.slowHandoff(slide, liftClaw)
                 .andThen(new WaitCommand(50))
                 .andThen(new InstantCommand(() -> isPureHandoffCompelte = true));
 

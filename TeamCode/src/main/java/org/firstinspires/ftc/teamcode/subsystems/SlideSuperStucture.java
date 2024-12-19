@@ -99,6 +99,7 @@ public class SlideSuperStucture extends MotorPIDSlideSubsystem {
 
   public Command grabCommand() {
     return new SequentialCommandGroup(
+        setServoPosCommand(intakeClawServo, Goal.AIM.clawAngle, grabCommand_grab2AfterGrabDelayMs),
         setGoalCommand(Goal.GRAB),
         setServoPosCommand(slideArmServo, Goal.GRAB.slideArmPos, grabCommand_armDown2GrabDelayMs),
         setServoPosCommand(intakeClawServo, Goal.GRAB.clawAngle, grabCommand_grab2AfterGrabDelayMs),
