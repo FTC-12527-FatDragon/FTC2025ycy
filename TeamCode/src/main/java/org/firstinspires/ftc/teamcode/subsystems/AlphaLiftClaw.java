@@ -28,12 +28,22 @@ public class AlphaLiftClaw extends SubsystemBase {
     isClawOpen = false;
   }
 
+  public void autoInitialize() {
+    liftWristServo.setPosition(ServoPositions.STOW.liftWristPosition);
+    liftArmServo.setPosition(ServoPositions.STOW.liftArmPosition);
+    liftClawServo.setPosition(ServoPositions.STOW.liftClawPosition);
+  }
+
   public void grabWrist() {
     liftWristServo.setPosition(ServoPositions.GRAB.liftWristPosition);
   }
 
   public void basketWrist() {
     liftWristServo.setPosition(ServoPositions.BASKET.liftWristPosition);
+  }
+
+  public void stowWrist() {
+    liftWristServo.setPosition(ServoPositions.STOW.liftWristPosition);
   }
 
   public void chamberWrist() {
@@ -76,10 +86,10 @@ public class AlphaLiftClaw extends SubsystemBase {
   }
 
   public enum ServoPositions {
-    STOW(0.91, 0.27, 0.6),
-    CHAMBER(0.68, 0.27, 0.26),
-    BASKET(0.39, 0.27, 0.56),
-    GRAB(0.08, 0.5, 0.06);
+    STOW(0.88, 0.35, 0.62),
+    CHAMBER(0.66, 0.35, 0.27),
+    BASKET(0.43, 0.35, 0.4),
+    GRAB(0.14, 0.5, 0.1);
 
     private final double liftArmPosition;
     private final double liftWristPosition;

@@ -79,7 +79,7 @@ public class AlphaCar extends CommandOpMode {
                     new InstantCommand(),
                     () -> lift.getGoal() == AlphaLift.Goal.HANG),
                 new InstantCommand(liftClaw::openClaw),
-                new InstantCommand(liftClaw::basketWrist),
+                new InstantCommand(liftClaw::stowWrist),
                 new WaitCommand(100),
                 new InstantCommand(liftClaw::foldLiftArm),
                 new WaitCommand(500),
@@ -148,7 +148,7 @@ public class AlphaCar extends CommandOpMode {
                 new InstantCommand(),
                 new InstantCommand(() -> liftClaw.openClaw())
                     .andThen(new InstantCommand(() -> liftClaw.foldLiftArm()))
-                    .alongWith(new InstantCommand(() -> liftClaw.basketWrist()))
+                    .alongWith(new InstantCommand(() -> liftClaw.stowWrist()))
                     .andThen(new InstantCommand(() -> lift.setGoal(AlphaLift.Goal.STOW)))
                     .andThen(new InstantCommand(() -> isHangComplete = false)),
                 () -> !isHangComplete);

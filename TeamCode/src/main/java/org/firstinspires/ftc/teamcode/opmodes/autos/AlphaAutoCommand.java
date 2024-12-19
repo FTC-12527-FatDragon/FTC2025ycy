@@ -43,10 +43,9 @@ public class AlphaAutoCommand {
     }
 
     public static Command alphaUpLiftToChamber(AlphaLift lift, AlphaLiftClaw liftClaw) {
-        return new ParallelCommandGroup(
-                new InstantCommand(() -> lift.setGoal(AlphaLift.Goal.PRE_HANG)),
-                new WaitUntilCommand(() -> lift.getCurrentPosition() > 200)
-                        .andThen(new InstantCommand(liftClaw::upLiftArm)));
+        return new InstantCommand(() -> lift.setGoal(AlphaLift.Goal.PRE_HANG))
+                .alongWith(new InstantCommand(() -> liftClaw.chamberWrist()))
+                .andThen(new InstantCommand(() -> liftClaw.chamberLiftArm()));
     }
 
     public static Command alphaHangAndStowLift(AlphaLift lift, AlphaLiftClaw liftClaw, AlphaSlide slide) {
@@ -61,5 +60,15 @@ public class AlphaAutoCommand {
                 new InstantCommand(liftClaw::foldLiftArm),
                 new WaitCommand(500),
                 new InstantCommand(() -> lift.setGoal(AlphaLift.Goal.STOW)));
+    }
+
+    public static Command hangAndStowLift(AlphaLift lift, AlphaLiftClaw liftClaw) {
+        return new SequentialCommandGroup(
+                new InstantCommand(() -> lift.setGoal(AlphaLift.Goal.HANG)),
+                new WaitCommand(200),
+        new InstantCommand(liftClaw::openClaw)
+                .andThen(new InstantCommand(liftClaw::foldLiftArm))
+                .alongWith(new InstantCommand(liftClaw::basketWrist))
+                .andThen(new InstantCommand(() -> lift.setGoal(AlphaLift.Goal.STOW))));
     }
 }
