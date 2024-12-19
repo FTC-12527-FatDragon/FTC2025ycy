@@ -50,7 +50,7 @@ public class SlideSuperStucture extends MotorPIDSlideSubsystem {
   private final DcMotorEx slideMotor;
 
   private final PIDController pidController;
-  public static double kP = 0.04, kI = 0.0, kD = 0.0008;
+  public static double kP = 0.03, kI = 0.0, kD = 0.0008;
   private final VoltageSensor batteryVoltageSensor;
 
   private boolean hasGamepiece = false;

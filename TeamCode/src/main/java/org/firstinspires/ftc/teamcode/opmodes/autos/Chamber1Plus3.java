@@ -1,7 +1,5 @@
 package org.firstinspires.ftc.teamcode.opmodes.autos;
 
-import static org.firstinspires.ftc.teamcode.opmodes.autos.AutoCommand.*;
-
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
@@ -11,7 +9,7 @@ import com.arcrobotics.ftclib.command.InstantCommand;
 import com.arcrobotics.ftclib.command.SequentialCommandGroup;
 import com.arcrobotics.ftclib.command.WaitCommand;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+
 import org.firstinspires.ftc.teamcode.lib.roadrunner.trajectorysequence.TrajectorySequence;
 import org.firstinspires.ftc.teamcode.subsystems.Lift;
 import org.firstinspires.ftc.teamcode.subsystems.LiftClaw;
@@ -21,10 +19,10 @@ import org.firstinspires.ftc.teamcode.subsystems.drivetrain.TrajectoryManager;
 
 @Config
 @Autonomous(name = "Chamber 1+3", group = "Autos")
-public class Chamber1Plus3 extends LinearOpMode {
+public class Chamber1Plus3 extends AutoCommandBase {
   public static double chamberSpacing = -3;
   public static long handOff2TrajDelay = 400;
-  public static long swipeDelay = 1000;
+  public static long swipeDelay = 900;
   public static double sampleSpacing = 10.5;
 
   // Chamber hang location
@@ -34,7 +32,7 @@ public class Chamber1Plus3 extends LinearOpMode {
 
   // Grab location
   public static double xValue2 = -4.5;
-  public static double yValue2 = -5.4;
+  public static double yValue2 = -5;
   public static double heading2 = -180;
 
   // The middle sample
@@ -52,10 +50,6 @@ public class Chamber1Plus3 extends LinearOpMode {
   public static double xValue5 = 0;
   public static double yValue5 = 0;
   public static double heading5 = 0;
-
-  LiftClaw liftClaw;
-  Lift lift;
-  SlideSuperStucture slide;
 
   Pose2d startPose = new Pose2d(0, 0, Math.toRadians(0));
 
@@ -127,7 +121,7 @@ public class Chamber1Plus3 extends LinearOpMode {
     liftClaw = new LiftClaw(hardwareMap);
     slide = new SlideSuperStucture(hardwareMap, telemetry);
 
-    SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
+    drive = new SampleMecanumDrive(hardwareMap);
 
     // Score the first chamber
     // Push all three samples to the observation zone
@@ -145,46 +139,45 @@ public class Chamber1Plus3 extends LinearOpMode {
     CommandScheduler.getInstance()
         .schedule(
             new SequentialCommandGroup(
-                slide.aimCommand().beforeStarting(liftClaw::closeClaw),
-                new WaitCommand(200),
-                followTrajectory(drive, start2Chamber1).alongWith(upLiftToChamber(lift, liftClaw)),
-                hangAndStowLift(lift, liftClaw, slide),
+                slide.aimCommand().beforeStarting(liftClaw::closeClaw).alongWith(
+                        followTrajectory(start2Chamber1).alongWith(upLiftToChamber())
+                ),
+                hangAndStowLift(),
 
-                followTrajectory(drive, Chamber12Sample1).deadlineWith(
+                followTrajectory(Chamber12Sample1).deadlineWith(
                         new WaitCommand(swipeDelay).andThen(slide.swipeCommand())
                 ),
                 slide.aimCommand().alongWith(
-                        followTrajectory(drive, Sample12Sample2)
+                        followTrajectory(Sample12Sample2)
                 ).alongWith(new WaitCommand(swipeDelay).andThen(slide.swipeCommand())),
 
-                followTrajectory(drive, Chamber12Grab).alongWith(slide.aimCommand().andThen(
+                followTrajectory(Chamber12Grab).alongWith(slide.aimCommand().andThen(
                         new InstantCommand(() -> slide.forwardSlideExtension()))),
 
                 slide.grabCommand(),
-                new WaitCommand(150),
-                handoffAndLiftToChamber(lift, liftClaw, slide).alongWith(
-                        new WaitCommand(handOff2TrajDelay).andThen(followTrajectory(drive, Grab2Chamber2))
+                handoffAndLiftToChamber().alongWith(
+                        new WaitCommand(handOff2TrajDelay).andThen(followTrajectory(Grab2Chamber2))
                 ),
 //                handoffAndLiftToChamber(lift, liftClaw, slide)
 //                    .alongWith(new WaitCommand(2000).andThen(followTrajectory(drive, trajs3))),
-                hangAndStowLift(lift, liftClaw, slide),
-                followTrajectory(drive, Chamber22Grab).alongWith(slide.aimCommand().andThen(
+                hangAndStowLift(),
+                followTrajectory(Chamber22Grab).alongWith(slide.aimCommand().andThen(
                         new InstantCommand(() -> slide.forwardSlideExtension()))),
+
                 slide.grabCommand(),
-                new WaitCommand(150),
-                handoffAndLiftToChamber(lift, liftClaw, slide).alongWith(
-                        new WaitCommand(handOff2TrajDelay).andThen(followTrajectory(drive, Grab2Chamber3))
+                handoffAndLiftToChamber().alongWith(
+                        new WaitCommand(handOff2TrajDelay).andThen(followTrajectory(Grab2Chamber3))
                 ),
-                hangAndStowLift(lift, liftClaw, slide),
-                followTrajectory(drive, Chamber32Grab).alongWith(slide.aimCommand().andThen(
+                hangAndStowLift(),
+                followTrajectory(Chamber32Grab).alongWith(slide.aimCommand().andThen(
                         new InstantCommand(() -> slide.forwardSlideExtension()))),
+
                 slide.grabCommand(),
-                new WaitCommand(150),
-                handoffAndLiftToChamber(lift, liftClaw, slide).alongWith(
-                        new WaitCommand(handOff2TrajDelay).andThen(followTrajectory(drive, Grab2Chamber4))
+                handoffAndLiftToChamber().alongWith(
+                        new WaitCommand(handOff2TrajDelay).andThen(followTrajectory(Grab2Chamber4))
                 ),
-                hangAndStowLift(lift, liftClaw, slide),
-                autoFinish(drive, liftClaw, lift, slide)
+                hangAndStowLift(),
+                autoFinish()
             ));
 
     //spotless:on

@@ -1,7 +1,5 @@
 package org.firstinspires.ftc.teamcode.opmodes.autos;
 
-import static org.firstinspires.ftc.teamcode.opmodes.autos.AutoCommand.*;
-
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
@@ -14,7 +12,7 @@ import com.arcrobotics.ftclib.command.RunCommand;
 import com.arcrobotics.ftclib.command.SequentialCommandGroup;
 import com.arcrobotics.ftclib.command.WaitCommand;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+
 import org.firstinspires.ftc.teamcode.lib.roadrunner.trajectorysequence.TrajectorySequence;
 import org.firstinspires.ftc.teamcode.subsystems.Lift;
 import org.firstinspires.ftc.teamcode.subsystems.LiftClaw;
@@ -24,7 +22,7 @@ import org.firstinspires.ftc.teamcode.subsystems.drivetrain.TrajectoryManager;
 
 @Config
 @Autonomous(name = "Basket 1+3", group = "Autos")
-public class Basket1Plus3 extends LinearOpMode {
+public class Basket1Plus3 extends AutoCommandBase {
   // For Basket Scoring
   public static double xValue1 = 10;
   public static double yValue1 = 16;
@@ -51,10 +49,6 @@ public class Basket1Plus3 extends LinearOpMode {
   //  public static double xValue5 = 60;
   //  public static double yValue5 = -16;
   //  public static double heading5 = 0;
-
-  LiftClaw liftClaw;
-  Lift lift;
-  SlideSuperStucture slide;
 
   Pose2d startPose = new Pose2d(0, 0, Math.toRadians(0));
 
@@ -121,7 +115,7 @@ public class Basket1Plus3 extends LinearOpMode {
     liftClaw = new LiftClaw(hardwareMap);
     slide = new SlideSuperStucture(hardwareMap, telemetry);
 
-    SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
+    drive = new SampleMecanumDrive(hardwareMap);
 
     liftClaw.closeClaw();
     slide.stow();
@@ -135,24 +129,24 @@ public class Basket1Plus3 extends LinearOpMode {
                 new InstantCommand(() -> drive.setPoseEstimate(trajs1.start()))
                     .alongWith(slide.manualResetCommand().withTimeout(200)),
                 slide.aimCommand().beforeStarting(liftClaw::closeClaw),
-                followTrajectory(drive, trajs1).alongWith(upLiftToBasket(lift, liftClaw)),
+                followTrajectory(trajs1).alongWith(upLiftToBasket()),
                 wait(drive, 200),
-                stowArmFromBasket(lift, liftClaw),
-                followTrajectory(drive, trajs2).alongWith(slide.aimCommand()),
+                stowArmFromBasket(),
+                followTrajectory(trajs2).alongWith(slide.aimCommand()),
                 slide.grabCommand(),
-                followTrajectory(drive, trajs3)
+                followTrajectory(trajs3)
                     .alongWith(
-                        slowHandoff(slide, liftClaw).andThen(upLiftToBasket(lift, liftClaw))),
+                        slowHandoff().andThen(upLiftToBasket())),
                 wait(drive, basketWaitMs),
-                stowArmFromBasket(lift, liftClaw),
-                followTrajectory(drive, trajs4).alongWith(slide.aimCommand()),
+                stowArmFromBasket(),
+                followTrajectory(trajs4).alongWith(slide.aimCommand()),
                 slide.grabCommand(),
-                followTrajectory(drive, trajs5)
+                followTrajectory(trajs5)
                     .alongWith(
-                        slowHandoff(slide, liftClaw).andThen(upLiftToBasket(lift, liftClaw))),
+                        slowHandoff().andThen(upLiftToBasket())),
                 wait(drive, basketWaitMs),
-                stowArmFromBasket(lift, liftClaw),
-                followTrajectory(drive, trajs6).alongWith(slide.aimCommand()),
+                stowArmFromBasket(),
+                followTrajectory(trajs6).alongWith(slide.aimCommand()),
                 wait(drive, 300),
                 new InstantCommand(
                     () -> {
@@ -162,14 +156,14 @@ public class Basket1Plus3 extends LinearOpMode {
                 wait(drive, 500),
                 slide.grabCommand(),
                 wait(drive, 300),
-                slowHandoff(slide, liftClaw),
+                slowHandoff(),
                 wait(drive, 300),
-                followTrajectory(drive, trajs7),
-                upLiftToBasket(lift, liftClaw),
+                followTrajectory(trajs7),
+                upLiftToBasket(),
                 wait(drive, basketWaitMs),
-                stowArmFromBasket(lift, liftClaw),
+                stowArmFromBasket(),
                 wait(drive, 1500),
-                autoFinish(drive, liftClaw, lift, slide)));
+                autoFinish()));
 
     // spotless:off
 
