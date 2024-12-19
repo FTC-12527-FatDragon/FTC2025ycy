@@ -39,7 +39,6 @@ public class SlideSuperStucture extends MotorPIDSlideSubsystem {
   public static long grabCommand_grab2AfterGrabDelayMs = 50;
   // slowHandoffCommand
   public static long handoffCommand_wristTurn2wristHandoffDelayMs = 100;
-  public static long handoffCommand_slideRetractTimeout = 1000;
   public static long slowHandoffCommand_wristHandoff2ArmHandoffDelayMs = 300;
   public static long slowHandoffCommand_ArmHandoff2SlideRetractDelayMs = 200;
   // swipeCommand
@@ -122,7 +121,7 @@ public class SlideSuperStucture extends MotorPIDSlideSubsystem {
         setServoPosCommand(wristServo, Goal.HANDOFF.wristPos, slowHandoffCommand_wristHandoff2ArmHandoffDelayMs),
         setServoPosCommand(slideArmServo, Goal.HANDOFF.slideArmPos, slowHandoffCommand_ArmHandoff2SlideRetractDelayMs),
         new InstantCommand(() -> slideExtensionVal = Goal.HANDOFF.slideExtension),
-        new WaitUntilCommand(this::slideMotorAtHome)).raceWith(new WaitCommand(handoffCommand_slideRetractTimeout));
+        new WaitUntilCommand(this::slideMotorAtHome));
   }
 
   public Command fastHandoffCommand() {
@@ -132,7 +131,7 @@ public class SlideSuperStucture extends MotorPIDSlideSubsystem {
         new InstantCommand(() -> wristServo.setPosition(Goal.HANDOFF.wristPos)),
         new InstantCommand(() -> slideArmServo.setPosition(Goal.HANDOFF.slideArmPos)),
         new InstantCommand(() -> slideExtensionVal = Goal.HANDOFF.slideExtension),
-        new WaitUntilCommand(this::slideMotorAtHome)).raceWith(new WaitCommand(handoffCommand_slideRetractTimeout));
+        new WaitUntilCommand(this::slideMotorAtHome));
   }
 
   public Command handoffCommand() {
