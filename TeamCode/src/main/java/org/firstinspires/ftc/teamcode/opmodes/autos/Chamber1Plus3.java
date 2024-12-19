@@ -54,7 +54,7 @@ public class Chamber1Plus3 extends LinearOpMode {
   Lift lift;
   SlideSuperStucture slide;
 
-  Pose2d startPose = new Pose2d(0, 0, Math.toRadians(90));
+  Pose2d startPose = new Pose2d(0, 0, Math.toRadians(0));
 
   // Start to Basket
   TrajectorySequence trajs1 =
@@ -123,8 +123,10 @@ public class Chamber1Plus3 extends LinearOpMode {
     // Push all three samples to the observation zone
     // Repeatedly score the high chamber with slightly different
     slide.stow();
+    slide.backwardSlideExtension();
     liftClaw.closeClaw();
     liftClaw.foldLiftArm();
+//    drive.setPoseEstimate(trajs1.start());
 
     waitForStart();
 

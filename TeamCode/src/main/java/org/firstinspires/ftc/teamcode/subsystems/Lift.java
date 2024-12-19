@@ -17,7 +17,7 @@ import org.firstinspires.ftc.teamcode.utils.MathUtils;
 
 @Config
 public class Lift extends MotorPIDSlideSubsystem {
-  public static double kP = 0.01, kI = 0.001, kD = 0.0, kV = 0.0003, kS = 0.12, kG = 0.12;
+  public static double kP = 0.008, kI = 0.0, kD = 0.0, kV = 0.0003, kS = 0.12, kG = 0.12;
   private final PIDController pidController;
   private final Motor liftMotorUp;
   private final Motor liftMotorDown;
@@ -31,8 +31,11 @@ public class Lift extends MotorPIDSlideSubsystem {
   private double lastTime;
 
   //  private boolean isResetting = false;
-  public static double resetPower = -0.9;
+  public static double resetPower = -0.7;
   public static double hangAddtionalPower = 0;
+
+  public static double MAX_VEL = 30000;
+  public static double MAX_ACL = 30000;
 
   private final ElevatorFeedforward feedforward;
 
@@ -54,7 +57,7 @@ public class Lift extends MotorPIDSlideSubsystem {
     batteryVoltageSensor = hardwareMap.voltageSensor.iterator().next();
     this.telemetry = telemetry;
 
-    profile = new TrapezoidProfile(new TrapezoidProfile.Constraints(15000, 15000));
+    profile = new TrapezoidProfile(new TrapezoidProfile.Constraints(MAX_VEL, MAX_ACL));
     timer = new ElapsedTime();
     timer.reset();
     lastTime = timer.time(TimeUnit.MILLISECONDS);

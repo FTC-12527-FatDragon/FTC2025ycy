@@ -3,26 +3,27 @@ package org.firstinspires.ftc.teamcode.subsystems;
 import com.arcrobotics.ftclib.command.Command;
 import com.arcrobotics.ftclib.command.StartEndCommand;
 import com.arcrobotics.ftclib.command.SubsystemBase;
-import com.qualcomm.robotcore.hardware.CRServo;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
+
 public class Climber extends SubsystemBase {
-  private final CRServo elevator;
+//  private final DcMotorEx elevator;
 
   public Climber(HardwareMap hardwareMap) {
-    elevator = hardwareMap.get(CRServo.class, "elevatorMotor");
+//    elevator = hardwareMap.get(DcMotorEx.class, "elevatorMotor");
   }
 
   public void elevate() {
-    elevator.setPower(1);
+//    elevator.setPower(1);
   }
 
   public void decline() {
-    elevator.setPower(-1);
+//    elevator.setPower(-1);
   }
 
   public void stop() {
-    elevator.setPower(0);
+//    elevator.setPower(0);
   }
 
   public Command elevateCommand() {
