@@ -10,9 +10,9 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import org.firstinspires.ftc.teamcode.commands.AutoDriveCommand;
 import org.firstinspires.ftc.teamcode.lib.roadrunner.trajectorysequence.TrajectorySequence;
-import org.firstinspires.ftc.teamcode.subsystems.Lift;
-import org.firstinspires.ftc.teamcode.subsystems.LiftClaw;
-import org.firstinspires.ftc.teamcode.subsystems.SlideSuperStucture;
+import org.firstinspires.ftc.teamcode.subsystems.AlphaLift;
+import org.firstinspires.ftc.teamcode.subsystems.AlphaLiftClaw;
+import org.firstinspires.ftc.teamcode.subsystems.AlphaSlide;
 import org.firstinspires.ftc.teamcode.subsystems.drivetrain.SampleMecanumDrive;
 import org.firstinspires.ftc.teamcode.subsystems.drivetrain.TrajectoryManager;
 
@@ -30,23 +30,23 @@ public class Basket1Plus3 extends LinearOpMode {
   public static double heading2 = 0;
 
   // The middle sample
-  public static double xValue3 = 0;
-  public static double yValue3 = 0;
+  public static double xValue3 = 20;
+  public static double yValue3 = 9.5;
   public static double heading3 = 0;
 
   // The leftmost sample
-  public static double xValue4 = 0;
-  public static double yValue4 = 0;
+  public static double xValue4 = 15;
+  public static double yValue4 = 9.5;
   public static double heading4 = 0;
 
   // The Ascent zone
-  public static double xValue5 = 0;
-  public static double yValue5 = 0;
+  public static double xValue5 = 30;
+  public static double yValue5 = 15;
   public static double heading5 = 0;
 
-  LiftClaw liftClaw;
-  Lift lift;
-  SlideSuperStucture slide;
+  AlphaLiftClaw liftClaw;
+  AlphaLift lift;
+  AlphaSlide slide;
 
   Pose2d startPose = new Pose2d(0, 0, Math.toRadians(0));
 
@@ -103,9 +103,9 @@ public class Basket1Plus3 extends LinearOpMode {
     CommandScheduler.getInstance().reset();
 
     // Subsystems Initialized
-    lift = new Lift(hardwareMap, telemetry);
-    liftClaw = new LiftClaw(hardwareMap);
-    slide = new SlideSuperStucture(hardwareMap, telemetry);
+    lift = new AlphaLift(hardwareMap, telemetry);
+    liftClaw = new AlphaLiftClaw(hardwareMap, telemetry);
+    slide = new AlphaSlide(hardwareMap, telemetry);
 
     SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
 

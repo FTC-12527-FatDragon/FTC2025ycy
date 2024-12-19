@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.subsystems;
 
+import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.arcrobotics.ftclib.command.Command;
 import com.arcrobotics.ftclib.command.InstantCommand;
 import com.arcrobotics.ftclib.command.SequentialCommandGroup;
@@ -16,7 +17,7 @@ public class AlphaSlide extends SubsystemBase {
   private final Servo intakeClawServo, wristServo, wristTurnServo;
   private final Servo slideArmServo, slideRightServo;
   private boolean hasGamepiece = false;
-  private static double slideExtensionVal = 0.7;
+  private static double slideExtensionVal = 0.17;
 
   private static double turnAngleDeg = 0;
   private TurnServo turnServo = TurnServo.DEG_0;
@@ -37,7 +38,7 @@ public class AlphaSlide extends SubsystemBase {
     wristServo = hardwareMap.get(Servo.class, "wristServo"); // 0.05 up 0.75 down
 
     wristTurnServo = hardwareMap.get(Servo.class, "wristTurnServo");
-    this.telemetry = telemetry;
+    this.telemetry = new MultipleTelemetry();
     goal = Goal.STOW;
     telemetry.addData("Current State", goal);
     // telemetry.update();
@@ -101,12 +102,12 @@ public class AlphaSlide extends SubsystemBase {
   }
 
   public void openIntakeClaw() {
-    intakeClawServo.setPosition(0.5);
+    intakeClawServo.setPosition(Goal.STOW.clawAngle);
     isIntakeClawOpen = true;
   }
 
   public void closeIntakeClaw() {
-    intakeClawServo.setPosition(0.23);
+    intakeClawServo.setPosition(Goal.HANDOFF.clawAngle);
     isIntakeClawOpen = false;
   }
 
@@ -120,7 +121,7 @@ public class AlphaSlide extends SubsystemBase {
 
   public void slideArmDown() {
     // This is down for stowing the liftArm when scoring the speciemen
-    slideArmServo.setPosition(0.38);
+    slideArmServo.setPosition(0.31);
   }
 
   public void slideArmUp() {
@@ -129,10 +130,10 @@ public class AlphaSlide extends SubsystemBase {
   }
 
   public enum Goal {
-    STOW(0.1, 0.6, 0, 0.4, 0.5),
-    AIM(slideExtensionVal, 0.38, 0.78, turnAngleDeg, 0.5),
-    GRAB(slideExtensionVal, 0.3, 0.78, turnAngleDeg, 0.23),
-    HANDOFF(0.17, 0.6, 0.35, 0.4, 0.23);
+    STOW(0.1, 0.1, 0.39, 0.4, 0.5),
+    AIM(slideExtensionVal, 0.32, 0.75, turnAngleDeg, 0.5),
+    GRAB(slideExtensionVal, 0.47, 0.75, turnAngleDeg, 0.23),
+    HANDOFF(0.17, 0.1, 0.39, 0.4, 0.23);
 
     private final double slideExtension;
     private final double slideArmPos;
@@ -155,25 +156,35 @@ public class AlphaSlide extends SubsystemBase {
   }
 
   public void forwardSlideExtension() {
-    slideExtensionVal = 0.7;
+    slideExtensionVal = 0.76;
   }
 
   public void backwardSlideExtension() {
     slideExtensionVal = 0.17;
   }
 
+  private final double isSlideExtendedVal = 0.3;
+
+  public void preHandoffSlideExtension() {
+    slideExtensionVal = isSlideExtendedVal;
+  }
+
+  public boolean isSlideForward() {
+    return slideExtensionVal > isSlideExtendedVal;
+  }
+
   public void leftTurnServo() {
     switch (turnServo) {
       case DEG_0:
-        turnAngleDeg = 0.4;
+        turnAngleDeg = TurnServo.DEG_0.turnPosition;
         turnServo = TurnServo.DEG_0;
         break;
       case DEG_45:
-        turnAngleDeg = 0.4;
+        turnAngleDeg = TurnServo.DEG_0.turnPosition;
         turnServo = TurnServo.DEG_0;
         break;
       case DEG_90:
-        turnAngleDeg = 0.55;
+        turnAngleDeg = TurnServo.DEG_45.turnPosition;
         turnServo = TurnServo.DEG_45;
         break;
     }
@@ -182,15 +193,15 @@ public class AlphaSlide extends SubsystemBase {
   public void rightTurnServo() {
     switch (turnServo) {
       case DEG_0:
-        turnAngleDeg = 0.55;
+        turnAngleDeg = TurnServo.DEG_45.turnPosition;
         turnServo = TurnServo.DEG_45;
         break;
       case DEG_45:
-        turnAngleDeg = 0.7;
+        turnAngleDeg = TurnServo.DEG_90.turnPosition;
         turnServo = TurnServo.DEG_90;
         break;
       case DEG_90:
-        turnAngleDeg = 0.7;
+        turnAngleDeg = TurnServo.DEG_90.turnPosition;
         turnServo = TurnServo.DEG_90;
         break;
     }
@@ -211,15 +222,17 @@ public class AlphaSlide extends SubsystemBase {
   @Override
   public void periodic() {
 
-    wristTurnServo.setPosition(Range.clip(turnAngleDeg, 0, 1));
-    slideRightServo.setPosition(Range.clip(slideExtensionVal, 0, 1));
+    if (wristTurnServo != null) {
+      wristTurnServo.setPosition(Range.clip(turnAngleDeg, 0, 1));
+      slideRightServo.setPosition(Range.clip(slideExtensionVal, 0, 1));
 
-    telemetry.addData("Current State", goal);
-    telemetry.addData("Bur Gemen", goal == Goal.HANDOFF);
-    telemetry.addData("Claw Position", intakeClawServo.getPosition());
-    telemetry.addData("Slide Extension", slideExtensionVal);
-    telemetry.addData("Turn Angle", turnAngleDeg);
-    telemetry.addData("SLideServo Position", slideRightServo.getPosition());
+      telemetry.addData("Current State", goal);
+      telemetry.addData("Bur Gemen", goal == Goal.HANDOFF);
+      telemetry.addData("Claw Position", intakeClawServo.getPosition());
+      telemetry.addData("Slide Extension", slideExtensionVal);
+      telemetry.addData("Turn Angle", turnAngleDeg);
+      telemetry.addData("SLideServo Position", slideRightServo.getPosition());
+    }
     // slidetelemetry.update();
   }
 }

@@ -1,37 +1,43 @@
 package org.firstinspires.ftc.teamcode.subsystems;
 
+import com.acmerobotics.dashboard.FtcDashboard;
+import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.arcrobotics.ftclib.command.SubsystemBase;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
+import org.firstinspires.ftc.robotcore.external.Telemetry;
 
 public class AlphaLiftClaw extends SubsystemBase {
   private final Servo liftArmServo;
   private final Servo liftClawServo;
   private final Servo liftWristServo;
-  private boolean isClawOpen;
+  private boolean isClawOpen = false;
+  private final Telemetry telemetry;
 
-  public AlphaLiftClaw(final HardwareMap hardwareMap) {
+  public AlphaLiftClaw(final HardwareMap hardwareMap, Telemetry telemetry) {
     liftArmServo = hardwareMap.get(Servo.class, "liftArmServo"); // 0.3 Up 0.7 Down
     liftClawServo = hardwareMap.get(Servo.class, "liftClawServo"); // 0 Close 0.5 Open
     liftWristServo = hardwareMap.get(Servo.class, "liftWristServo");
+    this.telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
   }
 
   public void initialize() {
     liftWristServo.setPosition(ServoPositions.STOW.liftWristPosition);
     liftArmServo.setPosition(ServoPositions.STOW.liftArmPosition);
     liftClawServo.setPosition(ServoPositions.STOW.liftClawPosition);
+    isClawOpen = false;
   }
 
   public void grabWrist() {
-    liftWristServo.setPosition(0.39);
+    liftWristServo.setPosition(ServoPositions.GRAB.liftWristPosition);
   }
 
   public void basketWrist() {
-    liftWristServo.setPosition(0.7);
+    liftWristServo.setPosition(ServoPositions.BASKET.liftWristPosition);
   }
 
   public void chamberWrist() {
-    liftWristServo.setPosition(0.58);
+    liftWristServo.setPosition(ServoPositions.CHAMBER.liftWristPosition);
   }
 
   public void switchLiftClaw() {
@@ -44,119 +50,51 @@ public class AlphaLiftClaw extends SubsystemBase {
   }
 
   public void openClaw() {
-    liftClawServo.setPosition(0.5);
+    liftClawServo.setPosition(ServoPositions.GRAB.liftClawPosition);
+    isClawOpen = true;
   }
 
   public void closeClaw() {
-    liftClawServo.setPosition(0.27);
+    liftClawServo.setPosition(ServoPositions.STOW.liftClawPosition);
+    isClawOpen = false;
   }
 
   public void upLiftArm() {
-    liftArmServo.setPosition(0.47);
+    liftArmServo.setPosition(ServoPositions.BASKET.liftArmPosition);
   }
 
   public void foldLiftArm() {
-    liftArmServo.setPosition(0.85);
+    liftArmServo.setPosition(ServoPositions.STOW.liftArmPosition);
   }
 
   public void grabLiftArm() {
-    liftArmServo.setPosition(0.19);
+    liftArmServo.setPosition(ServoPositions.GRAB.liftArmPosition);
   }
 
   public void chamberLiftArm() {
-    liftArmServo.setPosition(0.72);
+    liftArmServo.setPosition(ServoPositions.CHAMBER.liftArmPosition);
   }
 
   public enum ServoPositions {
-    STOW(0.85, 0.27, 0.7),
-    CHAMBER(0.72, 0.27, 0.58),
-    BASKET(0.47, 0.27, 0.7),
-    GRAB(0.19, 0.5, 0.39);
+    STOW(0.91, 0.27, 0.6),
+    CHAMBER(0.68, 0.27, 0.26),
+    BASKET(0.39, 0.27, 0.56),
+    GRAB(0.08, 0.5, 0.06);
 
-    private double liftArmPosition;
-    private double liftWristPosition;
-    private double liftClawPosition;
+    private final double liftArmPosition;
+    private final double liftWristPosition;
+    private final double liftClawPosition;
 
     ServoPositions(double liftArmPosition, double liftClawPosition, double liftWristPosition) {
       this.liftArmPosition = liftArmPosition;
-      this.liftClawPosition = liftArmPosition;
+      this.liftClawPosition = liftClawPosition;
       this.liftWristPosition = liftWristPosition;
     }
   }
+
+  @Override
+  public void periodic() {
+    telemetry.addData("Lift Arm Position", liftArmServo.getPosition());
+    telemetry.update();
+  }
 }
-
-/*package org.firstinspires.ftc.teamcode.subsystems;
-
-import com.acmerobotics.dashboard.config.Config;
-import com.acmerobotics.roadrunner.geometry.Pose2d;
-import com.arcrobotics.ftclib.command.Command;
-import com.arcrobotics.ftclib.command.InstantCommand;
-import com.arcrobotics.ftclib.command.SubsystemBase;
-import com.qualcomm.robotcore.hardware.HardwareMap;
-import com.qualcomm.robotcore.hardware.Servo;
-
-import java.util.function.Supplier;
-
-@Config
-public class AlphaClaw extends SubsystemBase {
-    public static double slideServo_ExtendPose = 0.73;
-    public static double slideServo_ContractPose = 0.17;
-    public static double clawServo_OpenPose = 0.4;
-    public static double clawServo_GrabPose = 0.66;
-    public static double clawTurnServo_MinPose = 0;
-    public static double clawTurnServo_MaxPose = 1;
-    private final HardwareMap hardwareMap;
-    private final Servo clawServo, clawTurnServo, slideServo;
-    private double clawTurnServoSetpoint = clawTurnServo_MinPose;
-    public AlphaClaw(HardwareMap hm){
-        hardwareMap = hm;
-        clawServo = hardwareMap.get(Servo.class,"clawServo");
-        clawTurnServo = hardwareMap.get(Servo.class,"clawTurnServo");
-        slideServo = hardwareMap.get(Servo.class,"slideServo");
-        slideServo.setDirection(Servo.Direction.FORWARD);
-        clawTurnServo.setDirection(Servo.Direction.REVERSE);
-        setDefaultYaw();
-    }
-    public void aim(Pose2d blockPose){
-        // TODO: complete the code
-    }
-
-    public void aim(double slideSetpoint, double yawSetpointRot){
-        // TODO: calc setpoint based on joint, to make it linear
-        slideServo.setPosition(slideSetpoint*(slideServo_ExtendPose - slideServo_ContractPose)+slideServo_ExtendPose);
-//        clawServo.setPosition(clawServo_OpenPose);
-        setYaw(yawSetpointRot);
-    }
-    public void grab(){
-        clawServo.setPosition(clawServo_GrabPose);
-    }
-    public void retract(){
-        slideServo.setPosition(slideServo_ContractPose);
-        setDefaultYaw();
-    }
-    public void release(){
-        clawServo.setPosition(clawServo_OpenPose);
-    }
-    public void setYaw(double yawSetpointRot){
-        yawSetpointRot *= 2;
-        yawSetpointRot += 0.5;
-        clawTurnServoSetpoint = yawSetpointRot - Math.floor(yawSetpointRot);
-        updateClawTurnServo();
-    }
-    public void setDefaultYaw(){
-        clawTurnServoSetpoint = (clawTurnServo_MaxPose + clawTurnServo_MinPose) / 2;
-        updateClawTurnServo();
-    }
-    private void updateClawTurnServo(){
-        clawTurnServo.setPosition(clawTurnServoSetpoint);
-    }
-    public Command aimCommand(Supplier<Pose2d> getBlockPos){
-        return new InstantCommand(() -> aim(getBlockPos.get()));
-    }
-    public Command grabCommand(){
-        return new InstantCommand(this::grab);
-    }
-    public Command retractCommand(){
-        return new InstantCommand(this::retract);
-    }
-}*/
