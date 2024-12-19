@@ -119,7 +119,7 @@ public class TXBetaBotSolo extends CommandOpMode {
                 gamepadEx1.getButton(GamepadKeys.Button.DPAD_RIGHT)
                     && slide.getGoal() == SlideSuperStucture.Goal.AIM
                     && lift.getGoal() == Lift.Goal.STOW)
-        .whenPressed(handoffCommand.get(), false);
+        .whenPressed(handoffCommand.get());
 
     // Handoff from Aim
     // Chamber Command
