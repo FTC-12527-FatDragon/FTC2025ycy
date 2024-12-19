@@ -95,7 +95,7 @@ public class SampleMecanumDrive extends MecanumDrive implements Subsystem {
             TRANSLATIONAL_PID,
             TRANSLATIONAL_PID,
             HEADING_PID,
-            new Pose2d(0.2, 0.2, Math.toRadians(2.0)), // Pose Error
+            new Pose2d(0.2, 0.2, Math.toRadians(1.0)), // Pose Error
             0.1);
 
     LynxModuleUtil.ensureMinimumFirmwareVersion(hardwareMap);

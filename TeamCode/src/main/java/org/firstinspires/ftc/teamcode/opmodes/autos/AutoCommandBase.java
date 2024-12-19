@@ -93,11 +93,11 @@ public abstract class AutoCommandBase extends LinearOpMode {
     return new SequentialCommandGroup(
         new InstantCommand(() -> lift.setGoal(Lift.Goal.HANG))
             .alongWith(new InstantCommand(slide::slideArmDown)),
-        new ParallelDeadlineGroup(new WaitCommand(500), new WaitUntilCommand(() -> lift.atHome(10)))
+        new ParallelDeadlineGroup(new WaitCommand(100), new WaitUntilCommand(() -> lift.atHome(10)))
             .andThen(new WaitCommand(200).deadlineWith(lift.manualResetCommand()))
             .andThen(
-                    new InstantCommand(() -> drive.setWeightedDrivePower(new Pose2d(-1, 0, 0)))
-                            .andThen(new WaitCommand(100))
+                    new InstantCommand(() -> drive.setWeightedDrivePower(new Pose2d(1, 0, 0)))
+                            .andThen(new WaitCommand(50))
                             .andThen(new InstantCommand(() -> drive.setWeightedDrivePower(new Pose2d(0, 0, 0))))
             )
             .andThen(new InstantCommand(liftClaw::openClaw)),

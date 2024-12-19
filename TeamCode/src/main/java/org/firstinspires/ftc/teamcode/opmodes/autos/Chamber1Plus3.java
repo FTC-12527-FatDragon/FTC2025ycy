@@ -21,7 +21,7 @@ import org.firstinspires.ftc.teamcode.subsystems.drivetrain.TrajectoryManager;
 @Autonomous(name = "Chamber 1+3", group = "Autos")
 public class Chamber1Plus3 extends AutoCommandBase {
   public static double chamberSpacing = -3;
-  public static long handOff2TrajDelay = 400;
+  public static long handOff2TrajDelay = 300;
   public static long swipeDelay = 900;
   public static double sampleSpacing = 10.5;
 
@@ -32,7 +32,7 @@ public class Chamber1Plus3 extends AutoCommandBase {
 
   // Grab location
   public static double xValue2 = -4.5;
-  public static double yValue2 = -5;
+  public static double yValue2 = -4.5;
   public static double heading2 = -180;
 
   // The middle sample
