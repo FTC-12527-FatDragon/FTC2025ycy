@@ -82,9 +82,9 @@ public class AutoCommand {
         new InstantCommand(() -> lift.setGoal(Lift.Goal.HANG))
             .alongWith(new InstantCommand(slide::slideArmDown)),
         new ParallelDeadlineGroup(new WaitCommand(500), new WaitUntilCommand(() -> lift.atHome(10)))
-            .andThen(new WaitCommand(100).deadlineWith(lift.manualResetCommand()))
+            .andThen(new WaitCommand(200).deadlineWith(lift.manualResetCommand()))
             .andThen(new InstantCommand(liftClaw::openClaw)),
-        new WaitCommand(200),
+        new WaitCommand(50),
         new InstantCommand(liftClaw::foldLiftArm),
         new InstantCommand(() -> lift.setGoal(Lift.Goal.STOW)));
   }

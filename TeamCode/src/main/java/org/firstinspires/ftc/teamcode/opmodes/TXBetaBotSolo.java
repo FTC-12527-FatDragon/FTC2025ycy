@@ -215,6 +215,10 @@ public class TXBetaBotSolo extends CommandOpMode {
                 gamepadEx1.getButton(GamepadKeys.Button.DPAD_DOWN)
                     && gamepadEx1.getButton(GamepadKeys.Button.RIGHT_BUMPER))
         .whenHeld(climber.declineCommand());
+
+    new FunctionalButton(
+            () -> gamepadEx1.getButton(GamepadKeys.Button.RIGHT_BUMPER) && gamepadEx1.getTrigger(GamepadKeys.Trigger.RIGHT_TRIGGER) > 0.9
+    ).whenHeld(slide.swipeCommand());
   }
 
   @Override

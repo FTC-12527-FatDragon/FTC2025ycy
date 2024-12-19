@@ -30,6 +30,7 @@ public class SlideSuperStucture extends MotorPIDSlideSubsystem {
   public static double IntakeClawServo_GRAB = 0.36;
   // slideMotor
   public static double SlideMotor_atSetPointTolerance = 10;
+  public static double SlideMotor_extensionValue = 400;
 
   // aimCommand
   public static long aimCommand_wristTurn2ArmDelayMs = 0;
@@ -49,7 +50,7 @@ public class SlideSuperStucture extends MotorPIDSlideSubsystem {
   private final DcMotorEx slideMotor;
 
   private final PIDController pidController;
-  private final double kP = 0.04, kI = 0.0, kD = 0.0;
+  public static double kP = 0.04, kI = 0.0, kD = 0.0008;
   private final VoltageSensor batteryVoltageSensor;
 
   private boolean hasGamepiece = false;
@@ -65,7 +66,7 @@ public class SlideSuperStucture extends MotorPIDSlideSubsystem {
   //  private final Telemetry telemetry; // 0 0.5 0.8
 
   //  private boolean isResetting = false;
-  public static double resetPower = -0.5;
+  public static double resetPower = -0.9;
 
   public SlideSuperStucture(final HardwareMap hardwareMap, final Telemetry telemetry) {
     slideArmServo = hardwareMap.get(Servo.class, "slideArmServo");
@@ -79,7 +80,7 @@ public class SlideSuperStucture extends MotorPIDSlideSubsystem {
     setServoController(true);
 
     slideMotor = hardwareMap.get(DcMotorEx.class, "slideMotor");
-    slideMotor.setDirection(DcMotorSimple.Direction.REVERSE);
+    slideMotor.setDirection(DcMotorEx.Direction.REVERSE);
     slideMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
     slideMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
     slideMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
@@ -141,7 +142,7 @@ public class SlideSuperStucture extends MotorPIDSlideSubsystem {
   public Command swipeCommand() {
     return new SequentialCommandGroup(
             setGoalCommand(Goal.AUTOSWIPE),
-            setTurnServoPosCommand(TurnServo.DEG_0, 0),
+            setTurnServoPosCommand(TurnServo.DEG_INVERTED_HORIZ, 0),
             setServoPosCommand(wristServo, Goal.AUTOSWIPE.wristPos, swipeCommand_wrist2ExtendDelayMs),
             new InstantCommand(() -> {
               forwardSlideExtension(Goal.AUTOSWIPE.slideExtension);
@@ -190,7 +191,7 @@ public class SlideSuperStucture extends MotorPIDSlideSubsystem {
     AIM(slideExtensionVal, 0.59, 0.65, IntakeClawServo_OPEN),
     GRAB(slideExtensionVal, 0.505, 0.65, IntakeClawServo_GRAB),
     HANDOFF(0, 0.775, 0.175, IntakeClawServo_GRAB),
-    AUTOSWIPE(slideExtensionVal, 0.5, 0.3, IntakeClawServo_OPEN);
+    AUTOSWIPE(SlideMotor_extensionValue, 0.37, 0.34, IntakeClawServo_OPEN);
 
     public final double slideExtension;
     public final double slideArmPos;
@@ -206,7 +207,7 @@ public class SlideSuperStucture extends MotorPIDSlideSubsystem {
   }
 
   public void forwardSlideExtension() {
-    forwardSlideExtension(460);
+    forwardSlideExtension(SlideMotor_extensionValue);
   }
 
   public void forwardSlideExtension(double slideExtension) {
@@ -286,6 +287,7 @@ public class SlideSuperStucture extends MotorPIDSlideSubsystem {
     DEG_0(0.2),
     DEG_05(0.4),
     DEG_08(0.7),
+    DEG_INVERTED_HORIZ(0.925),
     UNKNOWN(-1);
     public final double turnAngleDeg;
     TurnServo(double setpoint){
@@ -350,6 +352,7 @@ public class SlideSuperStucture extends MotorPIDSlideSubsystem {
 
     telemetry.addData("Current Goal", goal);
     telemetry.addData("Goal Extension", setpointTicks);
+    telemetry.addData("Slide.CurrentPosition", getCurrentPosition());
     telemetry.update();
 
     double pidPower = pidController.calculate(getCurrentPosition(), setpointTicks);
