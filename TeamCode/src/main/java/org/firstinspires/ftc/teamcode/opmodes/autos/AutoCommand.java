@@ -20,6 +20,7 @@ import org.firstinspires.ftc.teamcode.subsystems.drivetrain.SampleMecanumDrive;
 public class AutoCommand {
   public static long handoff_slide2LiftCloseDelayMs = 0;
   public static long handoff_liftClose2OpenIntakeDelayMs = 50;
+
   public static Command upLiftToBasket(Lift lift, LiftClaw liftClaw) {
     return new ParallelCommandGroup(
         new InstantCommand(() -> lift.setGoal(Lift.Goal.BASKET)),
