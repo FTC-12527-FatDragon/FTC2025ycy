@@ -2,8 +2,11 @@ package org.firstinspires.ftc.teamcode.commands;
 
 import com.acmerobotics.roadrunner.trajectory.Trajectory;
 import com.arcrobotics.ftclib.command.CommandBase;
+
+import java.security.AuthProvider;
 import java.util.Optional;
 import org.firstinspires.ftc.teamcode.lib.roadrunner.trajectorysequence.TrajectorySequence;
+import org.firstinspires.ftc.teamcode.subsystems.drivetrain.MecanumDrive;
 import org.firstinspires.ftc.teamcode.subsystems.drivetrain.SampleMecanumDrive;
 
 public class AutoDriveCommand extends CommandBase {

@@ -6,6 +6,10 @@ import com.arcrobotics.ftclib.command.ParallelCommandGroup;
 import com.arcrobotics.ftclib.command.SequentialCommandGroup;
 import com.arcrobotics.ftclib.command.WaitCommand;
 import com.arcrobotics.ftclib.command.WaitUntilCommand;
+
+import org.firstinspires.ftc.teamcode.subsystems.AlphaLift;
+import org.firstinspires.ftc.teamcode.subsystems.AlphaLiftClaw;
+import org.firstinspires.ftc.teamcode.subsystems.AlphaSlide;
 import org.firstinspires.ftc.teamcode.subsystems.Lift;
 import org.firstinspires.ftc.teamcode.subsystems.LiftClaw;
 import org.firstinspires.ftc.teamcode.subsystems.SlideSuperStucture;
@@ -67,10 +71,26 @@ public class AutoCommand {
         new InstantCommand(slide::openIntakeClaw));
   }
 
+  public static Command initialize(AlphaLiftClaw liftClaw, AlphaSlide slide) {
+    return new ParallelCommandGroup(
+            new InstantCommand(slide::initialize),
+            new InstantCommand(liftClaw::initialize)
+    );
+  }
+
   public static Command autoFinish(LiftClaw liftClaw, Lift lift, SlideSuperStucture slide) {
     return new ParallelCommandGroup(
         slide.aimCommand(),
         lift.resetCommand().withTimeout(300),
         new InstantCommand(liftClaw::openClaw));
   }
+
+  public static Command autoFinish(AlphaLiftClaw liftClaw, AlphaLift lift, AlphaSlide slide) {
+    return new ParallelCommandGroup(
+            slide.aimCommand(),
+            lift.resetCommand().withTimeout(300),
+            new InstantCommand(liftClaw::openClaw)
+    );
+  }
+
 }
