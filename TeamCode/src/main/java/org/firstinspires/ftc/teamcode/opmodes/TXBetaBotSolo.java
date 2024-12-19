@@ -31,6 +31,7 @@ import org.firstinspires.ftc.teamcode.utils.FunctionalButton;
 public class TXBetaBotSolo extends CommandOpMode {
   public static Pose2d autoEndPose = new Pose2d();
   private GamepadEx gamepadEx1;
+  private GamepadEx gamepadEx2;
   private Lift lift;
   private LiftClaw liftClaw;
   private SlideSuperStucture slide;
@@ -43,6 +44,7 @@ public class TXBetaBotSolo extends CommandOpMode {
   public void initialize() {
     this.telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
     gamepadEx1 = new GamepadEx(gamepad1);
+    gamepadEx2 = new GamepadEx(gamepad2);
 
     lift = new Lift(hardwareMap, telemetry);
     liftClaw = new LiftClaw(hardwareMap);
@@ -110,7 +112,7 @@ public class TXBetaBotSolo extends CommandOpMode {
     // Pure Handoff
     Supplier<Command> handoffCommand =
         () ->
-                AutoCommand.slowHandoff(slide, liftClaw)
+            AutoCommand.slowHandoff(slide, liftClaw)
                 .andThen(new WaitCommand(50))
                 .andThen(new InstantCommand(() -> isPureHandoffCompelte = true));
 
@@ -204,17 +206,13 @@ public class TXBetaBotSolo extends CommandOpMode {
                     && slide.getGoal() == SlideSuperStucture.Goal.AIM)
         .whenPressed(new InstantCommand(() -> slide.rightTurnServo()));
 
-    new FunctionalButton(
-            () ->
-                gamepadEx1.getButton(GamepadKeys.Button.DPAD_UP)
-                    && gamepadEx1.getButton(GamepadKeys.Button.RIGHT_BUMPER))
-        .whenHeld(climber.elevateCommand());
+    gamepadEx2.getGamepadButton(GamepadKeys.Button.DPAD_UP).whenHeld(climber.elevateCommand());
 
-    new FunctionalButton(
-            () ->
-                gamepadEx1.getButton(GamepadKeys.Button.DPAD_DOWN)
-                    && gamepadEx1.getButton(GamepadKeys.Button.RIGHT_BUMPER))
-        .whenHeld(climber.declineCommand());
+    gamepadEx2.getGamepadButton(GamepadKeys.Button.DPAD_DOWN).whenHeld(climber.declineCommand());
+
+    gamepadEx2
+        .getGamepadButton(GamepadKeys.Button.A)
+        .whenPressed(new InstantCommand(climber::switchLock));
   }
 
   @Override

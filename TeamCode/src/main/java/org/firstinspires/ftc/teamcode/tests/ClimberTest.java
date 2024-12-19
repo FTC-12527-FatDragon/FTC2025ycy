@@ -1,7 +1,5 @@
 package org.firstinspires.ftc.teamcode.tests;
 
-import com.acmerobotics.dashboard.FtcDashboard;
-import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.arcrobotics.ftclib.command.Command;
 import com.arcrobotics.ftclib.command.CommandBase;
 import com.arcrobotics.ftclib.command.CommandOpMode;
@@ -10,8 +8,6 @@ import com.arcrobotics.ftclib.gamepad.GamepadKeys;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
-
-import org.firstinspires.ftc.teamcode.subsystems.Climber;
 
 @TeleOp(name = "Test TeleOp")
 public class ClimberTest extends CommandOpMode {
@@ -23,7 +19,6 @@ public class ClimberTest extends CommandOpMode {
     gamepadEx = new GamepadEx(gamepad1);
     motor = hardwareMap.get(DcMotorEx.class, "elevatorMotor");
     gamepadEx.getGamepadButton(GamepadKeys.Button.A).whenHeld(climbCommand());
-
   }
 
   public Command climbCommand() {

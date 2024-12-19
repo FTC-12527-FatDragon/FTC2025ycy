@@ -3,27 +3,42 @@ package org.firstinspires.ftc.teamcode.subsystems;
 import com.arcrobotics.ftclib.command.Command;
 import com.arcrobotics.ftclib.command.StartEndCommand;
 import com.arcrobotics.ftclib.command.SubsystemBase;
+import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
-
+import com.qualcomm.robotcore.hardware.Servo;
 
 public class Climber extends SubsystemBase {
-//  private final DcMotorEx elevator;
+  private final DcMotorEx climber;
+  private final Servo lockServo;
+  private boolean isOpen = false;
 
-  public Climber(HardwareMap hardwareMap) {
-//    elevator = hardwareMap.get(DcMotorEx.class, "elevatorMotor");
+  public Climber(final HardwareMap hardwareMap) {
+    climber = hardwareMap.get(DcMotorEx.class, "elevatorMotor");
+    climber.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+    lockServo = hardwareMap.get(Servo.class, "lockServo");
+    lockServo.setPosition(0);
+  }
+
+  public void switchLock() {
+    if (isOpen) {
+      lockServo.setPosition(1);
+    } else {
+      lockServo.setPosition(0);
+    }
+    isOpen = !isOpen;
   }
 
   public void elevate() {
-//    elevator.setPower(1);
+    climber.setPower(1);
   }
 
   public void decline() {
-//    elevator.setPower(-1);
+    climber.setPower(-1);
   }
 
   public void stop() {
-//    elevator.setPower(0);
+    climber.setPower(0);
   }
 
   public Command elevateCommand() {

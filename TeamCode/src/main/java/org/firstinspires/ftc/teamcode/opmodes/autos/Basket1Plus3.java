@@ -108,8 +108,7 @@ public class Basket1Plus3 extends LinearOpMode {
 
   public Command wait(SampleMecanumDrive drive, long ms) {
     return new ParallelDeadlineGroup(
-        new WaitCommand(ms),
-        new RunCommand(drive::update).interruptOn(() -> isStopRequested()));
+        new WaitCommand(ms), new RunCommand(drive::update).interruptOn(() -> isStopRequested()));
   }
 
   @Override
@@ -155,10 +154,11 @@ public class Basket1Plus3 extends LinearOpMode {
                 stowArmFromBasket(lift, liftClaw),
                 followTrajectory(drive, trajs6).alongWith(slide.aimCommand()),
                 wait(drive, 300),
-                new InstantCommand(() -> {
-                  slide.forwardSlideExtension(440);
-                  slide.setServoPos(SlideSuperStucture.TurnServo.DEG_0);
-                }),
+                new InstantCommand(
+                    () -> {
+                      slide.forwardSlideExtension(440);
+                      slide.setServoPos(SlideSuperStucture.TurnServo.DEG_0);
+                    }),
                 wait(drive, 500),
                 slide.grabCommand(),
                 wait(drive, 300),
