@@ -24,23 +24,23 @@ import org.firstinspires.ftc.teamcode.subsystems.drivetrain.TrajectoryManager;
 @Autonomous(name = "Basket 1+3", group = "Autos")
 public class Basket1Plus3 extends AutoCommandBase {
   // For Basket Scoring
-  public static double xValue1 = 10;
-  public static double yValue1 = 16;
+  public static double xValue1 = 9;
+  public static double yValue1 = 17;
   public static double heading1 = -45;
 
   // The right sample
   public static double xValue2 = 23.5;
-  public static double yValue2 = 9.5;
+  public static double yValue2 = 9.25;
   public static double heading2 = 0;
 
   // The middle sample
   public static double xValue3 = 23.5;
-  public static double yValue3 = 20;
+  public static double yValue3 = 19.5;
   public static double heading3 = 0;
 
   // The left sample
   public static double xValue4 = 11;
-  public static double yValue4 = 20;
+  public static double yValue4 = 19.5;
   public static double heading4 = 20;
 
   public static long basketWaitMs = 500;

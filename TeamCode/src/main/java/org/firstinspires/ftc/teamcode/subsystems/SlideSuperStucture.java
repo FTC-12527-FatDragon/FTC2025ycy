@@ -24,10 +24,20 @@ import org.firstinspires.ftc.teamcode.utils.MathUtils;
 public class SlideSuperStucture extends MotorPIDSlideSubsystem {
   // ---- Configs ----
   // SlideArmServo
-  public static double SlideArmServo_AFTERGRAB = 0.7;
+  public static double SlideArmServo_AIM = 0.4;
+  public static double SlideArmServo_GRAB = 0.53;
+  public static double SlideArmServo_HANDOFF = 0.25;
+  public static double SlideArmServo_AFTERGRAB = 0.55;
   // intakeClawServo
   public static double IntakeClawServo_OPEN = 0.6;
   public static double IntakeClawServo_GRAB = 0.36;
+  // wristServo
+  public static double WristServo_UP = 0.05;
+  public static double WristServo_DOWN = 0.75;
+  // wristTurnServo
+  public static double WristTurnServo_POS0 = 0.2;
+  public static double WristTurnServo_POS1 = 0.6;
+  public static double WristTurnServo_POS2 = 0.8;
   // slideMotor
   public static double SlideMotor_atSetPointTolerance = 10;
   public static double SlideMotor_extensionValue = 400;
@@ -50,7 +60,7 @@ public class SlideSuperStucture extends MotorPIDSlideSubsystem {
   private final DcMotorEx slideMotor;
 
   private final PIDController pidController;
-  public static double kP = 0.03, kI = 0.0, kD = 0.0008;
+  public static double kP = 0.03, kI = 0.0, kD = 0;
   private final VoltageSensor batteryVoltageSensor;
 
   private boolean hasGamepiece = false;
@@ -190,10 +200,10 @@ public class SlideSuperStucture extends MotorPIDSlideSubsystem {
   @Config
   public enum Goal {
     STOW(0, 0, 0.2, IntakeClawServo_OPEN),
-    AIM(slideExtensionVal, 0.59, 0.65, IntakeClawServo_OPEN),
-    GRAB(slideExtensionVal, 0.505, 0.65, IntakeClawServo_GRAB),
-    HANDOFF(0, 0.775, 0.175, IntakeClawServo_GRAB),
-    AUTOSWIPE(SlideMotor_extensionValue, 0.37, 0.34, IntakeClawServo_OPEN);
+    AIM(slideExtensionVal, SlideArmServo_AFTERGRAB, 0.805, IntakeClawServo_OPEN),
+    GRAB(slideExtensionVal, 0.64, 0.805, IntakeClawServo_GRAB),
+    HANDOFF(0, 0.36, 0.25, IntakeClawServo_GRAB),
+    AUTOSWIPE(SlideMotor_extensionValue, 0.76, 0.45, IntakeClawServo_OPEN);
 
     public final double slideExtension;
     public final double slideArmPos;

@@ -27,7 +27,7 @@ public class Chamber1Plus3 extends AutoCommandBase {
 
   // Chamber hang location
   public static double xValue1 = 7;
-  public static double yValue1 = -32.5;
+  public static double yValue1 = -33;
   public static double heading1 = 90;
 
   // Grab location
@@ -36,7 +36,7 @@ public class Chamber1Plus3 extends AutoCommandBase {
   public static double heading2 = -180;
 
   // The middle sample
-  public static double SampleSupplyX = -13;
+  public static double SampleSupplyX = -16;
   public static double SampleSupplyY = -19;
   public static double SampleSupplyHeading = -120;
   public static double SampleSupplyTurnDeg = -110;

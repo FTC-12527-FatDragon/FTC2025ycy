@@ -52,14 +52,16 @@ import org.firstinspires.ftc.teamcode.lib.roadrunner.util.LynxModuleUtil;
  */
 @Config
 public class SampleMecanumDrive extends MecanumDrive implements Subsystem {
-  public static PIDCoefficients TRANSLATIONAL_PID = new PIDCoefficients(2, 0, 0);
-  public static PIDCoefficients HEADING_PID = new PIDCoefficients(2, 0, 0.2);
+  public static PIDCoefficients TRANSLATIONAL_PID = new PIDCoefficients(30, 0, 0.2);
+  public static PIDCoefficients HEADING_PID = new PIDCoefficients(15, 0, 1);
 
   public static double LATERAL_MULTIPLIER = 1.4514;
 
   public static double VX_WEIGHT = 1;
   public static double VY_WEIGHT = 1;
   public static double OMEGA_WEIGHT = 1;
+
+  public static double ADMISSIBLE_TIMEOUT = 1;
 
   private TrajectorySequenceRunner trajectorySequenceRunner;
 
@@ -95,8 +97,8 @@ public class SampleMecanumDrive extends MecanumDrive implements Subsystem {
             TRANSLATIONAL_PID,
             TRANSLATIONAL_PID,
             HEADING_PID,
-            new Pose2d(0.2, 0.2, Math.toRadians(1.0)), // Pose Error
-            0.1);
+            new Pose2d(1.5, 1.5, Math.toRadians(2)), // Pose Error
+            ADMISSIBLE_TIMEOUT);
 
     LynxModuleUtil.ensureMinimumFirmwareVersion(hardwareMap);
 
