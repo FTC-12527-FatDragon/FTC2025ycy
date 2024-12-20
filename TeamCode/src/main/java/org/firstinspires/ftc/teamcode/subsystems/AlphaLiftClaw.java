@@ -89,7 +89,7 @@ public class AlphaLiftClaw extends SubsystemBase {
     STOW(0.88, 0.35, 0.62),
     CHAMBER(0.66, 0.35, 0.27),
     BASKET(0.43, 0.35, 0.4),
-    GRAB(0.14, 0.5, 0.1);
+    GRAB(0.14, 0.5, 0.08);
 
     private final double liftArmPosition;
     private final double liftWristPosition;

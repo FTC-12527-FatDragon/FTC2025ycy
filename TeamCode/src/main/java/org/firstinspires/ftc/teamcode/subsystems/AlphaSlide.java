@@ -18,6 +18,7 @@ public class AlphaSlide extends SubsystemBase {
   private final Servo slideArmServo, slideRightServo;
   private boolean hasGamepiece = false;
   private static double slideExtensionVal = 0.35;
+  private  SlideServo slideServo = SlideServo.BACK;
 
   private static double turnAngleDeg = 0;
   private TurnServo turnServo = TurnServo.DEG_0;
@@ -156,66 +157,113 @@ public class AlphaSlide extends SubsystemBase {
   }
 
   public void forwardSlideExtension() {
-    slideExtensionVal = 0.6;
+    switch (slideServo) {
+      case FRONT:
+        slideExtensionVal = SlideServo.FRONT.extensionVal;
+        slideServo = SlideServo.FRONT;
+        break;
+      case MIDDLE:
+        slideExtensionVal = SlideServo.FRONT.extensionVal;
+        slideServo = SlideServo.FRONT;
+        break;
+      case BACK:
+        slideExtensionVal = SlideServo.MIDDLE.extensionVal;
+        slideServo = SlideServo.MIDDLE;
+        break;
+    }
   }
 
   public void backwardSlideExtension() {
-    slideExtensionVal = 0.35;
+    switch (slideServo) {
+      case FRONT:
+        slideExtensionVal = SlideServo.MIDDLE.extensionVal;
+        slideServo = SlideServo.MIDDLE;
+        break;
+      case MIDDLE:
+        slideExtensionVal = SlideServo.BACK.extensionVal;
+        slideServo = SlideServo.BACK;
+        break;
+      case BACK:
+        slideExtensionVal = SlideServo.BACK.extensionVal;
+        slideServo = SlideServo.BACK;
+        break;
+    }
   }
 
-  private final double isSlideExtendedVal = 0.4;
+  private final double preHandoffSlideExtendedVal = 0.4;
 
   public void preHandoffSlideExtension() {
-    slideExtensionVal = isSlideExtendedVal;
+    slideExtensionVal = preHandoffSlideExtendedVal;
   }
 
   public boolean isSlideForward() {
-    return slideExtensionVal > isSlideExtendedVal;
+    return slideExtensionVal > preHandoffSlideExtendedVal;
   }
 
   public void leftTurnServo() {
     switch (turnServo) {
+      case LEFT_45:
+        turnAngleDeg = TurnServo.LEFT_45.turnPosition;
+        turnServo = TurnServo.LEFT_45;
+        break;
       case DEG_0:
+        turnAngleDeg = TurnServo.LEFT_45.turnPosition;
+        turnServo = TurnServo.LEFT_45;
+        break;
+      case RIGHT_45:
         turnAngleDeg = TurnServo.DEG_0.turnPosition;
         turnServo = TurnServo.DEG_0;
         break;
-      case DEG_45:
-        turnAngleDeg = TurnServo.DEG_0.turnPosition;
-        turnServo = TurnServo.DEG_0;
-        break;
-      case DEG_90:
-        turnAngleDeg = TurnServo.DEG_45.turnPosition;
-        turnServo = TurnServo.DEG_45;
+      case RIGHT_90:
+        turnAngleDeg = TurnServo.RIGHT_45.turnPosition;
+        turnServo = TurnServo.RIGHT_45;
         break;
     }
   }
 
   public void rightTurnServo() {
     switch (turnServo) {
+      case LEFT_45:
+        turnAngleDeg = TurnServo.DEG_0.turnPosition;;
+        turnServo = TurnServo.RIGHT_45;
+        break;
       case DEG_0:
-        turnAngleDeg = TurnServo.DEG_45.turnPosition;
-        turnServo = TurnServo.DEG_45;
+        turnAngleDeg = TurnServo.RIGHT_45.turnPosition;
+        turnServo = TurnServo.RIGHT_45;
         break;
-      case DEG_45:
-        turnAngleDeg = TurnServo.DEG_90.turnPosition;
-        turnServo = TurnServo.DEG_90;
+      case RIGHT_45:
+        turnAngleDeg = TurnServo.RIGHT_90.turnPosition;
+        turnServo = TurnServo.RIGHT_90;
         break;
-      case DEG_90:
-        turnAngleDeg = TurnServo.DEG_90.turnPosition;
-        turnServo = TurnServo.DEG_90;
+      case RIGHT_90:
+        turnAngleDeg = TurnServo.RIGHT_90.turnPosition;
+        turnServo = TurnServo.RIGHT_90;
         break;
     }
   }
 
   enum TurnServo {
+    LEFT_45(0.25),
     DEG_0(0.4),
-    DEG_45(0.55),
-    DEG_90(0.7);
+    RIGHT_45(0.55),
+    RIGHT_90(0.7);
 
     private double turnPosition;
 
     TurnServo(double turnPosition) {
       this.turnPosition = turnPosition;
+    }
+  }
+
+  enum SlideServo {
+    FRONT(0.6),
+    MIDDLE(0.47),
+    BACK(0.35);
+
+    private double extensionVal;
+
+    SlideServo(double extensionVal) {
+      this.extensionVal = extensionVal;
     }
   }
 

@@ -20,43 +20,43 @@ import org.firstinspires.ftc.teamcode.subsystems.drivetrain.TrajectoryManager;
 @Autonomous(name = "Chamber 1+3", group = "Autos")
 public class Chamber1Plus3 extends LinearOpMode {
   // For Chamber Scoring
-  public static double xChamber = 19;
-  public static double yChamber = 0;
-  public static double headingChamber = 0;
+  public static double xChamber = 0;
+  public static double yChamber = 19;
+  public static double headingChamber = -180;
 
   // The transfer point
-  public static double xTransfer = 24;
-  public static double yTransfer = 18;
+  public static double xTransfer = 18;
+  public static double yTransfer = 24;
   public static double headingTransfer = 0;
 
   // The leftmost sample
-  public static double xRightMost = 30;
-  public static double yRightMost = 20;
+  public static double xRightMost = 20;
+  public static double yRightMost = 30;
   public static double headingRightMost = -90;
 
   // The middle sample
-  public static double xMiddle = 30;
-  public static double yMiddle = 26;
+  public static double xMiddle = 26;
+  public static double yMiddle = 30;
   public static double headingMiddle = -90;
 
   // The rightmost sample
-  public static double xLeftMost = 30;
-  public static double yLeftMost = 31;
+  public static double xLeftMost = 31;
+  public static double yLeftMost = 30;
   public static double headingLeftMost = -90;
 
   // The Observation zone
-  public static double xObservation = 12;
-  public static double yObservation = 30;
+  public static double xObservation = 30;
+  public static double yObservation = 12;
   public static double headingObservation = -90;
 
   // The Grab position
-  public static double xGrab = 5;
-  public static double yGrab = 24;
+  public static double xGrab = 24;
+  public static double yGrab = 5;
   public static double headingGrab = -180;
 
   // The Ascent zone
-  public static double xAscent = 36;
-  public static double yAscent = 12;
+  public static double xAscent = 12;
+  public static double yAscent = 36;
   public static double headingAscent = 0;
 
   AlphaLiftClaw liftClaw;
@@ -121,7 +121,7 @@ public class Chamber1Plus3 extends LinearOpMode {
   // basket to ascent zone
   TrajectorySequence grabToChamber =
       TrajectoryManager.trajectorySequenceBuilder(grabPose)
-          .splineToLinearHeading(chamberPose, Math.toRadians(0))
+          .splineToLinearHeading(chamberPose, Math.toRadians(-180))
           .forward(3)
           .strafeLeft(3)
           .build();

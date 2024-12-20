@@ -22,7 +22,7 @@ import org.firstinspires.ftc.teamcode.lib.gobilda.GoBildaPinpointDriver;
  */
 @Config
 public class DriveConstants {
-  public static final RobotType currentRobot = RobotType.BETA;
+  public static final RobotType currentRobot = RobotType.ALPHA;
 
   public enum RobotType {
     ALPHA,
@@ -124,7 +124,7 @@ public class DriveConstants {
         GoBildaYLocalizerDirection = GoBildaPinpointDriver.EncoderDirection.FORWARD;
         GoBildaLocalizerEncoderResolution =
             GoBildaPinpointDriver.GoBildaOdometryPods.goBILDA_4_BAR_POD;
-        GoBildaLocalizerPerpendicularOffset = new Translation2dHelperClass(0, 4);
+        GoBildaLocalizerPerpendicularOffset = new Translation2dHelperClass(131, 166);
         break;
       case BETA:
         GoBildaXLocalizerDirection = GoBildaPinpointDriver.EncoderDirection.FORWARD;
