@@ -40,12 +40,12 @@ public class ForceAuto extends LinearOpMode {
         slide = new AlphaSlide(hardwareMap, telemetry);
         MecanumDrive drive = new MecanumDrive(hardwareMap);
 
-        initialize(liftClaw, slide);
-        slide.backwardSlideExtension();
 
         CommandScheduler.getInstance()
                 .schedule(
                         new SequentialCommandGroup(
+
+                                initialize(liftClaw, slide),
 
 //                                new ParallelDeadlineGroup(new WaitCommand(3000),
 //                                        new TeleopDriveCommand(

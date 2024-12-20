@@ -77,9 +77,9 @@ public class DriveConstants {
    * empirically tuned.
    */
   public static double kV =
-      currentRobot == RobotType.ALPHA ? 0.0135 : -0.015; // 1.0 / rpmToVelocity(MAX_RPM);
-  public static double kA = currentRobot == RobotType.ALPHA ? 0.002 : 0.002;
-  public static double kStatic = currentRobot == RobotType.ALPHA ? 0.052 : 0.052;
+      currentRobot == RobotType.ALPHA ? 0.012 : 0.015; // 1.0 / rpmToVelocity(MAX_RPM);
+  public static double kA = currentRobot == RobotType.ALPHA ? 0.003 : 0.002;
+  public static double kStatic = currentRobot == RobotType.ALPHA ? 0.065 : 0.052;
 
   /*
    * These values are used to generate the trajectories for you robot. To ensure proper operation,
@@ -94,6 +94,9 @@ public class DriveConstants {
   public static double MAX_ANG_VEL =
       Math.toRadians(currentRobot == RobotType.ALPHA ? 141.57416123663535 : 142.9192604427183);
   public static double MAX_ANG_ACCEL = Math.toRadians(60);
+
+  public static double xOffset = 97;
+  public static double yOffset = 108;
 
   /*
    * Adjust the orientations here to match your robot. See the FTC SDK documentation for details.
@@ -120,11 +123,11 @@ public class DriveConstants {
   static {
     switch (currentRobot) {
       case ALPHA:
-        GoBildaXLocalizerDirection = GoBildaPinpointDriver.EncoderDirection.REVERSED;
+        GoBildaXLocalizerDirection = GoBildaPinpointDriver.EncoderDirection.FORWARD;
         GoBildaYLocalizerDirection = GoBildaPinpointDriver.EncoderDirection.FORWARD;
         GoBildaLocalizerEncoderResolution =
             GoBildaPinpointDriver.GoBildaOdometryPods.goBILDA_4_BAR_POD;
-        GoBildaLocalizerPerpendicularOffset = new Translation2dHelperClass(131, 166);
+        GoBildaLocalizerPerpendicularOffset = new Translation2dHelperClass(xOffset, yOffset);
         break;
       case BETA:
         GoBildaXLocalizerDirection = GoBildaPinpointDriver.EncoderDirection.FORWARD;

@@ -51,7 +51,7 @@ public class AlphaAutoCommand {
     public static Command alphaHangAndStowLift(AlphaLift lift, AlphaLiftClaw liftClaw, AlphaSlide slide) {
         return new SequentialCommandGroup(
                 new InstantCommand(liftClaw::openClaw),
-                new WaitCommand(100),
+                new WaitCommand(300),
                 new InstantCommand(liftClaw::foldLiftArm),
                 new WaitCommand(500),
                 new InstantCommand(() -> lift.setGoal(AlphaLift.Goal.STOW)));
