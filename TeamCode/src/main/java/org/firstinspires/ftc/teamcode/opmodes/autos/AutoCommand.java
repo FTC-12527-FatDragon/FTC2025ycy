@@ -62,7 +62,7 @@ public class AutoCommand {
         new InstantCommand(liftClaw::initialize),
         new InstantCommand(liftClaw::grabWrist),
         new InstantCommand(liftClaw::grabLiftArm),
-        new InstantCommand(liftClaw::openClaw),
+        new InstantCommand(liftClaw::closeClaw),
         new InstantCommand(slide::initialize));
   }
 

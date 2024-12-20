@@ -71,8 +71,8 @@ public class MecanumDrive extends SubsystemBase {
   }
 
   public void moveRobot(double forward, double fun, double turn) {
-    double rotX = forward * 1.1; // Counteract imperfect strafing
-    double rotY = fun;
+    double rotX = fun * 1.1; // Counteract imperfect strafing
+    double rotY = forward;
 
     // Denominator is the largest motor power (absolute value) or 1
     // This ensures all the powers maintain the same ratio,

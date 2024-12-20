@@ -1,6 +1,9 @@
 package org.firstinspires.ftc.teamcode.opmodes.autos;
 
 import static org.firstinspires.ftc.teamcode.opmodes.autos.AlphaAutoCommand.*;
+import static org.firstinspires.ftc.teamcode.opmodes.autos.AutoCommand.grabToPreHang;
+import static org.firstinspires.ftc.teamcode.opmodes.autos.AutoCommand.initialize;
+import static org.firstinspires.ftc.teamcode.opmodes.autos.AutoCommand.upToChamber;
 
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.arcrobotics.ftclib.command.CommandScheduler;
@@ -37,8 +40,7 @@ public class ForceAuto extends LinearOpMode {
         slide = new AlphaSlide(hardwareMap, telemetry);
         MecanumDrive drive = new MecanumDrive(hardwareMap);
 
-        liftClaw.autoInitialize();
-        liftClaw.closeClaw();
+        initialize(liftClaw, slide);
         slide.backwardSlideExtension();
 
         CommandScheduler.getInstance()
@@ -64,9 +66,9 @@ public class ForceAuto extends LinearOpMode {
 //                                        () -> false
 //                                ),
 
-                                new RunCommand(() -> drive.moveRobot(0, 0.8, 0))
-                                        .alongWith(alphaUpLiftToChamber(lift, liftClaw))
-                                        .withTimeout(3000),
+                                grabToPreHang(lift, liftClaw),
+                                new RunCommand(() -> drive.moveRobot(0.55, 0, 0))
+                                        .withTimeout(2250),
 
                                 new InstantCommand(() -> drive.moveRobot(0, 0, 0)),
 //
@@ -76,10 +78,9 @@ public class ForceAuto extends LinearOpMode {
                                 }),
 //
                                 new WaitCommand(1000),
-                                slide.aimCommand(),
-                                new InstantCommand(() -> lift.setGoal(AlphaLift.Goal.HANG)),
+                                upToChamber(lift),
                                 new WaitCommand(500),
-                                alphaHangAndStowLift(lift, liftClaw, slide)
+                                hangAndStowLift(lift, liftClaw)
                         )
                 );
         waitForStart();
