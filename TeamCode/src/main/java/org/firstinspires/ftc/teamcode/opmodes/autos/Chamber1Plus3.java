@@ -9,7 +9,6 @@ import com.arcrobotics.ftclib.command.InstantCommand;
 import com.arcrobotics.ftclib.command.SequentialCommandGroup;
 import com.arcrobotics.ftclib.command.WaitCommand;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-
 import org.firstinspires.ftc.teamcode.lib.roadrunner.trajectorysequence.TrajectorySequence;
 import org.firstinspires.ftc.teamcode.subsystems.Lift;
 import org.firstinspires.ftc.teamcode.subsystems.LiftClaw;
@@ -101,15 +100,20 @@ public class Chamber1Plus3 extends AutoCommandBase {
   // basket to ascent zone
   TrajectorySequence Chamber12Sample1 =
       TrajectoryManager.trajectorySequenceBuilder(start2Chamber1.end())
-          .lineToLinearHeading(new Pose2d(SampleSupplyX, SampleSupplyY, Math.toRadians(SampleSupplyHeading)))
+          .lineToLinearHeading(
+              new Pose2d(SampleSupplyX, SampleSupplyY, Math.toRadians(SampleSupplyHeading)))
           .turn(Math.toRadians(SampleSupplyTurnDeg))
           .build();
 
   TrajectorySequence Sample12Sample2 =
-          TrajectoryManager.trajectorySequenceBuilder(Chamber12Sample1.end())
-                  .lineToLinearHeading(new Pose2d(SampleSupplyX - sampleSpacing, SampleSupplyY, Math.toRadians(SampleSupplyHeading)))
-                  .turn(Math.toRadians(SampleSupplyTurnDeg))
-                  .build();
+      TrajectoryManager.trajectorySequenceBuilder(Chamber12Sample1.end())
+          .lineToLinearHeading(
+              new Pose2d(
+                  SampleSupplyX - sampleSpacing,
+                  SampleSupplyY,
+                  Math.toRadians(SampleSupplyHeading)))
+          .turn(Math.toRadians(SampleSupplyTurnDeg))
+          .build();
 
   @Override
   public void runOpMode() throws InterruptedException {

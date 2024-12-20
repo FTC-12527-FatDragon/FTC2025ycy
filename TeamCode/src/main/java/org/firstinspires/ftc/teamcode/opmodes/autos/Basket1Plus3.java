@@ -12,7 +12,6 @@ import com.arcrobotics.ftclib.command.RunCommand;
 import com.arcrobotics.ftclib.command.SequentialCommandGroup;
 import com.arcrobotics.ftclib.command.WaitCommand;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-
 import org.firstinspires.ftc.teamcode.lib.roadrunner.trajectorysequence.TrajectorySequence;
 import org.firstinspires.ftc.teamcode.subsystems.Lift;
 import org.firstinspires.ftc.teamcode.subsystems.LiftClaw;
@@ -134,16 +133,12 @@ public class Basket1Plus3 extends AutoCommandBase {
                 stowArmFromBasket(),
                 followTrajectory(trajs2).alongWith(slide.aimCommand()),
                 slide.grabCommand(),
-                followTrajectory(trajs3)
-                    .alongWith(
-                        slowHandoff().andThen(upLiftToBasket())),
+                followTrajectory(trajs3).alongWith(slowHandoff().andThen(upLiftToBasket())),
                 wait(drive, basketWaitMs),
                 stowArmFromBasket(),
                 followTrajectory(trajs4).alongWith(slide.aimCommand()),
                 slide.grabCommand(),
-                followTrajectory(trajs5)
-                    .alongWith(
-                        slowHandoff().andThen(upLiftToBasket())),
+                followTrajectory(trajs5).alongWith(slowHandoff().andThen(upLiftToBasket())),
                 wait(drive, basketWaitMs),
                 stowArmFromBasket(),
                 followTrajectory(trajs6).alongWith(slide.aimCommand()),

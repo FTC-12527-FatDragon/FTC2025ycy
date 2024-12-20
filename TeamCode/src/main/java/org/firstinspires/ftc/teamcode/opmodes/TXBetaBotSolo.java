@@ -208,15 +208,18 @@ public class TXBetaBotSolo extends CommandOpMode {
 
     gamepadEx2.getGamepadButton(GamepadKeys.Button.DPAD_UP).whenHeld(climber.elevateCommand());
 
-
     gamepadEx2.getGamepadButton(GamepadKeys.Button.A).whenHeld(slide.swipeCommand());
 
     gamepadEx2.getGamepadButton(GamepadKeys.Button.DPAD_DOWN).whenHeld(climber.declineCommand());
 
     gamepadEx2
         .getGamepadButton(GamepadKeys.Button.A)
-        .whenPressed(new InstantCommand(climber::switchLock));
-
+        .whenPressed(
+            new InstantCommand(
+                () -> {
+                  climber.closeClimberLock();
+                  climber.closeSlideLock();
+                }));
   }
 
   @Override
