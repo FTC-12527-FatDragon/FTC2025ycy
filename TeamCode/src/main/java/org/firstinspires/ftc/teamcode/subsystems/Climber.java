@@ -13,7 +13,7 @@ import com.qualcomm.robotcore.hardware.Servo;
 
 @Config
 public class Climber extends SubsystemBase {
-  public static long climberUpMs = 2500;
+  public static long climberUpMs = 2000;
   private final DcMotorEx climber;
   private final Servo climberLockServo;
   private final Servo slideLockServo;

@@ -116,18 +116,24 @@ public class TXBetaBotSolo extends CommandOpMode {
         .whenPressed(slide.grabCommand(), false);
 
     // Pure Handoff
-    Supplier<Command> handoffCommand =
+    Supplier<Command> slowHandoffSCommand =
         () ->
             AutoCommandBase.slowHandoff(slide, liftClaw)
                 .andThen(new WaitCommand(50))
                 .andThen(new InstantCommand(() -> isPureHandoffCompelte = true));
+
+    Supplier<Command> fastHandoffCommand = // TODO: Remove duplicate code
+            () ->
+                    AutoCommandBase.fastHandoff(slide, liftClaw)
+                            .andThen(new WaitCommand(50))
+                            .andThen(new InstantCommand(() -> isPureHandoffCompelte = true));
 
     new FunctionalButton(
             () ->
                 gamepadEx1.getButton(GamepadKeys.Button.DPAD_RIGHT)
                     && slide.getGoal() == SlideSuperStucture.Goal.AIM
                     && lift.getGoal() == Lift.Goal.STOW)
-        .whenPressed(handoffCommand.get());
+        .whenPressed(slowHandoffSCommand.get());
 
     // Handoff from Aim
     // Chamber Command
@@ -137,7 +143,7 @@ public class TXBetaBotSolo extends CommandOpMode {
                     && slide.getGoal() == SlideSuperStucture.Goal.AIM
                     && lift.getGoal() == Lift.Goal.STOW)
         .whenPressed(
-            handoffCommand
+             fastHandoffCommand
                 .get()
                 .andThen(new WaitCommand(200))
                 .andThen(new InstantCommand(() -> slide.wristUp()))

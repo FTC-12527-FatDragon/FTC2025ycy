@@ -24,12 +24,12 @@ public class Chamber1Plus3 extends AutoCommandBase {
   public static double heading1 = 90;
 
   // Grab location
-  public static double xValue2 = -8;
+  public static double xValue2 = -9;
   public static double yValue2 = -4.5;
   public static double heading2 = -180;
 
   // The middle sample
-  public static double SampleSupplyX = -17;
+  public static double SampleSupplyX = -18.5;
   public static double SampleSupplyY = -21;
   public static double SampleSupplyHeading = -120;
   public static double SampleSupplyTurnDeg = -110;
@@ -52,15 +52,33 @@ public class Chamber1Plus3 extends AutoCommandBase {
           .lineToLinearHeading(new Pose2d(xValue1, yValue1, Math.toRadians(heading1)))
           .build();
 
+  // basket to ascent zone
+  TrajectorySequence Chamber12Sample1 =
+          TrajectoryManager.trajectorySequenceBuilder(start2Chamber1.end())
+                  .lineToLinearHeading(
+                          new Pose2d(SampleSupplyX, SampleSupplyY, Math.toRadians(SampleSupplyHeading)))
+                  .turn(Math.toRadians(SampleSupplyTurnDeg))
+                  .build();
+
+  TrajectorySequence Sample12Sample2 =
+          TrajectoryManager.trajectorySequenceBuilder(Chamber12Sample1.end())
+                  .lineToLinearHeading(
+                          new Pose2d(
+                                  SampleSupplyX - sampleSpacing,
+                                  SampleSupplyY,
+                                  Math.toRadians(SampleSupplyHeading)))
+                  .turn(Math.toRadians(SampleSupplyTurnDeg))
+                  .build();
+
   // Basket to the rightmost sample
-  TrajectorySequence Chamber12Grab =
-      TrajectoryManager.trajectorySequenceBuilder(start2Chamber1.end())
+  TrajectorySequence Sample22Grab =
+      TrajectoryManager.trajectorySequenceBuilder(Sample12Sample2.end())
           .lineToLinearHeading(new Pose2d(xValue2, yValue2, Math.toRadians(heading2)))
           .build();
 
   // rightmost sample to basket
   TrajectorySequence Grab2Chamber2 =
-      TrajectoryManager.trajectorySequenceBuilder(Chamber12Grab.end())
+      TrajectoryManager.trajectorySequenceBuilder(Sample22Grab.end())
           .lineToLinearHeading(
               new Pose2d(xValue1 - chamberSpacing, yValue1, Math.toRadians(heading1)))
           .build();
@@ -91,24 +109,6 @@ public class Chamber1Plus3 extends AutoCommandBase {
               new Pose2d(xValue1 - chamberSpacing * 3, yValue1, Math.toRadians(heading1)))
           .build();
 
-  // basket to ascent zone
-  TrajectorySequence Chamber12Sample1 =
-      TrajectoryManager.trajectorySequenceBuilder(start2Chamber1.end())
-          .lineToLinearHeading(
-              new Pose2d(SampleSupplyX, SampleSupplyY, Math.toRadians(SampleSupplyHeading)))
-          .turn(Math.toRadians(SampleSupplyTurnDeg))
-          .build();
-
-  TrajectorySequence Sample12Sample2 =
-      TrajectoryManager.trajectorySequenceBuilder(Chamber12Sample1.end())
-          .lineToLinearHeading(
-              new Pose2d(
-                  SampleSupplyX - sampleSpacing,
-                  SampleSupplyY,
-                  Math.toRadians(SampleSupplyHeading)))
-          .turn(Math.toRadians(SampleSupplyTurnDeg))
-          .build();
-
   @Override
   public Command runAutoCommand(){
     return new SequentialCommandGroup(
@@ -124,7 +124,7 @@ public class Chamber1Plus3 extends AutoCommandBase {
                         followTrajectory(Sample12Sample2)
                 ).alongWith(new WaitCommand(swipeDelay).andThen(slide.swipeCommand())),
 
-                followTrajectory(Chamber12Grab).alongWith(slide.aimCommand().andThen(
+                followTrajectory(Sample22Grab).alongWith(slide.aimCommand().andThen(
                         new InstantCommand(() -> slide.forwardSlideExtension()))),
 
                 slide.grabCommand(),

@@ -156,6 +156,10 @@ public abstract class AutoCommandBase extends LinearOpMode {
   }
 
   protected Command fastHandoff() {
+    return fastHandoff(slide, liftClaw);
+  }
+
+  public static Command fastHandoff(SlideSuperStucture slide, LiftClaw liftClaw) {
     return slide
         .fastHandoffCommand()
         .beforeStarting(liftClaw::openClaw)

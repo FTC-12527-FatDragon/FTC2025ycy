@@ -17,7 +17,7 @@ import org.firstinspires.ftc.teamcode.subsystems.drivetrain.TrajectoryManager;
 @Config
 @Autonomous(name = "Basket 1+3", group = "Autos")
 public class Basket1Plus3 extends AutoCommandBase {
-  public static boolean isAscent = false;
+  public static boolean isAscent = true;
 
   // For Basket Scoring
   public static double xValue1 = 9.5;
@@ -25,17 +25,17 @@ public class Basket1Plus3 extends AutoCommandBase {
   public static double heading1 = -45;
 
   // The right sample
-  public static double xValue2 = 24;
+  public static double xValue2 = 23;
   public static double yValue2 = 8.75;
   public static double heading2 = 0;
 
   // The middle sample
-  public static double xValue3 = 24;
+  public static double xValue3 = 23;
   public static double yValue3 = 19.5;
   public static double heading3 = 0;
 
   // The left sample
-  public static double xValue4 = 11;
+  public static double xValue4 = 10;
   public static double yValue4 = 19.5;
   public static double heading4 = 20;
 
