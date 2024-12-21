@@ -45,7 +45,7 @@ public abstract class AutoCommandBase extends LinearOpMode {
   protected SampleMecanumDrive drive;
   protected Climber climb;
 
-  public static long handoff_slide2LiftCloseDelayMs = 0;
+  public static long handoff_slide2LiftCloseDelayMs = 100;
   public static long handoff_liftClose2OpenIntakeDelayMs = 50;
 
   public static class FieldConfig{
@@ -160,13 +160,13 @@ public abstract class AutoCommandBase extends LinearOpMode {
   }
 
   public static Command fastHandoff(SlideSuperStucture slide, LiftClaw liftClaw) {
-    return slide
-        .fastHandoffCommand()
-        .beforeStarting(liftClaw::openClaw)
-        .andThen(new WaitCommand(handoff_slide2LiftCloseDelayMs))
-        .andThen(new InstantCommand(liftClaw::closeClaw))
-        .andThen(new WaitCommand(handoff_liftClose2OpenIntakeDelayMs))
-        .andThen(new InstantCommand(slide::openIntakeClaw));
+    return new SequentialCommandGroup(
+            new InstantCommand(liftClaw::openClaw),
+            slide.fastHandoffCommand().alongWith(new WaitCommand(handoff_slide2LiftCloseDelayMs)),
+            new InstantCommand(liftClaw::closeClaw),
+            new WaitCommand(handoff_liftClose2OpenIntakeDelayMs),
+            new InstantCommand(slide::openIntakeClaw)
+    );
   }
 
   protected Command upLiftToChamber() {
