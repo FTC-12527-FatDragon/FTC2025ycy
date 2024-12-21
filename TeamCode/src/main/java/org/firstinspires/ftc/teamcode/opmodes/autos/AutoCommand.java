@@ -60,16 +60,15 @@ public class AutoCommand {
   public static Command initialize(AlphaLiftClaw liftClaw, AlphaSlide slide) {
     return new ParallelCommandGroup(
         new InstantCommand(liftClaw::initialize),
-        new InstantCommand(liftClaw::grabWrist),
-        new InstantCommand(liftClaw::grabLiftArm),
+        new InstantCommand(liftClaw::stowWrist),
+        new InstantCommand(liftClaw::foldLiftArm),
         new InstantCommand(liftClaw::closeClaw),
         new InstantCommand(slide::initialize));
   }
 
   public static Command autoFinish(AlphaLiftClaw liftClaw, AlphaLift lift, AlphaSlide slide) {
-    return new ParallelCommandGroup(
-        initialize(liftClaw, slide),
-        lift.resetCommand().withTimeout(300),
-        new InstantCommand(liftClaw::openClaw));
+    return new SequentialCommandGroup(
+        initialize(liftClaw, slide).andThen(slide.aimCommand()).andThen(new WaitCommand(100))
+                .andThen(lift.resetCommand().withTimeout(300)));
   }
 }

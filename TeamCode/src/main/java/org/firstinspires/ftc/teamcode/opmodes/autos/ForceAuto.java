@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.opmodes.autos;
 
 import static org.firstinspires.ftc.teamcode.opmodes.autos.AlphaAutoCommand.*;
+import static org.firstinspires.ftc.teamcode.opmodes.autos.AutoCommand.autoFinish;
 import static org.firstinspires.ftc.teamcode.opmodes.autos.AutoCommand.grabToPreHang;
 import static org.firstinspires.ftc.teamcode.opmodes.autos.AutoCommand.initialize;
 import static org.firstinspires.ftc.teamcode.opmodes.autos.AutoCommand.upToChamber;
@@ -80,7 +81,9 @@ public class ForceAuto extends LinearOpMode {
                                 new WaitCommand(1000),
                                 upToChamber(lift),
                                 new WaitCommand(500),
-                                hangAndStowLift(lift, liftClaw)
+                                hangAndStowLift(lift, liftClaw),
+
+                                autoFinish(liftClaw, lift, slide)
                         )
                 );
         waitForStart();

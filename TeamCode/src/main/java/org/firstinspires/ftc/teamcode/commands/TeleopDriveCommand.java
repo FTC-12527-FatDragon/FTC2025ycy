@@ -31,9 +31,14 @@ public class TeleopDriveCommand extends CommandBase {
   }
 
   @Override
+  public void initialize() {
+    drive.reset(Math.toRadians(180));
+  }
+
+  @Override
   public void execute() {
     if (shouldReset.getAsBoolean()) {
-      drive.reset();
+      drive.reset(Math.toRadians(0));
     }
 
     double forwardValue = forward.getAsDouble();

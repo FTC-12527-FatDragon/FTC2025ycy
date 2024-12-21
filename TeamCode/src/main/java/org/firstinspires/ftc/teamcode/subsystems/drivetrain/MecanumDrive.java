@@ -41,8 +41,8 @@ public class MecanumDrive extends SubsystemBase {
     leftBackMotor.setDirection(DcMotorSimple.Direction.REVERSE);
   }
 
-  public void reset() {
-    yawOffset = od.getHeading();
+  public void reset(double heading) {
+    yawOffset = od.getHeading() + heading;
   }
 
   public void moveRobotFieldRelative(double forward, double fun, double turn) {
