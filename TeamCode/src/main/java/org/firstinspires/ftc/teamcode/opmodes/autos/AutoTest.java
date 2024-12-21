@@ -1,21 +1,14 @@
 package org.firstinspires.ftc.teamcode.opmodes.autos;
 
-import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
-import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.arcrobotics.ftclib.command.Command;
-import com.arcrobotics.ftclib.command.CommandScheduler;
-import com.arcrobotics.ftclib.command.FunctionalCommand;
-import com.arcrobotics.ftclib.command.ParallelDeadlineGroup;
 import com.arcrobotics.ftclib.command.SequentialCommandGroup;
-import com.arcrobotics.ftclib.command.WaitCommand;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import org.firstinspires.ftc.teamcode.lib.roadrunner.trajectorysequence.TrajectorySequence;
 import org.firstinspires.ftc.teamcode.subsystems.Lift;
 import org.firstinspires.ftc.teamcode.subsystems.LiftClaw;
 import org.firstinspires.ftc.teamcode.subsystems.SlideSuperStucture;
-import org.firstinspires.ftc.teamcode.subsystems.drivetrain.SampleMecanumDrive;
 import org.firstinspires.ftc.teamcode.subsystems.drivetrain.TrajectoryManager;
 
 @Config
@@ -107,53 +100,12 @@ public class AutoTest extends AutoCommandBase {
           .lineToLinearHeading(new Pose2d(xValue2, yValue2, Math.toRadians(heading2)))
           .build();
 
-  public Command wait(SampleMecanumDrive drive, long ms) {
-    return new ParallelDeadlineGroup(
-        new WaitCommand(ms),
-        new FunctionalCommand(
-            () -> {},
-            drive::update,
-            (b) -> {},
-            () -> {
-              return drive.isBusy() && !isStopRequested();
-            }));
-  }
+
 
   @Override
-  public void runOpMode() throws InterruptedException {
-    this.telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
-    CommandScheduler.getInstance().reset();
-
-    // Subsystems Initialized
-    lift = new Lift(hardwareMap, telemetry);
-    liftClaw = new LiftClaw(hardwareMap);
-    slide = new SlideSuperStucture(hardwareMap, telemetry);
-
-    SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
-    drive.setPoseEstimate(new Pose2d(xValue5, yValue5, heading5));
-
-    // Score the first chamber
-    // Push all three samples to the observation zone
-    // Repeatedly score the high chamber with slightly different
-    slide.stow();
-    slide.backwardSlideExtension();
-    liftClaw.closeClaw();
-    liftClaw.foldLiftArm();
-
-    waitForStart();
-
-    // spotless:off
-
-    CommandScheduler.getInstance()
-            .schedule(
-                    new SequentialCommandGroup(
-                            followTrajectory(trajs1)
-                    ));
-    //spotless:on
-
-    while (opModeIsActive() && !isStopRequested()) {
-      CommandScheduler.getInstance().run();
-      lift.periodicTest();
-    }
+  public Command runAutoCommand() {
+    return new SequentialCommandGroup(
+            followTrajectory(trajs1)
+    );
   }
 }

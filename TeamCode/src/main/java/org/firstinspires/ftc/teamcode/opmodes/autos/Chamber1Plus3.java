@@ -1,19 +1,13 @@
 package org.firstinspires.ftc.teamcode.opmodes.autos;
 
-import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
-import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
-import com.arcrobotics.ftclib.command.CommandScheduler;
+import com.arcrobotics.ftclib.command.Command;
 import com.arcrobotics.ftclib.command.InstantCommand;
 import com.arcrobotics.ftclib.command.SequentialCommandGroup;
 import com.arcrobotics.ftclib.command.WaitCommand;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import org.firstinspires.ftc.teamcode.lib.roadrunner.trajectorysequence.TrajectorySequence;
-import org.firstinspires.ftc.teamcode.subsystems.Lift;
-import org.firstinspires.ftc.teamcode.subsystems.LiftClaw;
-import org.firstinspires.ftc.teamcode.subsystems.SlideSuperStucture;
-import org.firstinspires.ftc.teamcode.subsystems.drivetrain.SampleMecanumDrive;
 import org.firstinspires.ftc.teamcode.subsystems.drivetrain.TrajectoryManager;
 
 @Config
@@ -26,17 +20,17 @@ public class Chamber1Plus3 extends AutoCommandBase {
 
   // Chamber hang location
   public static double xValue1 = 7;
-  public static double yValue1 = -33;
+  public static double yValue1 = -32;
   public static double heading1 = 90;
 
   // Grab location
-  public static double xValue2 = -4.5;
+  public static double xValue2 = -8;
   public static double yValue2 = -4.5;
   public static double heading2 = -180;
 
   // The middle sample
-  public static double SampleSupplyX = -16;
-  public static double SampleSupplyY = -19;
+  public static double SampleSupplyX = -17;
+  public static double SampleSupplyY = -21;
   public static double SampleSupplyHeading = -120;
   public static double SampleSupplyTurnDeg = -110;
 
@@ -116,33 +110,8 @@ public class Chamber1Plus3 extends AutoCommandBase {
           .build();
 
   @Override
-  public void runOpMode() throws InterruptedException {
-    this.telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
-    CommandScheduler.getInstance().reset();
-
-    // Subsystems Initialized
-    lift = new Lift(hardwareMap, telemetry);
-    liftClaw = new LiftClaw(hardwareMap);
-    slide = new SlideSuperStucture(hardwareMap, telemetry);
-
-    drive = new SampleMecanumDrive(hardwareMap);
-
-    // Score the first chamber
-    // Push all three samples to the observation zone
-    // Repeatedly score the high chamber with slightly different
-    slide.stow();
-    slide.backwardSlideExtension();
-    liftClaw.closeClaw();
-    liftClaw.foldLiftArm();
-    //    drive.setPoseEstimate(trajs1.start());
-
-    waitForStart();
-
-    // spotless:off
-
-    CommandScheduler.getInstance()
-        .schedule(
-            new SequentialCommandGroup(
+  public Command runAutoCommand(){
+    return new SequentialCommandGroup(
                 slide.aimCommand().beforeStarting(liftClaw::closeClaw).alongWith(
                         followTrajectory(start2Chamber1).alongWith(upLiftToChamber())
                 ),
@@ -182,13 +151,6 @@ public class Chamber1Plus3 extends AutoCommandBase {
                 ),
                 hangAndStowLift(),
                 autoFinish()
-            ));
-
-    //spotless:on
-
-    while (opModeIsActive() && !isStopRequested()) {
-      lift.periodicTest();
-      CommandScheduler.getInstance().run();
-    }
+            );
   }
 }

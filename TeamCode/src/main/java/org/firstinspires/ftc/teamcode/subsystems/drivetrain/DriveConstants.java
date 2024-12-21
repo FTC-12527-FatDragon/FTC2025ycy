@@ -8,6 +8,7 @@ import com.qualcomm.robotcore.util.RobotLog;
 import lombok.Getter;
 import org.firstinspires.ftc.teamcode.lib.Units;
 import org.firstinspires.ftc.teamcode.lib.gobilda.GoBildaPinpointDriver;
+import org.firstinspires.ftc.teamcode.utils.Translation2dHelperClass;
 
 /*
  * Constants shared between multiple drive types.
@@ -108,15 +109,6 @@ public class DriveConstants {
   public static GoBildaPinpointDriver.EncoderDirection GoBildaYLocalizerDirection;
   public static GoBildaPinpointDriver.GoBildaOdometryPods GoBildaLocalizerEncoderResolution;
   public static Translation2dHelperClass GoBildaLocalizerPerpendicularOffset;
-
-  public static class Translation2dHelperClass {
-    @Getter public double X, Y;
-
-    Translation2dHelperClass(double x, double y) {
-      this.X = x;
-      this.Y = y;
-    }
-  }
 
   static {
     switch (currentRobot) {

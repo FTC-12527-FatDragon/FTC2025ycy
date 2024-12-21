@@ -26,7 +26,7 @@ public class SlideSuperStucture extends MotorPIDSlideSubsystem {
   public static double SlideArmServo_AIM = 0.4;
   public static double SlideArmServo_GRAB = 0.53;
   public static double SlideArmServo_HANDOFF = 0.25;
-  public static double SlideArmServo_AFTERGRAB = 0.55;
+  public static double SlideArmServo_AFTERGRAB = 0.6;
   // intakeClawServo
   public static double IntakeClawServo_OPEN = 0.6;
   public static double IntakeClawServo_GRAB = 0.36;
@@ -39,7 +39,7 @@ public class SlideSuperStucture extends MotorPIDSlideSubsystem {
   public static double WristTurnServo_POS2 = 0.8;
   // slideMotor
   public static double SlideMotor_atSetPointTolerance = 10;
-  public static double SlideMotor_extensionValue = 400;
+  public static double SlideMotor_extensionValue = 275;
 
   // aimCommand
   public static long aimCommand_wristTurn2ArmDelayMs = 0;
@@ -59,7 +59,7 @@ public class SlideSuperStucture extends MotorPIDSlideSubsystem {
   private final DcMotorEx slideMotor;
 
   private final PIDController pidController;
-  public static double kP = 0.03, kI = 0.0, kD = 0;
+  public static double kP = 0.02, kI = 0.0, kD = 0.0005;
   private final VoltageSensor batteryVoltageSensor;
 
   private boolean hasGamepiece = false;
@@ -203,9 +203,9 @@ public class SlideSuperStucture extends MotorPIDSlideSubsystem {
   public enum Goal {
     STOW(0, 0, 0.2, IntakeClawServo_OPEN),
     AIM(slideExtensionVal, SlideArmServo_AFTERGRAB, 0.805, IntakeClawServo_OPEN),
-    GRAB(slideExtensionVal, 0.64, 0.805, IntakeClawServo_GRAB),
-    HANDOFF(0, 0.36, 0.25, IntakeClawServo_GRAB),
-    AUTOSWIPE(SlideMotor_extensionValue, 0.76, 0.45, IntakeClawServo_OPEN);
+    GRAB(slideExtensionVal, 0.725, 0.805, IntakeClawServo_GRAB),
+    HANDOFF(0, 0.44, 0.25, IntakeClawServo_GRAB),
+    AUTOSWIPE(SlideMotor_extensionValue, 0.85, 0.45, IntakeClawServo_OPEN);
 
     public final double slideExtension;
     public final double slideArmPos;

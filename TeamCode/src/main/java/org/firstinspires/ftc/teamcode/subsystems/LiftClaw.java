@@ -10,7 +10,7 @@ public class LiftClaw extends SubsystemBase {
   public static double LiftArmServo_UP = 0.04;
   public static double LiftArmServo_FOLD = 0.7;
   public static double ClawServo_CLOSE = 0.5425;
-  public static double ClawServo_OPEN = 0.8;
+  public static double ClawServo_OPEN = 0.9;
   private final Servo liftArmServo;
   private final Servo liftClawServo;
   private boolean isClawOpen;

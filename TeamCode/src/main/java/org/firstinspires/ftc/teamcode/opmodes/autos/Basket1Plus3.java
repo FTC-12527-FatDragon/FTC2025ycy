@@ -1,11 +1,8 @@
 package org.firstinspires.ftc.teamcode.opmodes.autos;
 
-import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
-import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.arcrobotics.ftclib.command.Command;
-import com.arcrobotics.ftclib.command.CommandScheduler;
 import com.arcrobotics.ftclib.command.InstantCommand;
 import com.arcrobotics.ftclib.command.ParallelDeadlineGroup;
 import com.arcrobotics.ftclib.command.RunCommand;
@@ -13,8 +10,6 @@ import com.arcrobotics.ftclib.command.SequentialCommandGroup;
 import com.arcrobotics.ftclib.command.WaitCommand;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import org.firstinspires.ftc.teamcode.lib.roadrunner.trajectorysequence.TrajectorySequence;
-import org.firstinspires.ftc.teamcode.subsystems.Lift;
-import org.firstinspires.ftc.teamcode.subsystems.LiftClaw;
 import org.firstinspires.ftc.teamcode.subsystems.SlideSuperStucture;
 import org.firstinspires.ftc.teamcode.subsystems.drivetrain.SampleMecanumDrive;
 import org.firstinspires.ftc.teamcode.subsystems.drivetrain.TrajectoryManager;
@@ -22,18 +17,20 @@ import org.firstinspires.ftc.teamcode.subsystems.drivetrain.TrajectoryManager;
 @Config
 @Autonomous(name = "Basket 1+3", group = "Autos")
 public class Basket1Plus3 extends AutoCommandBase {
+  public static boolean isAscent = false;
+
   // For Basket Scoring
-  public static double xValue1 = 9;
-  public static double yValue1 = 17;
+  public static double xValue1 = 9.5;
+  public static double yValue1 = 16.5;
   public static double heading1 = -45;
 
   // The right sample
-  public static double xValue2 = 23.5;
-  public static double yValue2 = 9.25;
+  public static double xValue2 = 24;
+  public static double yValue2 = 8.75;
   public static double heading2 = 0;
 
   // The middle sample
-  public static double xValue3 = 23.5;
+  public static double xValue3 = 24;
   public static double yValue3 = 19.5;
   public static double heading3 = 0;
 
@@ -44,10 +41,11 @@ public class Basket1Plus3 extends AutoCommandBase {
 
   public static long basketWaitMs = 500;
 
-  //  // Ascent zone
-  //  public static double xValue5 = 60;
-  //  public static double yValue5 = -16;
-  //  public static double heading5 = 0;
+    // Ascent zone
+    public static double xValue5 = 60;
+    public static double yValue5 = -16;
+    public static double heading5 = 90;
+    public static double tangent5 = -90;
 
   Pose2d startPose = new Pose2d(0, 0, Math.toRadians(0));
 
@@ -94,10 +92,10 @@ public class Basket1Plus3 extends AutoCommandBase {
           .build();
 
   //  // basket to ascent zone
-  //  TrajectorySequence trajs8 =
-  //      TrajectoryManager.trajectorySequenceBuilder(trajs7.end())
-  //          .lineToLinearHeading(new Pose2d(xValue5, yValue5, Math.toRadians(heading5)))
-  //          .build();
+    TrajectorySequence trajs8 =
+        TrajectoryManager.trajectorySequenceBuilder(trajs7.end())
+            .splineToLinearHeading(new Pose2d(xValue5, yValue5, Math.toRadians(heading5)), tangent5)
+            .build();
 
   public Command wait(SampleMecanumDrive drive, long ms) {
     return new ParallelDeadlineGroup(
@@ -105,26 +103,8 @@ public class Basket1Plus3 extends AutoCommandBase {
   }
 
   @Override
-  public void runOpMode() throws InterruptedException {
-    this.telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
-    CommandScheduler.getInstance().reset();
-
-    // Subsystems Initialized
-    lift = new Lift(hardwareMap, telemetry);
-    liftClaw = new LiftClaw(hardwareMap);
-    slide = new SlideSuperStucture(hardwareMap, telemetry);
-
-    drive = new SampleMecanumDrive(hardwareMap);
-
-    liftClaw.closeClaw();
-    slide.stow();
-
-    waitForStart();
-
-    // spotless:off
-    CommandScheduler.getInstance()
-        .schedule(
-            new SequentialCommandGroup(
+  public Command runAutoCommand() {
+    return new SequentialCommandGroup(
                 new InstantCommand(() -> drive.setPoseEstimate(trajs1.start()))
                     .alongWith(slide.manualResetCommand().withTimeout(200)),
                 slide.aimCommand().beforeStarting(liftClaw::closeClaw),
@@ -157,14 +137,8 @@ public class Basket1Plus3 extends AutoCommandBase {
                 upLiftToBasket(),
                 wait(drive, basketWaitMs),
                 stowArmFromBasket(),
-                wait(drive, 1500),
-                autoFinish()));
-
-    // spotless:off
-
-    while (opModeIsActive() && !isStopRequested()) {
-      CommandScheduler.getInstance().run();
-      lift.periodicTest();
-    }
+//                wait(drive, 1500),
+                isAscent?followTrajectory(trajs8).alongWith(climb.decline2ArmUp()).andThen(climb.elevate2ArmDown()):new InstantCommand(()->{})
+    );
   }
 }
