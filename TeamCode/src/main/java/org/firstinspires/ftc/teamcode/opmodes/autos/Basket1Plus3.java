@@ -30,7 +30,7 @@ public class Basket1Plus3 extends AutoCommandBase {
   public static Pose2dHelperClass S2 = new Pose2dHelperClass(23, 19.5, 0);
 
   // The left sample
-  public static Pose2dHelperClass S1Extend = new Pose2dHelperClass(10, 19.5, 18);
+  public static Pose2dHelperClass S1Extend = new Pose2dHelperClass(10, 19.5, 20);
 
   public static long basketWaitMs = 500;
 
