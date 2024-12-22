@@ -232,13 +232,24 @@ public abstract class AutoCommandBase extends LinearOpMode {
         new InstantCommand(() -> autoEndPose = drive.getPoseEstimate()));
   }
 
+  /**
+   * Gets the command to run in auto, this should be implemented in each auto.
+   * @return The command to run.
+   */
   public abstract Command runAutoCommand();
+
+  /**
+   * Gets the robot starting pose in field coordinate or its respective coordinates.
+   * @return The start pose following RoadRunner's coordinate system.
+   */
+  public abstract Pose2d getStartPose();
 
   @Override
   public void runOpMode() throws InterruptedException {
     double origval = slide.IntakeClawServo_OPEN;
     initialize();
     slide.IntakeClawServo_OPEN = slide.IntakeClawServo_OPENWIDER;
+    drive.setPoseEstimate(getStartPose());
     Command toRun = runAutoCommand().andThen(autoFinish());
     waitForStart();
 

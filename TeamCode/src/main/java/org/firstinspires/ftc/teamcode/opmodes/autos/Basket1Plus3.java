@@ -30,7 +30,7 @@ public class Basket1Plus3 extends AutoCommandBase {
   public static Pose2dHelperClass S2 = new Pose2dHelperClass(23, 19.5, 0);
 
   // The left sample
-  public static Pose2dHelperClass S1Extend = new Pose2dHelperClass(10, 19.5, 16);
+  public static Pose2dHelperClass S1Extend = new Pose2dHelperClass(10, 19.5, 18);
 
   public static long basketWaitMs = 500;
 
@@ -90,9 +90,8 @@ public class Basket1Plus3 extends AutoCommandBase {
             .splineToLinearHeading(new Pose2d(xValue5, yValue5, Math.toRadians(heading5)), tangent5)
             .build();
 
-  public Command wait(SampleMecanumDrive drive, long ms) {
-    return new ParallelDeadlineGroup(
-        new WaitCommand(ms), new RunCommand(drive::update).interruptOn(() -> isStopRequested()));
+  public Pose2d getStartPose(){
+    return new Pose2d(); // TODO: return the field relative pose
   }
 
   @Override

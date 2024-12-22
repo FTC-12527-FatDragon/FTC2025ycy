@@ -101,6 +101,9 @@ public class AutoTest extends AutoCommandBase {
           .build();
 
 
+  public Pose2d getStartPose(){
+    return new Pose2d(); // TODO: return the field relative pose
+  }
 
   @Override
   public Command runAutoCommand() {

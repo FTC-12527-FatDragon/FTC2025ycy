@@ -109,6 +109,10 @@ public class Chamber1Plus3 extends AutoCommandBase {
               new Pose2d(xValue1 - chamberSpacing * 3, yValue1, Math.toRadians(heading1)))
           .build();
 
+  public Pose2d getStartPose(){
+    return new Pose2d(); // TODO: return the field relative pose
+  }
+
   @Override
   public Command runAutoCommand(){
     return new SequentialCommandGroup(
