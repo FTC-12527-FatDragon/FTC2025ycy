@@ -45,7 +45,7 @@ public abstract class AutoCommandBase extends LinearOpMode {
   protected SampleMecanumDrive drive;
   protected Climber climb;
 
-  public static long handoff_slide2LiftCloseDelayMs = 100;
+  public static long handoff_slide2LiftCloseDelayMs = 150;
   public static long handoff_liftClose2OpenIntakeDelayMs = 50;
 
   public static class FieldConfig{
@@ -238,7 +238,7 @@ public abstract class AutoCommandBase extends LinearOpMode {
   public void runOpMode() throws InterruptedException {
     double origval = slide.IntakeClawServo_OPEN;
     initialize();
-    slide.IntakeClawServo_OPEN = 0.7;
+    slide.IntakeClawServo_OPEN = slide.IntakeClawServo_OPENWIDER;
     Command toRun = runAutoCommand().andThen(autoFinish());
     waitForStart();
 

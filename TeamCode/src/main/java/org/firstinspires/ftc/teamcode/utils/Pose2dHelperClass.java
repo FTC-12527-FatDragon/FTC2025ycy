@@ -6,11 +6,11 @@ import lombok.Getter;
 
 public class Pose2dHelperClass extends Translation2dHelperClass {
     @Getter
-    public double Heading;
+    public double HeadingDeg;
 
-    public Pose2dHelperClass(double x, double y, double heading) {
+    public Pose2dHelperClass(double x, double y, double headingdeg) {
         super(x,y);
-        this.Heading = heading;
+        this.HeadingDeg = headingdeg;
     }
 
     public Pose2dHelperClass() {
@@ -18,6 +18,10 @@ public class Pose2dHelperClass extends Translation2dHelperClass {
     }
 
     public Pose2d toPose2d(){
-        return new Pose2d(X, Y, Heading);
+        return new Pose2d(X, Y, getHeadingRad());
+    }
+
+    public double getHeadingRad() {
+        return Math.toRadians(HeadingDeg);
     }
 }

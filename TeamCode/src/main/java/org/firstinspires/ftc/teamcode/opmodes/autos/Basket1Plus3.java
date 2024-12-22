@@ -13,6 +13,7 @@ import org.firstinspires.ftc.teamcode.lib.roadrunner.trajectorysequence.Trajecto
 import org.firstinspires.ftc.teamcode.subsystems.SlideSuperStucture;
 import org.firstinspires.ftc.teamcode.subsystems.drivetrain.SampleMecanumDrive;
 import org.firstinspires.ftc.teamcode.subsystems.drivetrain.TrajectoryManager;
+import org.firstinspires.ftc.teamcode.utils.Pose2dHelperClass;
 
 @Config
 @Autonomous(name = "Basket 1+3", group = "Autos")
@@ -20,24 +21,16 @@ public class Basket1Plus3 extends AutoCommandBase {
   public static boolean isAscent = true;
 
   // For Basket Scoring
-  public static double xValue1 = 9.5;
-  public static double yValue1 = 16.5;
-  public static double heading1 = -45;
+  public static Pose2dHelperClass Basket = new Pose2dHelperClass(9.5, 16.5, -45);
 
   // The right sample
-  public static double xValue2 = 23;
-  public static double yValue2 = 8.75;
-  public static double heading2 = 0;
+  public static Pose2dHelperClass S3 = new Pose2dHelperClass(23, 8.75, 0);
 
   // The middle sample
-  public static double xValue3 = 23;
-  public static double yValue3 = 19.5;
-  public static double heading3 = 0;
+  public static Pose2dHelperClass S2 = new Pose2dHelperClass(23, 19.5, 0);
 
   // The left sample
-  public static double xValue4 = 10;
-  public static double yValue4 = 19.5;
-  public static double heading4 = 20;
+  public static Pose2dHelperClass S1Extend = new Pose2dHelperClass(10, 19.5, 16);
 
   public static long basketWaitMs = 500;
 
@@ -50,50 +43,50 @@ public class Basket1Plus3 extends AutoCommandBase {
   Pose2d startPose = new Pose2d(0, 0, Math.toRadians(0));
 
   // Start to Basket
-  TrajectorySequence trajs1 =
+  TrajectorySequence L12Basket =
       TrajectoryManager.trajectorySequenceBuilder(startPose)
-          .splineToLinearHeading(new Pose2d(xValue1, yValue1, Math.toRadians(heading1)), heading1)
+          .splineToLinearHeading(Basket.toPose2d(), Basket.getHeadingRad())
           .build();
 
   // Basket to the rightmost sample
-  TrajectorySequence trajs2 =
-      TrajectoryManager.trajectorySequenceBuilder(trajs1.end())
-          .lineToLinearHeading(new Pose2d(xValue2, yValue2, Math.toRadians(heading2)))
+  TrajectorySequence Basket2S3 =
+      TrajectoryManager.trajectorySequenceBuilder(L12Basket.end())
+          .lineToLinearHeading(S3.toPose2d())
           .build();
 
   // rightmost sample to basket
-  TrajectorySequence trajs3 =
-      TrajectoryManager.trajectorySequenceBuilder(trajs2.end())
-          .lineToLinearHeading(new Pose2d(xValue1, yValue1, Math.toRadians(heading1)))
+  TrajectorySequence S32Basket =
+      TrajectoryManager.trajectorySequenceBuilder(Basket2S3.end())
+          .lineToLinearHeading(Basket.toPose2d())
           .build();
 
   // basket to middle sample
-  TrajectorySequence trajs4 =
-      TrajectoryManager.trajectorySequenceBuilder(trajs3.end())
-          .lineToLinearHeading(new Pose2d(xValue3, yValue3, Math.toRadians(heading3)))
+  TrajectorySequence Basket2S2 =
+      TrajectoryManager.trajectorySequenceBuilder(S32Basket.end())
+          .lineToLinearHeading(S2.toPose2d())
           .build();
 
   // middle sample to basket
-  TrajectorySequence trajs5 =
-      TrajectoryManager.trajectorySequenceBuilder(trajs4.end())
-          .lineToLinearHeading(new Pose2d(xValue1, yValue1, Math.toRadians(heading1)))
+  TrajectorySequence S22Basket =
+      TrajectoryManager.trajectorySequenceBuilder(Basket2S2.end())
+          .lineToLinearHeading(Basket.toPose2d())
           .build();
 
   // basket to leftmost sample
-  TrajectorySequence trajs6 =
-      TrajectoryManager.trajectorySequenceBuilder(trajs5.end())
-          .lineToLinearHeading(new Pose2d(xValue4, yValue4, Math.toRadians(heading4)))
+  TrajectorySequence Basket2S1Extend =
+      TrajectoryManager.trajectorySequenceBuilder(S22Basket.end())
+          .lineToLinearHeading(S1Extend.toPose2d())
           .build();
 
   // leftmost sample to basket
-  TrajectorySequence trajs7 =
-      TrajectoryManager.trajectorySequenceBuilder(trajs6.end())
-          .lineToLinearHeading(new Pose2d(xValue1, yValue1, Math.toRadians(heading1)))
+  TrajectorySequence S1Extend2Basket =
+      TrajectoryManager.trajectorySequenceBuilder(Basket2S1Extend.end())
+          .lineToLinearHeading(Basket.toPose2d())
           .build();
 
   //  // basket to ascent zone
-    TrajectorySequence trajs8 =
-        TrajectoryManager.trajectorySequenceBuilder(trajs7.end())
+    TrajectorySequence Basket2Ascent =
+        TrajectoryManager.trajectorySequenceBuilder(S1Extend2Basket.end())
             .splineToLinearHeading(new Pose2d(xValue5, yValue5, Math.toRadians(heading5)), tangent5)
             .build();
 
@@ -105,24 +98,24 @@ public class Basket1Plus3 extends AutoCommandBase {
   @Override
   public Command runAutoCommand() {
     return new SequentialCommandGroup(
-                new InstantCommand(() -> drive.setPoseEstimate(trajs1.start()))
+                new InstantCommand(() -> drive.setPoseEstimate(L12Basket.start()))
                     .alongWith(slide.manualResetCommand().withTimeout(200)),
                 slide.aimCommand().beforeStarting(liftClaw::closeClaw),
-                followTrajectory(trajs1).alongWith(upLiftToBasket()),
+                followTrajectory(L12Basket).alongWith(upLiftToBasket()),
                 wait(drive, 200),
                 stowArmFromBasket(),
-                followTrajectory(trajs2).alongWith(slide.aimCommand()),
+                followTrajectory(Basket2S3).alongWith(slide.aimCommand()),
                 slide.grabCommand(),
-                followTrajectory(trajs3).alongWith(slowHandoff().andThen(upLiftToBasket())),
+                followTrajectory(S32Basket).alongWith(slowHandoff().andThen(upLiftToBasket())),
                 wait(drive, basketWaitMs),
                 stowArmFromBasket(),
-                followTrajectory(trajs4).alongWith(slide.aimCommand()),
+                followTrajectory(Basket2S2).alongWith(slide.aimCommand()),
                 slide.grabCommand(),
-                followTrajectory(trajs5).alongWith(slowHandoff().andThen(upLiftToBasket())),
+                followTrajectory(S22Basket).alongWith(slowHandoff().andThen(upLiftToBasket())),
                 wait(drive, basketWaitMs),
                 stowArmFromBasket(),
-                followTrajectory(trajs6).alongWith(slide.aimCommand()),
-                wait(drive, 300),
+                followTrajectory(Basket2S1Extend).alongWith(slide.aimCommand()),
+//                wait(drive, 300),
                 new InstantCommand(
                     () -> {
                       slide.forwardSlideExtension(440);
@@ -130,15 +123,15 @@ public class Basket1Plus3 extends AutoCommandBase {
                     }),
                 wait(drive, 500),
                 slide.grabCommand(),
-                wait(drive, 300),
+//                wait(drive, 300),
                 slowHandoff(),
-                wait(drive, 300),
-                followTrajectory(trajs7),
+//                wait(drive, 300),
+                followTrajectory(S1Extend2Basket),
                 upLiftToBasket(),
                 wait(drive, basketWaitMs),
                 stowArmFromBasket(),
 //                wait(drive, 1500),
-                isAscent?followTrajectory(trajs8).alongWith(climb.decline2ArmUp()).andThen(climb.elevate2ArmDown()):new InstantCommand(()->{})
+                isAscent?followTrajectory(Basket2Ascent).alongWith(climb.decline2ArmUp()).andThen(climb.elevate2ArmDown()):new InstantCommand(()->{})
     );
   }
 }
