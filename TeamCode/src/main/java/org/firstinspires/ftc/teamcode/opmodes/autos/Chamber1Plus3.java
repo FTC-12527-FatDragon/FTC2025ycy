@@ -54,21 +54,21 @@ public class Chamber1Plus3 extends AutoCommandBase {
 
   // basket to ascent zone
   TrajectorySequence Chamber12Sample1 =
-          TrajectoryManager.trajectorySequenceBuilder(start2Chamber1.end())
-                  .lineToLinearHeading(
-                          new Pose2d(SampleSupplyX, SampleSupplyY, Math.toRadians(SampleSupplyHeading)))
-                  .turn(Math.toRadians(SampleSupplyTurnDeg))
-                  .build();
+      TrajectoryManager.trajectorySequenceBuilder(start2Chamber1.end())
+          .lineToLinearHeading(
+              new Pose2d(SampleSupplyX, SampleSupplyY, Math.toRadians(SampleSupplyHeading)))
+          .turn(Math.toRadians(SampleSupplyTurnDeg))
+          .build();
 
   TrajectorySequence Sample12Sample2 =
-          TrajectoryManager.trajectorySequenceBuilder(Chamber12Sample1.end())
-                  .lineToLinearHeading(
-                          new Pose2d(
-                                  SampleSupplyX - sampleSpacing,
-                                  SampleSupplyY,
-                                  Math.toRadians(SampleSupplyHeading)))
-                  .turn(Math.toRadians(SampleSupplyTurnDeg))
-                  .build();
+      TrajectoryManager.trajectorySequenceBuilder(Chamber12Sample1.end())
+          .lineToLinearHeading(
+              new Pose2d(
+                  SampleSupplyX - sampleSpacing,
+                  SampleSupplyY,
+                  Math.toRadians(SampleSupplyHeading)))
+          .turn(Math.toRadians(SampleSupplyTurnDeg))
+          .build();
 
   // Basket to the rightmost sample
   TrajectorySequence Sample22Grab =
@@ -109,52 +109,54 @@ public class Chamber1Plus3 extends AutoCommandBase {
               new Pose2d(xValue1 - chamberSpacing * 3, yValue1, Math.toRadians(heading1)))
           .build();
 
-  public Pose2d getStartPose(){
+  public Pose2d getStartPose() {
     return new Pose2d(); // TODO: return the field relative pose
   }
 
   @Override
-  public Command runAutoCommand(){
+  public Command runAutoCommand() {
     return new SequentialCommandGroup(
-                slide.aimCommand().beforeStarting(liftClaw::closeClaw).alongWith(
-                        followTrajectory(start2Chamber1).alongWith(upLiftToChamber())
-                ),
-                hangAndStowLift(),
-
-                followTrajectory(Chamber12Sample1).deadlineWith(
-                        new WaitCommand(swipeDelay).andThen(slide.swipeCommand())
-                ),
-                slide.aimCommand().alongWith(
-                        followTrajectory(Sample12Sample2)
-                ).alongWith(new WaitCommand(swipeDelay).andThen(slide.swipeCommand())),
-
-                followTrajectory(Sample22Grab).alongWith(slide.aimCommand().andThen(
-                        new InstantCommand(() -> slide.forwardSlideExtension()))),
-
-                slide.grabCommand(),
-                handoffAndLiftToChamber().alongWith(
-                        new WaitCommand(handOff2TrajDelay).andThen(followTrajectory(Grab2Chamber2))
-                ),
-//                handoffAndLiftToChamber(lift, liftClaw, slide)
-//                    .alongWith(new WaitCommand(2000).andThen(followTrajectory(drive, trajs3))),
-                hangAndStowLift(),
-                followTrajectory(Chamber22Grab).alongWith(slide.aimCommand().andThen(
-                        new InstantCommand(() -> slide.forwardSlideExtension()))),
-
-                slide.grabCommand(),
-                handoffAndLiftToChamber().alongWith(
-                        new WaitCommand(handOff2TrajDelay).andThen(followTrajectory(Grab2Chamber3))
-                ),
-                hangAndStowLift(),
-                followTrajectory(Chamber32Grab).alongWith(slide.aimCommand().andThen(
-                        new InstantCommand(() -> slide.forwardSlideExtension()))),
-
-                slide.grabCommand(),
-                handoffAndLiftToChamber().alongWith(
-                        new WaitCommand(handOff2TrajDelay).andThen(followTrajectory(Grab2Chamber4))
-                ),
-                hangAndStowLift(),
-                autoFinish()
-            );
+        slide
+            .aimCommand()
+            .beforeStarting(liftClaw::closeClaw)
+            .alongWith(followTrajectory(start2Chamber1).alongWith(upLiftToChamber())),
+        hangAndStowLift(),
+        followTrajectory(Chamber12Sample1)
+            .deadlineWith(new WaitCommand(swipeDelay).andThen(slide.swipeCommand())),
+        slide
+            .aimCommand()
+            .alongWith(followTrajectory(Sample12Sample2))
+            .alongWith(new WaitCommand(swipeDelay).andThen(slide.swipeCommand())),
+        followTrajectory(Sample22Grab)
+            .alongWith(
+                slide
+                    .aimCommand()
+                    .andThen(new InstantCommand(() -> slide.forwardSlideExtension()))),
+        slide.grabCommand(),
+        handoffAndLiftToChamber()
+            .alongWith(new WaitCommand(handOff2TrajDelay).andThen(followTrajectory(Grab2Chamber2))),
+        //                handoffAndLiftToChamber(lift, liftClaw, slide)
+        //                    .alongWith(new WaitCommand(2000).andThen(followTrajectory(drive,
+        // trajs3))),
+        hangAndStowLift(),
+        followTrajectory(Chamber22Grab)
+            .alongWith(
+                slide
+                    .aimCommand()
+                    .andThen(new InstantCommand(() -> slide.forwardSlideExtension()))),
+        slide.grabCommand(),
+        handoffAndLiftToChamber()
+            .alongWith(new WaitCommand(handOff2TrajDelay).andThen(followTrajectory(Grab2Chamber3))),
+        hangAndStowLift(),
+        followTrajectory(Chamber32Grab)
+            .alongWith(
+                slide
+                    .aimCommand()
+                    .andThen(new InstantCommand(() -> slide.forwardSlideExtension()))),
+        slide.grabCommand(),
+        handoffAndLiftToChamber()
+            .alongWith(new WaitCommand(handOff2TrajDelay).andThen(followTrajectory(Grab2Chamber4))),
+        hangAndStowLift(),
+        autoFinish());
   }
 }

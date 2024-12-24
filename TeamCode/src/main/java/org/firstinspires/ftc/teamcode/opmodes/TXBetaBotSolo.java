@@ -9,7 +9,6 @@ import com.arcrobotics.ftclib.command.Command;
 import com.arcrobotics.ftclib.command.CommandOpMode;
 import com.arcrobotics.ftclib.command.CommandScheduler;
 import com.arcrobotics.ftclib.command.ConditionalCommand;
-import com.arcrobotics.ftclib.command.FunctionalCommand;
 import com.arcrobotics.ftclib.command.InstantCommand;
 import com.arcrobotics.ftclib.command.ParallelCommandGroup;
 import com.arcrobotics.ftclib.command.SequentialCommandGroup;
@@ -123,10 +122,10 @@ public class TXBetaBotSolo extends CommandOpMode {
                 .andThen(new InstantCommand(() -> isPureHandoffCompelte = true));
 
     Supplier<Command> fastHandoffCommand = // TODO: Remove duplicate code
-            () ->
-                    AutoCommandBase.fastHandoff(slide, liftClaw)
-                            .andThen(new WaitCommand(50))
-                            .andThen(new InstantCommand(() -> isPureHandoffCompelte = true));
+        () ->
+            AutoCommandBase.fastHandoff(slide, liftClaw)
+                .andThen(new WaitCommand(50))
+                .andThen(new InstantCommand(() -> isPureHandoffCompelte = true));
 
     new FunctionalButton(
             () ->
@@ -143,7 +142,7 @@ public class TXBetaBotSolo extends CommandOpMode {
                     && slide.getGoal() == SlideSuperStucture.Goal.AIM
                     && lift.getGoal() == Lift.Goal.STOW)
         .whenPressed(
-             fastHandoffCommand
+            fastHandoffCommand
                 .get()
                 .andThen(new WaitCommand(200))
                 .andThen(new InstantCommand(() -> slide.wristUp()))
@@ -220,7 +219,7 @@ public class TXBetaBotSolo extends CommandOpMode {
 
     gamepadEx2.getGamepadButton(GamepadKeys.Button.DPAD_UP).whenHeld(climber.elevateCommand());
 
-//    gamepadEx2.getGamepadButton(GamepadKeys.Button.A).whenHeld(slide.swipeCommand());
+    //    gamepadEx2.getGamepadButton(GamepadKeys.Button.A).whenHeld(slide.swipeCommand());
 
     gamepadEx2.getGamepadButton(GamepadKeys.Button.DPAD_DOWN).whenHeld(climber.declineCommand());
 
@@ -239,13 +238,14 @@ public class TXBetaBotSolo extends CommandOpMode {
                   gamepadEx2.gamepad.rumbleBlips(1);
                 }));
 
-    gamepadEx2.getGamepadButton(GamepadKeys.Button.X)
-            .whenPressed(new InstantCommand(climber::keep));
+    gamepadEx2
+        .getGamepadButton(GamepadKeys.Button.X)
+        .whenPressed(new InstantCommand(climber::keep));
   }
 
   @Override
   public void run() {
-    Pose2d poseEstimate =drive.getPoseEstimate();
+    Pose2d poseEstimate = drive.getPoseEstimate();
     lift.periodicTest();
     CommandScheduler.getInstance().run();
     TelemetryPacket packet = new TelemetryPacket();
@@ -255,11 +255,11 @@ public class TXBetaBotSolo extends CommandOpMode {
     telemetry.addData("X", poseEstimate.getX());
     telemetry.addData("Y", poseEstimate.getY());
     telemetry.addData("Heading", poseEstimate.getHeading());
-    if(setPose){
+    if (setPose) {
       setPose = false;
       drive.setPoseEstimate(Pose.toPose2d());
     }
-//    telemetry.addData("pose", );
+    //    telemetry.addData("pose", );
   }
 
   @Override

@@ -100,15 +100,12 @@ public class AutoTest extends AutoCommandBase {
           .lineToLinearHeading(new Pose2d(xValue2, yValue2, Math.toRadians(heading2)))
           .build();
 
-
-  public Pose2d getStartPose(){
+  public Pose2d getStartPose() {
     return new Pose2d(); // TODO: return the field relative pose
   }
 
   @Override
   public Command runAutoCommand() {
-    return new SequentialCommandGroup(
-            followTrajectory(trajs1)
-    );
+    return new SequentialCommandGroup(followTrajectory(trajs1));
   }
 }
