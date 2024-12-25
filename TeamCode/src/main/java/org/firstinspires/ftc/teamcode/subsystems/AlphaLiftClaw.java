@@ -11,8 +11,8 @@ public class AlphaLiftClaw extends SubsystemBase {
   private final Servo liftArmServo;
   private final Servo liftClawServo;
   private final Servo liftWristServo;
-  private boolean isClawOpen = false;
   private final Telemetry telemetry;
+  private boolean isClawOpen = false;
 
   public AlphaLiftClaw(final HardwareMap hardwareMap, Telemetry telemetry) {
     liftArmServo = hardwareMap.get(Servo.class, "liftArmServo"); // 0.3 Up 0.7 Down
@@ -25,7 +25,6 @@ public class AlphaLiftClaw extends SubsystemBase {
     liftWristServo.setPosition(ServoPositions.STOW.liftWristPosition);
     liftArmServo.setPosition(ServoPositions.STOW.liftArmPosition);
     liftClawServo.setPosition(ServoPositions.STOW.liftClawPosition);
-    isClawOpen = false;
   }
 
   public void autoInitialize() {
@@ -51,12 +50,11 @@ public class AlphaLiftClaw extends SubsystemBase {
   }
 
   public void switchLiftClaw() {
-    if (isClawOpen) {
+    if (!isClawOpen) {
       openClaw();
     } else {
       closeClaw();
     }
-    isClawOpen = !isClawOpen;
   }
 
   public void openClaw() {
@@ -86,10 +84,10 @@ public class AlphaLiftClaw extends SubsystemBase {
   }
 
   public enum ServoPositions {
-    STOW(0.88, 0.35, 0.62),
-    CHAMBER(0.66, 0.35, 0.27),
-    BASKET(0.43, 0.35, 0.4),
-    GRAB(0.14, 0.5, 0.08);
+    STOW(0.78, 0.33, 0.6),
+    CHAMBER(0.623, 0.33, 0.27),
+    BASKET(0.45, 0.33, 0.4),
+    GRAB(0.205, 0.7, 0.08);
 
     private final double liftArmPosition;
     private final double liftWristPosition;

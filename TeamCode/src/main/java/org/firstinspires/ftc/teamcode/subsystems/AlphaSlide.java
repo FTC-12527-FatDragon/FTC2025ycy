@@ -17,7 +17,7 @@ public class AlphaSlide extends SubsystemBase {
   private final Servo intakeClawServo, wristServo, wristTurnServo;
   private final Servo slideArmServo, slideRightServo;
   private boolean hasGamepiece = false;
-  private static double slideExtensionVal = 0.35;
+  private static double slideExtensionVal = 0.3;
   private  SlideServo slideServo = SlideServo.BACK;
 
   private static double turnAngleDeg = 0;
@@ -131,10 +131,10 @@ public class AlphaSlide extends SubsystemBase {
   }
 
   public enum Goal {
-    STOW(0.35, 0.4, 0.39, 0.4, 0.5),
+    STOW(0.3, 0.4, 0.39, 0.4, 0.5),
     AIM(slideExtensionVal, 0.32, 0.75, turnAngleDeg, 0.5),
     GRAB(slideExtensionVal, 0.47, 0.75, turnAngleDeg, 0.24),
-    HANDOFF(0.35, 0.1, 0.39, 0.4, 0.24);
+    HANDOFF(0.3, 0.1, 0.39, 0.4, 0.24);
 
     private final double slideExtension;
     private final double slideArmPos;
@@ -190,7 +190,7 @@ public class AlphaSlide extends SubsystemBase {
     }
   }
 
-  private final double preHandoffSlideExtendedVal = 0.42;
+  private final double preHandoffSlideExtendedVal = 0.37;
 
   public void preHandoffSlideExtension() {
     slideExtensionVal = preHandoffSlideExtendedVal;
@@ -256,9 +256,9 @@ public class AlphaSlide extends SubsystemBase {
   }
 
   enum SlideServo {
-    FRONT(0.7),
-    MIDDLE(0.53),
-    BACK(0.36);
+    FRONT(0.71),
+    MIDDLE(0.48),
+    BACK(0.31);
 
     private double extensionVal;
 

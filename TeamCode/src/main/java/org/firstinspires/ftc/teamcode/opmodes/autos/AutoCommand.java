@@ -66,9 +66,17 @@ public class AutoCommand {
         new InstantCommand(slide::initialize));
   }
 
+  public static Command initializeForce(AlphaLiftClaw liftClaw, AlphaSlide slide) {
+    return new ParallelCommandGroup(
+            new InstantCommand(liftClaw::initialize),
+            new InstantCommand(liftClaw::stowWrist),
+            new InstantCommand(liftClaw::foldLiftArm),
+            new InstantCommand(liftClaw::closeClaw),
+            slide.aimCommand());
+  }
+
   public static Command autoFinish(AlphaLiftClaw liftClaw, AlphaLift lift, AlphaSlide slide) {
     return new SequentialCommandGroup(
-        initialize(liftClaw, slide).andThen(slide.aimCommand()).andThen(new WaitCommand(100))
-                .andThen(lift.resetCommand().withTimeout(300)));
+        initialize(liftClaw, slide).andThen(slide.aimCommand()).andThen(new WaitCommand(100)));
   }
 }

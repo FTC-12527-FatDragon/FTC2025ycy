@@ -21,7 +21,7 @@ import org.firstinspires.ftc.teamcode.subsystems.AlphaSlide;
 import org.firstinspires.ftc.teamcode.subsystems.drivetrain.MecanumDrive;
 import org.firstinspires.ftc.teamcode.utils.FunctionalButton;
 
-@TeleOp(name = "ycyAlphaTeleop")
+@TeleOp(name = "AlphaYCYTeleop")
 public class AlphaCar extends CommandOpMode {
   private GamepadEx gamepadEx1;
   private AlphaLift lift;
@@ -43,6 +43,7 @@ public class AlphaCar extends CommandOpMode {
 
     slide.initialize();
     liftClaw.initialize();
+    lift.setGoal(AlphaLift.Goal.STOW);
 
     // Teleop Drive Command
     drive.setDefaultCommand(
@@ -102,7 +103,7 @@ public class AlphaCar extends CommandOpMode {
             slide
                 .handoffCommand()
                 .alongWith(new InstantCommand(liftClaw::openClaw))
-                .andThen(new WaitCommand(500))
+                .andThen(new WaitCommand(600))
                 .andThen(new InstantCommand(() -> liftClaw.closeClaw()))
                 .andThen(new WaitCommand(250))
                 .andThen(new InstantCommand(() -> slide.openIntakeClaw()));

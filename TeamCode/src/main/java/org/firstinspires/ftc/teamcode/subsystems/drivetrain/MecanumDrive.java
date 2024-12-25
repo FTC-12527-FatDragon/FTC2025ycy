@@ -89,6 +89,25 @@ public class MecanumDrive extends SubsystemBase {
     rightBackMotor.setPower(rightBackPower);
   }
 
+  public void turnRobot(double angle, double power) {
+    double preAngle = od.getHeading();
+    while(od.getHeading() - preAngle < angle) {
+      leftFrontMotor.setPower(power * 0.2);
+      leftBackMotor.setPower(power * 0.2);
+      rightFrontMotor.setPower(power * -0.2);
+      rightBackMotor.setPower(power * -0.2);
+    }
+  }
+
+  public void turnRobotTo(double angle, double power) {
+    while(od.getHeading() < angle) {
+      leftFrontMotor.setPower(power * 0.2);
+      leftBackMotor.setPower(power * 0.2);
+      rightFrontMotor.setPower(power * -0.2);
+      rightBackMotor.setPower(power * -0.2);
+    }
+  }
+
   public Pose2D getPose() {
     return od.getPosition();
   }

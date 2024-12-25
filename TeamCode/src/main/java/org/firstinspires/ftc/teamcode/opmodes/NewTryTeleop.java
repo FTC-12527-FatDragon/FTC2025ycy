@@ -5,7 +5,8 @@ import com.arcrobotics.ftclib.command.CommandOpMode;
 import com.arcrobotics.ftclib.command.ConditionalCommand;
 import com.arcrobotics.ftclib.command.InstantCommand;
 import com.arcrobotics.ftclib.command.ParallelCommandGroup;
-import com.arcrobotics.ftclib.command.SelectCommand;
+import com.arcrobotics.ftclib.command.RunCommand;
+import com.arcrobotics.ftclib.command.SelectCommand;h
 import com.arcrobotics.ftclib.command.SequentialCommandGroup;
 import com.arcrobotics.ftclib.command.WaitCommand;
 import com.arcrobotics.ftclib.command.WaitUntilCommand;
@@ -21,9 +22,9 @@ import org.firstinspires.ftc.teamcode.subsystems.AlphaSlide;
 import org.firstinspires.ftc.teamcode.subsystems.drivetrain.MecanumDrive;
 import org.firstinspires.ftc.teamcode.utils.FunctionalButton;
 
-@TeleOp(name = "AlphaDuoTeleop")
-public class AlphaCarDuo extends CommandOpMode {
-    private GamepadEx gamepadEx1, gamepadEx2;
+@TeleOp(name = "newTryTeleop")
+public class NewTryTeleop extends CommandOpMode {
+    private GamepadEx gamepadEx1;
     private AlphaLift lift;
     private AlphaLiftClaw liftClaw;
     private AlphaSlide slide;
@@ -35,7 +36,6 @@ public class AlphaCarDuo extends CommandOpMode {
     @Override
     public void initialize() {
         gamepadEx1 = new GamepadEx(gamepad1);
-        gamepadEx2 = new GamepadEx(gamepad2);
 
         lift = new AlphaLift(hardwareMap, telemetry);
         liftClaw = new AlphaLiftClaw(hardwareMap, telemetry);
@@ -44,6 +44,7 @@ public class AlphaCarDuo extends CommandOpMode {
 
         slide.initialize();
         liftClaw.initialize();
+        lift.setGoal(AlphaLift.Goal.STOW);
 
         // Teleop Drive Command
         drive.setDefaultCommand(
@@ -56,20 +57,15 @@ public class AlphaCarDuo extends CommandOpMode {
                         () -> gamepadEx1.getButton(GamepadKeys.Button.START)));
 
         // Basket Up Command
-        gamepadEx2
+
+
+        gamepadEx1
                 .getGamepadButton(GamepadKeys.Button.X)
                 .whenPressed(
-                        new ConditionalCommand(
-                                new InstantCommand(),
-                                new ParallelCommandGroup(
-                                        slide.aimCommand(),
-                                        new InstantCommand(() -> lift.setGoal(AlphaLift.Goal.BASKET)),
-                                        new WaitUntilCommand(() -> lift.getCurrentPosition() > 600)
-                                                .andThen(new InstantCommand(liftClaw::upLiftArm))),
-                                () -> !isPureHandoffComplete));
+                        new RunCommand(() -> drive.turnRobotTo(Math.toRadians(180),1)));
 
         // Basket Drop and Back
-        gamepadEx2
+        gamepadEx1
                 .getGamepadButton(GamepadKeys.Button.B)
                 .whenPressed(
                         new SequentialCommandGroup(
@@ -103,7 +99,7 @@ public class AlphaCarDuo extends CommandOpMode {
                         slide
                                 .handoffCommand()
                                 .alongWith(new InstantCommand(liftClaw::openClaw))
-                                .andThen(new WaitCommand(500))
+                                .andThen(new WaitCommand(600))
                                 .andThen(new InstantCommand(() -> liftClaw.closeClaw()))
                                 .andThen(new WaitCommand(250))
                                 .andThen(new InstantCommand(() -> slide.openIntakeClaw()));
@@ -143,15 +139,6 @@ public class AlphaCarDuo extends CommandOpMode {
                                 .andThen(new InstantCommand(() -> liftClaw.grabWrist()))
                                 .alongWith(new InstantCommand(() -> liftClaw.grabLiftArm()));
 
-        Supplier<Command> throwSpecimen =
-                () ->
-                        new InstantCommand(() -> lift.setGoal(AlphaLift.Goal.GRAB))
-                                .alongWith(slide.aimCommand())
-                                .andThen(new InstantCommand(() -> liftClaw.grabWrist()))
-                                .alongWith(new InstantCommand(() -> liftClaw.grabLiftArm())
-                                .andThen(new WaitCommand(250))
-                                .andThen(new InstantCommand(liftClaw::openClaw)));
-
         Supplier<Command> stow =
                 () ->
                         new ConditionalCommand(
@@ -174,18 +161,11 @@ public class AlphaCarDuo extends CommandOpMode {
                         },
                         () -> lift.getGoal());
 
-        gamepadEx2.getGamepadButton(GamepadKeys.Button.DPAD_LEFT).whenPressed(specimenCommands, false);
+        gamepadEx1.getGamepadButton(GamepadKeys.Button.DPAD_LEFT).whenPressed(specimenCommands, false);
 
         new FunctionalButton(
                 () ->
-                        gamepadEx2.getButton(GamepadKeys.Button.DPAD_RIGHT) && isPureHandoffComplete)
-                .whenPressed(
-                        throwSpecimen.get()
-                );
-
-        new FunctionalButton(
-                () ->
-                        gamepadEx2.getButton(GamepadKeys.Button.DPAD_UP)
+                        gamepadEx1.getButton(GamepadKeys.Button.DPAD_UP)
                                 && lift.getGoal() == AlphaLift.Goal.PRE_HANG)
                 .whenPressed(
                         new InstantCommand(() -> lift.setGoal(AlphaLift.Goal.HANG))
@@ -194,7 +174,7 @@ public class AlphaCarDuo extends CommandOpMode {
 
         new FunctionalButton(
                 () ->
-                        gamepadEx2.getButton(GamepadKeys.Button.DPAD_DOWN)
+                        gamepadEx1.getButton(GamepadKeys.Button.DPAD_DOWN)
                                 && lift.getGoal() == AlphaLift.Goal.HANG)
                 .whenPressed(
                         new InstantCommand(() -> lift.setGoal(AlphaLift.Goal.PRE_HANG))
@@ -203,7 +183,7 @@ public class AlphaCarDuo extends CommandOpMode {
 
         new FunctionalButton(
                 () ->
-                        gamepadEx2.getButton(GamepadKeys.Button.DPAD_DOWN)
+                        gamepadEx1.getButton(GamepadKeys.Button.DPAD_DOWN)
                                 && lift.getGoal() == AlphaLift.Goal.GRAB)
                 .whenPressed(new InstantCommand(() -> liftClaw.switchLiftClaw()));
 
@@ -254,12 +234,6 @@ public class AlphaCarDuo extends CommandOpMode {
         new FunctionalButton(
                 () ->
                         gamepadEx1.getButton(GamepadKeys.Button.RIGHT_STICK_BUTTON)
-                                && lift.getGoal() == AlphaLift.Goal.STOW)
-                .whenPressed(lift.resetCommand().withTimeout(100));
-
-        new FunctionalButton(
-                () ->
-                        gamepadEx2.getButton(GamepadKeys.Button.RIGHT_STICK_BUTTON)
                                 && lift.getGoal() == AlphaLift.Goal.STOW)
                 .whenPressed(lift.resetCommand().withTimeout(100));
 
