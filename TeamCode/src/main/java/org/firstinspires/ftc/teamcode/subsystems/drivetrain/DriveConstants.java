@@ -77,9 +77,9 @@ public class DriveConstants {
    * empirically tuned.
    */
   public static double kV =
-      currentRobot == RobotType.ALPHA ? 0.012 : 0.015; // 1.0 / rpmToVelocity(MAX_RPM);
-  public static double kA = currentRobot == RobotType.ALPHA ? 0.003 : 0.002;
-  public static double kStatic = currentRobot == RobotType.ALPHA ? 0.065 : 0.052;
+      currentRobot == RobotType.ALPHA ? 0.0185 : 0.015; // 1.0 / rpmToVelocity(MAX_RPM);
+  public static double kA = currentRobot == RobotType.ALPHA ? 0.005 : 0.002;
+  public static double kStatic = currentRobot == RobotType.ALPHA ? 0.067 : 0.052;
 
   /*
    * These values are used to generate the trajectories for you robot. To ensure proper operation,
