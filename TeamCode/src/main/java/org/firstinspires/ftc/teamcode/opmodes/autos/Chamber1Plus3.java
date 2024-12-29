@@ -146,6 +146,8 @@ public class Chamber1Plus3 extends LinearOpMode {
 //          .splineToLinearHeading(ascentPose, Math.toRadians(90))
 //          .build();
 
+  public static double yBottom = -59.83;
+
 
   @Override
   public void runOpMode() throws InterruptedException {
@@ -162,25 +164,34 @@ public class Chamber1Plus3 extends LinearOpMode {
 
 
     TrajectorySequence trajectory0 = drive.trajectorySequenceBuilder(new Pose2d(24.43, -64.95, Math.toRadians(90.00)))
-            .lineTo(new Vector2d(6.49, -30.74))
+            .lineTo(new Vector2d(5.8, -30.74))
             .build(); // 1+0
 
 
-    TrajectorySequence trajectory1 = drive.trajectorySequenceBuilder(new Pose2d(5.53, -32.92, Math.toRadians(-90.00)))
-            .splineTo(new Vector2d(25.71, -39.80), Math.toRadians(-0.32))
-            .splineTo(new Vector2d(34.68, -26.03), Math.toRadians(75.96))
-            .splineToSplineHeading(new Pose2d(47.49, -10.97, Math.toRadians(90.00)), Math.toRadians(-90.00))
-            .lineToSplineHeading(new Pose2d(47.33, -59.03, Math.toRadians(90.00)))
+    TrajectorySequence trajectory1 = drive.trajectorySequenceBuilder(trajectory0.end())
+            .lineToConstantHeading(new Vector2d(25.71, -39.80))
+//            .splineToConstantHeading(new Vector2d(33, -28), Math.toRadians(75.96))
+            .splineToSplineHeading(new Pose2d(47.49, -8.73, Math.toRadians(90.00)), Math.toRadians(-90.00))
+            .lineToSplineHeading(new Pose2d(47.33, yBottom, Math.toRadians(90.00)))
             .splineToSplineHeading(new Pose2d(53.58, -8.73, Math.toRadians(90.00)), Math.toRadians(77.37))
-            .lineToSplineHeading(new Pose2d(54.54, -59.83, Math.toRadians(90.00)))
-            .build(); // push 2 blocks
+            .lineToSplineHeading(new Pose2d(54.54, yBottom, Math.toRadians(90.00)))
+            .build(); //
+
+    TrajectorySequence trajectory11 = drive.trajectorySequenceBuilder(trajectory0.end())
+            .lineToSplineHeading(new Pose2d(34.84, -43.33, Math.toRadians(90.00)))
+            .splineToSplineHeading(new Pose2d(46.05, -15.78, Math.toRadians(90.00)), Math.toRadians(0.00))
+            .lineToSplineHeading(new Pose2d(45.57, -58.71, Math.toRadians(90.00)))
+            .splineToSplineHeading(new Pose2d(56.62, -16.10, Math.toRadians(90.00)), Math.toRadians(0.00))
+            .lineToSplineHeading(new Pose2d(56.78, -59.03, Math.toRadians(90.00)))
+            .build();
 
 
-    TrajectorySequence trajectory2 = drive.trajectorySequenceBuilder(new Pose2d(59.67, -55.98, Math.toRadians(90.00)))
+
+    TrajectorySequence trajectory2 = drive.trajectorySequenceBuilder(trajectory1.end())
             .lineToSplineHeading(new Pose2d(36.60, -60.31, Math.toRadians(90.00)))
             .build(); // push end to grab
 
-    TrajectorySequence trajectory3 = drive.trajectorySequenceBuilder(new Pose2d(36.60, -60.31, Math.toRadians(90.00)))
+    TrajectorySequence trajectory3 = drive.trajectorySequenceBuilder(trajectory2.end())
             .lineToSplineHeading(new Pose2d(6.49, -30.74, Math.toRadians(90.00)))
             .build(); // grab to chamber
 
@@ -212,7 +223,7 @@ public class Chamber1Plus3 extends LinearOpMode {
                                     .andThen(new WaitCommand(500))
                                     .andThen(chamberToGrab(lift, liftClaw))
                             ,
-                            new AutoDriveCommand(drive, trajectory1)
+                            new AutoDriveCommand(drive, trajectory11)
                             ,
                             new AutoDriveCommand(drive, trajectory2)
                                     .andThen(new InstantCommand(liftClaw::closeClaw))
