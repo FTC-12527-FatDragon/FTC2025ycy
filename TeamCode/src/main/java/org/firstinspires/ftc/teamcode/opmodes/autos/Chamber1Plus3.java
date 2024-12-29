@@ -23,7 +23,7 @@ import org.firstinspires.ftc.teamcode.subsystems.drivetrain.TrajectoryManager;
 @Config
 @Autonomous(name = "Chamber 1+3", group = "Autos")
 public class Chamber1Plus3 extends LinearOpMode {
-//  // For Chamber Scoring
+  //  // For Chamber Scoring
 //  public static double xChamber = 19;
 //  public static double yChamber = 0;
 //  public static double headingChamber = -180;
@@ -174,14 +174,15 @@ public class Chamber1Plus3 extends LinearOpMode {
             .lineToSplineHeading(new Pose2d(50.86, -14.18, Math.toRadians(90.00)))
             .lineToSplineHeading(new Pose2d(59.51, -10.65, Math.toRadians(90.00)))
             .lineToSplineHeading(new Pose2d(59.67, -55.98, Math.toRadians(90.00)))
-            .build();
-    // push 2 blocks
+            .build(); // push 2 blocks
 
     TrajectorySequence trajectory2 = drive.trajectorySequenceBuilder(new Pose2d(59.67, -55.98, Math.toRadians(90.00)))
             .lineToSplineHeading(new Pose2d(36.60, -60.31, Math.toRadians(90.00)))
+            .build(); // push end to grab
+
+    TrajectorySequence trajectory3 = drive.trajectorySequenceBuilder(new Pose2d(36.60, -60.31, Math.toRadians(90.00)))
             .lineToSplineHeading(new Pose2d(6.49, -30.74, Math.toRadians(90.00)))
-            .build();
-    // push end to grab to chamber
+            .build(); // grab to chamber
 
 
 
@@ -200,28 +201,32 @@ public class Chamber1Plus3 extends LinearOpMode {
     // Push all three samples to the observation zone
     // Repeatedly score the high chamber with slightly different
     CommandScheduler.getInstance()
-        .schedule(
-            new SequentialCommandGroup(
-                    initialize(liftClaw, slide),
-            new AutoDriveCommand(drive, trajectory0)
-                .alongWith(grabToPreHang(lift, liftClaw))
-                        .andThen(new WaitCommand(300))
-                        .andThen(upToChamber(lift))
-                        .andThen(new WaitCommand(500))
-                        .andThen(chamberToGrab(lift, liftClaw)),
-            new AutoDriveCommand(drive, trajectory1),
-            new AutoDriveCommand(drive, trajectory2)
-                              .alongWith(grabToPreHang(lift, liftClaw))
-                              .andThen(new WaitCommand(300))
-                              .andThen(upToChamber(lift))
-                              .andThen(new WaitCommand(500))
-                              .andThen(chamberToGrab(lift, liftClaw))
-
+            .schedule(
+                    new SequentialCommandGroup(
+                            initialize(liftClaw, slide),
+                            new AutoDriveCommand(drive, trajectory0)
+                                    .alongWith(grabToPreHang(lift, liftClaw))
+                                    .andThen(new WaitCommand(300))
+                                    .andThen(upToChamber(lift))
+                                    .andThen(new WaitCommand(500))
+                                    .andThen(chamberToGrab(lift, liftClaw))
+                            ,
+                            new AutoDriveCommand(drive, trajectory1)
+                            ,
+                            new AutoDriveCommand(drive, trajectory2)
+                                    .andThen(new InstantCommand(liftClaw::closeClaw))
+                            ,
+                            new AutoDriveCommand(drive, trajectory3)
+                                    .alongWith(grabToPreHang(lift, liftClaw))
+                                    .andThen(new WaitCommand(300))
+                                    .andThen(upToChamber(lift))
+                                    .andThen(new WaitCommand(500))
+                                    .andThen(chamberToGrab(lift, liftClaw))
 
 //                ,
 //                        new AutoDriveCommand(drive, chamberToFirst),
 //                        new AutoDriveCommand(drive, firstToObservation),
-        ));
+                    ));
 //                        new AutoDriveCommand(drive, observationToSecond),
 //                        new AutoDriveCommand(drive, secondToObservation),
 //                        new AutoDriveCommand(drive, observationToThird),
