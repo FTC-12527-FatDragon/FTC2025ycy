@@ -179,9 +179,12 @@ public class Chamber1Plus3 extends LinearOpMode {
 
     TrajectorySequence trajectory2 = drive.trajectorySequenceBuilder(new Pose2d(59.67, -55.98, Math.toRadians(90.00)))
             .lineToSplineHeading(new Pose2d(36.60, -60.31, Math.toRadians(90.00)))
+            .build();
+    // push end to grab
+
+    TrajectorySequence trajectory3 = drive.trajectorySequenceBuilder(new Pose2d(36.60, -60.31, Math.toRadians(90.00)))
             .lineToSplineHeading(new Pose2d(6.49, -30.74, Math.toRadians(90.00)))
             .build();
-    // push end to grab to chamber
 
 
 
@@ -211,12 +214,9 @@ public class Chamber1Plus3 extends LinearOpMode {
                         .andThen(chamberToGrab(lift, liftClaw)),
             new AutoDriveCommand(drive, trajectory1),
             new AutoDriveCommand(drive, trajectory2)
-                              .alongWith(grabToPreHang(lift, liftClaw))
-                              .andThen(new WaitCommand(300))
-                              .andThen(upToChamber(lift))
-                              .andThen(new WaitCommand(500))
-                              .andThen(chamberToGrab(lift, liftClaw))
-
+                              .andThen(grabToPreHang(lift, liftClaw))
+                              ,
+            new AutoDriveCommand(drive, trajectory3)
 
 //                ,
 //                        new AutoDriveCommand(drive, chamberToFirst),
