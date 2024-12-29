@@ -15,6 +15,7 @@ import org.firstinspires.ftc.teamcode.subsystems.Lift;
 import org.firstinspires.ftc.teamcode.subsystems.LiftClaw;
 import org.firstinspires.ftc.teamcode.subsystems.SlideSuperStucture;
 
+@Deprecated
 public class AlphaAutoCommand {
     public static Command alphaUpLiftToBasket(AlphaLift lift, AlphaLiftClaw liftClaw) {
         return new ParallelCommandGroup(
