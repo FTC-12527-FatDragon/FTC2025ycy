@@ -23,128 +23,128 @@ import org.firstinspires.ftc.teamcode.subsystems.drivetrain.TrajectoryManager;
 @Config
 @Autonomous(name = "Chamber 1+3", group = "Autos")
 public class Chamber1Plus3 extends LinearOpMode {
-  // For Chamber Scoring
-  public static double xChamber = 19;
-  public static double yChamber = 0;
-  public static double headingChamber = -180;
-
-  // The transfer point
-  public static double xTransfer = 24;
-  public static double yTransfer = 18;
-  public static double headingTransfer = 0;
-
-  // The leftmost sample
-  public static double xRightMost = 30;
-  public static double yRightMost = 20;
-  public static double headingRightMost = -90;
-
-  // The middle sample
-  public static double xMiddle = 26;
-  public static double yMiddle = 30;
-  public static double headingMiddle = -90;
-
-  // The rightmost sample
-  public static double xLeftMost = 30;
-  public static double yLeftMost = 31;
-  public static double headingLeftMost = -90;
-
-  // The Observation zone
-  public static double xObservation = 12;
-  public static double yObservation = 30;
-  public static double headingObservation = -90;
-
-  // The Grab position
-  public static double xGrab = 5;
-  public static double yGrab = 24;
-  public static double headingGrab = -180;
-
-  // The Ascent zone
-  public static double xAscent = 36;
-  public static double yAscent = 12;
-  public static double headingAscent = 0;
-
-  AlphaLiftClaw liftClaw;
-  AlphaLift lift;
-  AlphaSlide slide;
-
-
-
-
-
-  Pose2d chamberPose = new Pose2d(xChamber, yChamber, Math.toRadians(headingChamber));
-  Pose2d leftPose = new Pose2d(xLeftMost, yLeftMost, Math.toRadians(headingLeftMost));
-  Pose2d middlePose = new Pose2d(xMiddle, yMiddle, Math.toRadians(headingMiddle));
-  Pose2d rightPose = new Pose2d(xRightMost, yRightMost, Math.toRadians(headingRightMost));
-  Pose2d grabPose = new Pose2d(xGrab, yGrab, Math.toRadians(headingGrab));
-  Pose2d transferPose = new Pose2d(xTransfer, yTransfer, headingTransfer);
-  Pose2d ascentPose = new Pose2d(xAscent, yAscent, Math.toRadians(headingAscent));
-  Pose2d observationPose =
-          new Pose2d(xObservation, yObservation, Math.toRadians(headingObservation));
-
-  TrajectorySequence startToChamber =
-          TrajectoryManager.trajectorySequenceBuilder(new Pose2d(47.97, -66.91, Math.toRadians(90.00)))
-          .splineTo(new Vector2d(4.30, -34.47), Math.toRadians(90.00))
-          .build();
-
-  TrajectorySequence chamberToFirst =
-          TrajectoryManager.trajectorySequenceBuilder(new Pose2d(47.97, -66.91, Math.toRadians(90.00)))
-          .splineTo(new Vector2d(11.31, -43.76), Math.toRadians(17.84))
-          .splineToConstantHeading(new Vector2d(34.99, -24.82), Math.toRadians(90.00))
-          .splineToLinearHeading(new Pose2d(46.39, -14.65, Math.toRadians(0.00)), Math.toRadians(0.00))
-          .build();
-
-  TrajectorySequence firstToObservation =
-          TrajectoryManager.trajectorySequenceBuilder(chamberToFirst.end())
-              .lineToConstantHeading(new Vector2d(46.22, -66.04))
-              .build();
-
-  // rightmost sample to basket
-  TrajectorySequence observationToSecond =
-      TrajectoryManager.trajectorySequenceBuilder(firstToObservation.end())
-              .splineToConstantHeading(new Vector2d(55.34, -13.94), Math.toRadians(0.00))
-          .build();
-
-  TrajectorySequence secondToObservation =
-      TrajectoryManager.trajectorySequenceBuilder(observationToSecond.end())
-              .lineToConstantHeading(new Vector2d(54.99, -66.91))
-          .build();
-
-  // middle sample to basket
-  TrajectorySequence observationToThird =
-      TrajectoryManager.trajectorySequenceBuilder(secondToObservation.end())
-              .splineToConstantHeading(new Vector2d(62.70, -13.94), Math.toRadians(0.00))
-          .build();
-
-  // basket to rightmost sample
-  TrajectorySequence thirdToObservation =
-      TrajectoryManager.trajectorySequenceBuilder(observationToThird.end())
-              .lineToConstantHeading(new Vector2d(62.70, -65.86))
-          .build();
-
-  // leftmost sample to basket
-  TrajectorySequence observationToGrab =
-      TrajectoryManager.trajectorySequenceBuilder(thirdToObservation.end())
-          .lineToLinearHeading(new Pose2d(42.09, -47.65, Math.toRadians(-90.00)))
-          .splineToConstantHeading(new Vector2d(34.78, -62.96), Math.toRadians(-90.00))
-          .build();
-
-  // basket to ascent zone
-  TrajectorySequence grabToChamber =
-          TrajectoryManager.trajectorySequenceBuilder(observationToGrab.end())
-          .splineTo(new Vector2d(4.30, -34.47), Math.toRadians(90.00))
-          .build();
-
-  // basket to ascent zone
-  TrajectorySequence chamberToGrab =
-      TrajectoryManager.trajectorySequenceBuilder(chamberPose)
-          .splineToLinearHeading(grabPose, Math.toRadians(-180))
-          .build();
-
-  TrajectorySequence chamberToAscent =
-      TrajectoryManager.trajectorySequenceBuilder(chamberPose)
-          .splineToLinearHeading(transferPose, Math.toRadians(0))
-          .splineToLinearHeading(ascentPose, Math.toRadians(90))
-          .build();
+//  // For Chamber Scoring
+//  public static double xChamber = 19;
+//  public static double yChamber = 0;
+//  public static double headingChamber = -180;
+//
+//  // The transfer point
+//  public static double xTransfer = 24;
+//  public static double yTransfer = 18;
+//  public static double headingTransfer = 0;
+//
+//  // The leftmost sample
+//  public static double xRightMost = 30;
+//  public static double yRightMost = 20;
+//  public static double headingRightMost = -90;
+//
+//  // The middle sample
+//  public static double xMiddle = 26;
+//  public static double yMiddle = 30;
+//  public static double headingMiddle = -90;
+//
+//  // The rightmost sample
+//  public static double xLeftMost = 30;
+//  public static double yLeftMost = 31;
+//  public static double headingLeftMost = -90;
+//
+//  // The Observation zone
+//  public static double xObservation = 12;
+//  public static double yObservation = 30;
+//  public static double headingObservation = -90;
+//
+//  // The Grab position
+//  public static double xGrab = 5;
+//  public static double yGrab = 24;
+//  public static double headingGrab = -180;
+//
+//  // The Ascent zone
+//  public static double xAscent = 36;
+//  public static double yAscent = 12;
+//  public static double headingAscent = 0;
+//
+//  AlphaLiftClaw liftClaw;
+//  AlphaLift lift;
+//  AlphaSlide slide;
+//
+//
+//
+//
+//
+//  Pose2d chamberPose = new Pose2d(xChamber, yChamber, Math.toRadians(headingChamber));
+//  Pose2d leftPose = new Pose2d(xLeftMost, yLeftMost, Math.toRadians(headingLeftMost));
+//  Pose2d middlePose = new Pose2d(xMiddle, yMiddle, Math.toRadians(headingMiddle));
+//  Pose2d rightPose = new Pose2d(xRightMost, yRightMost, Math.toRadians(headingRightMost));
+//  Pose2d grabPose = new Pose2d(xGrab, yGrab, Math.toRadians(headingGrab));
+//  Pose2d transferPose = new Pose2d(xTransfer, yTransfer, headingTransfer);
+//  Pose2d ascentPose = new Pose2d(xAscent, yAscent, Math.toRadians(headingAscent));
+//  Pose2d observationPose =
+//          new Pose2d(xObservation, yObservation, Math.toRadians(headingObservation));
+//
+//  TrajectorySequence startToChamber =
+//          TrajectoryManager.trajectorySequenceBuilder(new Pose2d(47.97, -66.91, Math.toRadians(90.00)))
+//          .splineTo(new Vector2d(4.30, -34.47), Math.toRadians(90.00))
+//          .build();
+//
+//  TrajectorySequence chamberToFirst =
+//          TrajectoryManager.trajectorySequenceBuilder(new Pose2d(47.97, -66.91, Math.toRadians(90.00)))
+//          .splineTo(new Vector2d(11.31, -43.76), Math.toRadians(17.84))
+//          .splineToConstantHeading(new Vector2d(34.99, -24.82), Math.toRadians(90.00))
+//          .splineToLinearHeading(new Pose2d(46.39, -14.65, Math.toRadians(0.00)), Math.toRadians(0.00))
+//          .build();
+//
+//  TrajectorySequence firstToObservation =
+//          TrajectoryManager.trajectorySequenceBuilder(chamberToFirst.end())
+//              .lineToConstantHeading(new Vector2d(46.22, -66.04))
+//              .build();
+//
+//  // rightmost sample to basket
+//  TrajectorySequence observationToSecond =
+//      TrajectoryManager.trajectorySequenceBuilder(firstToObservation.end())
+//              .splineToConstantHeading(new Vector2d(55.34, -13.94), Math.toRadians(0.00))
+//          .build();
+//
+//  TrajectorySequence secondToObservation =
+//      TrajectoryManager.trajectorySequenceBuilder(observationToSecond.end())
+//              .lineToConstantHeading(new Vector2d(54.99, -66.91))
+//          .build();
+//
+//  // middle sample to basket
+//  TrajectorySequence observationToThird =
+//      TrajectoryManager.trajectorySequenceBuilder(secondToObservation.end())
+//              .splineToConstantHeading(new Vector2d(62.70, -13.94), Math.toRadians(0.00))
+//          .build();
+//
+//  // basket to rightmost sample
+//  TrajectorySequence thirdToObservation =
+//      TrajectoryManager.trajectorySequenceBuilder(observationToThird.end())
+//              .lineToConstantHeading(new Vector2d(62.70, -65.86))
+//          .build();
+//
+//  // leftmost sample to basket
+//  TrajectorySequence observationToGrab =
+//      TrajectoryManager.trajectorySequenceBuilder(thirdToObservation.end())
+//          .lineToLinearHeading(new Pose2d(42.09, -47.65, Math.toRadians(-90.00)))
+//          .splineToConstantHeading(new Vector2d(34.78, -62.96), Math.toRadians(-90.00))
+//          .build();
+//
+//  // basket to ascent zone
+//  TrajectorySequence grabToChamber =
+//          TrajectoryManager.trajectorySequenceBuilder(observationToGrab.end())
+//          .splineTo(new Vector2d(4.30, -34.47), Math.toRadians(90.00))
+//          .build();
+//
+//  // basket to ascent zone
+//  TrajectorySequence chamberToGrab =
+//      TrajectoryManager.trajectorySequenceBuilder(chamberPose)
+//          .splineToLinearHeading(grabPose, Math.toRadians(-180))
+//          .build();
+//
+//  TrajectorySequence chamberToAscent =
+//      TrajectoryManager.trajectorySequenceBuilder(chamberPose)
+//          .splineToLinearHeading(transferPose, Math.toRadians(0))
+//          .splineToLinearHeading(ascentPose, Math.toRadians(90))
+//          .build();
 
 
   @Override
@@ -179,14 +179,9 @@ public class Chamber1Plus3 extends LinearOpMode {
 
     TrajectorySequence trajectory2 = drive.trajectorySequenceBuilder(new Pose2d(59.67, -55.98, Math.toRadians(90.00)))
             .lineToSplineHeading(new Pose2d(36.60, -60.31, Math.toRadians(90.00)))
-            .build();
-    // go to grab
-
-
-    TrajectorySequence trajectory3 = drive.trajectorySequenceBuilder(new Pose2d(36.60, -60.31, Math.toRadians(90.00)))
             .lineToSplineHeading(new Pose2d(6.49, -30.74, Math.toRadians(90.00)))
             .build();
-    // grab to chamber
+    // push end to grab to chamber
 
 
 
