@@ -89,8 +89,8 @@ public class AlphaSlide extends SubsystemBase {
   }
 
   public void initialize() {
-    slideArmServo.setPosition(Goal.HANDOFF.slideArmPos);
-    slideRightServo.setPosition(Goal.HANDOFF.slideExtension);
+    slideArmServo.setPosition(Goal.AIM.slideArmPos);
+    slideRightServo.setPosition(SlideServo.BACK.extensionVal);
     intakeClawServo.setPosition(Goal.HANDOFF.clawAngle);
     wristServo.setPosition(Goal.HANDOFF.wristPos);
     wristTurnServo.setPosition(Goal.HANDOFF.turnAngle);

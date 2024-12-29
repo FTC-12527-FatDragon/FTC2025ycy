@@ -67,6 +67,10 @@ public class Chamber1Plus3 extends LinearOpMode {
   AlphaLift lift;
   AlphaSlide slide;
 
+
+
+
+
   Pose2d chamberPose = new Pose2d(xChamber, yChamber, Math.toRadians(headingChamber));
   Pose2d leftPose = new Pose2d(xLeftMost, yLeftMost, Math.toRadians(headingLeftMost));
   Pose2d middlePose = new Pose2d(xMiddle, yMiddle, Math.toRadians(headingMiddle));
@@ -142,6 +146,7 @@ public class Chamber1Plus3 extends LinearOpMode {
           .splineToLinearHeading(ascentPose, Math.toRadians(90))
           .build();
 
+
   @Override
   public void runOpMode() throws InterruptedException {
     CommandScheduler.getInstance().reset();
@@ -151,7 +156,50 @@ public class Chamber1Plus3 extends LinearOpMode {
     liftClaw = new AlphaLiftClaw(hardwareMap, telemetry);
     slide = new AlphaSlide(hardwareMap, telemetry);
 
+
     SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
+
+
+
+    TrajectorySequence trajectory0 = drive.trajectorySequenceBuilder(new Pose2d(24.43, -64.95, Math.toRadians(90.00)))
+            .lineTo(new Vector2d(6.49, -30.74))
+            .build(); // 1+0
+
+
+    TrajectorySequence trajectory1 = drive.trajectorySequenceBuilder(new Pose2d(6.49, -30.74, Math.toRadians(90.00)))
+            .lineToSplineHeading(new Pose2d(35.32, -43.81, Math.toRadians(90.00)))
+            .lineToSplineHeading(new Pose2d(35.16, -22.83, Math.toRadians(71.10)))
+            .lineToSplineHeading(new Pose2d(47.33, -9.21, Math.toRadians(90.00)))
+            .lineToSplineHeading(new Pose2d(47.97, -55.82, Math.toRadians(90.00)))
+            .lineToSplineHeading(new Pose2d(50.86, -14.18, Math.toRadians(90.00)))
+            .lineToSplineHeading(new Pose2d(59.51, -10.65, Math.toRadians(90.00)))
+            .lineToSplineHeading(new Pose2d(59.67, -55.98, Math.toRadians(90.00)))
+            .build();
+    // push 2 blocks
+
+    TrajectorySequence trajectory2 = drive.trajectorySequenceBuilder(new Pose2d(59.67, -55.98, Math.toRadians(90.00)))
+            .lineToSplineHeading(new Pose2d(36.60, -60.31, Math.toRadians(90.00)))
+            .build();
+    // go to grab
+
+
+    TrajectorySequence trajectory3 = drive.trajectorySequenceBuilder(new Pose2d(36.60, -60.31, Math.toRadians(90.00)))
+            .lineToSplineHeading(new Pose2d(6.49, -30.74, Math.toRadians(90.00)))
+            .build();
+    // grab to chamber
+
+
+
+
+
+
+
+
+
+
+
+
+    drive.setPoseEstimate(trajectory0.start());
 
     // Score the first chamber
     // Push all three samples to the observation zone
@@ -160,33 +208,46 @@ public class Chamber1Plus3 extends LinearOpMode {
         .schedule(
             new SequentialCommandGroup(
                     initialize(liftClaw, slide),
-                new AutoDriveCommand(drive, startToChamber).alongWith(grabToPreHang(lift, liftClaw))
-                        .andThen(new WaitCommand(200))
+            new AutoDriveCommand(drive, trajectory0)
+                .alongWith(grabToPreHang(lift, liftClaw))
+                        .andThen(new WaitCommand(300))
                         .andThen(upToChamber(lift))
-                        .andThen(new WaitCommand(200))
+                        .andThen(new WaitCommand(500))
                         .andThen(chamberToGrab(lift, liftClaw)),
-                        new AutoDriveCommand(drive, chamberToFirst),
-                        new AutoDriveCommand(drive, firstToObservation),
-                        new AutoDriveCommand(drive, observationToSecond),
-                        new AutoDriveCommand(drive, secondToObservation),
-                        new AutoDriveCommand(drive, observationToThird),
-                        new AutoDriveCommand(drive, thirdToObservation),
-                        new AutoDriveCommand(drive, observationToGrab)
-                            .andThen(grabToPreHang(lift, liftClaw)),
-                        new AutoDriveCommand(drive, grabToChamber)
-                            .andThen(upToChamber(lift))
-                            .andThen(chamberToGrab(lift, liftClaw)),
-                        new AutoDriveCommand(drive, chamberToGrab).andThen(grabToPreHang(lift, liftClaw)),
-                        new AutoDriveCommand(drive, grabToChamber)
-                            .andThen(upToChamber(lift))
-                            .andThen(chamberToGrab(lift, liftClaw)),
-                        new AutoDriveCommand(drive, chamberToGrab).andThen(grabToPreHang(lift, liftClaw)),
-                        new AutoDriveCommand(drive, grabToChamber)
-                            .andThen(upToChamber(lift))
-                            .andThen(chamberToGrab(lift, liftClaw)),
-                        new AutoDriveCommand(drive, chamberToAscent)
-                            .alongWith(autoFinish(liftClaw, lift, slide))
-            ));
+            new AutoDriveCommand(drive, trajectory1),
+            new AutoDriveCommand(drive, trajectory2),
+                      new AutoDriveCommand(drive, trajectory3)
+                              .alongWith(grabToPreHang(lift, liftClaw))
+                              .andThen(new WaitCommand(300))
+                              .andThen(upToChamber(lift))
+                              .andThen(new WaitCommand(500))
+                              .andThen(chamberToGrab(lift, liftClaw))
+
+
+//                ,
+//                        new AutoDriveCommand(drive, chamberToFirst),
+//                        new AutoDriveCommand(drive, firstToObservation),
+        ));
+//                        new AutoDriveCommand(drive, observationToSecond),
+//                        new AutoDriveCommand(drive, secondToObservation),
+//                        new AutoDriveCommand(drive, observationToThird),
+//                        new AutoDriveCommand(drive, thirdToObservation),
+//                        new AutoDriveCommand(drive, observationToGrab)
+//                            .andThen(grabToPreHang(lift, liftClaw)),
+//                        new AutoDriveCommand(drive, grabToChamber)
+//                            .andThen(upToChamber(lift))
+//                            .andThen(chamberToGrab(lift, liftClaw)),
+//                        new AutoDriveCommand(drive, chamberToGrab).andThen(grabToPreHang(lift, liftClaw)),
+//                        new AutoDriveCommand(drive, grabToChamber)
+//                            .andThen(upToChamber(lift))
+//                            .andThen(chamberToGrab(lift, liftClaw)),
+//                        new AutoDriveCommand(drive, chamberToGrab).andThen(grabToPreHang(lift, liftClaw)),
+//                        new AutoDriveCommand(drive, grabToChamber)
+//                            .andThen(upToChamber(lift))
+//                            .andThen(chamberToGrab(lift, liftClaw)),
+//                        new AutoDriveCommand(drive, chamberToAscent)
+//                            .alongWith(autoFinish(liftClaw, lift, slide))
+//            ));
 
     waitForStart();
 

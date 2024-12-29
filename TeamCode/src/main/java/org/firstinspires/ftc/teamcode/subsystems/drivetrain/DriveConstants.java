@@ -89,7 +89,7 @@ public class DriveConstants {
    * inches.
    */
   public static double MAX_VEL =
-      currentRobot == RobotType.ALPHA ? 42.86623620784674 : 63.0295389435408;
+      currentRobot == RobotType.ALPHA ? 62.89457585940184 : 63.0295389435408;
   public static double MAX_ACCEL = 30;
   public static double MAX_ANG_VEL =
       Math.toRadians(currentRobot == RobotType.ALPHA ? 134.16 : 142.9192604427183);
@@ -126,7 +126,7 @@ public class DriveConstants {
         GoBildaXLocalizerDirection = GoBildaPinpointDriver.EncoderDirection.FORWARD;
         GoBildaYLocalizerDirection = GoBildaPinpointDriver.EncoderDirection.FORWARD;
         GoBildaLocalizerEncoderResolution =
-            GoBildaPinpointDriver.GoBildaOdometryPods.goBILDA_4_BAR_POD;
+            GoBildaPinpointDriver.GoBildaOdometryPods.goBILDA_SWINGARM_POD;
         GoBildaLocalizerPerpendicularOffset = new Translation2dHelperClass(xOffset, yOffset);
         break;
       case BETA:
