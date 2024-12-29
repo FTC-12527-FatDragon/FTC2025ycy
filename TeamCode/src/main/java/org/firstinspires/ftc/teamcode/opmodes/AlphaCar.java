@@ -15,6 +15,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import java.util.HashMap;
 import java.util.function.Supplier;
 import org.firstinspires.ftc.teamcode.commands.TeleopDriveCommand;
+import org.firstinspires.ftc.teamcode.opmodes.autos.AutoCommand;
 import org.firstinspires.ftc.teamcode.subsystems.AlphaLift;
 import org.firstinspires.ftc.teamcode.subsystems.AlphaLiftClaw;
 import org.firstinspires.ftc.teamcode.subsystems.AlphaSlide;
@@ -135,13 +136,7 @@ public class AlphaCar extends CommandOpMode {
                 .alongWith(new InstantCommand(() -> liftClaw.chamberWrist()))
                 .andThen(new InstantCommand(() -> liftClaw.chamberLiftArm()));
 
-    Supplier<Command> grab =
-        () ->
-            new InstantCommand(() -> lift.setGoal(AlphaLift.Goal.GRAB))
-                .alongWith(slide.aimCommand())
-                .alongWith(new InstantCommand(() -> liftClaw.openClaw()))
-                .andThen(new InstantCommand(() -> liftClaw.grabWrist()))
-                .alongWith(new InstantCommand(() -> liftClaw.grabLiftArm()));
+    Command grab = AutoCommand.chamberToGrab(lift, liftClaw).alongWith(slide.aimCommand());
 
     Supplier<Command> stow =
         () ->
@@ -159,7 +154,7 @@ public class AlphaCar extends CommandOpMode {
             new HashMap<Object, Command>() {
               {
                 put(AlphaLift.Goal.GRAB, preHang.get());
-                put(AlphaLift.Goal.STOW, grab.get());
+                put(AlphaLift.Goal.STOW, grab);
                 put(AlphaLift.Goal.HANG, stow.get());
               }
             },
