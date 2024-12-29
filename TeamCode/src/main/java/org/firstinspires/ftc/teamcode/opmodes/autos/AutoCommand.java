@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.opmodes.autos;
 
 import com.arcrobotics.ftclib.command.Command;
+import com.arcrobotics.ftclib.command.ConditionalCommand;
 import com.arcrobotics.ftclib.command.InstantCommand;
 import com.arcrobotics.ftclib.command.ParallelCommandGroup;
 import com.arcrobotics.ftclib.command.SequentialCommandGroup;
@@ -38,12 +39,20 @@ public class AutoCommand {
   }
 
   public static Command grabToPreHang(AlphaLift lift, AlphaLiftClaw liftClaw) {
-    return new SequentialCommandGroup(
-        new InstantCommand(liftClaw::closeClaw)
-            .andThen(
-                new InstantCommand(() -> lift.setGoal(AlphaLift.Goal.PRE_HANG))
+    return new ConditionalCommand(
+            new SequentialCommandGroup(new InstantCommand(liftClaw::closeClaw),
+            new WaitCommand(300),
+            new InstantCommand(() -> lift.setGoal(AlphaLift.Goal.PRE_HANG))
                     .alongWith(new InstantCommand(liftClaw::chamberWrist))
-                    .andThen(new InstantCommand(liftClaw::chamberLiftArm))));
+                    .andThen(new InstantCommand(liftClaw::chamberLiftArm)))
+            ,
+            new SequentialCommandGroup(new InstantCommand(liftClaw::closeClaw),
+                    new InstantCommand(() -> lift.setGoal(AlphaLift.Goal.PRE_HANG))
+                            .alongWith(new InstantCommand(liftClaw::chamberWrist))
+                            .andThen(new InstantCommand(liftClaw::chamberLiftArm)))
+            ,
+            () -> liftClaw.getClawStatus()
+            );
   }
 
   public static Command upToChamber(AlphaLift lift) {

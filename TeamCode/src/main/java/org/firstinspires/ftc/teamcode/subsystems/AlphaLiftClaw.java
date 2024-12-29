@@ -67,6 +67,7 @@ public class AlphaLiftClaw extends SubsystemBase {
     isClawOpen = false;
   }
 
+
   public void upLiftArm() {
     liftArmServo.setPosition(ServoPositions.BASKET.liftArmPosition);
   }
@@ -104,5 +105,9 @@ public class AlphaLiftClaw extends SubsystemBase {
   public void periodic() {
     telemetry.addData("Lift Arm Position", liftArmServo.getPosition());
     telemetry.update();
+  }
+
+  public boolean getClawStatus() {
+    return isClawOpen;
   }
 }
