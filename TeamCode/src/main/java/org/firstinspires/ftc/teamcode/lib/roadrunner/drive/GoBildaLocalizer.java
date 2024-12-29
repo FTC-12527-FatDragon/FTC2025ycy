@@ -8,18 +8,20 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import lombok.experimental.ExtensionMethod;
 import org.firstinspires.ftc.teamcode.lib.GeomUtil;
 import org.firstinspires.ftc.teamcode.lib.gobilda.GoBildaPinpointDriver;
+import org.firstinspires.ftc.teamcode.subsystems.drivetrain.DriveConstants;
+import org.firstinspires.ftc.teamcode.utils.Translation2dHelperClass;
 
 @ExtensionMethod({GeomUtil.class})
 public class GoBildaLocalizer implements Localizer {
   private final GoBildaPinpointDriver odometry;
 
-  public GoBildaLocalizer(final HardwareMap hardwareMap, final Pose2d mountOffsets) {
+  public GoBildaLocalizer(
+      final HardwareMap hardwareMap, final Translation2dHelperClass mountOffsets) {
     odometry = hardwareMap.get(GoBildaPinpointDriver.class, "od");
     odometry.setEncoderDirections(
-        GoBildaPinpointDriver.EncoderDirection.FORWARD,
-        GoBildaPinpointDriver.EncoderDirection.REVERSED);
-    odometry.setEncoderResolution(GoBildaPinpointDriver.GoBildaOdometryPods.goBILDA_SWINGARM_POD);
-    odometry.setOffsets(-92.03742, 104.03742);
+        DriveConstants.GoBildaXLocalizerDirection, DriveConstants.GoBildaYLocalizerDirection);
+    odometry.setEncoderResolution(DriveConstants.GoBildaLocalizerEncoderResolution);
+    odometry.setOffsets(mountOffsets.getX(), mountOffsets.getY());
     odometry.resetPosAndIMU();
   }
 

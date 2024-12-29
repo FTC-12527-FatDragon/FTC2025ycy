@@ -28,6 +28,8 @@ import com.acmerobotics.roadrunner.trajectory.constraints.MinVelocityConstraint;
 import com.acmerobotics.roadrunner.trajectory.constraints.ProfileAccelerationConstraint;
 import com.acmerobotics.roadrunner.trajectory.constraints.TrajectoryAccelerationConstraint;
 import com.acmerobotics.roadrunner.trajectory.constraints.TrajectoryVelocityConstraint;
+import com.arcrobotics.ftclib.command.CommandScheduler;
+import com.arcrobotics.ftclib.command.Subsystem;
 import com.qualcomm.hardware.lynx.LynxModule;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
@@ -49,15 +51,17 @@ import org.firstinspires.ftc.teamcode.lib.roadrunner.util.LynxModuleUtil;
  * Simple mecanum drive hardware implementation for REV hardware.
  */
 @Config
-public class SampleMecanumDrive extends MecanumDrive {
-  public static PIDCoefficients TRANSLATIONAL_PID = new PIDCoefficients(2, 0, 0);
-  public static PIDCoefficients HEADING_PID = new PIDCoefficients(5, 0, 0.7);
+public class SampleMecanumDrive extends MecanumDrive implements Subsystem {
+  public static PIDCoefficients TRANSLATIONAL_PID = new PIDCoefficients(1.5, 0, 0.001);
+  public static PIDCoefficients HEADING_PID = new PIDCoefficients(1, 0, 0.03);
 
   public static double LATERAL_MULTIPLIER = 1.4514;
 
   public static double VX_WEIGHT = 1;
   public static double VY_WEIGHT = 1;
   public static double OMEGA_WEIGHT = 1;
+
+  public static double ADMISSIBLE_TIMEOUT = 0.5;
 
   private TrajectorySequenceRunner trajectorySequenceRunner;
 
@@ -93,8 +97,8 @@ public class SampleMecanumDrive extends MecanumDrive {
             TRANSLATIONAL_PID,
             TRANSLATIONAL_PID,
             HEADING_PID,
-            new Pose2d(0.5, 0.5, Math.toRadians(5.0)), // Pose Error
-            0.1);
+            new Pose2d(1.5, 1.5, Math.toRadians(2)), // Pose Error
+            ADMISSIBLE_TIMEOUT);
 
     LynxModuleUtil.ensureMinimumFirmwareVersion(hardwareMap);
 
@@ -105,14 +109,16 @@ public class SampleMecanumDrive extends MecanumDrive {
     }
 
     // TODO: adjust the names of the following hardware devices to match your configuration
-    od = new GoBildaLocalizer(hardwareMap, new Pose2d(-100, 40));
+    od = new GoBildaLocalizer(hardwareMap, DriveConstants.GoBildaLocalizerPerpendicularOffset);
 
     leftFront = hardwareMap.get(DcMotorEx.class, "leftFrontMotor");
     leftRear = hardwareMap.get(DcMotorEx.class, "leftBackMotor");
     rightRear = hardwareMap.get(DcMotorEx.class, "rightBackMotor");
     rightFront = hardwareMap.get(DcMotorEx.class, "rightFrontMotor");
-    leftFront.setDirection(DcMotorSimple.Direction.REVERSE);
-    leftRear.setDirection(DcMotorSimple.Direction.REVERSE);
+    leftFront.setDirection(DcMotorSimple.Direction.FORWARD);
+    leftRear.setDirection(DcMotorSimple.Direction.FORWARD);
+    rightFront.setDirection(DcMotorSimple.Direction.REVERSE);
+    rightRear.setDirection(DcMotorSimple.Direction.REVERSE);
 
     motors = Arrays.asList(leftFront, leftRear, rightRear, rightFront);
 
@@ -149,6 +155,8 @@ public class SampleMecanumDrive extends MecanumDrive {
             lastEncVels,
             lastTrackingEncPositions,
             lastTrackingEncVels);
+
+    CommandScheduler.getInstance().registerSubsystem(this);
   }
 
   public TrajectoryBuilder trajectoryBuilder(Pose2d startPose) {

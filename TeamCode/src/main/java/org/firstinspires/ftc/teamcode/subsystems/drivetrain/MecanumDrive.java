@@ -6,6 +6,7 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import org.firstinspires.ftc.teamcode.lib.gobilda.GoBildaPinpointDriver;
 
+@Deprecated
 public class MecanumDrive extends SubsystemBase {
   private final DcMotor leftFrontMotor, leftBackMotor, rightFrontMotor, rightBackMotor;
   private final GoBildaPinpointDriver od;
@@ -29,18 +30,20 @@ public class MecanumDrive extends SubsystemBase {
         GoBildaPinpointDriver.EncoderDirection.FORWARD);
     od.setEncoderResolution(GoBildaPinpointDriver.GoBildaOdometryPods.goBILDA_4_BAR_POD);
     od.setOffsets(0, 0);
-
-    leftFrontMotor.setDirection(DcMotorSimple.Direction.REVERSE);
-    leftBackMotor.setDirection(DcMotorSimple.Direction.REVERSE);
+    rightFrontMotor.setDirection(DcMotorSimple.Direction.REVERSE);
+    rightBackMotor.setDirection(DcMotorSimple.Direction.REVERSE);
+    leftFrontMotor.setDirection(DcMotorSimple.Direction.FORWARD);
+    leftBackMotor.setDirection(DcMotorSimple.Direction.FORWARD);
   }
 
   public void reset() {
     yawOffset = od.getHeading();
   }
 
-  public void moveRobotFieldRelatice(double forward, double fun, double turn) {
+  public void moveRobotFieldRelative(double forward, double fun, double turn) {
     od.update();
 
+    turn *= 0.8;
     double botHeading = od.getHeading() - yawOffset;
     // Rotate the movement direction counter to the bot's rotation\\
     double rotX = fun * Math.cos(-botHeading) - forward * Math.sin(-botHeading);
