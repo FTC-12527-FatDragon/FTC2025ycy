@@ -51,7 +51,7 @@ public class AutoCommand {
                             .alongWith(new InstantCommand(liftClaw::chamberWrist))
                             .andThen(new InstantCommand(liftClaw::chamberLiftArm)))
             ,
-            () -> liftClaw.getClawStatus()
+            liftClaw::getClawStatus
             );
   }
 
