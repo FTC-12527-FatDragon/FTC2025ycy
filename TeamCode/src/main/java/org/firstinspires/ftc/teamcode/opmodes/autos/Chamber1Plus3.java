@@ -63,9 +63,9 @@ public class Chamber1Plus3 extends LinearOpMode {
 //  public static double yAscent = 12;
 //  public static double headingAscent = 0;
 //
-//  AlphaLiftClaw liftClaw;
-//  AlphaLift lift;
-//  AlphaSlide slide;
+  AlphaLiftClaw liftClaw;
+  AlphaLift lift;
+  AlphaSlide slide;
 //
 //
 //
@@ -210,8 +210,7 @@ public class Chamber1Plus3 extends LinearOpMode {
                         .andThen(new WaitCommand(500))
                         .andThen(chamberToGrab(lift, liftClaw)),
             new AutoDriveCommand(drive, trajectory1),
-            new AutoDriveCommand(drive, trajectory2),
-                      new AutoDriveCommand(drive, trajectory3)
+            new AutoDriveCommand(drive, trajectory2)
                               .alongWith(grabToPreHang(lift, liftClaw))
                               .andThen(new WaitCommand(300))
                               .andThen(upToChamber(lift))
