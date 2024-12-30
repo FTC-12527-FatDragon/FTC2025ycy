@@ -5,6 +5,7 @@ import static org.firstinspires.ftc.teamcode.opmodes.autos.AutoCommand.*;
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.geometry.Vector2d;
+import com.acmerobotics.roadrunner.trajectory.Trajectory;
 import com.arcrobotics.ftclib.command.CommandScheduler;
 import com.arcrobotics.ftclib.command.InstantCommand;
 import com.arcrobotics.ftclib.command.RunCommand;
@@ -66,11 +67,7 @@ public class Chamber1Plus3 extends LinearOpMode {
   AlphaLiftClaw liftClaw;
   AlphaLift lift;
   AlphaSlide slide;
-//
-//
-//
-//
-//
+
 //  Pose2d chamberPose = new Pose2d(xChamber, yChamber, Math.toRadians(headingChamber));
 //  Pose2d leftPose = new Pose2d(xLeftMost, yLeftMost, Math.toRadians(headingLeftMost));
 //  Pose2d middlePose = new Pose2d(xMiddle, yMiddle, Math.toRadians(headingMiddle));
@@ -148,7 +145,6 @@ public class Chamber1Plus3 extends LinearOpMode {
 
   public static double yBottom = -59.83;
 
-
   @Override
   public void runOpMode() throws InterruptedException {
     CommandScheduler.getInstance().reset();
@@ -178,12 +174,16 @@ public class Chamber1Plus3 extends LinearOpMode {
             .build(); //
 
     TrajectorySequence trajectory11 = drive.trajectorySequenceBuilder(trajectory0.end())
-            .lineToSplineHeading(new Pose2d(34.84, -43.33, Math.toRadians(90.00)))
-            .splineToSplineHeading(new Pose2d(46.05, -15.78, Math.toRadians(90.00)), Math.toRadians(0.00))
-            .lineToSplineHeading(new Pose2d(45.57, -58.71, Math.toRadians(90.00)))
-            .splineToSplineHeading(new Pose2d(56.62, -16.10, Math.toRadians(90.00)), Math.toRadians(0.00))
-            .lineToSplineHeading(new Pose2d(56.78, -59.03, Math.toRadians(90.00)))
+            .lineToSplineHeading(new Pose2d(32.44, -44.45, Math.toRadians(90.00)))
+            .splineToConstantHeading(new Vector2d(48.29, -15.94), Math.toRadians(0.00))
+            .lineToSplineHeading(new Pose2d(48.13, -54.70, Math.toRadians(90.00)))
+            .lineToSplineHeading(new Pose2d(48.13, -35.00, Math.toRadians(90.00)))
+            .splineToConstantHeading(new Vector2d(56.62, -16.10), Math.toRadians(0.00))
+            .lineToSplineHeading(new Pose2d(56.62, -54.54, Math.toRadians(90.00)))
             .build();
+
+
+
 
 
 
@@ -197,16 +197,6 @@ public class Chamber1Plus3 extends LinearOpMode {
 
 
 
-
-
-
-
-
-
-
-
-
-
     drive.setPoseEstimate(trajectory0.start());
 
     // Score the first chamber
@@ -217,16 +207,16 @@ public class Chamber1Plus3 extends LinearOpMode {
                     new SequentialCommandGroup(
                             initialize(liftClaw, slide),
                             new AutoDriveCommand(drive, trajectory0)
-                                    .alongWith(grabToPreHang(lift, liftClaw))
-                                    .andThen(new WaitCommand(300))
-                                    .andThen(upToChamber(lift))
-                                    .andThen(new WaitCommand(500))
-                                    .andThen(chamberToGrab(lift, liftClaw))
+//                                    .alongWith(grabToPreHang(lift, liftClaw))
+//                                    .andThen(new WaitCommand(300))
+//                                    .andThen(upToChamber(lift))
+//                                    .andThen(new WaitCommand(500))
+//                                    .andThen(chamberToGrab(lift, liftClaw))
                             ,
                             new AutoDriveCommand(drive, trajectory11)
                             ,
                             new AutoDriveCommand(drive, trajectory2)
-                                    .andThen(new InstantCommand(liftClaw::closeClaw))
+//                                    .andThen(new InstantCommand(liftClaw::closeClaw))
 //                            ,
 //                            new AutoDriveCommand(drive, trajectory3)
 //                                    .alongWith(grabToPreHang(lift, liftClaw))
