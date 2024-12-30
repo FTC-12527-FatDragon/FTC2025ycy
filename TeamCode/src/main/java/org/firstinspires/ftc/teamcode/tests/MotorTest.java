@@ -21,7 +21,7 @@ public class MotorTest extends LinearOpMode {
   public static boolean read_only = false;
   public static boolean reverse_0 = false;
   public static boolean reset = true;
-  public static boolean set_power_mode_or_set_position_mode = false;
+  public static boolean set_power_mode = true;
   public static String motor_name_0 = "leftFrontMotor";
 
   @Override
@@ -39,7 +39,7 @@ public class MotorTest extends LinearOpMode {
     }
 
     while (opModeIsActive()) {
-      if (set_power_mode_or_set_position_mode) {
+      if (set_power_mode) {
         if (read_only) {
           motor0.setPower(0);
         } else {

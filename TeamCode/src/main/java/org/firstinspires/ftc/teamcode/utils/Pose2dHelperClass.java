@@ -1,7 +1,6 @@
 package org.firstinspires.ftc.teamcode.utils;
 
 import com.acmerobotics.roadrunner.geometry.Pose2d;
-
 import lombok.Getter;
 
 public class Pose2dHelperClass extends Translation2dHelperClass {

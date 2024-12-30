@@ -28,6 +28,7 @@ public class ServoTest extends LinearOpMode {
 
   private boolean prevVal = false;
   private boolean shouldStop = false;
+  private ServoPWMControl controller;
 
   @Override
   public void runOpMode() {
@@ -61,7 +62,11 @@ public class ServoTest extends LinearOpMode {
         servo0.setPosition(0.5);
         // servo1.setPosition(0.5);
       }
-
+      if (shouldStop) {
+        controller.setStatus(false);
+      } else {
+        controller.setStatus(true);
+      }
       // telemetry_M.addData("Magnetic Triggered", upperMagnetic.isPressed());
       telemetry_M.update();
     }

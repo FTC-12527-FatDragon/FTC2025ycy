@@ -4,7 +4,7 @@ import com.arcrobotics.ftclib.command.button.Button;
 import java.util.function.BooleanSupplier;
 
 public class FunctionalButton extends Button {
-  private BooleanSupplier booleanSupplier;
+  private final BooleanSupplier booleanSupplier;
 
   public FunctionalButton(BooleanSupplier supplier) {
     booleanSupplier = supplier;
