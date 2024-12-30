@@ -19,7 +19,7 @@ import org.firstinspires.ftc.teamcode.opmodes.autos.AutoCommand;
 import org.firstinspires.ftc.teamcode.subsystems.AlphaLift;
 import org.firstinspires.ftc.teamcode.subsystems.AlphaLiftClaw;
 import org.firstinspires.ftc.teamcode.subsystems.AlphaSlide;
-import org.firstinspires.ftc.teamcode.subsystems.drivetrain.MecanumDrive;
+import org.firstinspires.ftc.teamcode.subsystems.drivetrain.SampleMecanumDrive;
 import org.firstinspires.ftc.teamcode.utils.FunctionalButton;
 
 @TeleOp(name = "AlphaYCYTeleop")
@@ -28,7 +28,7 @@ public class AlphaCar extends CommandOpMode {
   private AlphaLift lift;
   private AlphaLiftClaw liftClaw;
   private AlphaSlide slide;
-  private MecanumDrive drive;
+  private SampleMecanumDrive drive;
 
   private boolean isPureHandoffComplete = false;
   private boolean isHangComplete = false;
@@ -40,7 +40,7 @@ public class AlphaCar extends CommandOpMode {
     lift = new AlphaLift(hardwareMap, telemetry);
     liftClaw = new AlphaLiftClaw(hardwareMap, telemetry);
     slide = new AlphaSlide(hardwareMap, telemetry);
-    drive = new MecanumDrive(hardwareMap);
+    drive = new SampleMecanumDrive(hardwareMap);
 
     slide.initialize();
     liftClaw.initialize();

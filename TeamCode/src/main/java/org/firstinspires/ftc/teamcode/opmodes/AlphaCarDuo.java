@@ -21,7 +21,8 @@ import org.firstinspires.ftc.teamcode.subsystems.AlphaSlide;
 import org.firstinspires.ftc.teamcode.subsystems.drivetrain.MecanumDrive;
 import org.firstinspires.ftc.teamcode.utils.FunctionalButton;
 
-@TeleOp(name = "AlphaDuoTeleop")
+@Deprecated
+//@TeleOp(name = "AlphaDuoTeleop")
 public class AlphaCarDuo extends CommandOpMode {
     private GamepadEx gamepadEx1, gamepadEx2;
     private AlphaLift lift;
@@ -46,14 +47,14 @@ public class AlphaCarDuo extends CommandOpMode {
         liftClaw.initialize();
 
         // Teleop Drive Command
-        drive.setDefaultCommand(
-                new TeleopDriveCommand(
-                        drive,
-                        () -> -gamepadEx1.getLeftY(),
-                        () -> -gamepadEx1.getLeftX(),
-                        () -> gamepadEx1.getRightX(),
-                        () -> gamepadEx1.getButton(GamepadKeys.Button.LEFT_STICK_BUTTON),
-                        () -> gamepadEx1.getButton(GamepadKeys.Button.START)));
+//        drive.setDefaultCommand(
+//                new TeleopDriveCommand(
+//                        drive,
+//                        () -> -gamepadEx1.getLeftY(),
+//                        () -> -gamepadEx1.getLeftX(),
+//                        () -> gamepadEx1.getRightX(),
+//                        () -> gamepadEx1.getButton(GamepadKeys.Button.LEFT_STICK_BUTTON),
+//                        () -> gamepadEx1.getButton(GamepadKeys.Button.START)));
 
         // Basket Up Command
         gamepadEx2

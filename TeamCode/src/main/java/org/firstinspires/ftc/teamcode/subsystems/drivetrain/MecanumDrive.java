@@ -12,6 +12,7 @@ import org.firstinspires.ftc.teamcode.lib.Units;
 import org.firstinspires.ftc.teamcode.lib.gobilda.GoBildaPinpointDriver;
 
 @Config
+@Deprecated
 public class MecanumDrive extends SubsystemBase {
   private final DcMotor leftFrontMotor, leftBackMotor, rightFrontMotor, rightBackMotor;
   private final GoBildaPinpointDriver od;
