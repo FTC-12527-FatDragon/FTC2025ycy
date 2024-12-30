@@ -16,6 +16,7 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.CurrentUnit;
 import org.firstinspires.ftc.teamcode.utils.MathUtils;
 
+@Deprecated
 public class AlphaLift extends SubsystemBase {
   private final double kP = 0.005, kI = 0.0, kD = 0.0, kG = 0.0;
   private final PIDController pidController;
