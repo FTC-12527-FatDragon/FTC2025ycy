@@ -160,27 +160,26 @@ public class Chamber1Plus3 extends LinearOpMode {
 
 
 
+//    TrajectorySequence trajectory0 = drive.trajectorySequenceBuilder(new Pose2d(24.43, -64.95, Math.toRadians(90.00)))
+//            .lineTo(new Vector2d(5.8, -30.74))
+//            .build(); // 1+0
+
+
+//    TrajectorySequence trajectory1 = drive.trajectorySequenceBuilder(trajectory0.end())
+//            .lineToConstantHeading(new Vector2d(25.71, -39.80))
+////            .splineToConstantHeading(new Vector2d(33, -28), Math.toRadians(75.96))
+//            .splineToSplineHeading(new Pose2d(47.49, -8.73, Math.toRadians(90.00)), Math.toRadians(-90.00))
+//            .lineToSplineHeading(new Pose2d(47.33, yBottom, Math.toRadians(90.00)))
+//            .splineToSplineHeading(new Pose2d(53.58, -8.73, Math.toRadians(90.00)), Math.toRadians(77.37))
+//            .lineToSplineHeading(new Pose2d(54.54, yBottom, Math.toRadians(90.00)))
+//            .build(); //
+
     TrajectorySequence trajectory0 = drive.trajectorySequenceBuilder(new Pose2d(24.43, -64.95, Math.toRadians(90.00)))
-            .lineTo(new Vector2d(5.8, -30.74))
-            .build(); // 1+0
-
-
-    TrajectorySequence trajectory1 = drive.trajectorySequenceBuilder(trajectory0.end())
-            .lineToConstantHeading(new Vector2d(25.71, -39.80))
-//            .splineToConstantHeading(new Vector2d(33, -28), Math.toRadians(75.96))
-            .splineToSplineHeading(new Pose2d(47.49, -8.73, Math.toRadians(90.00)), Math.toRadians(-90.00))
-            .lineToSplineHeading(new Pose2d(47.33, yBottom, Math.toRadians(90.00)))
-            .splineToSplineHeading(new Pose2d(53.58, -8.73, Math.toRadians(90.00)), Math.toRadians(77.37))
-            .lineToSplineHeading(new Pose2d(54.54, yBottom, Math.toRadians(90.00)))
-            .build(); //
-
-    TrajectorySequence trajectory11 = drive.trajectorySequenceBuilder(trajectory0.end())
-            .lineToSplineHeading(new Pose2d(32.44, -44.45, Math.toRadians(90.00)))
-            .splineToConstantHeading(new Vector2d(48.29, -15.94), Math.toRadians(0.00))
-            .lineToSplineHeading(new Pose2d(48.13, -54.70, Math.toRadians(90.00)))
-            .lineToSplineHeading(new Pose2d(48.13, -35.00, Math.toRadians(90.00)))
-            .splineToConstantHeading(new Vector2d(56.62, -16.10), Math.toRadians(0.00))
-            .lineToSplineHeading(new Pose2d(56.62, -54.54, Math.toRadians(90.00)))
+            .splineToConstantHeading(new Vector2d(32.92, -34.84), Math.toRadians(41.66))
+            .splineToSplineHeading(new Pose2d(46.85, -15.46, Math.toRadians(90.00)), Math.toRadians(0.00))
+            .lineToConstantHeading(new Vector2d(46.53, -56.30))
+            .splineToSplineHeading(new Pose2d(58.06, -15.78, Math.toRadians(90.00)), Math.toRadians(0.00))
+            .lineToConstantHeading(new Vector2d(58.22, -56.30))
             .build();
 
 
@@ -188,11 +187,14 @@ public class Chamber1Plus3 extends LinearOpMode {
 
 
 
-    TrajectorySequence trajectory2 = drive.trajectorySequenceBuilder(trajectory1.end())
+
+
+
+    TrajectorySequence trajectory1 = drive.trajectorySequenceBuilder(trajectory0.end())
             .lineToSplineHeading(new Pose2d(36.60, -60.31, Math.toRadians(90.00)))
             .build(); // push end to grab
 
-    TrajectorySequence trajectory3 = drive.trajectorySequenceBuilder(trajectory2.end())
+    TrajectorySequence trajectory2 = drive.trajectorySequenceBuilder(trajectory1.end())
             .lineToSplineHeading(new Pose2d(6.49, -30.74, Math.toRadians(90.00)))
             .build(); // grab to chamber
 
@@ -214,8 +216,7 @@ public class Chamber1Plus3 extends LinearOpMode {
 //                                    .andThen(new WaitCommand(500))
 //                                    .andThen(chamberToGrab(lift, liftClaw))
                             ,
-                            new AutoDriveCommand(drive, trajectory11)
-                            ,
+                            new AutoDriveCommand(drive, trajectory1),
                             new AutoDriveCommand(drive, trajectory2)
 //                                    .andThen(new InstantCommand(liftClaw::closeClaw))
 //                            ,
