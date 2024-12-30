@@ -10,23 +10,20 @@ import lombok.experimental.ExtensionMethod;
 import org.firstinspires.ftc.teamcode.lib.GeomUtil;
 import org.firstinspires.ftc.teamcode.lib.gobilda.GoBildaPinpointDriver;
 import org.firstinspires.ftc.teamcode.subsystems.drivetrain.DriveConstants;
+import org.firstinspires.ftc.teamcode.utils.Translation2dHelperClass;
 
 @ExtensionMethod({GeomUtil.class})
 public class GoBildaLocalizer implements Localizer {
   private final GoBildaPinpointDriver odometry;
 
   public GoBildaLocalizer(
-      final HardwareMap hardwareMap, final DriveConstants.Translation2dHelperClass mountOffsets) {
+      final HardwareMap hardwareMap, final Translation2dHelperClass mountOffsets) {
     odometry = hardwareMap.get(GoBildaPinpointDriver.class, "od");
     odometry.setEncoderDirections(
         DriveConstants.GoBildaXLocalizerDirection, DriveConstants.GoBildaYLocalizerDirection);
     odometry.setEncoderResolution(DriveConstants.GoBildaLocalizerEncoderResolution);
     odometry.setOffsets(mountOffsets.getX(), mountOffsets.getY());
     odometry.resetPosAndIMU();
-  }
-
-  public Translation2d getWheelOffsets() {
-    return new Translation2d(odometry.getXOffset(), odometry.getYOffset());
   }
 
   @NonNull

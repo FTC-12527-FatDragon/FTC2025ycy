@@ -18,6 +18,7 @@ import org.firstinspires.ftc.teamcode.lib.roadrunner.trajectorysequence.Trajecto
 import org.firstinspires.ftc.teamcode.subsystems.AlphaLift;
 import org.firstinspires.ftc.teamcode.subsystems.AlphaLiftClaw;
 import org.firstinspires.ftc.teamcode.subsystems.AlphaSlide;
+import org.firstinspires.ftc.teamcode.subsystems.Lift;
 import org.firstinspires.ftc.teamcode.subsystems.drivetrain.SampleMecanumDrive;
 import org.firstinspires.ftc.teamcode.subsystems.drivetrain.TrajectoryManager;
 
@@ -65,7 +66,7 @@ public class Chamber1Plus3 extends LinearOpMode {
 //  public static double headingAscent = 0;
 //
   AlphaLiftClaw liftClaw;
-  AlphaLift lift;
+  Lift lift;
   AlphaSlide slide;
 
 //  Pose2d chamberPose = new Pose2d(xChamber, yChamber, Math.toRadians(headingChamber));
@@ -150,7 +151,7 @@ public class Chamber1Plus3 extends LinearOpMode {
     CommandScheduler.getInstance().reset();
 
     // Subsystems Initialized
-    lift = new AlphaLift(hardwareMap, telemetry);
+    lift = new Lift(hardwareMap, telemetry);
     liftClaw = new AlphaLiftClaw(hardwareMap, telemetry);
     slide = new AlphaSlide(hardwareMap, telemetry);
 

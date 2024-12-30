@@ -32,13 +32,13 @@ public class LocalizationTest extends LinearOpMode {
     telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
 
     SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
+    drive.setPoseEstimate(new Pose2d(54, -54));
 
     drive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
     waitForStart();
 
     while (opModeIsActive()) {
-      telemetry.addData("Localizer position", drive.getOd().getWheelOffsets());
       drive.setFieldRelativeDrivePower(
           new Pose2d(-gamepad1.left_stick_y, -gamepad1.left_stick_x, -gamepad1.right_stick_x));
       if (gamepad1.dpad_left) {
