@@ -37,6 +37,7 @@ public class ServoTest extends LinearOpMode {
     if (servo_encoder_name != "") {
       encoder0 = hardwareMap.get(AnalogInput.class, servo_encoder_name);
     }
+    controller = new ServoPWMControl(servo0);
     // servo1 = hardwareMap.get(Servo.class, servo_name2);
     // upperMagnetic = hardwareMap.get(TouchSensor.class, "upperMagnetic");
     if (reverse) {

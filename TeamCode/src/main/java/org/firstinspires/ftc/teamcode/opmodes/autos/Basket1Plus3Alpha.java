@@ -56,7 +56,7 @@ public class Basket1Plus3Alpha extends LinearOpMode {
   public static double heading5 = 0;
 
   AlphaLiftClaw liftClaw;
-  AlphaLift lift;
+  Lift lift;
   AlphaSlide slide;
 
   Pose2d startPose = new Pose2d(0, 0, Math.toRadians(0));
@@ -114,7 +114,7 @@ public class Basket1Plus3Alpha extends LinearOpMode {
     CommandScheduler.getInstance().reset();
 
     // Subsystems Initialized
-    lift = new AlphaLift(hardwareMap, telemetry);
+    lift = new Lift(hardwareMap, telemetry);
     liftClaw = new AlphaLiftClaw(hardwareMap, telemetry);
     slide = new AlphaSlide(hardwareMap, telemetry);
 

@@ -8,7 +8,6 @@ import com.arcrobotics.ftclib.command.WaitCommand;
 import com.arcrobotics.ftclib.command.WaitUntilCommand;
 
 import org.firstinspires.ftc.teamcode.commands.AutoDriveCommand;
-import org.firstinspires.ftc.teamcode.subsystems.AlphaLift;
 import org.firstinspires.ftc.teamcode.subsystems.AlphaLiftClaw;
 import org.firstinspires.ftc.teamcode.subsystems.AlphaSlide;
 import org.firstinspires.ftc.teamcode.subsystems.Lift;
@@ -17,20 +16,20 @@ import org.firstinspires.ftc.teamcode.subsystems.SlideSuperStucture;
 
 @Deprecated
 public class AlphaAutoCommand {
-    public static Command alphaUpLiftToBasket(AlphaLift lift, AlphaLiftClaw liftClaw) {
+    public static Command alphaUpLiftToBasket(Lift lift, AlphaLiftClaw liftClaw) {
         return new ParallelCommandGroup(
-                new InstantCommand(() -> lift.setGoal(AlphaLift.Goal.BASKET)),
+                new InstantCommand(() -> lift.setGoal(Lift.Goal.BASKET)),
                 new WaitUntilCommand(() -> lift.getCurrentPosition() > 400)
                         .andThen(new InstantCommand(liftClaw::upLiftArm)));
     }
 
-    public static Command alphaStowArmFromBasket(AlphaLift lift, AlphaLiftClaw liftClaw) {
+    public static Command alphaStowArmFromBasket(Lift lift, AlphaLiftClaw liftClaw) {
         return new SequentialCommandGroup(
                 new InstantCommand(liftClaw::openClaw),
                 new WaitCommand(100),
                 new InstantCommand(liftClaw::foldLiftArm),
                 new WaitCommand(200),
-                new InstantCommand(() -> lift.setGoal(AlphaLift.Goal.STOW)));
+                new InstantCommand(() -> lift.setGoal(Lift.Goal.STOW)));
     }
 
     public static Command alphaHandoff(AlphaSlide slide, AlphaLiftClaw liftClaw) {
@@ -43,28 +42,28 @@ public class AlphaAutoCommand {
                 .andThen(new InstantCommand(slide::openIntakeClaw));
     }
 
-    public static Command alphaUpLiftToChamber(AlphaLift lift, AlphaLiftClaw liftClaw) {
-        return new InstantCommand(() -> lift.setGoal(AlphaLift.Goal.PRE_HANG))
+    public static Command alphaUpLiftToChamber(Lift lift, AlphaLiftClaw liftClaw) {
+        return new InstantCommand(() -> lift.setGoal(Lift.Goal.PRE_HANG))
                 .alongWith(new InstantCommand(liftClaw::chamberWrist))
                 .andThen(new InstantCommand(liftClaw::chamberLiftArm));
     }
 
-    public static Command alphaHangAndStowLift(AlphaLift lift, AlphaLiftClaw liftClaw, AlphaSlide slide) {
+    public static Command alphaHangAndStowLift(Lift lift, AlphaLiftClaw liftClaw, AlphaSlide slide) {
         return new SequentialCommandGroup(
                 new InstantCommand(liftClaw::openClaw),
                 new WaitCommand(300),
                 new InstantCommand(liftClaw::foldLiftArm),
                 new WaitCommand(500),
-                new InstantCommand(() -> lift.setGoal(AlphaLift.Goal.STOW)));
+                new InstantCommand(() -> lift.setGoal(Lift.Goal.STOW)));
     }
 
-    public static Command hangAndStowLift(AlphaLift lift, AlphaLiftClaw liftClaw) {
+    public static Command hangAndStowLift(Lift lift, AlphaLiftClaw liftClaw) {
         return new SequentialCommandGroup(
-                new InstantCommand(() -> lift.setGoal(AlphaLift.Goal.HANG)),
+                new InstantCommand(() -> lift.setGoal(Lift.Goal.HANG)),
                 new WaitCommand(200),
         new InstantCommand(liftClaw::openClaw)
                 .andThen(new InstantCommand(liftClaw::foldLiftArm))
                 .alongWith(new InstantCommand(liftClaw::basketWrist))
-                .andThen(new InstantCommand(() -> lift.setGoal(AlphaLift.Goal.STOW))));
+                .andThen(new InstantCommand(() -> lift.setGoal(Lift.Goal.STOW))));
     }
 }

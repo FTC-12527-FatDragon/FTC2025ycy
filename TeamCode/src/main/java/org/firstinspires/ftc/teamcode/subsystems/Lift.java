@@ -13,6 +13,7 @@ import java.util.concurrent.TimeUnit;
 import lombok.Getter;
 import lombok.Setter;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.firstinspires.ftc.teamcode.utils.EmptyMotor;
 import org.firstinspires.ftc.teamcode.utils.MathUtils;
 
 @Config
@@ -20,7 +21,7 @@ public class Lift extends MotorPIDSlideSubsystem {
   public static double kP = 0.008, kI = 0.0, kD = 0.0, kV = 0.0003, kS = 0.12, kG = 0.12;
   private final PIDController pidController;
   private final Motor liftMotorUp;
-  private final Motor liftMotorDown;
+  private final Motor liftMotorDown = new EmptyMotor();
 
   private double lastSetpoint = 0;
 
@@ -44,8 +45,8 @@ public class Lift extends MotorPIDSlideSubsystem {
   @Getter @Setter private Goal goal = Goal.STOW;
 
   public Lift(final HardwareMap hardwareMap, Telemetry telemetry) {
-    liftMotorUp = new Motor(hardwareMap, "liftMotorUp");
-    liftMotorDown = new Motor(hardwareMap, "liftMotorDown");
+    liftMotorUp = new Motor(hardwareMap, "liftMotor");
+//    liftMotorDown = new Motor(hardwareMap, "liftMotor");// Motor(hardwareMap, "liftMotorDown");
     liftMotorUp.stopAndResetEncoder();
     liftMotorDown.stopAndResetEncoder();
     liftMotorUp.setRunMode(Motor.RunMode.RawPower);
@@ -145,10 +146,11 @@ public class Lift extends MotorPIDSlideSubsystem {
   }
 
   public enum Goal {
-    BASKET(770.0),
-    STOW(0.0),
-    PRE_HANG(144.0),
-    HANG(0),
+    BASKET(1650.0),
+    STOW(10.0),
+    PRE_HANG(620.0),
+    HANG(1080.0),
+    GRAB(0),
     OPEN_LOOP(0.0);
 
     private final double setpointTicks;

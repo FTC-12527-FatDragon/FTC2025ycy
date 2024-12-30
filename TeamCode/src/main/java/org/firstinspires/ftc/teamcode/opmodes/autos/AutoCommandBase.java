@@ -23,10 +23,15 @@ import org.firstinspires.ftc.teamcode.subsystems.LiftClaw;
 import org.firstinspires.ftc.teamcode.subsystems.SlideSuperStucture;
 import org.firstinspires.ftc.teamcode.subsystems.drivetrain.SampleMecanumDrive;
 
+// spotless:off
 /**
- * Layout: Field Coordinate: +-----+-----+-----+-----+-----+-----^ x | 0 | 1 | 2 | 3 | 4 | 5 |
- * <-----+-----+-----+-----+-----+-----+ CCW+ y O Robot Coordinate:
- *
+ * Layout:
+ * Field Coordinate:
+ * +-----+-----+-----+-----+-----+-----^ x
+ * |  0  |  1  |  2  |  3  |  4  |  5  |
+ * <-----+-----+-----+-----+-----+-----+ CCW+
+ * y                                    O
+ * Robot Coordinate:
  * <p>Center
  */
 @Config
