@@ -11,6 +11,7 @@ import static org.firstinspires.ftc.teamcode.subsystems.drivetrain.DriveConstant
 import static org.firstinspires.ftc.teamcode.subsystems.drivetrain.DriveConstants.kA;
 import static org.firstinspires.ftc.teamcode.subsystems.drivetrain.DriveConstants.kStatic;
 import static org.firstinspires.ftc.teamcode.subsystems.drivetrain.DriveConstants.kV;
+import static org.firstinspires.ftc.teamcode.subsystems.drivetrain.DriveConstants.isReflected;
 
 import androidx.annotation.NonNull;
 import com.acmerobotics.dashboard.config.Config;
@@ -115,10 +116,18 @@ public class SampleMecanumDrive extends MecanumDrive implements Subsystem {
     leftRear = hardwareMap.get(DcMotorEx.class, "leftBackMotor");
     rightRear = hardwareMap.get(DcMotorEx.class, "rightBackMotor");
     rightFront = hardwareMap.get(DcMotorEx.class, "rightFrontMotor");
-    leftFront.setDirection(DcMotorSimple.Direction.FORWARD);
-    leftRear.setDirection(DcMotorSimple.Direction.FORWARD);
-    rightFront.setDirection(DcMotorSimple.Direction.REVERSE);
-    rightRear.setDirection(DcMotorSimple.Direction.REVERSE);
+    if (isReflected) {
+      leftFront.setDirection(DcMotorSimple.Direction.FORWARD);
+      leftRear.setDirection(DcMotorSimple.Direction.FORWARD);
+      rightFront.setDirection(DcMotorSimple.Direction.REVERSE);
+      rightRear.setDirection(DcMotorSimple.Direction.REVERSE);
+    } else {
+      leftFront.setDirection(DcMotorSimple.Direction.REVERSE);
+      leftRear.setDirection(DcMotorSimple.Direction.REVERSE);
+      rightFront.setDirection(DcMotorSimple.Direction.FORWARD);
+      rightRear.setDirection(DcMotorSimple.Direction.FORWARD);
+    }
+
 
     motors = Arrays.asList(leftFront, leftRear, rightRear, rightFront);
 

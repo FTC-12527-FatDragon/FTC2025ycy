@@ -108,6 +108,7 @@ public class DriveConstants {
   public static GoBildaPinpointDriver.EncoderDirection GoBildaYLocalizerDirection;
   public static GoBildaPinpointDriver.GoBildaOdometryPods GoBildaLocalizerEncoderResolution;
   public static Translation2dHelperClass GoBildaLocalizerPerpendicularOffset;
+  public static boolean isReflected = false;
 
   static {
     switch (currentRobot) {
@@ -149,6 +150,7 @@ public class DriveConstants {
         kStatic = 0.065;
         MAX_VEL = 51.064485597344834;
         MAX_ANG_VEL = Math.toRadians(143.51011005498376);
+        isReflected = true;
         break;
       default:
         RobotLog.ee(
