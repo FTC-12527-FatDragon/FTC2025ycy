@@ -11,6 +11,11 @@ public class Pose2dHelperClass extends Translation2dHelperClass {
     this.HeadingDeg = headingdeg;
   }
 
+  public Pose2dHelperClass(Translation2dHelperClass tran, double headingdeg){
+    super(tran);
+    this.HeadingDeg = headingdeg;
+  }
+
   public Pose2dHelperClass() {
     this(0, 0, 0);
   }

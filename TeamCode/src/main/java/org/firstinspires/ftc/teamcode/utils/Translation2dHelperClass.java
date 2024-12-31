@@ -12,6 +12,11 @@ public class Translation2dHelperClass {
     this.Y = y;
   }
 
+  public Translation2dHelperClass(Translation2dHelperClass other){
+    this.X = other.X;
+    this.Y = other.Y;
+  }
+
   public Translation2d toTranslation2d() {
     return new Translation2d(X, Y);
   }
