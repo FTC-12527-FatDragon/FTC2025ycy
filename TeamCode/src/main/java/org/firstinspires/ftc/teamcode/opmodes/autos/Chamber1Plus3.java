@@ -264,7 +264,7 @@ public class Chamber1Plus3 extends LinearOpMode {
                 initialize(liftClaw, slide),
                 new InstantCommand(() -> drive.setPoseEstimate(startToChamber.start())),
                 new AutoDriveCommand(drive, startToChamber)
-                    .alongWith(grabToPreHang(lift, liftClaw).andThen(new WaitCommand(300)))
+                    .alongWith(grabToPreHang(lift, liftClaw))
                     .andThen(upToChamber(lift)),
 
                     stowArmFromBasket(lift, liftClaw),
