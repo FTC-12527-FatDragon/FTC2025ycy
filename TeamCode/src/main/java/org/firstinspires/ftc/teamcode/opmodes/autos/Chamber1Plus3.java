@@ -1,9 +1,6 @@
 package org.firstinspires.ftc.teamcode.opmodes.autos;
 
 import static org.firstinspires.ftc.teamcode.opmodes.autos.AutoCommand.*;
-import static org.firstinspires.ftc.teamcode.subsystems.drivetrain.DriveConstants.MAX_ANG_VEL;
-import static org.firstinspires.ftc.teamcode.subsystems.drivetrain.DriveConstants.TRACK_WIDTH;
-import static org.firstinspires.ftc.teamcode.subsystems.drivetrain.SampleMecanumDrive.getVelocityConstraint;
 
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
@@ -21,7 +18,6 @@ import org.firstinspires.ftc.teamcode.subsystems.AlphaSlide;
 import org.firstinspires.ftc.teamcode.subsystems.Lift;
 import org.firstinspires.ftc.teamcode.subsystems.drivetrain.SampleMecanumDrive;
 import org.firstinspires.ftc.teamcode.utils.Pose2dHelperClass;
-
 
 @Config
 @Autonomous(name = "Chamber 1+3", group = "Autos")
@@ -210,18 +206,16 @@ public class Chamber1Plus3 extends LinearOpMode {
     ////            .lineToLinearHeading(new Pose2d(64.15, -56.31, Math.toRadians(180.00)))
     //            .build(); // push 2 blocks
 
-    TrajectorySequence push2Blocks = drive.trajectorySequenceBuilder(chamber.toPose2d())
-            .lineToConstantHeading(new Vector2d(24, -48))
-            .splineToConstantHeading(new Vector2d(36.69, -27.46), Math.toRadians(90.00))
-            .splineToConstantHeading(new Vector2d(47.77, -14.92), Math.toRadians(-90.00))
-            .lineToLinearHeading(new Pose2d(48.46, -53, Math.toRadians(90.00)), getVelocityConstraint(40, MAX_ANG_VEL, TRACK_WIDTH), SampleMecanumDrive.getACCEL_CONSTRAINT())
-            .splineToConstantHeading(new Vector2d(58.15, -15.31), Math.toRadians(-45.00))
-            .lineToLinearHeading(new Pose2d(59.08, -53, Math.toRadians(90.00)),
-                    getVelocityConstraint(50, MAX_ANG_VEL, TRACK_WIDTH),
-                    SampleMecanumDrive.getACCEL_CONSTRAINT())
-            //            .splineToSplineHeading(new Pose2d(64.15, -14.54, Math.toRadians(180.00)),Math.toRadians(0.00))
-            //            .lineToLinearHeading(new Pose2d(64.15, -56.31, Math.toRadians(180.00)))
-            .build(); // push 2 blocksor2d(64.79, -13.37), Math.toRadians(0.00))
+    TrajectorySequence push2Blocks =
+        drive
+            .trajectorySequenceBuilder(chamber.toPose2d())
+            .lineToConstantHeading(new Vector2d(15.94, -49.58))
+            .splineToConstantHeading(new Vector2d(36.76, -25.71), Math.toRadians(90.00))
+            .splineToConstantHeading(new Vector2d(44.29, -13.54), Math.toRadians(0.00))
+            .lineToConstantHeading(new Vector2d(44.61, -57.10))
+            .splineToConstantHeading(new Vector2d(55.66, -13.05), Math.toRadians(0.00))
+            .splineToConstantHeading(new Vector2d(64.79, -13.37), Math.toRadians(0.00))
+            .build(); // push 2 blocks
 
     TrajectorySequence pushToGrab =
         drive
@@ -254,7 +248,7 @@ public class Chamber1Plus3 extends LinearOpMode {
 
     TrajectorySequence chamberToGrab =
         drive
-            .trajectorySequenceBuilder(chamber3.toPose2d())
+            .trajectorySequenceBuilder(chamber.toPose2d())
             .lineToConstantHeading(new Vector2d(36.60, -60.31))
             .build(); // chamber to grab
 
@@ -345,7 +339,7 @@ public class Chamber1Plus3 extends LinearOpMode {
 
     while (opModeIsActive() && !isStopRequested()) {
       CommandScheduler.getInstance().run();
-      lift.periodicTest();
+//      lift.periodicTest();
     }
   }
 }
