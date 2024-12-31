@@ -148,7 +148,7 @@ public class Chamber1Plus3 extends LinearOpMode {
   //          .build();
   //  public static double grabX = 36.60;
   //  public static double grabY = -60.31;
-  public static Pose2dHelperClass grab = new Pose2dHelperClass(36.60, -60.31, 90.00);
+  public static Pose2dHelperClass grab = new Pose2dHelperClass(34.97, -58.51, 90.00);
 
   //  public static double chamberX = 6.49;
   //  public static double chamberY = -30.74;
@@ -159,6 +159,8 @@ public class Chamber1Plus3 extends LinearOpMode {
       new Pose2dHelperClass(chamber.X - gap * 2, chamber.Y, 90.00);
   public static Pose2dHelperClass chamber3 =
       new Pose2dHelperClass(chamber.X - gap * 3, chamber.Y, 90.00);
+  public static Pose2dHelperClass chamber4 =
+          new Pose2dHelperClass(chamber.X - gap * 4, chamber.Y, 90.00);
 
   //  public static double startX = 24.43;
   //  public static double startY = -64.95;
@@ -194,10 +196,10 @@ public class Chamber1Plus3 extends LinearOpMode {
     //            .build(); //
 
     TrajectorySequence push2Blocks = drive.trajectorySequenceBuilder(new Pose2d(1.37, -49.37, Math.toRadians(90.00)))
-            .splineToConstantHeading(new Vector2d(35.66, -31.54), Math.toRadians(90.00))
-            .splineToConstantHeading(new Vector2d(48.69, -12.11), Math.toRadians(-90.00))
+            .splineToSplineHeading(new Pose2d(34.62, -27.69, Math.toRadians(90.00)), Math.toRadians(90.00))
+            .splineToConstantHeading(new Vector2d(44.57, -11.43), Math.toRadians(-70.00))
             .lineToLinearHeading(new Pose2d(48.46, -53, Math.toRadians(90.00)), getVelocityConstraint(45, MAX_ANG_VEL, TRACK_WIDTH), SampleMecanumDrive.getACCEL_CONSTRAINT())
-            .splineToConstantHeading(new Vector2d(59.20, -18.74), Math.toRadians(-45.00))
+            .splineToConstantHeading(new Vector2d(58.51, -12.34), Math.toRadians(-45.00))
             .lineToLinearHeading(new Pose2d(59.08, -53, Math.toRadians(90.00)), getVelocityConstraint(50, MAX_ANG_VEL, TRACK_WIDTH), SampleMecanumDrive.getACCEL_CONSTRAINT())
 //            .splineToSplineHeading(new Pose2d(64.15, -14.54, Math.toRadians(180.00)), Math.toRadians(0.00))
 //            .lineToLinearHeading(new Pose2d(64.15, -56.31, Math.toRadians(180.00)))
@@ -242,10 +244,16 @@ public class Chamber1Plus3 extends LinearOpMode {
                     .lineToSplineHeading(chamber3.toPose2d())
                     .build(); // grab to chamber3
 
+    TrajectorySequence grabToChamber4 =
+            drive
+                    .trajectorySequenceBuilder(grab.toPose2d())
+                    .lineToSplineHeading(chamber4.toPose2d())
+                    .build();
+
 
     TrajectorySequence chamberToGrab =
         drive
-            .trajectorySequenceBuilder(chamber.toPose2d())
+            .trajectorySequenceBuilder(chamber3.toPose2d())
             .lineToConstantHeading(new Vector2d(36.60, -60.31))
             .build(); // chamber to grab
 
@@ -271,29 +279,37 @@ public class Chamber1Plus3 extends LinearOpMode {
 
                 new AutoDriveCommand(drive, push2Blocks),
 
-                new AutoDriveCommand(drive, pushToGrab),
-                    chamberToGrab(lift, liftClaw),
+                new AutoDriveCommand(drive, pushToGrab).alongWith(chamberToGrab(lift, liftClaw)),
                     liftClaw.closeClawCommand(),
 
                 new AutoDriveCommand(drive, grabToChamber1)
-                    .andThen(grabToPreHang(lift, liftClaw))
-                    .andThen(upToChamber(lift)),
+                    .alongWith(grabToPreHang(lift, liftClaw).andThen(new WaitCommand(100))),
+                upToChamber(lift),
+                chamberToGrab(lift, liftClaw),
 
                 new AutoDriveCommand(drive, chamberToGrab)
                         .alongWith(chamberToGrab(lift, liftClaw))
                         .andThen(liftClaw.closeClawCommand()),
                 new AutoDriveCommand(drive, grabToChamber2)
-                        .andThen(grabToPreHang(lift, liftClaw))
-                        .andThen(upToChamber(lift)),
+                        .andThen(grabToPreHang(lift, liftClaw)).andThen(new WaitCommand(100)),
+                upToChamber(lift),
+                chamberToGrab(lift, liftClaw),
 
                 new AutoDriveCommand(drive, chamberToGrab)
                         .alongWith(chamberToGrab(lift, liftClaw))
                         .andThen(liftClaw.closeClawCommand()),
                 new AutoDriveCommand(drive, grabToChamber3)
-                        .andThen(grabToPreHang(lift, liftClaw))
-                        .andThen(upToChamber(lift)),
+                        .andThen(grabToPreHang(lift, liftClaw)).andThen(new WaitCommand(100)),
+                upToChamber(lift),
+                chamberToGrab(lift, liftClaw),
 
-                    new AutoDriveCommand(drive, chamberToGrab)
+                new AutoDriveCommand(drive, chamberToGrab)
+                        .alongWith(chamberToGrab(lift, liftClaw))
+                        .andThen(liftClaw.closeClawCommand()),
+                new AutoDriveCommand(drive, grabToChamber4)
+                        .andThen(grabToPreHang(lift, liftClaw)).andThen(new WaitCommand(100)),
+                upToChamber(lift),
+                chamberToGrab(lift, liftClaw)
 
                 //                                    .andThen(new
                 // InstantCommand(liftClaw::closeClaw))

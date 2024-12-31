@@ -38,11 +38,10 @@ public class AutoCommand {
   public static Command grabToPreHang(Lift lift, AlphaLiftClaw liftClaw) {
     return new SequentialCommandGroup(
         liftClaw.closeClawCommand(),
-        new InstantCommand(() -> lift.setGoal(Lift.Goal.PRE_HANG))
-            .alongWith(new InstantCommand(liftClaw::chamberWrist))
-            .andThen(new InstantCommand(liftClaw::chamberLiftArm),
-                    new WaitUntilCommand(lift::atGoal)
-    ));
+            new InstantCommand(liftClaw::chamberWrist)
+            .alongWith(new InstantCommand(liftClaw::chamberLiftArm).andThen(new WaitCommand(500))),
+            lift.setGoalCommand(Lift.Goal.PRE_HANG)
+    );
   }
 
   public static Command upToChamber(Lift lift) {
