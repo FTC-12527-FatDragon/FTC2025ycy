@@ -1,8 +1,8 @@
 package org.firstinspires.ftc.teamcode.opmodes.autos;
 
-import static org.firstinspires.ftc.teamcode.opmodes.autos.AlphaAutoCommand.alphaHandoff;
-import static org.firstinspires.ftc.teamcode.opmodes.autos.AlphaAutoCommand.alphaStowArmFromBasket;
-import static org.firstinspires.ftc.teamcode.opmodes.autos.AlphaAutoCommand.alphaUpLiftToBasket;
+import static org.firstinspires.ftc.teamcode.opmodes.autos.AutoCommand.handoff;
+import static org.firstinspires.ftc.teamcode.opmodes.autos.AutoCommand.stowArmFromBasket;
+import static org.firstinspires.ftc.teamcode.opmodes.autos.AutoCommand.upLiftToBasket;
 import static org.firstinspires.ftc.teamcode.opmodes.autos.AutoCommand.autoFinish;
 import static org.firstinspires.ftc.teamcode.opmodes.autos.AutoCommand.handoff;
 import static org.firstinspires.ftc.teamcode.opmodes.autos.AutoCommand.initialize;
@@ -126,26 +126,26 @@ public class Basket1Plus3Alpha extends LinearOpMode {
             new SequentialCommandGroup(
                 initialize(liftClaw, slide),
 
-                new AutoDriveCommand(drive, trajs1).alongWith(alphaUpLiftToBasket(lift, liftClaw)),
-                alphaStowArmFromBasket(lift, liftClaw),
+                new AutoDriveCommand(drive, trajs1).alongWith(upLiftToBasket(lift, liftClaw)),
+                    stowArmFromBasket(lift, liftClaw),
 
                 new AutoDriveCommand(drive, trajs2),
                 slide.grabCommand(),
                 new AutoDriveCommand(drive, trajs3)
-                    .alongWith(alphaHandoff(slide, liftClaw).andThen(alphaUpLiftToBasket(lift, liftClaw))),
-                alphaStowArmFromBasket(lift, liftClaw),
+                    .alongWith(handoff(slide, liftClaw).andThen(upLiftToBasket(lift, liftClaw))),
+                stowArmFromBasket(lift, liftClaw),
 
                 new AutoDriveCommand(drive, trajs4).alongWith(slide.aimCommand()),
                 slide.grabCommand(),
                 new AutoDriveCommand(drive, trajs5)
-                    .alongWith(alphaHandoff(slide, liftClaw).andThen(alphaUpLiftToBasket(lift, liftClaw))),
-                alphaStowArmFromBasket(lift, liftClaw),
+                    .alongWith(handoff(slide, liftClaw).andThen(upLiftToBasket(lift, liftClaw))),
+                    stowArmFromBasket(lift, liftClaw),
 
                 new AutoDriveCommand(drive, trajs6).alongWith(slide.aimCommand()),
                 slide.grabCommand(),
                 new AutoDriveCommand(drive, trajs7)
-                    .alongWith(alphaHandoff(slide, liftClaw).andThen(alphaUpLiftToBasket(lift, liftClaw))),
-                alphaStowArmFromBasket(lift, liftClaw),
+                    .alongWith(handoff(slide, liftClaw).andThen(upLiftToBasket(lift, liftClaw))),
+                    stowArmFromBasket(lift, liftClaw),
 
                 new AutoDriveCommand(drive, trajs8).alongWith(autoFinish(liftClaw, lift, slide))));
 

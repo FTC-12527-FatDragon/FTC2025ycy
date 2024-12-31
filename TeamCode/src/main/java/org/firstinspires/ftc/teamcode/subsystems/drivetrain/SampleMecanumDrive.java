@@ -48,6 +48,8 @@ import org.firstinspires.ftc.teamcode.lib.roadrunner.trajectorysequence.Trajecto
 import org.firstinspires.ftc.teamcode.lib.roadrunner.trajectorysequence.TrajectorySequenceRunner;
 import org.firstinspires.ftc.teamcode.lib.roadrunner.util.LynxModuleUtil;
 
+import lombok.Getter;
+
 /*
  * Simple mecanum drive hardware implementation for REV hardware.
  */
@@ -66,9 +68,10 @@ public class SampleMecanumDrive extends MecanumDrive implements Subsystem {
 
   private TrajectorySequenceRunner trajectorySequenceRunner;
 
+  @Getter
   private static final TrajectoryVelocityConstraint VEL_CONSTRAINT =
           getVelocityConstraint(MAX_VEL, MAX_ANG_VEL, TRACK_WIDTH);
-  private static final TrajectoryAccelerationConstraint ACCEL_CONSTRAINT =
+  @Getter private static final TrajectoryAccelerationConstraint ACCEL_CONSTRAINT =
           getAccelerationConstraint(MAX_ACCEL);
 
   private TrajectoryFollower follower;

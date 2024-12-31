@@ -1,7 +1,11 @@
 package org.firstinspires.ftc.teamcode.subsystems;
 
+import static org.firstinspires.ftc.teamcode.utils.ServoUtils.setServoPosCommand;
+
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
+import com.arcrobotics.ftclib.command.Command;
+import com.arcrobotics.ftclib.command.InstantCommand;
 import com.arcrobotics.ftclib.command.SubsystemBase;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
@@ -12,7 +16,6 @@ public class AlphaLiftClaw extends SubsystemBase {
   private final Servo liftClawServo;
   private final Servo liftWristServo;
   private final Telemetry telemetry;
-  private boolean isClawOpen = false;
 
   public AlphaLiftClaw(final HardwareMap hardwareMap, Telemetry telemetry) {
     liftArmServo = hardwareMap.get(Servo.class, "liftArmServo"); // 0.3 Up 0.7 Down
@@ -49,22 +52,24 @@ public class AlphaLiftClaw extends SubsystemBase {
     liftWristServo.setPosition(ServoPositions.CHAMBER.liftWristPosition);
   }
 
-  public void switchLiftClaw() {
-    if (!isClawOpen) {
-      openClaw();
+  public Command switchLiftClawCommand() {
+    if (liftClawServo.getPosition()!=ServoPositions.GRAB.liftClawPosition) {
+      return new InstantCommand(this::openClaw);
     } else {
-      closeClaw();
+      return closeClawCommand(0);
     }
   }
 
   public void openClaw() {
     liftClawServo.setPosition(ServoPositions.GRAB.liftClawPosition);
-    isClawOpen = true;
   }
 
-  public void closeClaw() {
-    liftClawServo.setPosition(ServoPositions.STOW.liftClawPosition);
-    isClawOpen = false;
+  public Command closeClawCommand(long delay) {
+    return setServoPosCommand(liftClawServo, ServoPositions.STOW.liftClawPosition, delay);
+  }
+
+  public Command closeClawCommand() {
+    return closeClawCommand(200);
   }
 
 
@@ -72,8 +77,12 @@ public class AlphaLiftClaw extends SubsystemBase {
     liftArmServo.setPosition(ServoPositions.BASKET.liftArmPosition);
   }
 
-  public void foldLiftArm() {
-    liftArmServo.setPosition(ServoPositions.STOW.liftArmPosition);
+  public Command foldLiftArmCommand(long delay) {
+    return setServoPosCommand(liftArmServo, ServoPositions.STOW.liftArmPosition, delay);
+  }
+
+  public Command foldLiftArmCommand() {
+    return foldLiftArmCommand(200);
   }
 
   public void grabLiftArm() {
@@ -87,7 +96,7 @@ public class AlphaLiftClaw extends SubsystemBase {
   public enum ServoPositions {
     STOW(0.84, 0.33, 0.6),
     CHAMBER(0.66, 0.33, 0.27),
-    BASKET(0.45, 0.33, 0.4),
+    BASKET(0.47, 0.33, 0.5),
     GRAB(0.24, 0.7, 0.08);
 
     private final double liftArmPosition;
@@ -105,9 +114,5 @@ public class AlphaLiftClaw extends SubsystemBase {
   public void periodic() {
     telemetry.addData("Lift Arm Position", liftArmServo.getPosition());
     telemetry.update();
-  }
-
-  public boolean getClawStatus() {
-    return isClawOpen;
   }
 }

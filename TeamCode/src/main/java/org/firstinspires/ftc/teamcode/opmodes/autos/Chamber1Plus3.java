@@ -1,6 +1,10 @@
 package org.firstinspires.ftc.teamcode.opmodes.autos;
 
 import static org.firstinspires.ftc.teamcode.opmodes.autos.AutoCommand.*;
+import static org.firstinspires.ftc.teamcode.subsystems.drivetrain.DriveConstants.MAX_ANG_VEL;
+import static org.firstinspires.ftc.teamcode.subsystems.drivetrain.DriveConstants.MAX_VEL;
+import static org.firstinspires.ftc.teamcode.subsystems.drivetrain.DriveConstants.TRACK_WIDTH;
+import static org.firstinspires.ftc.teamcode.subsystems.drivetrain.SampleMecanumDrive.getVelocityConstraint;
 
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
@@ -177,18 +181,18 @@ public class Chamber1Plus3 extends LinearOpMode {
     TrajectorySequence trajectory0 = drive.trajectorySequenceBuilder(new Pose2d(24.43, -64.95, Math.toRadians(90.00)))
             .splineToConstantHeading(new Vector2d(36.69, -27.46), Math.toRadians(90.00))
             .splineToConstantHeading(new Vector2d(47.77, -21.92), Math.toRadians(-90.00))
-            .lineToConstantHeading(new Vector2d(47.77, -57.69))
-            .splineToConstantHeading(new Vector2d(58.62, -10.38), Math.toRadians(-90.00))
-            .lineToConstantHeading(new Vector2d(60.69, -58.38))
-            .splineToConstantHeading(new Vector2d(67.85, -11.31), Math.toRadians(-90.00))
-            .lineToConstantHeading(new Vector2d(64.38, -57.69))
+            .lineToLinearHeading(new Pose2d(48.46, -53, Math.toRadians(90.00)), getVelocityConstraint(45, MAX_ANG_VEL, TRACK_WIDTH), SampleMecanumDrive.getACCEL_CONSTRAINT())
+            .splineToConstantHeading(new Vector2d(58.15, -20.31), Math.toRadians(-45.00))
+            .lineToLinearHeading(new Pose2d(59.08, -53, Math.toRadians(90.00)), getVelocityConstraint(50, MAX_ANG_VEL, TRACK_WIDTH), SampleMecanumDrive.getACCEL_CONSTRAINT())
+//            .splineToSplineHeading(new Pose2d(64.15, -14.54, Math.toRadians(180.00)), Math.toRadians(0.00))
+//            .lineToLinearHeading(new Pose2d(64.15, -56.31, Math.toRadians(180.00)))
             .build();
 
     TrajectorySequence trajectory1 = drive.trajectorySequenceBuilder(trajectory0.end())
             .lineToSplineHeading(new Pose2d(36.60, -60.31, Math.toRadians(90.00)))
             .build(); // push end to grab
 
-    TrajectorySequence trajectory2 = drive.trajectorySequenceBuilder(trajectory1.end())
+    TrajectorySequence trajectory2 = drive.trajectorySequenceBuilder(trajectory0.start())
             .lineToSplineHeading(new Pose2d(6.49, -30.74, Math.toRadians(90.00)))
             .build(); // grab to chamber
 
@@ -200,8 +204,14 @@ public class Chamber1Plus3 extends LinearOpMode {
                     new SequentialCommandGroup(
                             initialize(liftClaw, slide),
                             new InstantCommand(() -> drive.setPoseEstimate(trajectory0.start())),
+                            new AutoDriveCommand(drive, trajectory2).alongWith(
+                                    grabToPreHang(lift, liftClaw).andThen(new WaitCommand(300))
+                            ).andThen(
+                                    upToChamber(lift)//.andThen(new WaitCommand(300)).andThen(chamberToGrab(lift, liftClaw))
+                            ),
+                            new WaitCommand(5000),
                             new AutoDriveCommand(drive, trajectory0)
-//                                    .alongWith(grabToPreHang(lift, liftClaw))
+//
 //                                    .andThen(new WaitCommand(300))
 //                                    .andThen(upToChamber(lift))
 //                                    .andThen(new WaitCommand(500))
@@ -248,6 +258,7 @@ public class Chamber1Plus3 extends LinearOpMode {
 
     while (opModeIsActive() && !isStopRequested()) {
       CommandScheduler.getInstance().run();
+      lift.periodicTest();
     }
   }
 }

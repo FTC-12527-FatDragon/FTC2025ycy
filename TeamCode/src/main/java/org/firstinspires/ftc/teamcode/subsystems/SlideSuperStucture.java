@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.subsystems;
 
+import static org.firstinspires.ftc.teamcode.utils.ServoUtils.setServoPosCommand;
+
 import com.acmerobotics.dashboard.config.Config;
 import com.arcrobotics.ftclib.command.Command;
 import com.arcrobotics.ftclib.command.ConditionalCommand;
@@ -281,17 +283,6 @@ public class SlideSuperStucture extends MotorPIDSlideSubsystem {
 
   public TurnServo getServoPos() {
     return turnAngleDeg == turnServo.turnAngleDeg ? turnServo : TurnServo.UNKNOWN;
-  }
-
-  private Command setServoPosCommand(Servo servo, double pos, long delay) {
-    return new ConditionalCommand(
-        new InstantCommand(
-                () -> {
-                  servo.setPosition(pos);
-                })
-            .andThen(new WaitCommand(delay)),
-        new InstantCommand(() -> {}),
-        () -> servo.getPosition() != pos);
   }
 
   public enum TurnServo {

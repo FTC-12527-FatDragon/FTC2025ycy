@@ -1,7 +1,6 @@
 package org.firstinspires.ftc.teamcode.opmodes.autos;
 
 import com.arcrobotics.ftclib.command.Command;
-import com.arcrobotics.ftclib.command.ConditionalCommand;
 import com.arcrobotics.ftclib.command.InstantCommand;
 import com.arcrobotics.ftclib.command.ParallelCommandGroup;
 import com.arcrobotics.ftclib.command.SequentialCommandGroup;
@@ -23,8 +22,7 @@ public class AutoCommand {
     return new SequentialCommandGroup(
         new InstantCommand(liftClaw::openClaw),
         new WaitCommand(100),
-        new InstantCommand(liftClaw::foldLiftArm),
-        new WaitCommand(200),
+        liftClaw.foldLiftArmCommand(),
         new InstantCommand(() -> lift.setGoal(Lift.Goal.STOW)));
   }
 
@@ -33,26 +31,15 @@ public class AutoCommand {
         .handoffCommand()
         .alongWith(new InstantCommand(liftClaw::openClaw))
         .andThen(new WaitCommand(600))
-        .andThen(new InstantCommand(liftClaw::closeClaw))
-        .andThen(new WaitCommand(200))
+        .andThen(liftClaw.closeClawCommand())
         .andThen(new InstantCommand(slide::openIntakeClaw));
   }
 
   public static Command grabToPreHang(Lift lift, AlphaLiftClaw liftClaw) {
-    return new ConditionalCommand(
-            new SequentialCommandGroup(new InstantCommand(liftClaw::closeClaw),
-            new WaitCommand(300),
+    return new SequentialCommandGroup((liftClaw.closeClawCommand()),
             new InstantCommand(() -> lift.setGoal(Lift.Goal.PRE_HANG))
                     .alongWith(new InstantCommand(liftClaw::chamberWrist))
-                    .andThen(new InstantCommand(liftClaw::chamberLiftArm)))
-            ,
-            new SequentialCommandGroup(new InstantCommand(liftClaw::closeClaw),
-                    new InstantCommand(() -> lift.setGoal(Lift.Goal.PRE_HANG))
-                            .alongWith(new InstantCommand(liftClaw::chamberWrist))
-                            .andThen(new InstantCommand(liftClaw::chamberLiftArm)))
-            ,
-            liftClaw::getClawStatus
-            );
+                    .andThen(new InstantCommand(liftClaw::chamberLiftArm)));
   }
 
   public static Command upToChamber(Lift lift) {
@@ -70,8 +57,8 @@ public class AutoCommand {
     return new ParallelCommandGroup(
         new InstantCommand(liftClaw::initialize),
         new InstantCommand(liftClaw::stowWrist),
-        new InstantCommand(liftClaw::foldLiftArm),
-        new InstantCommand(liftClaw::closeClaw),
+        liftClaw.foldLiftArmCommand(0),
+        liftClaw.closeClawCommand(0),
         new InstantCommand(slide::initialize));
   }
 
@@ -79,8 +66,8 @@ public class AutoCommand {
     return new ParallelCommandGroup(
             new InstantCommand(liftClaw::initialize),
             new InstantCommand(liftClaw::stowWrist),
-            new InstantCommand(liftClaw::foldLiftArm),
-            new InstantCommand(liftClaw::closeClaw),
+            liftClaw.foldLiftArmCommand(0),
+            new InstantCommand(liftClaw::closeClawCommand),
             slide.aimCommand());
   }
 
