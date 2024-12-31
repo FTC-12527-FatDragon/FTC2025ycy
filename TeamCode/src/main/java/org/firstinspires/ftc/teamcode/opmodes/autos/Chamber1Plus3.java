@@ -176,9 +176,9 @@ public class Chamber1Plus3 extends LinearOpMode {
 
     TrajectorySequence trajectory0 = drive.trajectorySequenceBuilder(new Pose2d(24.43, -64.95, Math.toRadians(90.00)))
             .splineToConstantHeading(new Vector2d(32.92, -34.84), Math.toRadians(41.66))
-            .splineToSplineHeading(new Pose2d(46.85, -15.46, Math.toRadians(90.00)), Math.toRadians(0.00))
+            .splineToLinearHeading(new Pose2d(46.85, -15.46, Math.toRadians(90.00)), Math.toRadians(0.00))
             .lineToConstantHeading(new Vector2d(46.53, -56.30))
-            .splineToSplineHeading(new Pose2d(58.06, -15.78, Math.toRadians(90.00)), Math.toRadians(0.00))
+            .splineToLinearHeading(new Pose2d(58.06, -15.78, Math.toRadians(90.00)), Math.toRadians(0.00))
             .lineToConstantHeading(new Vector2d(58.22, -56.30))
             .build();
 
