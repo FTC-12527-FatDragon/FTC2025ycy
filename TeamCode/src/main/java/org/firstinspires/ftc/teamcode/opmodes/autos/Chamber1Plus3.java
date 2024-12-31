@@ -245,7 +245,7 @@ public class Chamber1Plus3 extends LinearOpMode {
 
     TrajectorySequence chamberToGrab =
         drive
-            .trajectorySequenceBuilder(chamber.toPose2d())
+            .trajectorySequenceBuilder(chamber3.toPose2d())
             .lineToConstantHeading(new Vector2d(36.60, -60.31))
             .build(); // chamber to grab
 
