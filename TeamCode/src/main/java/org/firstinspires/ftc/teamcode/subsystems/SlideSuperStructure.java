@@ -22,7 +22,7 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.utils.MathUtils;
 
 @Config
-public class SlideSuperStucture extends MotorPIDSlideSubsystem {
+public class SlideSuperStructure extends MotorPIDSlideSubsystem {
   // ---- Configs ----
   // SlideArmServo
   public static double SlideArmServo_AIM = 0.4;
@@ -30,9 +30,9 @@ public class SlideSuperStucture extends MotorPIDSlideSubsystem {
   public static double SlideArmServo_HANDOFF = 0.25;
   public static double SlideArmServo_AFTERGRAB = 0.675;
   // intakeClawServo
-  public static double IntakeClawServo_OPEN = 0.4;
-  public static double IntakeClawServo_OPENWIDER = 0.2;
-  public static double IntakeClawServo_GRAB = 0.567;
+  public static double IntakeClawServo_OPEN = 0.5;
+  public static double IntakeClawServo_OPENWIDER = 0.7;
+  public static double IntakeClawServo_GRAB = 0.24;
   // wristServo
   public static double WristServo_UP = 0.05;
   public static double WristServo_DOWN = 0.75;
@@ -58,7 +58,7 @@ public class SlideSuperStucture extends MotorPIDSlideSubsystem {
   public static long swipeCommand_wrist2ExtendDelayMs = 50;
 
   private final Servo intakeClawServo, wristServo, wristTurnServo;
-  private final Servo slideArmServo;
+  private final Servo slideArmServo, slideRightServo;
   private final DcMotorEx slideMotor;
 
   private final PIDController pidController;
@@ -80,8 +80,10 @@ public class SlideSuperStucture extends MotorPIDSlideSubsystem {
   //  private boolean isResetting = false;
   public static double resetPower = -0.9;
 
-  public SlideSuperStucture(final HardwareMap hardwareMap, final Telemetry telemetry) {
+  public SlideSuperStructure(final HardwareMap hardwareMap, final Telemetry telemetry) {
     slideArmServo = hardwareMap.get(Servo.class, "slideArmServo");
+
+    slideRightServo = hardwareMap.get(Servo.class, "slideLeftServo");
 
     intakeClawServo = hardwareMap.get(Servo.class, "intakeClawServo"); // 0.3 close 0.7 open
 
@@ -156,19 +158,19 @@ public class SlideSuperStucture extends MotorPIDSlideSubsystem {
         slowHandoffCommand(), fastHandoffCommand(), this::slideMotorAtHome);
   }
 
-  public Command swipeCommand() {
-    return new SequentialCommandGroup(
-        setGoalCommand(Goal.AUTOSWIPE),
-        setTurnServoPosCommand(TurnServo.DEG_INVERTED_HORIZ, 0),
-        setServoPosCommand(wristServo, Goal.AUTOSWIPE.wristPos, swipeCommand_wrist2ExtendDelayMs),
-        new InstantCommand(
-            () -> {
-              forwardSlideExtension(Goal.AUTOSWIPE.slideExtension);
-              slideArmServo.setPosition(Goal.AUTOSWIPE.slideArmPos);
-              intakeClawServo.setPosition(Goal.AUTOSWIPE.clawAngle);
-            }),
-        new WaitUntilCommand(this::slideMotorAtGoal));
-  }
+//  public Command swipeCommand() {
+//    return new SequentialCommandGroup(
+//        setGoalCommand(Goal.AUTOSWIPE),
+//        setTurnServoPosCommand(TurnServo.DEG_INVERTED_HORIZ, 0),
+//        setServoPosCommand(wristServo, Goal.AUTOSWIPE.wristPos, swipeCommand_wrist2ExtendDelayMs),
+//        new InstantCommand(
+//            () -> {
+//              forwardSlideExtension(Goal.AUTOSWIPE.slideExtension);
+//              slideArmServo.setPosition(Goal.AUTOSWIPE.slideArmPos);
+//              intakeClawServo.setPosition(Goal.AUTOSWIPE.clawAngle);
+//            }),
+//        new WaitUntilCommand(this::slideMotorAtGoal));
+//  }
 
   public void openIntakeClaw() {
     intakeClawServo.setPosition(Goal.AIM.clawAngle);
@@ -204,18 +206,17 @@ public class SlideSuperStucture extends MotorPIDSlideSubsystem {
 
   @Config
   public enum Goal {
-    STOW(0, 0, 0.2, IntakeClawServo_OPEN),
-    AIM(slideExtensionVal, SlideArmServo_AFTERGRAB, 0.805, IntakeClawServo_OPEN),
-    GRAB(slideExtensionVal, 0.55, 0.805, IntakeClawServo_GRAB),
-    HANDOFF(0, 0.86, 0.25, IntakeClawServo_GRAB),
-    AUTOSWIPE(SlideMotor_extensionValue, 0.3, 0.45, IntakeClawServo_OPEN);
+    STOW(false, 0.4, 0.39, IntakeClawServo_OPEN),
+    AIM(true, 0.32, 0.75, IntakeClawServo_OPEN),
+    GRAB(true, 0.47, 0.75, IntakeClawServo_GRAB),
+    HANDOFF(false, 0.1, 0.39, IntakeClawServo_GRAB);;
 
-    public final double slideExtension;
+    public final boolean slideExtension;
     public final double slideArmPos;
     public final double wristPos;
     public final double clawAngle;
 
-    Goal(double slideExtension, double slideArmPos, double wristPos, double clawAngle) {
+    Goal(boolean slideExtension, double slideArmPos, double wristPos, double clawAngle) {
       this.slideExtension = slideExtension;
       this.slideArmPos = slideArmPos;
       this.wristPos = wristPos;

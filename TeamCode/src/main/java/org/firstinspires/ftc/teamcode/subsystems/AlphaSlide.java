@@ -1,7 +1,10 @@
 package org.firstinspires.ftc.teamcode.subsystems;
 
+import static org.firstinspires.ftc.teamcode.utils.ServoUtils.setServoPosCommand;
+
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.arcrobotics.ftclib.command.Command;
+import com.arcrobotics.ftclib.command.ConditionalCommand;
 import com.arcrobotics.ftclib.command.InstantCommand;
 import com.arcrobotics.ftclib.command.SequentialCommandGroup;
 import com.arcrobotics.ftclib.command.SubsystemBase;
@@ -48,17 +51,11 @@ public class AlphaSlide extends SubsystemBase {
 
   public Command aimCommand() {
     return new SequentialCommandGroup(
-        new InstantCommand(() -> goal = Goal.AIM),
-        new InstantCommand(
-            () -> {
-              handoffWristTurn();
-              turnServo = TurnServo.DEG_0;
-            }),
-        new WaitCommand(100),
-        new InstantCommand(() -> slideArmServo.setPosition(Goal.AIM.slideArmPos)),
-        new WaitCommand(100),
-        new InstantCommand(() -> wristServo.setPosition(Goal.AIM.wristPos)),
-        new InstantCommand(() -> intakeClawServo.setPosition(Goal.AIM.clawAngle)));
+            setGoalCommand(SlideSuperStructure.Goal.AIM),
+            setTurnServoPosCommand(SlideSuperStructure.TurnServo.DEG_0, aimCommand_wristTurn2ArmDelayMs),
+            setServoPosCommand(slideArmServo, SlideSuperStructure.Goal.AIM.slideArmPos, aimCommand_Arm2OpenDelayMs),
+            new InstantCommand(() -> wristServo.setPosition(SlideSuperStructure.Goal.AIM.wristPos)),
+            new InstantCommand(() -> intakeClawServo.setPosition(SlideSuperStructure.Goal.AIM.clawAngle)));
   }
 
   public Command grabCommand() {
@@ -99,7 +96,7 @@ public class AlphaSlide extends SubsystemBase {
   }
 
   public void handoffWristTurn() {
-    turnAngleDeg = TurnServo.DEG_0.turnPosition;
+    turnAngleDeg = TurnServo.DEG_0.turnAngleDeg;
   }
 
   public void openIntakeClaw() {
@@ -203,43 +200,57 @@ public class AlphaSlide extends SubsystemBase {
   public void leftTurnServo() {
     switch (turnServo) {
       case LEFT_45:
-        turnAngleDeg = TurnServo.LEFT_45.turnPosition;
         turnServo = TurnServo.LEFT_45;
         break;
       case DEG_0:
-        turnAngleDeg = TurnServo.LEFT_45.turnPosition;
         turnServo = TurnServo.LEFT_45;
         break;
       case RIGHT_45:
-        turnAngleDeg = TurnServo.DEG_0.turnPosition;
         turnServo = TurnServo.DEG_0;
         break;
       case RIGHT_90:
-        turnAngleDeg = TurnServo.RIGHT_45.turnPosition;
         turnServo = TurnServo.RIGHT_45;
         break;
     }
+    setServoPos(turnServo);
   }
 
   public void rightTurnServo() {
     switch (turnServo) {
       case LEFT_45:
-        turnAngleDeg = TurnServo.DEG_0.turnPosition;;
         turnServo = TurnServo.RIGHT_45;
         break;
       case DEG_0:
-        turnAngleDeg = TurnServo.RIGHT_45.turnPosition;
         turnServo = TurnServo.RIGHT_45;
         break;
       case RIGHT_45:
-        turnAngleDeg = TurnServo.RIGHT_90.turnPosition;
         turnServo = TurnServo.RIGHT_90;
         break;
       case RIGHT_90:
-        turnAngleDeg = TurnServo.RIGHT_90.turnPosition;
         turnServo = TurnServo.RIGHT_90;
         break;
     }
+    setServoPos(turnServo);
+  }
+
+  public void setServoPos(TurnServo pos) {
+    turnAngleDeg = pos.turnAngleDeg;
+    turnServo = pos;
+  }
+
+  private Command setTurnServoPosCommand(SlideSuperStructure.TurnServo pos, long delay) {
+    return new ConditionalCommand(
+            new InstantCommand(
+                    () -> {
+                      setServoPos(pos);
+                    })
+                    .andThen(new WaitCommand(delay)),
+            new InstantCommand(() -> {}),
+            () -> getServoPos() != pos);
+  }
+
+  public SlideSuperStructure.TurnServo getServoPos() {
+    return turnAngleDeg == turnServo.turnAngleDeg ? turnServo : SlideSuperStructure.TurnServo.UNKNOWN;
   }
 
   enum TurnServo {
@@ -248,10 +259,10 @@ public class AlphaSlide extends SubsystemBase {
     RIGHT_45(0.55),
     RIGHT_90(0.7);
 
-    private double turnPosition;
+    private double turnAngleDeg;
 
     TurnServo(double turnPosition) {
-      this.turnPosition = turnPosition;
+      this.turnAngleDeg = turnPosition;
     }
   }
 
