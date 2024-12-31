@@ -144,7 +144,7 @@ public class Chamber1Plus3 extends LinearOpMode {
 //          .splineToLinearHeading(ascentPose, Math.toRadians(90))
 //          .build();
 
-  public static double yBottom = -59.83;
+  public static double yBottom = -50;
 
   @Override
   public void runOpMode() throws InterruptedException {
@@ -175,12 +175,15 @@ public class Chamber1Plus3 extends LinearOpMode {
 //            .build(); //
 
     TrajectorySequence trajectory0 = drive.trajectorySequenceBuilder(new Pose2d(24.43, -64.95, Math.toRadians(90.00)))
-            .splineToConstantHeading(new Vector2d(32.92, -34.84), Math.toRadians(41.66))
-            .splineToLinearHeading(new Pose2d(46.85, -15.46, Math.toRadians(90.00)), Math.toRadians(0.00))
-            .lineToConstantHeading(new Vector2d(46.53, -56.30))
-            .splineToLinearHeading(new Pose2d(58.06, -15.78, Math.toRadians(90.00)), Math.toRadians(0.00))
-            .lineToConstantHeading(new Vector2d(58.22, -56.30))
+            .splineToConstantHeading(new Vector2d(36.69, -27.46), Math.toRadians(90.00))
+            .splineToConstantHeading(new Vector2d(47.77, -21.92), Math.toRadians(-90.00))
+            .lineToConstantHeading(new Vector2d(47.77, yBottom))
+            .splineToConstantHeading(new Vector2d(57.69, -21.92), Math.toRadians(-90.00))
+            .lineToConstantHeading(new Vector2d(57.46, yBottom))
+            .splineToConstantHeading(new Vector2d(64.85, -21.69), Math.toRadians(-90.00))
+            .lineToConstantHeading(new Vector2d(64.38, yBottom))
             .build();
+
 
 
 
@@ -198,10 +201,6 @@ public class Chamber1Plus3 extends LinearOpMode {
             .lineToSplineHeading(new Pose2d(6.49, -30.74, Math.toRadians(90.00)))
             .build(); // grab to chamber
 
-
-
-    drive.setPoseEstimate(trajectory0.start());
-
     // Score the first chamber
     // Push all three samples to the observation zone
     // Repeatedly score the high chamber with slightly different
@@ -209,6 +208,7 @@ public class Chamber1Plus3 extends LinearOpMode {
             .schedule(
                     new SequentialCommandGroup(
                             initialize(liftClaw, slide),
+                            new InstantCommand(() -> drive.setPoseEstimate(trajectory0.start())),
                             new AutoDriveCommand(drive, trajectory0)
 //                                    .alongWith(grabToPreHang(lift, liftClaw))
 //                                    .andThen(new WaitCommand(300))
