@@ -177,21 +177,12 @@ public class Chamber1Plus3 extends LinearOpMode {
     TrajectorySequence trajectory0 = drive.trajectorySequenceBuilder(new Pose2d(24.43, -64.95, Math.toRadians(90.00)))
             .splineToConstantHeading(new Vector2d(36.69, -27.46), Math.toRadians(90.00))
             .splineToConstantHeading(new Vector2d(47.77, -21.92), Math.toRadians(-90.00))
-            .lineToConstantHeading(new Vector2d(47.77, yBottom))
-            .splineToConstantHeading(new Vector2d(57.69, -21.92), Math.toRadians(-90.00))
-            .lineToConstantHeading(new Vector2d(57.46, yBottom))
-            .splineToConstantHeading(new Vector2d(64.85, -21.69), Math.toRadians(-90.00))
-            .lineToConstantHeading(new Vector2d(64.38, yBottom))
+            .lineToConstantHeading(new Vector2d(47.77, -57.69))
+            .splineToConstantHeading(new Vector2d(58.62, -10.38), Math.toRadians(-90.00))
+            .lineToConstantHeading(new Vector2d(60.69, -58.38))
+            .splineToConstantHeading(new Vector2d(67.85, -11.31), Math.toRadians(-90.00))
+            .lineToConstantHeading(new Vector2d(64.38, -57.69))
             .build();
-
-
-
-
-
-
-
-
-
 
     TrajectorySequence trajectory1 = drive.trajectorySequenceBuilder(trajectory0.end())
             .lineToSplineHeading(new Pose2d(36.60, -60.31, Math.toRadians(90.00)))
