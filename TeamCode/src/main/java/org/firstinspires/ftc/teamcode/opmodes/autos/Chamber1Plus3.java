@@ -275,19 +275,23 @@ public class Chamber1Plus3 extends LinearOpMode {
                         ),
                 //                            new WaitCommand(5000),
 
-                new AutoDriveCommand(drive, push2Blocks),
+                new AutoDriveCommand(drive, push2Blocks).alongWith(chamberToGrab(lift, liftClaw)),
 
                 new AutoDriveCommand(drive, pushToGrab).andThen(liftClaw.closeClawCommand()),
                 new AutoDriveCommand(drive, grabToChamber1)
                     .alongWith(grabToPreHang(lift, liftClaw).andThen(new WaitCommand(300)))
                     .andThen(upToChamber(lift)),
 
-                new AutoDriveCommand(drive, chamberToGrab).andThen(liftClaw.closeClawCommand()),
+                new AutoDriveCommand(drive, chamberToGrab)
+                        .alongWith(chamberToGrab(lift, liftClaw))
+                        .andThen(liftClaw.closeClawCommand()),
                 new AutoDriveCommand(drive, grabToChamber2)
                         .alongWith(grabToPreHang(lift, liftClaw).andThen(new WaitCommand(300)))
                         .andThen(upToChamber(lift)),
 
-                new AutoDriveCommand(drive, chamberToGrab).andThen(liftClaw.closeClawCommand()),
+                new AutoDriveCommand(drive, chamberToGrab)
+                        .alongWith(chamberToGrab(lift, liftClaw))
+                        .andThen(liftClaw.closeClawCommand()),
                 new AutoDriveCommand(drive, grabToChamber3)
                         .alongWith(grabToPreHang(lift, liftClaw).andThen(new WaitCommand(300)))
                         .andThen(upToChamber(lift)),
@@ -335,7 +339,7 @@ public class Chamber1Plus3 extends LinearOpMode {
 
     while (opModeIsActive() && !isStopRequested()) {
       CommandScheduler.getInstance().run();
-      lift.periodicTest();
+//      lift.periodicTest();
     }
   }
 }
