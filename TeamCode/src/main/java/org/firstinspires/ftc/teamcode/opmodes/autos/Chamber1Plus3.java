@@ -223,11 +223,28 @@ public class Chamber1Plus3 extends LinearOpMode {
             .lineToSplineHeading(new Pose2d(36.60, -60.31, Math.toRadians(90.00)))
             .build(); // push end to grab
 
-    TrajectorySequence grabToChamber =
-        drive
-            .trajectorySequenceBuilder(grab.toPose2d())
-            .lineToSplineHeading(new Pose2d(6.49, -30.74, Math.toRadians(90.00)))
-            .build(); // grab to chamber
+//    TrajectorySequence grabToChamber =
+//        drive
+//            .trajectorySequenceBuilder(grab.toPose2d())
+//            .lineToSplineHeading(new Pose2d(6.49, -30.74, Math.toRadians(90.00)))
+//            .build(); // grab to chamber
+
+    TrajectorySequence grabToChamber1 =
+            drive
+                    .trajectorySequenceBuilder(grab.toPose2d())
+                    .lineToSplineHeading(chamber1.toPose2d())
+                    .build(); // grab to chamber1
+    TrajectorySequence grabToChamber2 =
+            drive
+                    .trajectorySequenceBuilder(grab.toPose2d())
+                    .lineToSplineHeading(chamber2.toPose2d())
+                    .build(); // grab to chamber2
+    TrajectorySequence grabToChamber3 =
+            drive
+                    .trajectorySequenceBuilder(grab.toPose2d())
+                    .lineToSplineHeading(chamber3.toPose2d())
+                    .build(); // grab to chamber3
+
 
     TrajectorySequence chamberToGrab =
         drive
@@ -261,10 +278,22 @@ public class Chamber1Plus3 extends LinearOpMode {
                 new AutoDriveCommand(drive, push2Blocks),
 
                 new AutoDriveCommand(drive, pushToGrab).andThen(liftClaw.closeClawCommand()),
-                new AutoDriveCommand(drive, grabToChamber)
+                new AutoDriveCommand(drive, grabToChamber1)
                     .alongWith(grabToPreHang(lift, liftClaw).andThen(new WaitCommand(300)))
                     .andThen(upToChamber(lift)),
-                new AutoDriveCommand(drive, chamberToGrab).andThen()
+
+                new AutoDriveCommand(drive, chamberToGrab).andThen(liftClaw.closeClawCommand()),
+                new AutoDriveCommand(drive, grabToChamber2)
+                        .alongWith(grabToPreHang(lift, liftClaw).andThen(new WaitCommand(300)))
+                        .andThen(upToChamber(lift)),
+
+                new AutoDriveCommand(drive, chamberToGrab).andThen(liftClaw.closeClawCommand()),
+                new AutoDriveCommand(drive, grabToChamber3)
+                        .alongWith(grabToPreHang(lift, liftClaw).andThen(new WaitCommand(300)))
+                        .andThen(upToChamber(lift)),
+
+                    new AutoDriveCommand(drive, chamberToGrab)
+
                 //                                    .andThen(new
                 // InstantCommand(liftClaw::closeClaw))
                 //                            ,
