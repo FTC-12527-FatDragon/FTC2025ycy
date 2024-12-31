@@ -23,7 +23,7 @@ public class AutoCommand {
         new InstantCommand(liftClaw::openClaw),
         new WaitCommand(100),
         liftClaw.foldLiftArmCommand(),
-        new InstantCommand(() -> lift.setGoal(Lift.Goal.STOW)));
+        lift.setGoalCommand(Lift.Goal.STOW));
   }
 
   public static Command handoff(AlphaSlide slide, AlphaLiftClaw liftClaw) {
