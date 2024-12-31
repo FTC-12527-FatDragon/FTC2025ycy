@@ -25,7 +25,7 @@ import org.firstinspires.ftc.teamcode.opmodes.autos.AutoCommandBase;
 import org.firstinspires.ftc.teamcode.subsystems.Climber;
 import org.firstinspires.ftc.teamcode.subsystems.Lift;
 import org.firstinspires.ftc.teamcode.subsystems.LiftClaw;
-import org.firstinspires.ftc.teamcode.subsystems.SlideSuperStucture;
+import org.firstinspires.ftc.teamcode.subsystems.SlideSuperStructure;
 import org.firstinspires.ftc.teamcode.subsystems.drivetrain.SampleMecanumDrive;
 import org.firstinspires.ftc.teamcode.utils.FunctionalButton;
 import org.firstinspires.ftc.teamcode.utils.Pose2dHelperClass;
@@ -37,7 +37,7 @@ public class TXBetaBotSolo extends CommandOpMode {
   private GamepadEx gamepadEx2;
   private Lift lift;
   private LiftClaw liftClaw;
-  private SlideSuperStucture slide;
+  private SlideSuperStructure slide;
   private SampleMecanumDrive drive;
   private Climber climber;
 
@@ -54,7 +54,7 @@ public class TXBetaBotSolo extends CommandOpMode {
 
     lift = new Lift(hardwareMap, telemetry);
     liftClaw = new LiftClaw(hardwareMap);
-    slide = new SlideSuperStucture(hardwareMap, telemetry);
+    slide = new SlideSuperStructure(hardwareMap, telemetry);
     drive = new SampleMecanumDrive(hardwareMap);
     climber = new Climber(hardwareMap);
     drive.setPoseEstimate(AutoCommandBase.getAutoEndPose());
@@ -87,7 +87,7 @@ public class TXBetaBotSolo extends CommandOpMode {
                     new InstantCommand(() -> slide.slideArmDown())
                         .andThen(
                             new WaitCommand(100),
-                            new InstantCommand(() -> slide.setGoal(SlideSuperStucture.Goal.AIM)),
+                            new InstantCommand(() -> slide.setGoal(SlideSuperStructure.Goal.AIM)),
                             new InstantCommand(liftClaw::openClaw),
                             new WaitCommand(100),
                             new InstantCommand(liftClaw::foldLiftArm)),
@@ -111,7 +111,7 @@ public class TXBetaBotSolo extends CommandOpMode {
     new FunctionalButton(
             () ->
                 gamepadEx1.getButton(GamepadKeys.Button.A)
-                    && slide.getGoal() == SlideSuperStucture.Goal.AIM)
+                    && slide.getGoal() == SlideSuperStructure.Goal.AIM)
         .whenPressed(slide.grabCommand(), false);
 
     // Pure Handoff
@@ -130,7 +130,7 @@ public class TXBetaBotSolo extends CommandOpMode {
     new FunctionalButton(
             () ->
                 gamepadEx1.getButton(GamepadKeys.Button.DPAD_RIGHT)
-                    && slide.getGoal() == SlideSuperStucture.Goal.AIM
+                    && slide.getGoal() == SlideSuperStructure.Goal.AIM
                     && lift.getGoal() == Lift.Goal.STOW)
         .whenPressed(slowHandoffSCommand.get());
 
@@ -139,7 +139,7 @@ public class TXBetaBotSolo extends CommandOpMode {
     new FunctionalButton(
             () ->
                 gamepadEx1.getButton(GamepadKeys.Button.DPAD_UP)
-                    && slide.getGoal() == SlideSuperStucture.Goal.AIM
+                    && slide.getGoal() == SlideSuperStructure.Goal.AIM
                     && lift.getGoal() == Lift.Goal.STOW)
         .whenPressed(
             fastHandoffCommand
@@ -190,31 +190,31 @@ public class TXBetaBotSolo extends CommandOpMode {
     new FunctionalButton(
             () ->
                 gamepadEx1.getButton(GamepadKeys.Button.RIGHT_STICK_BUTTON)
-                    && slide.getGoal().slideExtension == 0)
+                    && slide.getGoal().slideExtension == false)
         .whenHeld(slide.manualResetCommand());
 
     new FunctionalButton(
             () ->
                 gamepadEx1.getTrigger(GamepadKeys.Trigger.LEFT_TRIGGER) > 0.5
-                    && slide.getGoal() == SlideSuperStucture.Goal.AIM)
+                    && slide.getGoal() == SlideSuperStructure.Goal.AIM)
         .whenPressed(new InstantCommand(slide::backwardSlideExtension));
 
     new FunctionalButton(
             () ->
                 gamepadEx1.getTrigger(GamepadKeys.Trigger.RIGHT_TRIGGER) > 0.5
-                    && slide.getGoal() == SlideSuperStucture.Goal.AIM)
+                    && slide.getGoal() == SlideSuperStructure.Goal.AIM)
         .whenPressed(new InstantCommand(slide::forwardSlideExtension));
 
     new FunctionalButton(
             () ->
                 gamepadEx1.getButton(GamepadKeys.Button.LEFT_BUMPER)
-                    && slide.getGoal() == SlideSuperStucture.Goal.AIM)
+                    && slide.getGoal() == SlideSuperStructure.Goal.AIM)
         .whenPressed(new InstantCommand(() -> slide.leftTurnServo()));
 
     new FunctionalButton(
             () ->
                 gamepadEx1.getButton(GamepadKeys.Button.RIGHT_BUMPER)
-                    && slide.getGoal() == SlideSuperStucture.Goal.AIM)
+                    && slide.getGoal() == SlideSuperStructure.Goal.AIM)
         .whenPressed(new InstantCommand(() -> slide.rightTurnServo()));
 
     gamepadEx2.getGamepadButton(GamepadKeys.Button.DPAD_UP).whenHeld(climber.elevateCommand());

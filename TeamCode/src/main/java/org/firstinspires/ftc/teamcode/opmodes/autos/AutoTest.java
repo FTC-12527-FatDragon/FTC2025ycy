@@ -8,7 +8,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import org.firstinspires.ftc.teamcode.lib.roadrunner.trajectorysequence.TrajectorySequence;
 import org.firstinspires.ftc.teamcode.subsystems.Lift;
 import org.firstinspires.ftc.teamcode.subsystems.LiftClaw;
-import org.firstinspires.ftc.teamcode.subsystems.SlideSuperStucture;
+import org.firstinspires.ftc.teamcode.subsystems.SlideSuperStructure;
 import org.firstinspires.ftc.teamcode.subsystems.drivetrain.TrajectoryManager;
 
 @Config
@@ -47,7 +47,7 @@ public class AutoTest extends AutoCommandBase {
 
   LiftClaw liftClaw;
   Lift lift;
-  SlideSuperStucture slide;
+  SlideSuperStructure slide;
 
   Pose2d startPose = new Pose2d(0, 0, Math.toRadians(heading3));
 

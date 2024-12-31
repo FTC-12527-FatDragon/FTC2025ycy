@@ -17,6 +17,11 @@ import lombok.Setter;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
 public class AlphaSlide extends SubsystemBase {
+
+  // aimCommand
+  public static long aimCommand_wristTurn2ArmDelayMs = 0;
+  public static long aimCommand_Arm2OpenDelayMs = 20;
+
   private final Servo intakeClawServo, wristServo, wristTurnServo;
   private final Servo slideArmServo, slideRightServo;
   private boolean hasGamepiece = false;
@@ -48,17 +53,17 @@ public class AlphaSlide extends SubsystemBase {
     // telemetry.update();
   }
 
-  public Command setGoalCommand(SlideSuperStructure.Goal newGoal) {
+  public Command setGoalCommand(Goal newGoal) {
     return new InstantCommand(() -> goal = newGoal);
   }
 
   public Command aimCommand() {
     return new SequentialCommandGroup(
-            setGoalCommand(SlideSuperStructure.Goal.AIM),
-            setTurnServoPosCommand(SlideSuperStructure.TurnServo.DEG_0, aimCommand_wristTurn2ArmDelayMs),
-            setServoPosCommand(slideArmServo, SlideSuperStructure.Goal.AIM.slideArmPos, aimCommand_Arm2OpenDelayMs),
-            new InstantCommand(() -> wristServo.setPosition(SlideSuperStructure.Goal.AIM.wristPos)),
-            new InstantCommand(() -> intakeClawServo.setPosition(SlideSuperStructure.Goal.AIM.clawAngle)));
+            setGoalCommand(Goal.AIM),
+            setTurnServoPosCommand(TurnServo.DEG_0, aimCommand_wristTurn2ArmDelayMs),
+            setServoPosCommand(slideArmServo, Goal.AIM.slideArmPos, aimCommand_Arm2OpenDelayMs),
+            new InstantCommand(() -> wristServo.setPosition(Goal.AIM.wristPos)),
+            new InstantCommand(() -> intakeClawServo.setPosition(Goal.AIM.clawAngle)));
   }
 
   public Command grabCommand() {
@@ -122,7 +127,7 @@ public class AlphaSlide extends SubsystemBase {
 
   public void slideArmDown() {
     // This is down for stowing the liftArm when scoring the speciemen
-    slideArmServo.setPosition(0.31);
+    slideArmServo.setPosition(Goal.AIM.slideArmPos);
   }
 
   public void slideArmUp() {
@@ -241,7 +246,7 @@ public class AlphaSlide extends SubsystemBase {
     turnServo = pos;
   }
 
-  private Command setTurnServoPosCommand(SlideSuperStructure.TurnServo pos, long delay) {
+  private Command setTurnServoPosCommand(TurnServo pos, long delay) {
     return new ConditionalCommand(
             new InstantCommand(
                     () -> {
@@ -252,15 +257,16 @@ public class AlphaSlide extends SubsystemBase {
             () -> getServoPos() != pos);
   }
 
-  public SlideSuperStructure.TurnServo getServoPos() {
-    return turnAngleDeg == turnServo.turnAngleDeg ? turnServo : SlideSuperStructure.TurnServo.UNKNOWN;
+  public TurnServo getServoPos() {
+    return turnAngleDeg == turnServo.turnAngleDeg ? turnServo : TurnServo.UNKNOWN;
   }
 
-  enum TurnServo {
+  public enum TurnServo {
     LEFT_45(0.25),
     DEG_0(0.4),
     RIGHT_45(0.55),
-    RIGHT_90(0.7);
+    RIGHT_90(0.7),
+    UNKNOWN(-1);
 
     private double turnAngleDeg;
 

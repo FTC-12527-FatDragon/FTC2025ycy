@@ -20,7 +20,7 @@ import org.firstinspires.ftc.teamcode.lib.roadrunner.trajectorysequence.Trajecto
 import org.firstinspires.ftc.teamcode.subsystems.Climber;
 import org.firstinspires.ftc.teamcode.subsystems.Lift;
 import org.firstinspires.ftc.teamcode.subsystems.LiftClaw;
-import org.firstinspires.ftc.teamcode.subsystems.SlideSuperStucture;
+import org.firstinspires.ftc.teamcode.subsystems.SlideSuperStructure;
 import org.firstinspires.ftc.teamcode.subsystems.drivetrain.SampleMecanumDrive;
 
 // spotless:off
@@ -38,7 +38,7 @@ import org.firstinspires.ftc.teamcode.subsystems.drivetrain.SampleMecanumDrive;
 public abstract class AutoCommandBase extends LinearOpMode {
   protected LiftClaw liftClaw;
   protected Lift lift;
-  protected SlideSuperStucture slide;
+  protected SlideSuperStructure slide;
   protected SampleMecanumDrive drive;
   protected Climber climb;
 
@@ -111,7 +111,7 @@ public abstract class AutoCommandBase extends LinearOpMode {
     lift = new Lift(hardwareMap, telemetry);
     liftClaw = new LiftClaw(hardwareMap);
     climb = new Climber(hardwareMap);
-    slide = new SlideSuperStucture(hardwareMap, telemetry);
+    slide = new SlideSuperStructure(hardwareMap, telemetry);
 
     drive = new SampleMecanumDrive(hardwareMap);
 
@@ -146,7 +146,7 @@ public abstract class AutoCommandBase extends LinearOpMode {
     return slowHandoff(slide, liftClaw);
   }
 
-  public static Command slowHandoff(SlideSuperStucture slide, LiftClaw liftClaw) {
+  public static Command slowHandoff(SlideSuperStructure slide, LiftClaw liftClaw) {
     return slide
         .slowHandoffCommand()
         .beforeStarting(liftClaw::openClaw)
@@ -160,7 +160,7 @@ public abstract class AutoCommandBase extends LinearOpMode {
     return fastHandoff(slide, liftClaw);
   }
 
-  public static Command fastHandoff(SlideSuperStucture slide, LiftClaw liftClaw) {
+  public static Command fastHandoff(SlideSuperStructure slide, LiftClaw liftClaw) {
     return new SequentialCommandGroup(
         new InstantCommand(liftClaw::openClaw),
         slide.fastHandoffCommand().alongWith(new WaitCommand(handoff_slide2LiftCloseDelayMs)),
@@ -251,9 +251,9 @@ public abstract class AutoCommandBase extends LinearOpMode {
 
   @Override
   public void runOpMode() throws InterruptedException {
-    double origval = SlideSuperStucture.IntakeClawServo_OPEN;
+    double origval = SlideSuperStructure.IntakeClawServo_OPEN;
     initialize();
-    SlideSuperStucture.IntakeClawServo_OPEN = SlideSuperStucture.IntakeClawServo_OPENWIDER;
+    SlideSuperStructure.IntakeClawServo_OPEN = SlideSuperStructure.IntakeClawServo_OPENWIDER;
     drive.setPoseEstimate(getStartPose());
     Command toRun = runAutoCommand().andThen(autoFinish());
     waitForStart();
@@ -264,6 +264,6 @@ public abstract class AutoCommandBase extends LinearOpMode {
       lift.periodicTest();
       CommandScheduler.getInstance().run();
     }
-    SlideSuperStucture.IntakeClawServo_OPEN = origval;
+    SlideSuperStructure.IntakeClawServo_OPEN = origval;
   }
 }

@@ -139,7 +139,7 @@ public class SlideSuperStructure extends MotorPIDSlideSubsystem {
             slideArmServo,
             Goal.HANDOFF.slideArmPos,
             slowHandoffCommand_ArmHandoff2SlideRetractDelayMs),
-        new InstantCommand(() -> slideExtensionVal = Goal.HANDOFF.slideExtension),
+        new InstantCommand(this::updateSlideExtension),
         new WaitUntilCommand(this::slideMotorAtHome));
   }
 
@@ -149,7 +149,7 @@ public class SlideSuperStructure extends MotorPIDSlideSubsystem {
         setTurnServoPosCommand(TurnServo.DEG_0, handoffCommand_wristTurn2wristHandoffDelayMs),
         new InstantCommand(() -> wristServo.setPosition(Goal.HANDOFF.wristPos)),
         new InstantCommand(() -> slideArmServo.setPosition(Goal.HANDOFF.slideArmPos)),
-        new InstantCommand(() -> slideExtensionVal = Goal.HANDOFF.slideExtension),
+        new InstantCommand(this::updateSlideExtension),
         new WaitUntilCommand(this::slideMotorAtHome));
   }
 
@@ -236,6 +236,12 @@ public class SlideSuperStructure extends MotorPIDSlideSubsystem {
     slideExtensionVal = 0;
   }
 
+  private void updateSlideExtension() {
+    if(!goal.slideExtension){
+      backwardSlideExtension();
+    }
+  }
+
   public void leftTurnServo() {
     switch (turnServo) {
       case DEG_0:
@@ -299,10 +305,10 @@ public class SlideSuperStructure extends MotorPIDSlideSubsystem {
     }
   }
 
-  private boolean slideMotorAtGoal() {
-    return MathUtils.isNear(
-        goal.slideExtension, getCurrentPosition(), SlideMotor_atSetPointTolerance);
-  }
+//  private boolean slideMotorAtGoal() {
+//    return MathUtils.isNear(
+//        goal.slideExtension, getCurrentPosition(), SlideMotor_atSetPointTolerance);
+//  }
 
   private boolean slideMotorAtHome() {
     return MathUtils.isNear(0, getCurrentPosition(), SlideMotor_atSetPointTolerance);
