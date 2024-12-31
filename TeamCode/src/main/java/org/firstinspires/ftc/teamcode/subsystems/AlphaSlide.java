@@ -46,7 +46,10 @@ public class AlphaSlide extends SubsystemBase {
     goal = Goal.STOW;
     telemetry.addData("Current State", goal);
     // telemetry.update();
+  }
 
+  public Command setGoalCommand(SlideSuperStructure.Goal newGoal) {
+    return new InstantCommand(() -> goal = newGoal);
   }
 
   public Command aimCommand() {
