@@ -8,10 +8,10 @@ import static org.firstinspires.ftc.teamcode.subsystems.drivetrain.DriveConstant
 import static org.firstinspires.ftc.teamcode.subsystems.drivetrain.DriveConstants.RUN_USING_ENCODER;
 import static org.firstinspires.ftc.teamcode.subsystems.drivetrain.DriveConstants.TRACK_WIDTH;
 import static org.firstinspires.ftc.teamcode.subsystems.drivetrain.DriveConstants.encoderTicksToInches;
+import static org.firstinspires.ftc.teamcode.subsystems.drivetrain.DriveConstants.isReflected;
 import static org.firstinspires.ftc.teamcode.subsystems.drivetrain.DriveConstants.kA;
 import static org.firstinspires.ftc.teamcode.subsystems.drivetrain.DriveConstants.kStatic;
 import static org.firstinspires.ftc.teamcode.subsystems.drivetrain.DriveConstants.kV;
-import static org.firstinspires.ftc.teamcode.subsystems.drivetrain.DriveConstants.isReflected;
 
 import androidx.annotation.NonNull;
 import com.acmerobotics.dashboard.config.Config;
@@ -42,13 +42,12 @@ import com.qualcomm.robotcore.hardware.configuration.typecontainers.MotorConfigu
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import lombok.Getter;
 import org.firstinspires.ftc.teamcode.lib.roadrunner.drive.GoBildaLocalizer;
 import org.firstinspires.ftc.teamcode.lib.roadrunner.trajectorysequence.TrajectorySequence;
 import org.firstinspires.ftc.teamcode.lib.roadrunner.trajectorysequence.TrajectorySequenceBuilder;
 import org.firstinspires.ftc.teamcode.lib.roadrunner.trajectorysequence.TrajectorySequenceRunner;
 import org.firstinspires.ftc.teamcode.lib.roadrunner.util.LynxModuleUtil;
-
-import lombok.Getter;
 
 /*
  * Simple mecanum drive hardware implementation for REV hardware.
@@ -70,9 +69,11 @@ public class SampleMecanumDrive extends MecanumDrive implements Subsystem {
 
   @Getter
   private static final TrajectoryVelocityConstraint VEL_CONSTRAINT =
-          getVelocityConstraint(MAX_VEL, MAX_ANG_VEL, TRACK_WIDTH);
-  @Getter private static final TrajectoryAccelerationConstraint ACCEL_CONSTRAINT =
-          getAccelerationConstraint(MAX_ACCEL);
+      getVelocityConstraint(MAX_VEL, MAX_ANG_VEL, TRACK_WIDTH);
+
+  @Getter
+  private static final TrajectoryAccelerationConstraint ACCEL_CONSTRAINT =
+      getAccelerationConstraint(MAX_ACCEL);
 
   private TrajectoryFollower follower;
 
@@ -89,20 +90,20 @@ public class SampleMecanumDrive extends MecanumDrive implements Subsystem {
 
   public SampleMecanumDrive(HardwareMap hardwareMap) {
     super(
-            kV,
-            kA,
-            kStatic,
-            TRACK_WIDTH,
-            TRACK_WIDTH,
-            LATERAL_MULTIPLIER); // Drive Constants are passed to here
+        kV,
+        kA,
+        kStatic,
+        TRACK_WIDTH,
+        TRACK_WIDTH,
+        LATERAL_MULTIPLIER); // Drive Constants are passed to here
 
     follower =
-            new HolonomicPIDVAFollower(
-                    TRANSLATIONAL_PID,
-                    TRANSLATIONAL_PID,
-                    HEADING_PID,
-                    new Pose2d(1.5, 1.5, Math.toRadians(2)), // Pose Error
-                    ADMISSIBLE_TIMEOUT);
+        new HolonomicPIDVAFollower(
+            TRANSLATIONAL_PID,
+            TRANSLATIONAL_PID,
+            HEADING_PID,
+            new Pose2d(1.5, 1.5, Math.toRadians(2)), // Pose Error
+            ADMISSIBLE_TIMEOUT);
 
     LynxModuleUtil.ensureMinimumFirmwareVersion(hardwareMap);
 
@@ -131,7 +132,6 @@ public class SampleMecanumDrive extends MecanumDrive implements Subsystem {
       rightRear.setDirection(DcMotorSimple.Direction.FORWARD);
     }
 
-
     motors = Arrays.asList(leftFront, leftRear, rightRear, rightFront);
 
     for (DcMotorEx motor : motors) {
@@ -159,14 +159,14 @@ public class SampleMecanumDrive extends MecanumDrive implements Subsystem {
     setLocalizer(od);
 
     trajectorySequenceRunner =
-            new TrajectorySequenceRunner(
-                    follower,
-                    HEADING_PID,
-                    batteryVoltageSensor,
-                    lastEncPositions,
-                    lastEncVels,
-                    lastTrackingEncPositions,
-                    lastTrackingEncVels);
+        new TrajectorySequenceRunner(
+            follower,
+            HEADING_PID,
+            batteryVoltageSensor,
+            lastEncPositions,
+            lastEncVels,
+            lastTrackingEncPositions,
+            lastTrackingEncVels);
 
     CommandScheduler.getInstance().registerSubsystem(this);
   }
@@ -185,12 +185,12 @@ public class SampleMecanumDrive extends MecanumDrive implements Subsystem {
 
   public TrajectorySequenceBuilder trajectorySequenceBuilder(Pose2d startPose) {
     return new TrajectorySequenceBuilder(
-            startPose, VEL_CONSTRAINT, ACCEL_CONSTRAINT, MAX_ANG_VEL, MAX_ANG_ACCEL);
+        startPose, VEL_CONSTRAINT, ACCEL_CONSTRAINT, MAX_ANG_VEL, MAX_ANG_ACCEL);
   }
 
   public void turnAsync(double angle) {
     trajectorySequenceRunner.followTrajectorySequenceAsync(
-            trajectorySequenceBuilder(getPoseEstimate()).turn(angle).build());
+        trajectorySequenceBuilder(getPoseEstimate()).turn(angle).build());
   }
 
   public void turn(double angle) {
@@ -200,7 +200,7 @@ public class SampleMecanumDrive extends MecanumDrive implements Subsystem {
 
   public void followTrajectoryAsync(Trajectory trajectory) {
     trajectorySequenceRunner.followTrajectorySequenceAsync(
-            trajectorySequenceBuilder(trajectory.start()).addTrajectory(trajectory).build());
+        trajectorySequenceBuilder(trajectory.start()).addTrajectory(trajectory).build());
   }
 
   public void followTrajectory(Trajectory trajectory) {
@@ -249,11 +249,11 @@ public class SampleMecanumDrive extends MecanumDrive implements Subsystem {
 
   public void setPIDFCoefficients(DcMotor.RunMode runMode, PIDFCoefficients coefficients) {
     PIDFCoefficients compensatedCoefficients =
-            new PIDFCoefficients(
-                    coefficients.p,
-                    coefficients.i,
-                    coefficients.d,
-                    coefficients.f * 12 / batteryVoltageSensor.getVoltage());
+        new PIDFCoefficients(
+            coefficients.p,
+            coefficients.i,
+            coefficients.d,
+            coefficients.f * 12 / batteryVoltageSensor.getVoltage());
 
     for (DcMotorEx motor : motors) {
       motor.setPIDFCoefficients(runMode, compensatedCoefficients);
@@ -288,19 +288,19 @@ public class SampleMecanumDrive extends MecanumDrive implements Subsystem {
     if (Math.abs(drivePower.getX())
             + Math.abs(drivePower.getY())
             + Math.abs(drivePower.getHeading())
-            > 1) {
+        > 1) {
       // re-normalize the powers according to the weights
       double denom =
-              VX_WEIGHT * Math.abs(drivePower.getX())
-                      + VY_WEIGHT * Math.abs(drivePower.getY())
-                      + OMEGA_WEIGHT * Math.abs(drivePower.getHeading());
+          VX_WEIGHT * Math.abs(drivePower.getX())
+              + VY_WEIGHT * Math.abs(drivePower.getY())
+              + OMEGA_WEIGHT * Math.abs(drivePower.getHeading());
 
       vel =
-              new Pose2d(
-                      VX_WEIGHT * drivePower.getX(),
-                      VY_WEIGHT * drivePower.getY(),
-                      OMEGA_WEIGHT * drivePower.getHeading())
-                      .div(denom);
+          new Pose2d(
+                  VX_WEIGHT * drivePower.getX(),
+                  VY_WEIGHT * drivePower.getY(),
+                  OMEGA_WEIGHT * drivePower.getHeading())
+              .div(denom);
     }
 
     setDrivePower(vel);
@@ -352,11 +352,11 @@ public class SampleMecanumDrive extends MecanumDrive implements Subsystem {
   }
 
   public static TrajectoryVelocityConstraint getVelocityConstraint(
-          double maxVel, double maxAngularVel, double trackWidth) {
+      double maxVel, double maxAngularVel, double trackWidth) {
     return new MinVelocityConstraint(
-            Arrays.asList(
-                    new AngularVelocityConstraint(maxAngularVel),
-                    new MecanumVelocityConstraint(maxVel, trackWidth)));
+        Arrays.asList(
+            new AngularVelocityConstraint(maxAngularVel),
+            new MecanumVelocityConstraint(maxVel, trackWidth)));
   }
 
   public static TrajectoryAccelerationConstraint getAccelerationConstraint(double maxAccel) {

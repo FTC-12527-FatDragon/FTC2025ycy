@@ -136,7 +136,7 @@ public class DriveConstants {
         GoBildaXLocalizerDirection = GoBildaPinpointDriver.EncoderDirection.REVERSED;
         GoBildaYLocalizerDirection = GoBildaPinpointDriver.EncoderDirection.REVERSED;
         GoBildaLocalizerEncoderResolution =
-                GoBildaPinpointDriver.GoBildaOdometryPods.goBILDA_4_BAR_POD;
+            GoBildaPinpointDriver.GoBildaOdometryPods.goBILDA_4_BAR_POD;
         GoBildaLocalizerPerpendicularOffset = new Translation2dHelperClass(0, 92.5);
         TRACK_WIDTH = 16.19;
         kV = 0.012;

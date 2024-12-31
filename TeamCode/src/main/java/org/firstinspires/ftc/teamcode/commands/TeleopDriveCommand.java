@@ -15,12 +15,12 @@ public class TeleopDriveCommand extends CommandBase {
   private final BooleanSupplier shouldSlow;
 
   public TeleopDriveCommand(
-          SampleMecanumDrive drive,
-          DoubleSupplier forward,
-          DoubleSupplier fun,
-          DoubleSupplier rotate,
-          BooleanSupplier shouldReset,
-          BooleanSupplier shouldSlow) {
+      SampleMecanumDrive drive,
+      DoubleSupplier forward,
+      DoubleSupplier fun,
+      DoubleSupplier rotate,
+      BooleanSupplier shouldReset,
+      BooleanSupplier shouldSlow) {
     this.drive = drive;
     this.forward = forward;
     this.rotate = rotate;

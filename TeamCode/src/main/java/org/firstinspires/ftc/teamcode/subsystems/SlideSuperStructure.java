@@ -158,19 +158,20 @@ public class SlideSuperStructure extends MotorPIDSlideSubsystem {
         slowHandoffCommand(), fastHandoffCommand(), this::slideMotorAtHome);
   }
 
-//  public Command swipeCommand() {
-//    return new SequentialCommandGroup(
-//        setGoalCommand(Goal.AUTOSWIPE),
-//        setTurnServoPosCommand(TurnServo.DEG_INVERTED_HORIZ, 0),
-//        setServoPosCommand(wristServo, Goal.AUTOSWIPE.wristPos, swipeCommand_wrist2ExtendDelayMs),
-//        new InstantCommand(
-//            () -> {
-//              forwardSlideExtension(Goal.AUTOSWIPE.slideExtension);
-//              slideArmServo.setPosition(Goal.AUTOSWIPE.slideArmPos);
-//              intakeClawServo.setPosition(Goal.AUTOSWIPE.clawAngle);
-//            }),
-//        new WaitUntilCommand(this::slideMotorAtGoal));
-//  }
+  //  public Command swipeCommand() {
+  //    return new SequentialCommandGroup(
+  //        setGoalCommand(Goal.AUTOSWIPE),
+  //        setTurnServoPosCommand(TurnServo.DEG_INVERTED_HORIZ, 0),
+  //        setServoPosCommand(wristServo, Goal.AUTOSWIPE.wristPos,
+  // swipeCommand_wrist2ExtendDelayMs),
+  //        new InstantCommand(
+  //            () -> {
+  //              forwardSlideExtension(Goal.AUTOSWIPE.slideExtension);
+  //              slideArmServo.setPosition(Goal.AUTOSWIPE.slideArmPos);
+  //              intakeClawServo.setPosition(Goal.AUTOSWIPE.clawAngle);
+  //            }),
+  //        new WaitUntilCommand(this::slideMotorAtGoal));
+  //  }
 
   public void openIntakeClaw() {
     intakeClawServo.setPosition(Goal.AIM.clawAngle);
@@ -209,7 +210,8 @@ public class SlideSuperStructure extends MotorPIDSlideSubsystem {
     STOW(false, 0.4, 0.39, IntakeClawServo_OPEN),
     AIM(true, 0.32, 0.75, IntakeClawServo_OPEN),
     GRAB(true, 0.47, 0.75, IntakeClawServo_GRAB),
-    HANDOFF(false, 0.1, 0.39, IntakeClawServo_GRAB);;
+    HANDOFF(false, 0.1, 0.39, IntakeClawServo_GRAB);
+    ;
 
     public final boolean slideExtension;
     public final double slideArmPos;
@@ -237,7 +239,7 @@ public class SlideSuperStructure extends MotorPIDSlideSubsystem {
   }
 
   private void updateSlideExtension() {
-    if(!goal.slideExtension){
+    if (!goal.slideExtension) {
       backwardSlideExtension();
     }
   }
@@ -305,10 +307,10 @@ public class SlideSuperStructure extends MotorPIDSlideSubsystem {
     }
   }
 
-//  private boolean slideMotorAtGoal() {
-//    return MathUtils.isNear(
-//        goal.slideExtension, getCurrentPosition(), SlideMotor_atSetPointTolerance);
-//  }
+  //  private boolean slideMotorAtGoal() {
+  //    return MathUtils.isNear(
+  //        goal.slideExtension, getCurrentPosition(), SlideMotor_atSetPointTolerance);
+  //  }
 
   private boolean slideMotorAtHome() {
     return MathUtils.isNear(0, getCurrentPosition(), SlideMotor_atSetPointTolerance);

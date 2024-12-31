@@ -26,7 +26,7 @@ public class AlphaSlide extends SubsystemBase {
   private final Servo slideArmServo, slideRightServo;
   private boolean hasGamepiece = false;
   private static double slideExtensionVal = 0.3;
-  private  SlideServo slideServo = SlideServo.BACK;
+  private SlideServo slideServo = SlideServo.BACK;
 
   private static double turnAngleDeg = 0;
   private TurnServo turnServo = TurnServo.DEG_0;
@@ -59,11 +59,11 @@ public class AlphaSlide extends SubsystemBase {
 
   public Command aimCommand() {
     return new SequentialCommandGroup(
-            setGoalCommand(Goal.AIM),
-            setTurnServoPosCommand(TurnServo.DEG_0, aimCommand_wristTurn2ArmDelayMs),
-            setServoPosCommand(slideArmServo, Goal.AIM.slideArmPos, aimCommand_Arm2OpenDelayMs),
-            new InstantCommand(() -> wristServo.setPosition(Goal.AIM.wristPos)),
-            new InstantCommand(() -> intakeClawServo.setPosition(Goal.AIM.clawAngle)));
+        setGoalCommand(Goal.AIM),
+        setTurnServoPosCommand(TurnServo.DEG_0, aimCommand_wristTurn2ArmDelayMs),
+        setServoPosCommand(slideArmServo, Goal.AIM.slideArmPos, aimCommand_Arm2OpenDelayMs),
+        new InstantCommand(() -> wristServo.setPosition(Goal.AIM.wristPos)),
+        new InstantCommand(() -> intakeClawServo.setPosition(Goal.AIM.clawAngle)));
   }
 
   public Command grabCommand() {
@@ -248,13 +248,13 @@ public class AlphaSlide extends SubsystemBase {
 
   private Command setTurnServoPosCommand(TurnServo pos, long delay) {
     return new ConditionalCommand(
-            new InstantCommand(
-                    () -> {
-                      setServoPos(pos);
-                    })
-                    .andThen(new WaitCommand(delay)),
-            new InstantCommand(() -> {}),
-            () -> getServoPos() != pos);
+        new InstantCommand(
+                () -> {
+                  setServoPos(pos);
+                })
+            .andThen(new WaitCommand(delay)),
+        new InstantCommand(() -> {}),
+        () -> getServoPos() != pos);
   }
 
   public TurnServo getServoPos() {

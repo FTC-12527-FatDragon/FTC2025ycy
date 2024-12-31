@@ -1,17 +1,17 @@
-//package org.firstinspires.ftc.teamcode.opmodes;
+// package org.firstinspires.ftc.teamcode.opmodes;
 //
-//import com.acmerobotics.roadrunner.geometry.Pose2d;
-//import com.acmerobotics.roadrunner.geometry.Vector2d;
-//import com.acmerobotics.roadrunner.trajectory.Trajectory;
-//import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-//import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-//import org.firstinspires.ftc.teamcode.subsystems.AlphaLift;
-//import org.firstinspires.ftc.teamcode.subsystems.AlphaLiftClaw;
-//import org.firstinspires.ftc.teamcode.subsystems.AlphaSlide;
-//import org.firstinspires.ftc.teamcode.subsystems.drivetrain.SampleMecanumDrive;
+// import com.acmerobotics.roadrunner.geometry.Pose2d;
+// import com.acmerobotics.roadrunner.geometry.Vector2d;
+// import com.acmerobotics.roadrunner.trajectory.Trajectory;
+// import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+// import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+// import org.firstinspires.ftc.teamcode.subsystems.AlphaLift;
+// import org.firstinspires.ftc.teamcode.subsystems.AlphaLiftClaw;
+// import org.firstinspires.ftc.teamcode.subsystems.AlphaSlide;
+// import org.firstinspires.ftc.teamcode.subsystems.drivetrain.SampleMecanumDrive;
 //
-//@Autonomous(name = "AlphaAuto")
-//public class AlphaAuto extends LinearOpMode {
+// @Autonomous(name = "AlphaAuto")
+// public class AlphaAuto extends LinearOpMode {
 //  private SampleMecanumDrive drive;
 //  private AlphaLift lift;
 //  private AlphaLiftClaw liftClaw;
@@ -38,4 +38,4 @@
 //      drive.update();
 //    }
 //  }
-//}
+// }

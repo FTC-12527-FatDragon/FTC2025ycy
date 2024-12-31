@@ -2,7 +2,6 @@ package org.firstinspires.ftc.teamcode.commands;
 
 import com.acmerobotics.roadrunner.trajectory.Trajectory;
 import com.arcrobotics.ftclib.command.CommandBase;
-
 import java.util.Optional;
 import org.firstinspires.ftc.teamcode.lib.roadrunner.trajectorysequence.TrajectorySequence;
 import org.firstinspires.ftc.teamcode.subsystems.drivetrain.SampleMecanumDrive;
@@ -33,10 +32,10 @@ public class AutoDriveCommand extends CommandBase {
   @Override
   public void initialize() {
     if (trajectory != null) {
-//      drive.setPoseEstimate(trajectory.start());
+      //      drive.setPoseEstimate(trajectory.start());
       drive.followTrajectoryAsync(trajectory);
     } else if (trajectorySequence != null) {
-//      drive.setPoseEstimate(trajectorySequence.start());
+      //      drive.setPoseEstimate(trajectorySequence.start());
       drive.followTrajectorySequence(trajectorySequence);
     } else throw new IllegalArgumentException("No Trajectory or TrajectorySequence provide");
   }

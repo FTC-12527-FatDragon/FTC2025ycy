@@ -46,7 +46,8 @@ public class Lift extends MotorPIDSlideSubsystem {
 
   public Lift(final HardwareMap hardwareMap, Telemetry telemetry) {
     liftMotorUp = new Motor(hardwareMap, "liftMotor");
-//    liftMotorDown = new Motor(hardwareMap, "liftMotor");// Motor(hardwareMap, "liftMotorDown");
+    //    liftMotorDown = new Motor(hardwareMap, "liftMotor");// Motor(hardwareMap,
+    // "liftMotorDown");
     liftMotorUp.stopAndResetEncoder();
     liftMotorDown.stopAndResetEncoder();
     liftMotorUp.setRunMode(Motor.RunMode.RawPower);

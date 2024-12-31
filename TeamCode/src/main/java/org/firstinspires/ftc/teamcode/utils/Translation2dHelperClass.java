@@ -12,7 +12,7 @@ public class Translation2dHelperClass {
     this.Y = y;
   }
 
-  public Translation2dHelperClass(Translation2dHelperClass other){
+  public Translation2dHelperClass(Translation2dHelperClass other) {
     this.X = other.X;
     this.Y = other.Y;
   }

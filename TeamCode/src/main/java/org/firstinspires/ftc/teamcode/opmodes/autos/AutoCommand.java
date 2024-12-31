@@ -36,10 +36,11 @@ public class AutoCommand {
   }
 
   public static Command grabToPreHang(Lift lift, AlphaLiftClaw liftClaw) {
-    return new SequentialCommandGroup((liftClaw.closeClawCommand()),
-            new InstantCommand(() -> lift.setGoal(Lift.Goal.PRE_HANG))
-                    .alongWith(new InstantCommand(liftClaw::chamberWrist))
-                    .andThen(new InstantCommand(liftClaw::chamberLiftArm)));
+    return new SequentialCommandGroup(
+        (liftClaw.closeClawCommand()),
+        new InstantCommand(() -> lift.setGoal(Lift.Goal.PRE_HANG))
+            .alongWith(new InstantCommand(liftClaw::chamberWrist))
+            .andThen(new InstantCommand(liftClaw::chamberLiftArm)));
   }
 
   public static Command upToChamber(Lift lift) {
@@ -64,11 +65,11 @@ public class AutoCommand {
 
   public static Command initializeForce(AlphaLiftClaw liftClaw, AlphaSlide slide) {
     return new ParallelCommandGroup(
-            new InstantCommand(liftClaw::initialize),
-            new InstantCommand(liftClaw::stowWrist),
-            liftClaw.foldLiftArmCommand(0),
-            new InstantCommand(liftClaw::closeClawCommand),
-            slide.aimCommand());
+        new InstantCommand(liftClaw::initialize),
+        new InstantCommand(liftClaw::stowWrist),
+        liftClaw.foldLiftArmCommand(0),
+        new InstantCommand(liftClaw::closeClawCommand),
+        slide.aimCommand());
   }
 
   public static Command autoFinish(AlphaLiftClaw liftClaw, Lift lift, AlphaSlide slide) {

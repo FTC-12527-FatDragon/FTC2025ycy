@@ -1,29 +1,29 @@
-//package org.firstinspires.ftc.teamcode.opmodes;
+// package org.firstinspires.ftc.teamcode.opmodes;
 //
-//import com.arcrobotics.ftclib.command.Command;
-//import com.arcrobotics.ftclib.command.CommandOpMode;
-//import com.arcrobotics.ftclib.command.ConditionalCommand;
-//import com.arcrobotics.ftclib.command.InstantCommand;
-//import com.arcrobotics.ftclib.command.ParallelCommandGroup;
-//import com.arcrobotics.ftclib.command.SelectCommand;
-//import com.arcrobotics.ftclib.command.SequentialCommandGroup;
-//import com.arcrobotics.ftclib.command.WaitCommand;
-//import com.arcrobotics.ftclib.command.WaitUntilCommand;
-//import com.arcrobotics.ftclib.gamepad.GamepadEx;
-//import com.arcrobotics.ftclib.gamepad.GamepadKeys;
+// import com.arcrobotics.ftclib.command.Command;
+// import com.arcrobotics.ftclib.command.CommandOpMode;
+// import com.arcrobotics.ftclib.command.ConditionalCommand;
+// import com.arcrobotics.ftclib.command.InstantCommand;
+// import com.arcrobotics.ftclib.command.ParallelCommandGroup;
+// import com.arcrobotics.ftclib.command.SelectCommand;
+// import com.arcrobotics.ftclib.command.SequentialCommandGroup;
+// import com.arcrobotics.ftclib.command.WaitCommand;
+// import com.arcrobotics.ftclib.command.WaitUntilCommand;
+// import com.arcrobotics.ftclib.gamepad.GamepadEx;
+// import com.arcrobotics.ftclib.gamepad.GamepadKeys;
 //
-//import java.util.HashMap;
-//import java.util.function.Supplier;
+// import java.util.HashMap;
+// import java.util.function.Supplier;
 //
-//import org.firstinspires.ftc.teamcode.subsystems.AlphaLift;
-//import org.firstinspires.ftc.teamcode.subsystems.AlphaLiftClaw;
-//import org.firstinspires.ftc.teamcode.subsystems.AlphaSlide;
-//import org.firstinspires.ftc.teamcode.subsystems.drivetrain.MecanumDrive;
-//import org.firstinspires.ftc.teamcode.utils.FunctionalButton;
+// import org.firstinspires.ftc.teamcode.subsystems.AlphaLift;
+// import org.firstinspires.ftc.teamcode.subsystems.AlphaLiftClaw;
+// import org.firstinspires.ftc.teamcode.subsystems.AlphaSlide;
+// import org.firstinspires.ftc.teamcode.subsystems.drivetrain.MecanumDrive;
+// import org.firstinspires.ftc.teamcode.utils.FunctionalButton;
 //
-//@Deprecated
-////@TeleOp(name = "AlphaDuoTeleop")
-//public class AlphaCarDuo extends CommandOpMode {
+// @Deprecated
+//// @TeleOp(name = "AlphaDuoTeleop")
+// public class AlphaCarDuo extends CommandOpMode {
 //    private GamepadEx gamepadEx1, gamepadEx2;
 //    private AlphaLift lift;
 //    private AlphaLiftClaw liftClaw;
@@ -64,9 +64,12 @@
 //                                new InstantCommand(),
 //                                new ParallelCommandGroup(
 //                                        slide.aimCommand(),
-//                                        new InstantCommand(() -> lift.setGoal(AlphaLift.Goal.BASKET)),
-//                                        new WaitUntilCommand(() -> lift.getCurrentPosition() > 600)
-//                                                .andThen(new InstantCommand(liftClaw::upLiftArm))),
+//                                        new InstantCommand(() ->
+// lift.setGoal(AlphaLift.Goal.BASKET)),
+//                                        new WaitUntilCommand(() -> lift.getCurrentPosition() >
+// 600)
+//                                                .andThen(new
+// InstantCommand(liftClaw::upLiftArm))),
 //                                () -> !isPureHandoffComplete));
 //
 //        // Basket Drop and Back
@@ -77,7 +80,8 @@
 //                                new ConditionalCommand(
 //                                        new InstantCommand(() -> slide.slideArmDown())
 //                                                .andThen(new WaitCommand(100))
-//                                                .andThen(new InstantCommand(() -> slide.setGoal(AlphaSlide.Goal.AIM))),
+//                                                .andThen(new InstantCommand(() ->
+// slide.setGoal(AlphaSlide.Goal.AIM))),
 //                                        new InstantCommand(),
 //                                        () -> lift.getGoal() == AlphaLift.Goal.HANG),
 //                                new InstantCommand(liftClaw::openClaw),
@@ -123,7 +127,8 @@
 //                                                        handoffCommand
 //                                                                .get()
 //                                                                .andThen(new WaitCommand(50))
-//                                                                .andThen(new InstantCommand(() -> isPureHandoffComplete = true))),
+//                                                                .andThen(new InstantCommand(() ->
+// isPureHandoffComplete = true))),
 //                                        new InstantCommand()),
 //                        false);
 //
@@ -158,8 +163,10 @@
 //                                new InstantCommand(() -> liftClaw.openClaw())
 //                                        .andThen(liftClaw.foldLiftArmCommand(0))
 //                                        .alongWith(new InstantCommand(() -> liftClaw.stowWrist()))
-//                                        .andThen(new InstantCommand(() -> lift.setGoal(AlphaLift.Goal.STOW)))
-//                                        .andThen(new InstantCommand(() -> isHangComplete = false)),
+//                                        .andThen(new InstantCommand(() ->
+// lift.setGoal(AlphaLift.Goal.STOW)))
+//                                        .andThen(new InstantCommand(() -> isHangComplete =
+// false)),
 //                                () -> !isHangComplete);
 //
 //        SelectCommand specimenCommands =
@@ -173,11 +180,13 @@
 //                        },
 //                        () -> lift.getGoal());
 //
-//        gamepadEx2.getGamepadButton(GamepadKeys.Button.DPAD_LEFT).whenPressed(specimenCommands, false);
+//        gamepadEx2.getGamepadButton(GamepadKeys.Button.DPAD_LEFT).whenPressed(specimenCommands,
+// false);
 //
 //        new FunctionalButton(
 //                () ->
-//                        gamepadEx2.getButton(GamepadKeys.Button.DPAD_RIGHT) && isPureHandoffComplete)
+//                        gamepadEx2.getButton(GamepadKeys.Button.DPAD_RIGHT) &&
+// isPureHandoffComplete)
 //                .whenPressed(
 //                        throwSpecimen.get()
 //                );
@@ -232,7 +241,8 @@
 //        //                () ->
 //        //                        gamepadEx1.getButton(GamepadKeys.Button.DPAD_UP)
 //        //                                && lift.getGoal() == AlphaLift.Goal.HANG)
-//        //                .whenPressed(new InstantCommand(() -> lift.setGoal(AlphaLift.Goal.PRE_HANG)));
+//        //                .whenPressed(new InstantCommand(() ->
+// lift.setGoal(AlphaLift.Goal.PRE_HANG)));
 //        //
 //        //        new FunctionalButton(
 //        //                () -> gamepadEx1.getButton(GamepadKeys.Button.DPAD_UP) &&
@@ -287,35 +297,35 @@
 //                                && slide.getGoal() == AlphaSlide.Goal.AIM)
 //                .whenPressed(new InstantCommand(() -> slide.rightTurnServo()));
 //    }
-//}
+// }
 //
-///*package org.firstinspires.ftc.teamcode.opmodes;
+/// *package org.firstinspires.ftc.teamcode.opmodes;
 //
-//import com.acmerobotics.dashboard.config.Config;
-//import com.acmerobotics.roadrunner.geometry.Pose2d;
-//import com.arcrobotics.ftclib.command.CommandOpMode;
-//import com.arcrobotics.ftclib.command.CommandScheduler;
-//import com.arcrobotics.ftclib.command.ConditionalCommand;
-//import com.arcrobotics.ftclib.command.InstantCommand;
-//import com.arcrobotics.ftclib.command.SequentialCommandGroup;
-//import com.arcrobotics.ftclib.command.WaitCommand;
-//import com.arcrobotics.ftclib.gamepad.GamepadEx;
-//import com.arcrobotics.ftclib.gamepad.GamepadKeys;
-//import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-//import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-//import com.qualcomm.robotcore.hardware.DcMotor;
-//import com.qualcomm.robotcore.hardware.DcMotorSimple;
-//import com.qualcomm.robotcore.hardware.Gamepad;
-//import com.qualcomm.robotcore.hardware.Servo;
+// import com.acmerobotics.dashboard.config.Config;
+// import com.acmerobotics.roadrunner.geometry.Pose2d;
+// import com.arcrobotics.ftclib.command.CommandOpMode;
+// import com.arcrobotics.ftclib.command.CommandScheduler;
+// import com.arcrobotics.ftclib.command.ConditionalCommand;
+// import com.arcrobotics.ftclib.command.InstantCommand;
+// import com.arcrobotics.ftclib.command.SequentialCommandGroup;
+// import com.arcrobotics.ftclib.command.WaitCommand;
+// import com.arcrobotics.ftclib.gamepad.GamepadEx;
+// import com.arcrobotics.ftclib.gamepad.GamepadKeys;
+// import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+// import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+// import com.qualcomm.robotcore.hardware.DcMotor;
+// import com.qualcomm.robotcore.hardware.DcMotorSimple;
+// import com.qualcomm.robotcore.hardware.Gamepad;
+// import com.qualcomm.robotcore.hardware.Servo;
 //
 //
-//import org.firstinspires.ftc.teamcode.subsystems.AlphaClaw;
-//import org.firstinspires.ftc.teamcode.subsystems.AlphaLift;
-//import org.firstinspires.ftc.teamcode.subsystems.AlphaSlide;
-//import org.firstinspires.ftc.teamcode.subsystems.drivetrain.SampleMecanumDrive;
+// import org.firstinspires.ftc.teamcode.subsystems.AlphaClaw;
+// import org.firstinspires.ftc.teamcode.subsystems.AlphaLift;
+// import org.firstinspires.ftc.teamcode.subsystems.AlphaSlide;
+// import org.firstinspires.ftc.teamcode.subsystems.drivetrain.SampleMecanumDrive;
 //
-//@Config @TeleOp(name = "ycyAlphaTeleOP")
-//public class AlphaCar extends LinearOpMode {
+// @Config @TeleOp(name = "ycyAlphaTeleOP")
+// public class AlphaCar extends LinearOpMode {
 //    public static boolean isHeadless = true;
 //    public static double maxPower = 1;
 //    public AlphaSlide slide;
@@ -425,4 +435,4 @@
 //        }
 //        CommandScheduler.getInstance().reset();
 //    }
-//}*/
+// }*/

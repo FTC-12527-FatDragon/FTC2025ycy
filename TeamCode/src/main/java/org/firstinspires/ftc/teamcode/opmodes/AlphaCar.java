@@ -239,8 +239,7 @@ public class AlphaCar extends CommandOpMode {
             () ->
                 gamepadEx1.getTrigger(GamepadKeys.Trigger.LEFT_TRIGGER) > 0.5
                     && slide.getGoal() != AlphaSlide.Goal.HANDOFF)
-        .whenPressed(
-                new InstantCommand(slide::forwardSlideExtension));
+        .whenPressed(new InstantCommand(slide::forwardSlideExtension));
 
     new FunctionalButton(
             () ->
@@ -262,7 +261,7 @@ public class AlphaCar extends CommandOpMode {
   }
 
   @Override
-  public void run(){
+  public void run() {
     CommandScheduler.getInstance().run();
     lift.periodicTest();
   }

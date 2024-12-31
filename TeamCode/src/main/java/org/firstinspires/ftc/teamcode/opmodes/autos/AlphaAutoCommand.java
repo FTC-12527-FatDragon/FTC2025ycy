@@ -1,18 +1,18 @@
-//package org.firstinspires.ftc.teamcode.opmodes.autos;
+// package org.firstinspires.ftc.teamcode.opmodes.autos;
 //
-//import com.arcrobotics.ftclib.command.Command;
-//import com.arcrobotics.ftclib.command.InstantCommand;
-//import com.arcrobotics.ftclib.command.ParallelCommandGroup;
-//import com.arcrobotics.ftclib.command.SequentialCommandGroup;
-//import com.arcrobotics.ftclib.command.WaitCommand;
-//import com.arcrobotics.ftclib.command.WaitUntilCommand;
+// import com.arcrobotics.ftclib.command.Command;
+// import com.arcrobotics.ftclib.command.InstantCommand;
+// import com.arcrobotics.ftclib.command.ParallelCommandGroup;
+// import com.arcrobotics.ftclib.command.SequentialCommandGroup;
+// import com.arcrobotics.ftclib.command.WaitCommand;
+// import com.arcrobotics.ftclib.command.WaitUntilCommand;
 //
-//import org.firstinspires.ftc.teamcode.subsystems.AlphaLiftClaw;
-//import org.firstinspires.ftc.teamcode.subsystems.AlphaSlide;
-//import org.firstinspires.ftc.teamcode.subsystems.Lift;
+// import org.firstinspires.ftc.teamcode.subsystems.AlphaLiftClaw;
+// import org.firstinspires.ftc.teamcode.subsystems.AlphaSlide;
+// import org.firstinspires.ftc.teamcode.subsystems.Lift;
 //
-//@Deprecated
-//public class AlphaAutoCommand {
+// @Deprecated
+// public class AlphaAutoCommand {
 //    public static Command alphaUpLiftToBasket(Lift lift, AlphaLiftClaw liftClaw) {
 //        return new ParallelCommandGroup(
 //                new InstantCommand(() -> lift.setGoal(Lift.Goal.BASKET)),
@@ -44,7 +44,8 @@
 //                .andThen(new InstantCommand(liftClaw::chamberLiftArm));
 //    }
 //
-//    public static Command alphaHangAndStowLift(Lift lift, AlphaLiftClaw liftClaw, AlphaSlide slide) {
+//    public static Command alphaHangAndStowLift(Lift lift, AlphaLiftClaw liftClaw, AlphaSlide
+// slide) {
 //        return new SequentialCommandGroup(
 //                new InstantCommand(liftClaw::openClaw),
 //                new WaitCommand(300),
@@ -62,4 +63,4 @@
 //                .alongWith(new InstantCommand(liftClaw::basketWrist))
 //                .andThen(new InstantCommand(() -> lift.setGoal(Lift.Goal.STOW))));
 //    }
-//}
+// }

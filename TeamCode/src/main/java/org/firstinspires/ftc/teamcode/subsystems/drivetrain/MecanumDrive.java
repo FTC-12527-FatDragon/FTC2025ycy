@@ -1,12 +1,10 @@
 package org.firstinspires.ftc.teamcode.subsystems.drivetrain;
 
 import com.acmerobotics.dashboard.config.Config;
-import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.arcrobotics.ftclib.command.SubsystemBase;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
-
 import org.firstinspires.ftc.robotcore.external.navigation.Pose2D;
 import org.firstinspires.ftc.teamcode.lib.Units;
 import org.firstinspires.ftc.teamcode.lib.gobilda.GoBildaPinpointDriver;
@@ -17,7 +15,7 @@ public class MecanumDrive extends SubsystemBase {
   private final DcMotor leftFrontMotor, leftBackMotor, rightFrontMotor, rightBackMotor;
   private final GoBildaPinpointDriver od;
   private double yawOffset;
-  public static double xPose = 131, yPose = 166;//mm
+  public static double xPose = 131, yPose = 166; // mm
 
   public MecanumDrive(final HardwareMap hardwareMap) {
     leftFrontMotor = hardwareMap.get(DcMotor.class, "leftFrontMotor");
@@ -92,7 +90,7 @@ public class MecanumDrive extends SubsystemBase {
 
   public void turnRobot(double angle, double power) {
     double preAngle = od.getHeading();
-    while(od.getHeading() - preAngle < angle) {
+    while (od.getHeading() - preAngle < angle) {
       leftFrontMotor.setPower(power * 0.2);
       leftBackMotor.setPower(power * 0.2);
       rightFrontMotor.setPower(power * -0.2);
@@ -101,7 +99,7 @@ public class MecanumDrive extends SubsystemBase {
   }
 
   public void turnRobotTo(double angle, double power) {
-    while(od.getHeading() < angle) {
+    while (od.getHeading() < angle) {
       leftFrontMotor.setPower(power * 0.2);
       leftBackMotor.setPower(power * 0.2);
       rightFrontMotor.setPower(power * -0.2);

@@ -53,7 +53,7 @@ public class AlphaLiftClaw extends SubsystemBase {
   }
 
   public Command switchLiftClawCommand() {
-    if (liftClawServo.getPosition()!=ServoPositions.GRAB.liftClawPosition) {
+    if (liftClawServo.getPosition() != ServoPositions.GRAB.liftClawPosition) {
       return new InstantCommand(this::openClaw);
     } else {
       return closeClawCommand(0);
@@ -71,7 +71,6 @@ public class AlphaLiftClaw extends SubsystemBase {
   public Command closeClawCommand() {
     return closeClawCommand(200);
   }
-
 
   public void upLiftArm() {
     liftArmServo.setPosition(ServoPositions.BASKET.liftArmPosition);

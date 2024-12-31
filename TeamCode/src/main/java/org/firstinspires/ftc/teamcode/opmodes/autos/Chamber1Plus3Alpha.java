@@ -1,31 +1,31 @@
-//package org.firstinspires.ftc.teamcode.opmodes.autos;
+// package org.firstinspires.ftc.teamcode.opmodes.autos;
 //
-//import static org.firstinspires.ftc.teamcode.opmodes.autos.AlphaAutoCommand.alphaHangAndStowLift;
-//import static org.firstinspires.ftc.teamcode.opmodes.autos.AlphaAutoCommand.alphaUpLiftToChamber;
-//import static org.firstinspires.ftc.teamcode.opmodes.autos.AutoCommand.initialize;
+// import static org.firstinspires.ftc.teamcode.opmodes.autos.AlphaAutoCommand.alphaHangAndStowLift;
+// import static org.firstinspires.ftc.teamcode.opmodes.autos.AlphaAutoCommand.alphaUpLiftToChamber;
+// import static org.firstinspires.ftc.teamcode.opmodes.autos.AutoCommand.initialize;
 //
-//import com.acmerobotics.dashboard.config.Config;
-//import com.acmerobotics.roadrunner.geometry.Pose2d;
-//import com.arcrobotics.ftclib.command.CommandScheduler;
-//import com.arcrobotics.ftclib.command.SequentialCommandGroup;
-//import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-//import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+// import com.acmerobotics.dashboard.config.Config;
+// import com.acmerobotics.roadrunner.geometry.Pose2d;
+// import com.arcrobotics.ftclib.command.CommandScheduler;
+// import com.arcrobotics.ftclib.command.SequentialCommandGroup;
+// import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+// import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 //
-//import org.firstinspires.ftc.teamcode.commands.AutoDriveCommand;
-//import org.firstinspires.ftc.teamcode.lib.roadrunner.trajectorysequence.TrajectorySequence;
-//import org.firstinspires.ftc.teamcode.subsystems.AlphaLift;
-//import org.firstinspires.ftc.teamcode.subsystems.AlphaLiftClaw;
-//import org.firstinspires.ftc.teamcode.subsystems.AlphaSlide;
-//import org.firstinspires.ftc.teamcode.subsystems.Lift;
-//import org.firstinspires.ftc.teamcode.subsystems.LiftClaw;
-//import org.firstinspires.ftc.teamcode.subsystems.SlideSuperStucture;
-//import org.firstinspires.ftc.teamcode.subsystems.drivetrain.MecanumDrive;
-//import org.firstinspires.ftc.teamcode.subsystems.drivetrain.SampleMecanumDrive;
-//import org.firstinspires.ftc.teamcode.subsystems.drivetrain.TrajectoryManager;
+// import org.firstinspires.ftc.teamcode.commands.AutoDriveCommand;
+// import org.firstinspires.ftc.teamcode.lib.roadrunner.trajectorysequence.TrajectorySequence;
+// import org.firstinspires.ftc.teamcode.subsystems.AlphaLift;
+// import org.firstinspires.ftc.teamcode.subsystems.AlphaLiftClaw;
+// import org.firstinspires.ftc.teamcode.subsystems.AlphaSlide;
+// import org.firstinspires.ftc.teamcode.subsystems.Lift;
+// import org.firstinspires.ftc.teamcode.subsystems.LiftClaw;
+// import org.firstinspires.ftc.teamcode.subsystems.SlideSuperStucture;
+// import org.firstinspires.ftc.teamcode.subsystems.drivetrain.MecanumDrive;
+// import org.firstinspires.ftc.teamcode.subsystems.drivetrain.SampleMecanumDrive;
+// import org.firstinspires.ftc.teamcode.subsystems.drivetrain.TrajectoryManager;
 //
-//@Config
-//@Autonomous(name = "Alpha Chamber 1+3", group = "Autos")
-//public class Chamber1Plus3Alpha extends LinearOpMode {
+// @Config
+// @Autonomous(name = "Alpha Chamber 1+3", group = "Autos")
+// public class Chamber1Plus3Alpha extends LinearOpMode {
 //  // For Basket Scoring
 //  public static double xValue1 = 10;
 //  public static double yValue1 = 20;
@@ -121,7 +121,8 @@
 //        .schedule(
 //            new SequentialCommandGroup(
 //                initialize(liftClaw, slide),
-//                new AutoDriveCommand(drive, trajs1).alongWith(alphaUpLiftToChamber(lift, liftClaw)),
+//                new AutoDriveCommand(drive, trajs1).alongWith(alphaUpLiftToChamber(lift,
+// liftClaw)),
 //                alphaHangAndStowLift(lift, liftClaw, slide),
 //                new AutoDriveCommand(drive, trajs2),
 //                slide.grabCommand(),
@@ -133,4 +134,4 @@
 //      CommandScheduler.getInstance().run();
 //    }
 //  }
-//}
+// }
