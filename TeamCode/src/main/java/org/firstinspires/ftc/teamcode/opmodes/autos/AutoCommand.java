@@ -51,7 +51,8 @@ public class AutoCommand {
     return new InstantCommand(() -> lift.setGoal(Lift.Goal.GRAB))
         .alongWith(new InstantCommand(liftClaw::openClaw))
         .andThen(new InstantCommand(liftClaw::grabWrist))
-        .alongWith(new InstantCommand(liftClaw::grabLiftArm));
+        .alongWith(new InstantCommand(liftClaw::grabLiftArm))
+            .andThen(new WaitUntilCommand(lift::atGoal));
   }
 
   public static Command initialize(AlphaLiftClaw liftClaw, AlphaSlide slide) {

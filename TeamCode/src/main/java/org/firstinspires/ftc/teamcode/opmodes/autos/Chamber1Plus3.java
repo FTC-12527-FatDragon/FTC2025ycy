@@ -206,16 +206,16 @@ public class Chamber1Plus3 extends LinearOpMode {
     ////            .lineToLinearHeading(new Pose2d(64.15, -56.31, Math.toRadians(180.00)))
     //            .build(); // push 2 blocks
 
-    TrajectorySequence push2Blocks = drive.trajectorySequenceBuilder(start.toPose2d())
-            .lineToConstantHeading(new Vector2d(6.13, -58.76))
-            .splineToConstantHeading(new Vector2d(35.68, -35.19), Math.toRadians(22.05))
-            .splineToConstantHeading(new Vector2d(49.08, -12.59), Math.toRadians(0.00))
-            .lineToSplineHeading(new Pose2d(47.14, -57.15, Math.toRadians(90.00)))
-            .splineToSplineHeading(new Pose2d(57.96, -12.43, Math.toRadians(90.00)), Math.toRadians(0.00))
-            .lineToSplineHeading(new Pose2d(58.12, -56.99, Math.toRadians(90.00)))
-            .build();
-
-
+    TrajectorySequence push2Blocks =
+        drive
+            .trajectorySequenceBuilder(chamber.toPose2d())
+            .lineToConstantHeading(new Vector2d(15.94, -49.58))
+            .splineToConstantHeading(new Vector2d(36.76, -25.71), Math.toRadians(90.00))
+            .splineToConstantHeading(new Vector2d(44.29, -13.54), Math.toRadians(0.00))
+            .lineToConstantHeading(new Vector2d(44.61, -57.10))
+            .splineToConstantHeading(new Vector2d(55.66, -13.05), Math.toRadians(0.00))
+            .splineToConstantHeading(new Vector2d(64.79, -13.37), Math.toRadians(0.00))
+            .build(); // push 2 blocks
 
     TrajectorySequence pushToGrab =
         drive
@@ -248,7 +248,7 @@ public class Chamber1Plus3 extends LinearOpMode {
 
     TrajectorySequence chamberToGrab =
         drive
-            .trajectorySequenceBuilder(chamber3.toPose2d())
+            .trajectorySequenceBuilder(chamber.toPose2d())
             .lineToConstantHeading(new Vector2d(36.60, -60.31))
             .build(); // chamber to grab
 
