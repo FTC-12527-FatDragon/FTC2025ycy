@@ -1,6 +1,9 @@
 package org.firstinspires.ftc.teamcode.subsystems;
 
 import com.acmerobotics.dashboard.config.Config;
+import com.arcrobotics.ftclib.command.Command;
+import com.arcrobotics.ftclib.command.InstantCommand;
+import com.arcrobotics.ftclib.command.WaitUntilCommand;
 import com.arcrobotics.ftclib.controller.PIDController;
 import com.arcrobotics.ftclib.controller.wpilibcontroller.ElevatorFeedforward;
 import com.arcrobotics.ftclib.hardware.motors.Motor;
@@ -104,6 +107,10 @@ public class Lift extends MotorPIDSlideSubsystem {
 
   public boolean atHome(double tolerance) {
     return MathUtils.isNear(Goal.STOW.setpointTicks, getCurrentPosition(), tolerance);
+  }
+
+  public Command setGoalCommand(Goal newGoal){
+    return new InstantCommand(() -> setGoal(newGoal)).andThen(new WaitUntilCommand(this::atGoal));
   }
 
   public boolean atPreHang() {

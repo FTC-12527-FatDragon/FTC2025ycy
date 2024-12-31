@@ -46,15 +46,14 @@ public class AutoCommand {
   }
 
   public static Command upToChamber(Lift lift) {
-    return new InstantCommand(() -> lift.setGoal(Lift.Goal.HANG)).andThen(new WaitUntilCommand(lift::atGoal));
+    return new WaitCommand(500).deadlineWith(lift.setGoalCommand(Lift.Goal.HANG));
   }
 
   public static Command chamberToGrab(Lift lift, AlphaLiftClaw liftClaw) {
-    return new InstantCommand(() -> lift.setGoal(Lift.Goal.GRAB))
-        .alongWith(new InstantCommand(liftClaw::openClaw))
-        .andThen(new InstantCommand(liftClaw::grabWrist))
+    return new InstantCommand(liftClaw::openClaw)
+        .alongWith(new InstantCommand(liftClaw::grabWrist))
         .alongWith(new InstantCommand(liftClaw::grabLiftArm))
-            .andThen(new WaitUntilCommand(lift::atGoal));
+            .alongWith(lift.setGoalCommand(Lift.Goal.GRAB));
   }
 
   public static Command initialize(AlphaLiftClaw liftClaw, AlphaSlide slide) {

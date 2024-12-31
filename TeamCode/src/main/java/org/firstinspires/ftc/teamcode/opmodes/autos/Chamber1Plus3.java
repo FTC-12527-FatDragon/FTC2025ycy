@@ -153,12 +153,12 @@ public class Chamber1Plus3 extends LinearOpMode {
   //  public static double chamberX = 6.49;
   //  public static double chamberY = -30.74;
   public static double gap = 2;
-  public static Pose2dHelperClass chamber = new Pose2dHelperClass(6.49, -30.74, 90.00);
-  public static Pose2dHelperClass chamber1 = new Pose2dHelperClass(chamber.X - gap, -30.74, 90.00);
+  public static Pose2dHelperClass chamber = new Pose2dHelperClass(6.49, -30, 90.00);
+  public static Pose2dHelperClass chamber1 = new Pose2dHelperClass(chamber.X - gap, chamber.Y, 90.00);
   public static Pose2dHelperClass chamber2 =
-      new Pose2dHelperClass(chamber.X - gap * 2, -30.74, 90.00);
+      new Pose2dHelperClass(chamber.X - gap * 2, chamber.Y, 90.00);
   public static Pose2dHelperClass chamber3 =
-      new Pose2dHelperClass(chamber.X - gap * 3, -30.74, 90.00);
+      new Pose2dHelperClass(chamber.X - gap * 3, chamber.Y, 90.00);
 
   //  public static double startX = 24.43;
   //  public static double startY = -64.95;
@@ -252,7 +252,7 @@ public class Chamber1Plus3 extends LinearOpMode {
     TrajectorySequence startToChamber =
         drive
             .trajectorySequenceBuilder(start.toPose2d())
-            .lineToConstantHeading(new Vector2d(chamber.X, chamber.Y))
+            .lineToConstantHeading(chamber.toVector2d())
             .build(); // start to chamber
 
     // Score the first chamber
@@ -266,9 +266,8 @@ public class Chamber1Plus3 extends LinearOpMode {
                 new AutoDriveCommand(drive, startToChamber)
                     .alongWith(grabToPreHang(lift, liftClaw))
                     .andThen(upToChamber(lift)),
-
+//                    new WaitCommand(500),
                     stowArmFromBasket(lift, liftClaw),
-                    new WaitCommand(500),
 
                 new AutoDriveCommand(drive, push2Blocks),
 
@@ -277,21 +276,21 @@ public class Chamber1Plus3 extends LinearOpMode {
                     liftClaw.closeClawCommand(),
 
                 new AutoDriveCommand(drive, grabToChamber1)
-                    .andThen(grabToPreHang(lift, liftClaw).andThen(new WaitCommand(300)))
+                    .andThen(grabToPreHang(lift, liftClaw))
                     .andThen(upToChamber(lift)),
 
                 new AutoDriveCommand(drive, chamberToGrab)
                         .alongWith(chamberToGrab(lift, liftClaw))
                         .andThen(liftClaw.closeClawCommand()),
                 new AutoDriveCommand(drive, grabToChamber2)
-                        .andThen(grabToPreHang(lift, liftClaw).andThen(new WaitCommand(300)))
+                        .andThen(grabToPreHang(lift, liftClaw)))
                         .andThen(upToChamber(lift)),
 
                 new AutoDriveCommand(drive, chamberToGrab)
                         .alongWith(chamberToGrab(lift, liftClaw))
                         .andThen(liftClaw.closeClawCommand()),
                 new AutoDriveCommand(drive, grabToChamber3)
-                        .andThen(grabToPreHang(lift, liftClaw).andThen(new WaitCommand(300)))
+                        .andThen(grabToPreHang(lift, liftClaw))
                         .andThen(upToChamber(lift)),
 
                     new AutoDriveCommand(drive, chamberToGrab)
