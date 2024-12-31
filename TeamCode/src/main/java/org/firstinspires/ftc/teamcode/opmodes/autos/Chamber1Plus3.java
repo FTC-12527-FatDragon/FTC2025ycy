@@ -194,7 +194,7 @@ public class Chamber1Plus3 extends LinearOpMode {
     //            .build(); //
 
     TrajectorySequence push2Blocks = drive.trajectorySequenceBuilder(new Pose2d(13.62, -63.00, Math.toRadians(90.00)))
-            .splineToConstantHeading(new Vector2d(36.69, -27.46), Math.toRadians(90.00))
+            .splineToConstantHeading(new Vector2d(35.66, -31.54), Math.toRadians(90.00))
             .splineToConstantHeading(new Vector2d(47.77, -18), Math.toRadians(-90.00))
             .lineToLinearHeading(new Pose2d(48.46, -53, Math.toRadians(90.00)), getVelocityConstraint(45, MAX_ANG_VEL, TRACK_WIDTH), SampleMecanumDrive.getACCEL_CONSTRAINT())
             .splineToConstantHeading(new Vector2d(58.15, -18), Math.toRadians(-45.00))
