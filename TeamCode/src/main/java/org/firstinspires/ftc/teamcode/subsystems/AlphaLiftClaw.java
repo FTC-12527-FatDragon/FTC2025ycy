@@ -93,10 +93,10 @@ public class AlphaLiftClaw extends SubsystemBase {
   }
 
   public enum ServoPositions {
-    STOW(0.81, 0.33, 0.63),
-    CHAMBER(0.64, 0.33, 0.27),
-    BASKET(0.43, 0.33, 0.5),
-    GRAB(0.21, 0.7, 0.08);
+    STOW(0.83, 0.33, 0.63),
+    CHAMBER(0.66, 0.33, 0.27),
+    BASKET(0.45, 0.33, 0.5),
+    GRAB(0.23, 0.7, 0.08);
 
     private final double liftArmPosition;
     private final double liftWristPosition;
