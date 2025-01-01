@@ -27,7 +27,8 @@ public class DriveConstants {
   public enum RobotType {
     ALPHA,
     BETA,
-    GAMMA
+    GAMMA,
+    DELTA
   }
 
   @Deprecated

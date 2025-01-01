@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.subsystems;
 
+import static org.firstinspires.ftc.teamcode.subsystems.drivetrain.DriveConstants.currentRobot;
 import static org.firstinspires.ftc.teamcode.utils.ServoUtils.setServoPosCommand;
 
 import com.acmerobotics.dashboard.FtcDashboard;
@@ -10,6 +11,7 @@ import com.arcrobotics.ftclib.command.SubsystemBase;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.firstinspires.ftc.teamcode.subsystems.drivetrain.DriveConstants;
 
 public class AlphaLiftClaw extends SubsystemBase {
   private final Servo liftArmServo;
@@ -93,10 +95,10 @@ public class AlphaLiftClaw extends SubsystemBase {
   }
 
   public enum ServoPositions {
-    STOW(0.83, 0.33, 0.63),
-    CHAMBER(0.66, 0.33, 0.27),
-    BASKET(0.45, 0.33, 0.5),
-    GRAB(0.23, 0.7, 0.08);
+    STOW(0.83, currentRobot==DriveConstants.RobotType.ALPHA?0.33:0.35, currentRobot==DriveConstants.RobotType.ALPHA?0.63:0.595),
+    CHAMBER(0.66, currentRobot==DriveConstants.RobotType.ALPHA?0.33:0.35, currentRobot==DriveConstants.RobotType.ALPHA?0.27:0.47),
+    BASKET(currentRobot==DriveConstants.RobotType.ALPHA?0.45:0.46, currentRobot==DriveConstants.RobotType.ALPHA?0.33:0.35, 0.5),
+    GRAB(currentRobot== DriveConstants.RobotType.ALPHA?0.23:0.225, currentRobot==DriveConstants.RobotType.ALPHA?0.7:0.7025, currentRobot==DriveConstants.RobotType.ALPHA?0.08:0.39);
 
     private final double liftArmPosition;
     private final double liftWristPosition;
