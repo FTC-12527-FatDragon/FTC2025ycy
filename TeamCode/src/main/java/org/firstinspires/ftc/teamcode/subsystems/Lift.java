@@ -24,7 +24,7 @@ import org.firstinspires.ftc.teamcode.utils.MathUtils;
 
 @Config
 public class Lift extends MotorPIDSlideSubsystem {
-  public static double kP = 0.008, kI = 0.0, kD = 0.0, kV = 0.0003, kS = 0.12, kG = 0.12;
+  public static double kP = 0.008, kI = 0.0, kD = 0.0, kV = 0.0003, kS = 0.07, kG = 0.12;
   private final PIDController pidController;
   private final Motor liftMotorUp;
   private final Motor liftMotorDown = new EmptyMotor();
@@ -54,7 +54,7 @@ public class Lift extends MotorPIDSlideSubsystem {
     liftMotorUp = new Motor(hardwareMap, "liftMotor");
     if(DriveConstants.currentRobot== DriveConstants.RobotType.ALPHA){
       liftMotorUp.setInverted(true);
-    }
+    }else liftMotorUp.setInverted(false);
     //    liftMotorDown = new Motor(hardwareMap, "liftMotor");// Motor(hardwareMap,
     // "liftMotorDown");
     liftMotorUp.stopAndResetEncoder();
@@ -102,23 +102,13 @@ public class Lift extends MotorPIDSlideSubsystem {
     telemetry.addData("Lift.Error", pidController.getPositionError());
     // telemetry.update();
   }
-  public Command autoResetCommand() {
-    return new StartEndCommand(
-            () -> {
-              runOpenLoop(-0.6);
-            },
-            () -> {
-              resetEncoder();
-            },
-            this);
-  }
 
   public long getCurrentPosition() {
     return liftMotorUp.getCurrentPosition();
   }
 
   public boolean atGoal() {
-    return MathUtils.isNear(goal.setpointTicks, getCurrentPosition(), 8);
+    return MathUtils.isNear(goal.setpointTicks, getCurrentPosition(), 10);
   }
 
   public boolean atHome(double tolerance) {
@@ -170,10 +160,10 @@ public class Lift extends MotorPIDSlideSubsystem {
   }
 
   public enum Goal {
-    BASKET(1650.0),
+    BASKET(1600.0),
     STOW(10.0),
     PRE_HANG(620.0),
-    HANG(1080.0),
+    HANG(1000.0),
     GRAB(0),
     OPEN_LOOP(0.0);
 
