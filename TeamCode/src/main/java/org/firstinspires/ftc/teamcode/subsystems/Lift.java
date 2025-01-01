@@ -18,6 +18,7 @@ import java.util.concurrent.TimeUnit;
 import lombok.Getter;
 import lombok.Setter;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.firstinspires.ftc.teamcode.subsystems.drivetrain.DriveConstants;
 import org.firstinspires.ftc.teamcode.utils.EmptyMotor;
 import org.firstinspires.ftc.teamcode.utils.MathUtils;
 
@@ -51,6 +52,9 @@ public class Lift extends MotorPIDSlideSubsystem {
 
   public Lift(final HardwareMap hardwareMap, Telemetry telemetry) {
     liftMotorUp = new Motor(hardwareMap, "liftMotor");
+    if(DriveConstants.currentRobot== DriveConstants.RobotType.ALPHA){
+      liftMotorUp.setInverted(true);
+    }
     //    liftMotorDown = new Motor(hardwareMap, "liftMotor");// Motor(hardwareMap,
     // "liftMotorDown");
     liftMotorUp.stopAndResetEncoder();

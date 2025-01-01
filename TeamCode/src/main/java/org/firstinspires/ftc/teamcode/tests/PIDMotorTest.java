@@ -38,11 +38,13 @@ public class PIDMotorTest extends LinearOpMode {
   @Override
   public void runOpMode() throws InterruptedException {
     motor1 = hardwareMap.get(DcMotorEx.class, motor_name_master);
-    motor2 = hardwareMap.get(DcMotorEx.class, motor_name_slave);
+    if(followerEnabled){
+      motor2 = hardwareMap.get(DcMotorEx.class, motor_name_slave);
+      motor2.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+      motor2.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+    }else motor2 = null;
     motor1.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
     motor1.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-    motor2.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-    motor2.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
     waitForStart();
 
@@ -50,12 +52,15 @@ public class PIDMotorTest extends LinearOpMode {
       motor1.setDirection(DcMotorSimple.Direction.REVERSE);
     }
 
-    if (reverse_2) {
+    if (reverse_2 && motor2!=null) {
       motor2.setDirection(DcMotorSimple.Direction.REVERSE);
     }
 
     if (brake) {
       motor1.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+      if(motor2!=null){
+        motor2.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+      }
     }
 
     while (opModeIsActive()) {
