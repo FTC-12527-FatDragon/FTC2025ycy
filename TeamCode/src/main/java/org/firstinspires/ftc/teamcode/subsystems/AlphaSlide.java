@@ -15,6 +15,8 @@ import com.qualcomm.robotcore.util.Range;
 import lombok.Getter;
 import lombok.Setter;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.firstinspires.ftc.teamcode.subsystems.drivetrain.DriveConstants;
+import org.firstinspires.ftc.teamcode.utils.MotorServo;
 
 public class AlphaSlide extends SubsystemBase {
 
@@ -41,7 +43,9 @@ public class AlphaSlide extends SubsystemBase {
   public AlphaSlide(final HardwareMap hardwareMap, final Telemetry telemetry) {
     slideArmServo = hardwareMap.get(Servo.class, "slideArmServo"); // 0.5 up 0.9 half 1 down
 
-    slideRightServo = hardwareMap.get(Servo.class, "slideLeftServo"); // 1 stow
+    if(DriveConstants.currentRobot== DriveConstants.RobotType.ALPHA){
+      slideRightServo = hardwareMap.get(Servo.class, "slideLeftServo");
+    }else slideRightServo = new MotorServo(hardwareMap, "slideMotor");//
 
     intakeClawServo = hardwareMap.get(Servo.class, "intakeClawServo"); // 0.3 close 0.7 open
     wristServo = hardwareMap.get(Servo.class, "wristServo"); // 0.05 up 0.75 down
