@@ -205,16 +205,16 @@ public class Chamber1Plus3 extends LinearOpMode {
 //            .lineToLinearHeading(new Pose2d(64.15, -56.31, Math.toRadians(180.00)))
             .build(); // push 2 blocks
 
-    TrajectorySequence push2Blocks1 =
-        drive
-            .trajectorySequenceBuilder(chamber.toPose2d())
-            .lineToConstantHeading(new Vector2d(15.94, -49.58))
-            .splineToConstantHeading(new Vector2d(36.76, -25.71), Math.toRadians(90.00))
-            .splineToConstantHeading(new Vector2d(44.29, -13.54), Math.toRadians(0.00))
-            .lineToConstantHeading(new Vector2d(44.61, -57.10))
-            .splineToConstantHeading(new Vector2d(55.66, -13.05), Math.toRadians(0.00))
-            .splineToConstantHeading(new Vector2d(64.79, -13.37), Math.toRadians(0.00))
-            .build(); // push 2 blocks
+//    TrajectorySequence push2Blocks1 =
+//        drive
+//            .trajectorySequenceBuilder(chamber.toPose2d())
+//            .lineToConstantHeading(new Vector2d(15.94, -49.58))
+//            .splineToConstantHeading(new Vector2d(36.76, -25.71), Math.toRadians(90.00))
+//            .splineToConstantHeading(new Vector2d(44.29, -13.54), Math.toRadians(0.00))
+//            .lineToConstantHeading(new Vector2d(44.61, -57.10))
+//            .splineToConstantHeading(new Vector2d(55.66, -13.05), Math.toRadians(0.00))
+//            .splineToConstantHeading(new Vector2d(64.79, -13.37), Math.toRadians(0.00))
+//            .build(); // push 2 blocks
 
     TrajectorySequence pushToGrab =
         drive
@@ -227,6 +227,12 @@ public class Chamber1Plus3 extends LinearOpMode {
 //            .trajectorySequenceBuilder(grab.toPose2d())
 //            .lineToSplineHeading(new Pose2d(6.49, -30.74, Math.toRadians(90.00)))
 //            .build(); // grab to chamber
+
+    TrajectorySequence chamberToGrab = drive.trajectorySequenceBuilder(chamber3.toPose2d())
+            .lineToConstantHeading(new Vector2d(6.13, -43.10))
+            .splineToConstantHeading(grab.toVector2d(), Math.toRadians(-90.00))
+            .build();
+
 
     TrajectorySequence grabToChamber1 =
             drive
@@ -251,11 +257,11 @@ public class Chamber1Plus3 extends LinearOpMode {
                     .build();
 
 
-    TrajectorySequence chamberToGrab =
-        drive
-            .trajectorySequenceBuilder(chamber3.toPose2d())
-            .lineToConstantHeading(new Vector2d(36.60, -60.31))
-            .build(); // chamber to grab
+//    TrajectorySequence chamberToGrab =
+//        drive
+//            .trajectorySequenceBuilder(chamber3.toPose2d())
+//            .lineToConstantHeading(new Vector2d(36.60, -60.31))
+//            .build(); // chamber to grab
 
     TrajectorySequence startToChamber =
         drive
@@ -275,12 +281,13 @@ public class Chamber1Plus3 extends LinearOpMode {
                     .alongWith(grabToPreHang(lift, liftClaw)),
 
                     upToChamber(lift),
-                    chamberOpenClaw(liftClaw),
-                    lift.autoResetCommand(),
+
+
 
 //                    stowArmFromBasket(lift, liftClaw),
 
                     chamberToGrab(lift, liftClaw),
+//                    new WaitCommand(500).deadlineWith(lift.manualResetCommand()),
 
 
                 new AutoDriveCommand(drive, push2Blocks),
@@ -291,10 +298,10 @@ public class Chamber1Plus3 extends LinearOpMode {
                     new AutoDriveCommand(drive, grabToChamber1),
 
                     upToChamber(lift),
-                    chamberOpenClaw(liftClaw),
-                    lift.autoResetCommand(),
-                    chamberToGrab(lift, liftClaw),
 
+
+                    chamberToGrab(lift, liftClaw),
+//                    new WaitCommand(500).deadlineWith(lift.manualResetCommand()),
 
 //                    stowArmFromBasket(lift, liftClaw),
 
@@ -306,10 +313,11 @@ public class Chamber1Plus3 extends LinearOpMode {
 
 
                 upToChamber(lift),
-                    chamberOpenClaw(liftClaw),
-                lift.autoResetCommand(),
 
-                chamberToGrab(lift, liftClaw),
+
+
+                    chamberToGrab(lift, liftClaw),
+//                    new WaitCommand(500).deadlineWith(lift.manualResetCommand()),
 //                    stowArmFromBasket(lift, liftClaw),
                 new AutoDriveCommand(drive, chamberToGrab)
                         .andThen(chamberToGrab(lift, liftClaw))
@@ -319,9 +327,9 @@ public class Chamber1Plus3 extends LinearOpMode {
 
 
                 upToChamber(lift),
-                    chamberOpenClaw(liftClaw),
-                    lift.autoResetCommand(),
-chamberToGrab(lift, liftClaw),
+
+                    chamberToGrab(lift, liftClaw),
+//                    new WaitCommand(500).deadlineWith(lift.manualResetCommand()),
 
 
 
