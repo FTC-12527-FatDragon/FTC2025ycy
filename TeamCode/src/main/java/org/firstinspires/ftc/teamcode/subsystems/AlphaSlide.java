@@ -267,10 +267,10 @@ public class AlphaSlide extends SubsystemBase {
   }
 
   public enum TurnServo {
-    LEFT_45(currentRobot==DriveConstants.RobotType.ALPHA?0.25:0.715),
-    DEG_0(currentRobot==DriveConstants.RobotType.ALPHA?0.4:0.565),
-    RIGHT_45(currentRobot==DriveConstants.RobotType.ALPHA?0.55:0.45),
-    RIGHT_90(currentRobot==DriveConstants.RobotType.ALPHA?0.7:0.34),
+    LEFT_45(currentRobot == DriveConstants.RobotType.ALPHA ? 0.25 : 0.715),
+    DEG_0(currentRobot == DriveConstants.RobotType.ALPHA ? 0.4 : 0.565),
+    RIGHT_45(currentRobot == DriveConstants.RobotType.ALPHA ? 0.55 : 0.45),
+    RIGHT_90(currentRobot == DriveConstants.RobotType.ALPHA ? 0.7 : 0.34),
     UNKNOWN(-1);
 
     private double turnAngleDeg;
@@ -281,9 +281,9 @@ public class AlphaSlide extends SubsystemBase {
   }
 
   enum SlideServo {
-    FRONT(0.71),
-    MIDDLE(0.48),
-    BACK(0.31);
+    FRONT(currentRobot == DriveConstants.RobotType.ALPHA ? 0.71 : 500),
+    MIDDLE(currentRobot == DriveConstants.RobotType.ALPHA ? 0.48 : 350),
+    BACK(currentRobot == DriveConstants.RobotType.ALPHA ? 0.31 : 0);
 
     private double extensionVal;
 

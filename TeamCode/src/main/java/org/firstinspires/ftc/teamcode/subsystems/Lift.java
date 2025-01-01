@@ -27,7 +27,7 @@ public class Lift extends MotorPIDSlideSubsystem {
   public static double kP = 0.008, kI = 0.0, kD = 0.0, kV = 0.0003, kS = 0.12, kG = 0.12;
   private final PIDController pidController;
   private final Motor liftMotorUp;
-  private final Motor liftMotorDown = new EmptyMotor();
+  private final Motor liftMotorDown;
 
   private double lastSetpoint = 0;
 
@@ -51,12 +51,18 @@ public class Lift extends MotorPIDSlideSubsystem {
   @Getter @Setter private Goal goal = Goal.STOW;
 
   public Lift(final HardwareMap hardwareMap, Telemetry telemetry) {
-    liftMotorUp = new Motor(hardwareMap, "liftMotor");
-    if(DriveConstants.currentRobot== DriveConstants.RobotType.ALPHA){
+    if (DriveConstants.currentRobot== DriveConstants.RobotType.ALPHA) {
+      liftMotorUp = new Motor(hardwareMap, "liftMotor");
+      liftMotorDown = new EmptyMotor();
       liftMotorUp.setInverted(true);
-    }else liftMotorUp.setInverted(false);
-    //    liftMotorDown = new Motor(hardwareMap, "liftMotor");// Motor(hardwareMap,
-    // "liftMotorDown");
+    } else {
+      liftMotorUp = new Motor(hardwareMap, "liftMotorUp");
+      liftMotorDown = new Motor(hardwareMap, "liftMotorDown");
+      liftMotorUp.setInverted(false);
+    }
+
+
+
     liftMotorUp.stopAndResetEncoder();
     liftMotorDown.stopAndResetEncoder();
     liftMotorUp.setRunMode(Motor.RunMode.RawPower);
