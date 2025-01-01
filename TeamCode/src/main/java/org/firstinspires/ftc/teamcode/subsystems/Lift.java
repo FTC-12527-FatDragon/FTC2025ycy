@@ -1,14 +1,14 @@
 package org.firstinspires.ftc.teamcode.subsystems;
 
+import androidx.annotation.NonNull;
+
 import com.acmerobotics.dashboard.config.Config;
 import com.arcrobotics.ftclib.command.Command;
 import com.arcrobotics.ftclib.command.InstantCommand;
-import com.arcrobotics.ftclib.command.StartEndCommand;
 import com.arcrobotics.ftclib.command.WaitUntilCommand;
 import com.arcrobotics.ftclib.controller.PIDController;
 import com.arcrobotics.ftclib.controller.wpilibcontroller.ElevatorFeedforward;
 import com.arcrobotics.ftclib.hardware.motors.Motor;
-import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.VoltageSensor;
 import com.qualcomm.robotcore.util.ElapsedTime;
@@ -24,7 +24,7 @@ import org.firstinspires.ftc.teamcode.utils.MathUtils;
 
 @Config
 public class Lift extends MotorPIDSlideSubsystem {
-  public static double kP = 0.008, kI = 0.0, kD = 0.0, kV = 0.0003, kS = 0.12, kG = 0.07;
+  public static double kP = 0.008, kI = 0.0, kD = 0.0, kV = 0.0003, kS = 0.12, kG = 0.12;
   private final PIDController pidController;
   private final Motor liftMotorUp;
   private final Motor liftMotorDown = new EmptyMotor();
@@ -115,8 +115,21 @@ public class Lift extends MotorPIDSlideSubsystem {
     return MathUtils.isNear(Goal.STOW.setpointTicks, getCurrentPosition(), tolerance);
   }
 
+  public Command waitAtGoal(){
+    return new WaitUntilCommand(this::atGoal);
+  }
+
+  public Command setGoalCommand(Goal newGoal, boolean wait){
+    Command toRun = new InstantCommand(() -> setGoal(newGoal));
+    if(wait){
+      return toRun.andThen(waitAtGoal());
+    }else{
+      return toRun;
+    }
+  }
+
   public Command setGoalCommand(Goal newGoal){
-    return new InstantCommand(() -> setGoal(newGoal)).andThen(new WaitUntilCommand(this::atGoal));
+    return setGoalCommand(newGoal, true);
   }
 
   public boolean atPreHang() {
@@ -124,7 +137,7 @@ public class Lift extends MotorPIDSlideSubsystem {
   }
 
   public void periodicTest() {
-    telemetry.addData("Lift.Current Goal", goal);
+    telemetry.addData("Lift.Current Goal", goal.toString());
     telemetry.addData("Lift.At Goal", atGoal());
     telemetry.addData("Lift.Current Position", getCurrentPosition());
     telemetry.addData("Lift.Is Resetting", isResetting);
@@ -171,6 +184,11 @@ public class Lift extends MotorPIDSlideSubsystem {
 
     Goal(double setpointTicks) {
       this.setpointTicks = setpointTicks;
+    }
+
+    @NonNull
+    public String toString(){
+      return "Goal."+name()+"("+setpointTicks+")";
     }
   }
 }

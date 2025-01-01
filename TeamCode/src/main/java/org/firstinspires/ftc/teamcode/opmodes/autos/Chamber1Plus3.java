@@ -5,7 +5,9 @@ import static org.firstinspires.ftc.teamcode.subsystems.drivetrain.DriveConstant
 import static org.firstinspires.ftc.teamcode.subsystems.drivetrain.DriveConstants.TRACK_WIDTH;
 import static org.firstinspires.ftc.teamcode.subsystems.drivetrain.SampleMecanumDrive.getVelocityConstraint;
 
+import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
+import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.geometry.Vector2d;
 import com.arcrobotics.ftclib.command.CommandScheduler;
@@ -14,6 +16,8 @@ import com.arcrobotics.ftclib.command.SequentialCommandGroup;
 import com.arcrobotics.ftclib.command.WaitCommand;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+
+import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.commands.AutoDriveCommand;
 import org.firstinspires.ftc.teamcode.lib.roadrunner.trajectorysequence.TrajectorySequence;
 import org.firstinspires.ftc.teamcode.subsystems.AlphaLiftClaw;
@@ -172,10 +176,12 @@ public class Chamber1Plus3 extends LinearOpMode {
   public void runOpMode() throws InterruptedException {
     CommandScheduler.getInstance().reset();
 
+    Telemetry telemetry_M = new MultipleTelemetry(FtcDashboard.getInstance().getTelemetry(), telemetry);
+
     // Subsystems Initialized
-    lift = new Lift(hardwareMap, telemetry);
-    liftClaw = new AlphaLiftClaw(hardwareMap, telemetry);
-    slide = new AlphaSlide(hardwareMap, telemetry);
+    lift = new Lift(hardwareMap, telemetry_M);
+    liftClaw = new AlphaLiftClaw(hardwareMap, telemetry_M);
+    slide = new AlphaSlide(hardwareMap, telemetry_M);
 
     SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
 
@@ -201,11 +207,11 @@ public class Chamber1Plus3 extends LinearOpMode {
 //            .splineToConstantHeading(new Vector2d(48.77, -15.94), Math.toRadians(0.00))
 //            .build();
 
-    TrajectorySequence push2Blocks = drive.trajectorySequenceBuilder(chamber.toPose2d())
+    TrajectorySequence push2Blocks = drive.trajectorySequenceBuilder(new Pose2d(1.37, -49.37, Math.toRadians(90.00)))
             .splineToSplineHeading(new Pose2d(34.62, -27.69, Math.toRadians(90.00)), Math.toRadians(90.00))
-            .splineToConstantHeading(new Vector2d(44.57, -11.43), Math.toRadians(-70.00))
+            .splineToConstantHeading(new Vector2d(44.77, -14.54), Math.toRadians(-70.00))
             .lineToLinearHeading(new Pose2d(48.46, -53, Math.toRadians(90.00)), getVelocityConstraint(40, MAX_ANG_VEL, TRACK_WIDTH), SampleMecanumDrive.getACCEL_CONSTRAINT())
-            .splineToConstantHeading(new Vector2d(58.51, -12.34), Math.toRadians(-45.00))
+            .splineToConstantHeading(new Vector2d(57.69, -15.46), Math.toRadians(-45.00))
             .lineToLinearHeading(new Pose2d(59.08, -53, Math.toRadians(90.00)), getVelocityConstraint(50, MAX_ANG_VEL, TRACK_WIDTH), SampleMecanumDrive.getACCEL_CONSTRAINT())
 //            .splineToSplineHeading(new Pose2d(64.15, -14.54, Math.toRadians(180.00)), Math.toRadians(0.00))
 //            .lineToLinearHeading(new Pose2d(64.15, -56.31, Math.toRadians(180.00)))

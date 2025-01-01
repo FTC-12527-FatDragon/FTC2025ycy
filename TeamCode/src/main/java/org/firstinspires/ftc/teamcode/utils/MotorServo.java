@@ -43,10 +43,10 @@ public class MotorServo implements Servo {
         switch (motor.getDirection()){
             case FORWARD:
                 return Direction.FORWARD;
-                break;
+//                break;
             case REVERSE:
                 return Direction.REVERSE;
-                break;
+//                break;
             default:
                 RobotLog.ee("ServoMotor", "Invalid MotorEx Direction "+motor.getDirection());
         }
