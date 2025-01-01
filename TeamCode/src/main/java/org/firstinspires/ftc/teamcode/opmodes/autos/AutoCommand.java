@@ -39,8 +39,8 @@ public class AutoCommand {
     return new SequentialCommandGroup(
         liftClaw.closeClawCommand(),
             new InstantCommand(liftClaw::chamberWrist)
-            .alongWith(new InstantCommand(liftClaw::chamberLiftArm).andThen(new WaitCommand(500))),
-            lift.setGoalCommand(Lift.Goal.PRE_HANG)
+            .alongWith(new InstantCommand(liftClaw::chamberLiftArm)).alongWith(
+            lift.setGoalCommand(Lift.Goal.PRE_HANG))
     );
   }
 
@@ -48,15 +48,19 @@ public class AutoCommand {
     return new WaitCommand(500).deadlineWith(lift.setGoalCommand(Lift.Goal.HANG));
   }
 
+  public static Command chamberOpenClaw(AlphaLiftClaw liftClaw) {
+    return new InstantCommand(liftClaw::openClaw);
+  }
+
   public static Command chamberToGrab(Lift lift, AlphaLiftClaw liftClaw) {
     return new InstantCommand(liftClaw::openClaw)
-        .alongWith(new InstantCommand(liftClaw::grabWrist))
-        .alongWith(new InstantCommand(liftClaw::grabLiftArm))
-            .alongWith(lift.setGoalCommand(Lift.Goal.GRAB));
+        .andThen(new InstantCommand(liftClaw::grabWrist))
+        .andThen(new InstantCommand(liftClaw::grabLiftArm))
+            .andThen(lift.setGoalCommand(Lift.Goal.GRAB));
   }
 
   public static Command initialize(AlphaLiftClaw liftClaw, AlphaSlide slide) {
-    return new ParallelCommandGroup(
+    return new SequentialCommandGroup(
         new InstantCommand(liftClaw::initialize),
         new InstantCommand(liftClaw::stowWrist),
         liftClaw.foldLiftArmCommand(0),

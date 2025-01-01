@@ -153,7 +153,7 @@ public class Chamber1Plus3 extends LinearOpMode {
   //  public static double chamberX = 6.49;
   //  public static double chamberY = -30.74;
   public static double gap = 2;
-  public static Pose2dHelperClass chamber = new Pose2dHelperClass(6.49, -30, 90.00);
+  public static Pose2dHelperClass chamber = new Pose2dHelperClass(6.49, -29.5, 90.00);
   public static Pose2dHelperClass chamber1 = new Pose2dHelperClass(chamber.X - gap, chamber.Y, 90.00);
   public static Pose2dHelperClass chamber2 =
       new Pose2dHelperClass(chamber.X - gap * 2, chamber.Y, 90.00);
@@ -198,7 +198,7 @@ public class Chamber1Plus3 extends LinearOpMode {
     TrajectorySequence push2Blocks = drive.trajectorySequenceBuilder(new Pose2d(1.37, -49.37, Math.toRadians(90.00)))
             .splineToSplineHeading(new Pose2d(34.62, -27.69, Math.toRadians(90.00)), Math.toRadians(90.00))
             .splineToConstantHeading(new Vector2d(44.57, -11.43), Math.toRadians(-70.00))
-            .lineToLinearHeading(new Pose2d(48.46, -53, Math.toRadians(90.00)), getVelocityConstraint(45, MAX_ANG_VEL, TRACK_WIDTH), SampleMecanumDrive.getACCEL_CONSTRAINT())
+            .lineToLinearHeading(new Pose2d(48.46, -53, Math.toRadians(90.00)), getVelocityConstraint(40, MAX_ANG_VEL, TRACK_WIDTH), SampleMecanumDrive.getACCEL_CONSTRAINT())
             .splineToConstantHeading(new Vector2d(58.51, -12.34), Math.toRadians(-45.00))
             .lineToLinearHeading(new Pose2d(59.08, -53, Math.toRadians(90.00)), getVelocityConstraint(50, MAX_ANG_VEL, TRACK_WIDTH), SampleMecanumDrive.getACCEL_CONSTRAINT())
 //            .splineToSplineHeading(new Pose2d(64.15, -14.54, Math.toRadians(180.00)), Math.toRadians(0.00))
@@ -272,44 +272,69 @@ public class Chamber1Plus3 extends LinearOpMode {
                 initialize(liftClaw, slide),
                 new InstantCommand(() -> drive.setPoseEstimate(startToChamber.start())),
                 new AutoDriveCommand(drive, startToChamber)
-                    .alongWith(grabToPreHang(lift, liftClaw))
-                    .andThen(upToChamber(lift)),
-//                    new WaitCommand(500),
-                    stowArmFromBasket(lift, liftClaw),
+                    .alongWith(grabToPreHang(lift, liftClaw)),
+
+                    upToChamber(lift),
+                    chamberOpenClaw(liftClaw),
+                    lift.autoResetCommand(),
+
+//                    stowArmFromBasket(lift, liftClaw),
+
+                    chamberToGrab(lift, liftClaw),
+
 
                 new AutoDriveCommand(drive, push2Blocks),
 
-                new AutoDriveCommand(drive, pushToGrab).alongWith(chamberToGrab(lift, liftClaw)),
+                new AutoDriveCommand(drive, pushToGrab).andThen(chamberToGrab(lift, liftClaw)),
                     liftClaw.closeClawCommand(),
+                    grabToPreHang(lift, liftClaw),
+                    new AutoDriveCommand(drive, grabToChamber1),
 
-                new AutoDriveCommand(drive, grabToChamber1)
-                    .alongWith(grabToPreHang(lift, liftClaw).andThen(new WaitCommand(100))),
-                upToChamber(lift),
-                chamberToGrab(lift, liftClaw),
+                    upToChamber(lift),
+                    chamberOpenClaw(liftClaw),
+                    lift.autoResetCommand(),
+                    chamberToGrab(lift, liftClaw),
 
-                new AutoDriveCommand(drive, chamberToGrab)
-                        .alongWith(chamberToGrab(lift, liftClaw))
-                        .andThen(liftClaw.closeClawCommand()),
-                new AutoDriveCommand(drive, grabToChamber2)
-                        .andThen(grabToPreHang(lift, liftClaw)).andThen(new WaitCommand(100)),
-                upToChamber(lift),
-                chamberToGrab(lift, liftClaw),
+
+//                    stowArmFromBasket(lift, liftClaw),
 
                 new AutoDriveCommand(drive, chamberToGrab)
-                        .alongWith(chamberToGrab(lift, liftClaw))
+                        .andThen(chamberToGrab(lift, liftClaw))
                         .andThen(liftClaw.closeClawCommand()),
-                new AutoDriveCommand(drive, grabToChamber3)
-                        .andThen(grabToPreHang(lift, liftClaw)).andThen(new WaitCommand(100)),
-                upToChamber(lift),
-                chamberToGrab(lift, liftClaw),
+                    grabToPreHang(lift, liftClaw),
+                new AutoDriveCommand(drive, grabToChamber2),
 
-                new AutoDriveCommand(drive, chamberToGrab)
-                        .alongWith(chamberToGrab(lift, liftClaw))
-                        .andThen(liftClaw.closeClawCommand()),
-                new AutoDriveCommand(drive, grabToChamber4)
-                        .andThen(grabToPreHang(lift, liftClaw)).andThen(new WaitCommand(100)),
+
                 upToChamber(lift),
-                chamberToGrab(lift, liftClaw)
+                    chamberOpenClaw(liftClaw),
+                lift.autoResetCommand(),
+
+                chamberToGrab(lift, liftClaw),
+//                    stowArmFromBasket(lift, liftClaw),
+                new AutoDriveCommand(drive, chamberToGrab)
+                        .andThen(chamberToGrab(lift, liftClaw))
+                        .andThen(liftClaw.closeClawCommand()),
+                    grabToPreHang(lift, liftClaw),
+                new AutoDriveCommand(drive, grabToChamber3),
+
+
+                upToChamber(lift),
+                    chamberOpenClaw(liftClaw),
+                    lift.autoResetCommand(),
+chamberToGrab(lift, liftClaw),
+
+
+
+
+//                    stowArmFromBasket(lift, liftClaw),
+//                new AutoDriveCommand(drive, chamberToGrab)
+//                        .alongWith(chamberToGrab(lift, liftClaw))
+//                        .andThen(liftClaw.closeClawCommand()),
+//                new AutoDriveCommand(drive, grabToChamber4)
+//                        .alongWith(grabToPreHang(lift, liftClaw)),
+//                upToChamber(lift),
+//                chamberToGrab(lift, liftClaw),
+                new AutoDriveCommand(drive, chamberToGrab)
 
                 //                                    .andThen(new
                 // InstantCommand(liftClaw::closeClaw))

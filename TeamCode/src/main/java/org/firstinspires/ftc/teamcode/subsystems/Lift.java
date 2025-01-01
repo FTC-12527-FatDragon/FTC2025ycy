@@ -3,10 +3,12 @@ package org.firstinspires.ftc.teamcode.subsystems;
 import com.acmerobotics.dashboard.config.Config;
 import com.arcrobotics.ftclib.command.Command;
 import com.arcrobotics.ftclib.command.InstantCommand;
+import com.arcrobotics.ftclib.command.StartEndCommand;
 import com.arcrobotics.ftclib.command.WaitUntilCommand;
 import com.arcrobotics.ftclib.controller.PIDController;
 import com.arcrobotics.ftclib.controller.wpilibcontroller.ElevatorFeedforward;
 import com.arcrobotics.ftclib.hardware.motors.Motor;
+import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.VoltageSensor;
 import com.qualcomm.robotcore.util.ElapsedTime;
@@ -95,6 +97,16 @@ public class Lift extends MotorPIDSlideSubsystem {
     telemetry.addData("Lift.Current Position", getCurrentPosition());
     telemetry.addData("Lift.Error", pidController.getPositionError());
     // telemetry.update();
+  }
+  public Command autoResetCommand() {
+    return new StartEndCommand(
+            () -> {
+              runOpenLoop(-0.6);
+            },
+            () -> {
+              resetEncoder();
+            },
+            this);
   }
 
   public long getCurrentPosition() {
