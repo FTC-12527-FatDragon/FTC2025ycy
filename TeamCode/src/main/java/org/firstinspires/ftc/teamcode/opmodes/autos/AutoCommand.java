@@ -60,7 +60,7 @@ public class AutoCommand {
   }
 
   public static Command initialize(AlphaLiftClaw liftClaw, AlphaSlide slide) {
-    return new SequentialCommandGroup(
+    return new ParallelCommandGroup(
         new InstantCommand(liftClaw::initialize),
         new InstantCommand(liftClaw::stowWrist),
         liftClaw.foldLiftArmCommand(0),
