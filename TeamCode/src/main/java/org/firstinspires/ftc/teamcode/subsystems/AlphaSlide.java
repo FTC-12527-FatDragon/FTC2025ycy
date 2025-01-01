@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.subsystems;
 
+import static org.firstinspires.ftc.teamcode.subsystems.drivetrain.DriveConstants.currentRobot;
 import static org.firstinspires.ftc.teamcode.utils.ServoUtils.setServoPosCommand;
 
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
@@ -43,7 +44,7 @@ public class AlphaSlide extends SubsystemBase {
   public AlphaSlide(final HardwareMap hardwareMap, final Telemetry telemetry) {
     slideArmServo = hardwareMap.get(Servo.class, "slideArmServo"); // 0.5 up 0.9 half 1 down
 
-    if(DriveConstants.currentRobot== DriveConstants.RobotType.ALPHA){
+    if(currentRobot== DriveConstants.RobotType.ALPHA){
       slideRightServo = hardwareMap.get(Servo.class, "slideLeftServo");
     }else slideRightServo = new MotorServo(hardwareMap, "slideMotor");//
 
@@ -140,10 +141,10 @@ public class AlphaSlide extends SubsystemBase {
   }
 
   public enum Goal {
-    STOW(0.3, 0.4, 0.39, 0.4, 0.5),
-    AIM(slideExtensionVal, 0.32, 0.75, turnAngleDeg, 0.5),
-    GRAB(slideExtensionVal, 0.47, 0.75, turnAngleDeg, 0.24),
-    HANDOFF(0.3, 0.1, 0.39, 0.4, 0.24);
+    STOW(0.3, currentRobot==DriveConstants.RobotType.ALPHA?0.4:0.255, currentRobot==DriveConstants.RobotType.ALPHA?0.39:0.47, 0.4, currentRobot==DriveConstants.RobotType.ALPHA?0.5:0.7025),
+    AIM(slideExtensionVal, currentRobot==DriveConstants.RobotType.ALPHA?0.32:0.63, currentRobot==DriveConstants.RobotType.ALPHA?0.75:0.23, turnAngleDeg, currentRobot==DriveConstants.RobotType.ALPHA?0.5:0.7025),
+    GRAB(slideExtensionVal, currentRobot==DriveConstants.RobotType.ALPHA?0.47:0.8, currentRobot==DriveConstants.RobotType.ALPHA?0.75:0.23, turnAngleDeg, currentRobot==DriveConstants.RobotType.ALPHA?0.24:0.45),
+    HANDOFF(0.3, currentRobot==DriveConstants.RobotType.ALPHA?0.1:0.255, currentRobot==DriveConstants.RobotType.ALPHA?0.39:0.6, 0.4, currentRobot==DriveConstants.RobotType.ALPHA?0.24:0.45);
 
     private final double slideExtension;
     private final double slideArmPos;
@@ -266,10 +267,10 @@ public class AlphaSlide extends SubsystemBase {
   }
 
   public enum TurnServo {
-    LEFT_45(0.25),
-    DEG_0(0.4),
-    RIGHT_45(0.55),
-    RIGHT_90(0.7),
+    LEFT_45(currentRobot==DriveConstants.RobotType.ALPHA?0.25:0.715),
+    DEG_0(currentRobot==DriveConstants.RobotType.ALPHA?0.4:0.565),
+    RIGHT_45(currentRobot==DriveConstants.RobotType.ALPHA?0.55:0.45),
+    RIGHT_90(currentRobot==DriveConstants.RobotType.ALPHA?0.7:0.34),
     UNKNOWN(-1);
 
     private double turnAngleDeg;
