@@ -40,7 +40,7 @@ public class AutoCommand {
         liftClaw.closeClawCommand(),
         new InstantCommand(liftClaw::chamberWrist),
         new InstantCommand(liftClaw::chamberLiftArm),
-        lift.setGoalCommand(Lift.Goal.PRE_HANG, false)
+        lift.setGoalCommand(Lift.Goal.PRE_HANG)
     );
   }
 
@@ -56,7 +56,7 @@ public class AutoCommand {
     return new InstantCommand(liftClaw::openClaw)
         .andThen(new InstantCommand(liftClaw::grabWrist))
         .andThen(new InstantCommand(liftClaw::grabLiftArm))
-            .andThen(lift.setGoalCommand(Lift.Goal.GRAB));
+            .andThen(lift.setGoalCommand(Lift.Goal.GRAB, false));
   }
 
   public static Command initialize(AlphaLiftClaw liftClaw, AlphaSlide slide) {

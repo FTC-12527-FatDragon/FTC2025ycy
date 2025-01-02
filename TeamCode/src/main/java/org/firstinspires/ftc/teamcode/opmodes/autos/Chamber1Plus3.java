@@ -152,7 +152,7 @@ public class Chamber1Plus3 extends LinearOpMode {
   //          .build();
   //  public static double grabX = 36.60;
   //  public static double grabY = -60.31;
-  public static Pose2dHelperClass grab = new Pose2dHelperClass(34.97, -58.51, 90.00);
+  public static Pose2dHelperClass grab = new Pose2dHelperClass(36, -60, 90.00);
 
   //  public static double chamberX = 6.49;
   //  public static double chamberY = -30.74;
@@ -294,60 +294,51 @@ public class Chamber1Plus3 extends LinearOpMode {
             new SequentialCommandGroup(
                 initialize(liftClaw, slide),
                 new InstantCommand(() -> drive.setPoseEstimate(startToChamber.start())),
-                new AutoDriveCommand(drive, startToChamber).alongWith(new WaitCommand(300).deadlineWith(grabToPreHang(lift, liftClaw))),
+                new AutoDriveCommand(drive, startToChamber).alongWith(new WaitCommand(300).andThen(grabToPreHang(lift, liftClaw))),
 
-
-                    upToChamber(lift),
-
-
+                upToChamber(lift),
 
 //                    stowArmFromBasket(lift, liftClaw),
 
-                    chamberToGrab(lift, liftClaw),
+                new AutoDriveCommand(drive, push2Blocks).alongWith(chamberToGrab(lift, liftClaw)),
 //                    new WaitCommand(500).deadlineWith(lift.manualResetCommand()),
+//
+                new AutoDriveCommand(drive, pushToGrab),
+                        //.alongWith(new WaitCommand(500).deadlineWith(lift.manualResetCommand())),
+                liftClaw.closeClawCommand(),
 
 
-                new AutoDriveCommand(drive, push2Blocks),
+                new AutoDriveCommand(drive, grabToChamber1)
+                        .alongWith(new WaitCommand(300).andThen(grabToPreHang(lift, liftClaw))),
 
-                new AutoDriveCommand(drive, pushToGrab)
-                        .alongWith(new WaitCommand(500).deadlineWith(lift.manualResetCommand())),
-                    liftClaw.closeClawCommand(),
+                upToChamber(lift),
 
-
-                    new AutoDriveCommand(drive, grabToChamber1).alongWith(new WaitCommand(300).deadlineWith(grabToPreHang(lift, liftClaw))),
-
-                    upToChamber(lift),
-
-
-                    chamberToGrab(lift, liftClaw),
 //                    new WaitCommand(500).deadlineWith(lift.manualResetCommand()),
 
 //                    stowArmFromBasket(lift, liftClaw),
 
                 new AutoDriveCommand(drive, chamberToGrab)
-                        .alongWith(new WaitCommand(500).deadlineWith(lift.manualResetCommand()))
+                        .alongWith(chamberToGrab(lift, liftClaw))
+//                        .alongWith(new WaitCommand(500).deadlineWith(lift.manualResetCommand()))
                         .andThen(liftClaw.closeClawCommand()),
 
-                new AutoDriveCommand(drive, grabToChamber2).alongWith(new WaitCommand(300).deadlineWith(grabToPreHang(lift, liftClaw))),
+                new AutoDriveCommand(drive, grabToChamber2).alongWith(new WaitCommand(300).andThen(grabToPreHang(lift, liftClaw))),
 
 
                 upToChamber(lift),
 
 
-
-                    chamberToGrab(lift, liftClaw),
 //                    new WaitCommand(500).deadlineWith(lift.manualResetCommand()),
 //                    stowArmFromBasket(lift, liftClaw),
                 new AutoDriveCommand(drive, chamberToGrab)
-                        .alongWith(new WaitCommand(500).deadlineWith(lift.manualResetCommand()))
+                        .alongWith(chamberToGrab(lift, liftClaw))
+//                        .alongWith(new WaitCommand(500).deadlineWith(lift.manualResetCommand()))
                         .andThen(liftClaw.closeClawCommand()),
 
-                new AutoDriveCommand(drive, grabToChamber3).alongWith(new WaitCommand(300).deadlineWith(grabToPreHang(lift, liftClaw))),
+                new AutoDriveCommand(drive, grabToChamber3).alongWith(new WaitCommand(300).andThen(grabToPreHang(lift, liftClaw))),
 
 
                 upToChamber(lift),
-
-                    chamberToGrab(lift, liftClaw),
 //                    new WaitCommand(500).deadlineWith(lift.manualResetCommand()),
 
 
@@ -362,6 +353,7 @@ public class Chamber1Plus3 extends LinearOpMode {
 //                upToChamber(lift),
 //                chamberToGrab(lift, liftClaw),
                 new AutoDriveCommand(drive, chamberToGrab)
+                        .alongWith(chamberToGrab(lift, liftClaw))
 
                 //                                    .andThen(new
                 // InstantCommand(liftClaw::closeClaw))
@@ -377,34 +369,16 @@ public class Chamber1Plus3 extends LinearOpMode {
                 //                        new AutoDriveCommand(drive, chamberToFirst),
                 //                        new AutoDriveCommand(drive, firstToObservation),
                 ));
-    //                        new AutoDriveCommand(drive, observationToSecond),
-    //                        new AutoDriveCommand(drive, secondToObservation),
-    //                        new AutoDriveCommand(drive, observationToThird),
-    //                        new AutoDriveCommand(drive, thirdToObservation),
-    //                        new AutoDriveCommand(drive, observationToGrab)
-    //                            .andThen(grabToPreHang(lift, liftClaw)),
-    //                        new AutoDriveCommand(drive, grabToChamber)
-    //                            .andThen(upToChamber(lift))
-    //                            .andThen(chamberToGrab(lift, liftClaw)),
-    //                        new AutoDriveCommand(drive, chamberToGrab).andThen(grabToPreHang(lift,
-    // liftClaw)),
-    //                        new AutoDriveCommand(drive, grabToChamber)
-    //                            .andThen(upToChamber(lift))
-    //                            .andThen(chamberToGrab(lift, liftClaw)),
-    //                        new AutoDriveCommand(drive, chamberToGrab).andThen(grabToPreHang(lift,
-    // liftClaw)),
-    //                        new AutoDriveCommand(drive, grabToChamber)
-    //                            .andThen(upToChamber(lift))
-    //                            .andThen(chamberToGrab(lift, liftClaw)),
-    //                        new AutoDriveCommand(drive, chamberToAscent)
-    //                            .alongWith(autoFinish(liftClaw, lift, slide))
-    //            ));
 
     waitForStart();
 
+    int i=0;
     while (opModeIsActive() && !isStopRequested()) {
       CommandScheduler.getInstance().run();
       lift.periodicTest();
+      telemetry_M.addData("Iterative count", i);
+      i++;
+      telemetry_M.update();
     }
   }
 }
