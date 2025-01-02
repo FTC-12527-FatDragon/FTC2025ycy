@@ -17,6 +17,7 @@ import com.arcrobotics.ftclib.command.SequentialCommandGroup;
 import com.arcrobotics.ftclib.command.WaitCommand;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.commands.AutoDriveCommand;
@@ -50,59 +51,11 @@ public class Chamber1Plus3 extends LinearOpMode {
   //  public static double startY = -64.95;
   public static Pose2dHelperClass start = new Pose2dHelperClass(24.43, -64.95, 90.00);
 
-  TrajectorySequence push2Blocks = drive.trajectorySequenceBuilder(new Pose2d(1.37, -49.37, Math.toRadians(90.00)))
-          .splineToSplineHeading(new Pose2d(34.62, -27.69, Math.toRadians(90.00)), Math.toRadians(90.00))
-          .splineToConstantHeading(new Vector2d(44.77, -14.54), Math.toRadians(-70.00))
-          .lineToLinearHeading(new Pose2d(48.46, -53, Math.toRadians(90.00)), getVelocityConstraint(40, MAX_ANG_VEL, TRACK_WIDTH), SampleMecanumDrive.getACCEL_CONSTRAINT())
-          .splineToConstantHeading(new Vector2d(57.69, -15.46), Math.toRadians(-45.00))
-          .lineToLinearHeading(new Pose2d(59.08, -53, Math.toRadians(90.00)), getVelocityConstraint(50, MAX_ANG_VEL, TRACK_WIDTH), SampleMecanumDrive.getACCEL_CONSTRAINT())
-//            .splineToSplineHeading(new Pose2d(64.15, -14.54, Math.toRadians(180.00)), Math.toRadians(0.00))
-//            .lineToLinearHeading(new Pose2d(64.15, -56.31, Math.toRadians(180.00)))
-          .build(); // push 2 blocks
-
-  TrajectorySequence pushToGrab =
-          drive
-                  .trajectorySequenceBuilder(push2Blocks.end())
-                  .lineToSplineHeading(new Pose2d(36.60, -60.31, Math.toRadians(90.00)))
-                  .build(); // push end to grab
-
-  TrajectorySequence chamberToGrab = drive.trajectorySequenceBuilder(chamber3.toPose2d())
-          .lineToConstantHeading(grab.toVector2d())
-          .build();
-
-  TrajectorySequence grabToChamber1 =
-          drive
-                  .trajectorySequenceBuilder(grab.toPose2d())
-                  .lineToSplineHeading(chamber1.toPose2d())
-                  .build(); // grab to chamber1
-  TrajectorySequence grabToChamber2 =
-          drive
-                  .trajectorySequenceBuilder(grab.toPose2d())
-                  .lineToSplineHeading(chamber2.toPose2d())
-                  .build(); // grab to chamber2
-  TrajectorySequence grabToChamber3 =
-          drive
-                  .trajectorySequenceBuilder(grab.toPose2d())
-                  .lineToSplineHeading(chamber3.toPose2d())
-                  .build(); // grab to chamber3
-
-  TrajectorySequence grabToChamber4 =
-          drive
-                  .trajectorySequenceBuilder(grab.toPose2d())
-                  .lineToSplineHeading(chamber4.toPose2d())
-                  .build();
-
-  TrajectorySequence startToChamber =
-          drive
-                  .trajectorySequenceBuilder(start.toPose2d())
-                  .lineToConstantHeading(chamber.toVector2d())
-                  .build(); // start to chamber
-
   public static long Grab2ChamberUpperDelay = 500;
 
-  public static SampleMecanumDrive drive;
-  
-  public Command obersvationToChamberCycle(TrajectorySequence toChamberSequence){
+  private SampleMecanumDrive drive;
+
+  public Command obersvationToChamberCycle(TrajectorySequence toChamberSequence, TrajectorySequence chamberToGrab){
     return new SequentialCommandGroup(
             liftClaw.closeClawCommand(),
 
@@ -129,6 +82,54 @@ public class Chamber1Plus3 extends LinearOpMode {
 
     drive = new SampleMecanumDrive(hardwareMap);
 
+    TrajectorySequence push2Blocks = drive.trajectorySequenceBuilder(new Pose2d(1.37, -49.37, Math.toRadians(90.00)))
+            .splineToSplineHeading(new Pose2d(34.62, -27.69, Math.toRadians(90.00)), Math.toRadians(90.00))
+            .splineToConstantHeading(new Vector2d(44.77, -14.54), Math.toRadians(-70.00))
+            .lineToLinearHeading(new Pose2d(48.46, -53, Math.toRadians(90.00)), getVelocityConstraint(40, MAX_ANG_VEL, TRACK_WIDTH), SampleMecanumDrive.getACCEL_CONSTRAINT())
+            .splineToConstantHeading(new Vector2d(57.69, -15.46), Math.toRadians(-45.00))
+            .lineToLinearHeading(new Pose2d(59.08, -53, Math.toRadians(90.00)), getVelocityConstraint(50, MAX_ANG_VEL, TRACK_WIDTH), SampleMecanumDrive.getACCEL_CONSTRAINT())
+//            .splineToSplineHeading(new Pose2d(64.15, -14.54, Math.toRadians(180.00)), Math.toRadians(0.00))
+//            .lineToLinearHeading(new Pose2d(64.15, -56.31, Math.toRadians(180.00)))
+            .build(); // push 2 blocks
+
+    TrajectorySequence pushToGrab =
+            drive
+                    .trajectorySequenceBuilder(push2Blocks.end())
+                    .lineToSplineHeading(new Pose2d(36.60, -60.31, Math.toRadians(90.00)))
+                    .build(); // push end to grab
+
+    TrajectorySequence chamberToGrab = drive.trajectorySequenceBuilder(chamber3.toPose2d())
+            .lineToConstantHeading(grab.toVector2d())
+            .build();
+
+    TrajectorySequence grabToChamber1 =
+            drive
+                    .trajectorySequenceBuilder(grab.toPose2d())
+                    .lineToSplineHeading(chamber1.toPose2d())
+                    .build(); // grab to chamber1
+    TrajectorySequence grabToChamber2 =
+            drive
+                    .trajectorySequenceBuilder(grab.toPose2d())
+                    .lineToSplineHeading(chamber2.toPose2d())
+                    .build(); // grab to chamber2
+    TrajectorySequence grabToChamber3 =
+            drive
+                    .trajectorySequenceBuilder(grab.toPose2d())
+                    .lineToSplineHeading(chamber3.toPose2d())
+                    .build(); // grab to chamber3
+
+    TrajectorySequence grabToChamber4 =
+            drive
+                    .trajectorySequenceBuilder(grab.toPose2d())
+                    .lineToSplineHeading(chamber4.toPose2d())
+                    .build();
+
+    TrajectorySequence startToChamber =
+            drive
+                    .trajectorySequenceBuilder(start.toPose2d())
+                    .lineToConstantHeading(chamber.toVector2d())
+                    .build(); // start to chamber
+
     // Score the first chamber
     // Push all three samples to the observation zone
     // Repeatedly score the high chamber with slightly different
@@ -150,11 +151,11 @@ public class Chamber1Plus3 extends LinearOpMode {
                 new AutoDriveCommand(drive, pushToGrab),
                         //.alongWith(new WaitCommand(500).deadlineWith(lift.manualResetCommand()))
 
-                obersvationToChamberCycle(grabToChamber1),
+                obersvationToChamberCycle(grabToChamber1, chamberToGrab),
 
-                obersvationToChamberCycle(grabToChamber2),
+                obersvationToChamberCycle(grabToChamber2, chamberToGrab),
 
-                obersvationToChamberCycle(grabToChamber3)
+                obersvationToChamberCycle(grabToChamber3, chamberToGrab)
 
                 //                                    .andThen(new
                 // InstantCommand(liftClaw::closeClaw))
