@@ -44,7 +44,7 @@ public class AutoCommand {
   }
 
   public static Command grabToPreHang(Lift lift, AlphaLiftClaw liftClaw){
-    return liftClaw.closeClawCommand().andThen(toPreHang(lift, liftClaw))
+    return liftClaw.closeClawCommand().andThen(toPreHang(lift, liftClaw));
   }
 
   public static Command upToChamber(Lift lift) {

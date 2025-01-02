@@ -104,7 +104,7 @@ public class AlphaCar extends CommandOpMode {
             slide
                 .handoffCommand()
                 .alongWith(new InstantCommand(liftClaw::openClaw))
-                .andThen(new WaitCommand(600))
+                .andThen(new WaitCommand(200))
                 .andThen(liftClaw.closeClawCommand())
                 .andThen(new InstantCommand(() -> slide.openIntakeClaw()));
 

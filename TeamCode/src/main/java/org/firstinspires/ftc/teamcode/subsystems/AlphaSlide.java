@@ -94,7 +94,7 @@ public class AlphaSlide extends SubsystemBase {
         new InstantCommand(() -> wristServo.setPosition(Goal.HANDOFF.wristPos)),
         new WaitCommand(200),
         new InstantCommand(() -> slideArmServo.setPosition(Goal.HANDOFF.slideArmPos)),
-        new WaitCommand(300),
+        new WaitCommand(200),
         new InstantCommand(() -> slideExtensionVal = Goal.HANDOFF.slideExtension));
   }
 

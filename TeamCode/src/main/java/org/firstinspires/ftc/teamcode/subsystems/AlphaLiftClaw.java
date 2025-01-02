@@ -6,6 +6,7 @@ import static org.firstinspires.ftc.teamcode.utils.ServoUtils.setServoPosCommand
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.arcrobotics.ftclib.command.Command;
+import com.arcrobotics.ftclib.command.ConditionalCommand;
 import com.arcrobotics.ftclib.command.InstantCommand;
 import com.arcrobotics.ftclib.command.SubsystemBase;
 import com.qualcomm.robotcore.hardware.HardwareMap;
@@ -55,11 +56,15 @@ public class AlphaLiftClaw extends SubsystemBase {
   }
 
   public Command switchLiftClawCommand() {
-    if (liftClawServo.getPosition() != ServoPositions.GRAB.liftClawPosition) {
-      return new InstantCommand(this::openClaw);
-    } else {
-      return closeClawCommand();
-    }
+    return new ConditionalCommand(
+            new InstantCommand(this::openClaw),
+            closeClawCommand(),
+            () -> liftClawServo.getPosition() != ServoPositions.GRAB.liftClawPosition
+    );
+  }
+
+  public void debugClaw() {
+    telemetry.addData("liftClawPos", liftClawServo.getPosition());
   }
 
   public void openClaw() {
@@ -95,7 +100,7 @@ public class AlphaLiftClaw extends SubsystemBase {
   }
 
   public enum ServoPositions {
-    STOW(currentRobot==DriveConstants.RobotType.ALPHA?0.81:0.83, currentRobot==DriveConstants.RobotType.ALPHA?0.33:0.35, currentRobot==DriveConstants.RobotType.ALPHA?0.63:0.595),
+    STOW(currentRobot==DriveConstants.RobotType.ALPHA?0.83:0.83, currentRobot==DriveConstants.RobotType.ALPHA?0.33:0.35, currentRobot==DriveConstants.RobotType.ALPHA?0.58:0.595),
     CHAMBER(currentRobot==DriveConstants.RobotType.ALPHA?0.64:0.66, currentRobot==DriveConstants.RobotType.ALPHA?0.33:0.35, currentRobot==DriveConstants.RobotType.ALPHA?0.27:0.47),
     BASKET(currentRobot==DriveConstants.RobotType.ALPHA?0.43:0.46, currentRobot==DriveConstants.RobotType.ALPHA?0.33:0.35, 0.5),
     GRAB(currentRobot== DriveConstants.RobotType.ALPHA?0.21:0.225, currentRobot==DriveConstants.RobotType.ALPHA?0.7:0.7025, currentRobot==DriveConstants.RobotType.ALPHA?0.08:0.39);
