@@ -82,12 +82,12 @@ public class Chamber1Plus3 extends LinearOpMode {
 
     drive = new SampleMecanumDrive(hardwareMap);
 
-    TrajectorySequence push2Blocks = drive.trajectorySequenceBuilder(new Pose2d(1.37, -49.37, Math.toRadians(90.00)))
-            .lineToConstantHeading(new Vector2d(18.69, -31.62))
+    TrajectorySequence push2Blocks = drive.trajectorySequenceBuilder(new Pose2d(2.54, -32.08, Math.toRadians(90.00)))
+            .lineToConstantHeading(new Vector2d(14.17, -38.86))
             .splineToConstantHeading(new Vector2d(34.62, -27.69), Math.toRadians(90.00))
-            .splineToConstantHeading(new Vector2d(44.77, -14.54), Math.toRadians(-70.00))
+            .splineToConstantHeading(new Vector2d(46.86, -18.29), Math.toRadians(-70.00))
             .lineToLinearHeading(new Pose2d(48.46, -53, Math.toRadians(90.00)), getVelocityConstraint(40, MAX_ANG_VEL, TRACK_WIDTH), SampleMecanumDrive.getACCEL_CONSTRAINT())
-            .splineToConstantHeading(new Vector2d(57.69, -15.46), Math.toRadians(-45.00))
+            .splineToConstantHeading(new Vector2d(57.60, -13.26), Math.toRadians(-45.00))
             .lineToLinearHeading(new Pose2d(59.08, -53, Math.toRadians(90.00)), getVelocityConstraint(50, MAX_ANG_VEL, TRACK_WIDTH), SampleMecanumDrive.getACCEL_CONSTRAINT())
 //            .splineToSplineHeading(new Pose2d(64.15, -14.54, Math.toRadians(180.00)), Math.toRadians(0.00))
 //            .lineToLinearHeading(new Pose2d(64.15, -56.31, Math.toRadians(180.00)))
