@@ -114,6 +114,6 @@ public class AlphaLiftClaw extends SubsystemBase {
   @Override
   public void periodic() {
     telemetry.addData("Lift Arm Position", liftArmServo.getPosition());
-    telemetry.update();
+//    telemetry.update();
   }
 }
