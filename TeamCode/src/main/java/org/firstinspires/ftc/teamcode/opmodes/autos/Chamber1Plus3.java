@@ -47,6 +47,8 @@ public class Chamber1Plus3 extends LinearOpMode {
   public static Pose2dHelperClass chamber4 =
           new Pose2dHelperClass(chamber.X - gap * 4, chamber.Y, 90.00);
 
+  public static Pose2dHelperClass sample1Observation = new Pose2dHelperClass(48.46, -53, 90);
+
   //  public static double startX = 24.43;
   //  public static double startY = -64.95;
   public static Pose2dHelperClass start = new Pose2dHelperClass(24.43, -64.95, 90.00);
@@ -85,8 +87,9 @@ public class Chamber1Plus3 extends LinearOpMode {
     TrajectorySequence push2Blocks = drive.trajectorySequenceBuilder(new Pose2d(2.54, -32.08, Math.toRadians(90.00)))
             .lineToConstantHeading(new Vector2d(14.17, -38.86))
             .splineToConstantHeading(new Vector2d(34.62, -27.69), Math.toRadians(90.00))
-            .splineToConstantHeading(new Vector2d(46.86, -18.29), Math.toRadians(-70.00))
-            .lineToLinearHeading(new Pose2d(48.46, -53, Math.toRadians(90.00)), getVelocityConstraint(40, MAX_ANG_VEL, TRACK_WIDTH), SampleMecanumDrive.getACCEL_CONSTRAINT())
+            .splineToConstantHeading(new Vector2d(44.77, -14.54), Math.toRadians(-70.00))
+            .lineToLinearHeading(sample1Observation.toPose2d(), getVelocityConstraint(40, MAX_ANG_VEL, TRACK_WIDTH), SampleMecanumDrive.getACCEL_CONSTRAINT())
+            .lineToLinearHeading(sample1Observation.toPose2d().plus(new Pose2d(0, 2, 0)))
             .splineToConstantHeading(new Vector2d(57.60, -13.26), Math.toRadians(-45.00))
             .lineToLinearHeading(new Pose2d(59.08, -53, Math.toRadians(90.00)), getVelocityConstraint(50, MAX_ANG_VEL, TRACK_WIDTH), SampleMecanumDrive.getACCEL_CONSTRAINT())
 //            .splineToSplineHeading(new Pose2d(64.15, -14.54, Math.toRadians(180.00)), Math.toRadians(0.00))
