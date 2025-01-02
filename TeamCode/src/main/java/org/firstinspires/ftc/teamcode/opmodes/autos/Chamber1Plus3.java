@@ -99,7 +99,8 @@ public class Chamber1Plus3 extends LinearOpMode {
                     .build(); // push end to grab
 
     TrajectorySequence chamberToGrab = drive.trajectorySequenceBuilder(chamber3.toPose2d())
-            .lineToConstantHeading(grab.toVector2d())
+            .lineToConstantHeading(chamber3.toVector2d().plus(new Vector2d(0, -12)))
+            .splineToConstantHeading(grab.toVector2d(), Math.toRadians(-90))
             .build();
 
     TrajectorySequence grabToChamber1 =
