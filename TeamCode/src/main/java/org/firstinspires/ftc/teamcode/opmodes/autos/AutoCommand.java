@@ -35,13 +35,16 @@ public class AutoCommand {
         .andThen(new InstantCommand(slide::openIntakeClaw));
   }
 
-  public static Command grabToPreHang(Lift lift, AlphaLiftClaw liftClaw) {
+  public static Command toPreHang(Lift lift, AlphaLiftClaw liftClaw) {
     return new SequentialCommandGroup(
-        liftClaw.closeClawCommand(),
         new InstantCommand(liftClaw::chamberWrist),
         new InstantCommand(liftClaw::chamberLiftArm),
         lift.setGoalCommand(Lift.Goal.PRE_HANG)
     );
+  }
+
+  public static Command grabToPreHang(Lift lift, AlphaLiftClaw liftClaw){
+    return liftClaw.closeClawCommand().andThen(toPreHang(lift, liftClaw))
   }
 
   public static Command upToChamber(Lift lift) {
