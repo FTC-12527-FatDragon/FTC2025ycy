@@ -141,10 +141,10 @@ public class AlphaSlide extends SubsystemBase {
   }
 
   public enum Goal {
-    STOW(0.3, currentRobot==DriveConstants.RobotType.ALPHA?0.4:0.255, currentRobot==DriveConstants.RobotType.ALPHA?0.39:0.47, 0.4, currentRobot==DriveConstants.RobotType.ALPHA?0.5:0.7025),
-    AIM(slideExtensionVal, currentRobot==DriveConstants.RobotType.ALPHA?0.32:0.63, currentRobot==DriveConstants.RobotType.ALPHA?0.75:0.23, turnAngleDeg, currentRobot==DriveConstants.RobotType.ALPHA?0.5:0.7025),
-    GRAB(slideExtensionVal, currentRobot==DriveConstants.RobotType.ALPHA?0.47:0.8, currentRobot==DriveConstants.RobotType.ALPHA?0.75:0.23, turnAngleDeg, currentRobot==DriveConstants.RobotType.ALPHA?0.24:0.45),
-    HANDOFF(0.3, currentRobot==DriveConstants.RobotType.ALPHA?0.1:0.255, currentRobot==DriveConstants.RobotType.ALPHA?0.39:0.6, 0.4, currentRobot==DriveConstants.RobotType.ALPHA?0.24:0.45);
+    STOW(0.3, currentRobot==DriveConstants.RobotType.ALPHA?0.4:0.255, currentRobot==DriveConstants.RobotType.ALPHA?0.39:0.47, 0.4, currentRobot==DriveConstants.RobotType.ALPHA?0.5:0.35),
+    AIM(slideExtensionVal, currentRobot==DriveConstants.RobotType.ALPHA?0.32:0.63, currentRobot==DriveConstants.RobotType.ALPHA?0.75:0.23, turnAngleDeg, currentRobot==DriveConstants.RobotType.ALPHA?0.5:0.35),
+    GRAB(slideExtensionVal, currentRobot==DriveConstants.RobotType.ALPHA?0.47:0.8, currentRobot==DriveConstants.RobotType.ALPHA?0.75:0.23, turnAngleDeg, currentRobot==DriveConstants.RobotType.ALPHA?0.24:0.63),
+    HANDOFF(0.3, currentRobot==DriveConstants.RobotType.ALPHA?0.1:0.255, currentRobot==DriveConstants.RobotType.ALPHA?0.39:0.6, 0.4, currentRobot==DriveConstants.RobotType.ALPHA?0.24:0.35);
 
     private final double slideExtension;
     private final double slideArmPos;
@@ -305,6 +305,10 @@ public class AlphaSlide extends SubsystemBase {
       telemetry.addData("Slide Extension", slideExtensionVal);
       telemetry.addData("Turn Angle", turnAngleDeg);
       telemetry.addData("SLideServo Position", slideRightServo.getPosition());
+    }
+
+    if (currentRobot == DriveConstants.RobotType.DELTA) {
+      ((MotorServo)slideRightServo).update();
     }
     // slidetelemetry.update();
   }
