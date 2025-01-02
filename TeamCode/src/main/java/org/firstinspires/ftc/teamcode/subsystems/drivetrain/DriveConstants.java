@@ -22,7 +22,7 @@ import org.firstinspires.ftc.teamcode.utils.Translation2dHelperClass;
  */
 @Config
 public class DriveConstants {
-  public static final RobotType currentRobot = RobotType.ALPHA;
+  public static final RobotType currentRobot = RobotType.DELTA;
 
   public enum RobotType {
     ALPHA,
@@ -114,10 +114,11 @@ public class DriveConstants {
   static {
     switch (currentRobot) {
       case ALPHA:
+        isReflected = false;
         GoBildaXLocalizerDirection = GoBildaPinpointDriver.EncoderDirection.FORWARD;
         GoBildaYLocalizerDirection = GoBildaPinpointDriver.EncoderDirection.FORWARD;
         GoBildaLocalizerEncoderResolution =
-            GoBildaPinpointDriver.GoBildaOdometryPods.goBILDA_SWINGARM_POD;
+                GoBildaPinpointDriver.GoBildaOdometryPods.goBILDA_SWINGARM_POD;
         GoBildaLocalizerPerpendicularOffset = new Translation2dHelperClass(97, 108);
         TRACK_WIDTH = 10.26;
         kV = 0.015;
@@ -125,6 +126,20 @@ public class DriveConstants {
         kStatic = 0.05;
         MAX_VEL = 62.89457585940184;
         MAX_ANG_VEL = Math.toRadians(134.16);
+        break;
+      case DELTA:
+        GoBildaXLocalizerDirection = GoBildaPinpointDriver.EncoderDirection.FORWARD;
+        GoBildaYLocalizerDirection = GoBildaPinpointDriver.EncoderDirection.FORWARD;
+        GoBildaLocalizerEncoderResolution =
+                GoBildaPinpointDriver.GoBildaOdometryPods.goBILDA_SWINGARM_POD;
+        GoBildaLocalizerPerpendicularOffset = new Translation2dHelperClass(97, 108);
+        TRACK_WIDTH = 10.26;
+        kV = 0.015;
+        kA = 0.0022;
+        kStatic = 0.05;
+        MAX_VEL = 62.89457585940184;
+        MAX_ANG_VEL = Math.toRadians(134.16);
+        isReflected = true;
         break;
       case BETA:
         GoBildaXLocalizerDirection = GoBildaPinpointDriver.EncoderDirection.FORWARD;
