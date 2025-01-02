@@ -104,7 +104,7 @@ public class AlphaCar extends CommandOpMode {
             slide
                 .handoffCommand()
                 .alongWith(new InstantCommand(liftClaw::openClaw))
-                .andThen(new WaitCommand(200))
+                .andThen(new WaitCommand(400))
                 .andThen(liftClaw.closeClawCommand())
                 .andThen(new InstantCommand(() -> slide.openIntakeClaw()));
 
@@ -120,12 +120,10 @@ public class AlphaCar extends CommandOpMode {
                     () -> !slide.isSlideForward())
                 .alongWith(
                     new InstantCommand(() -> slide.handoffWristTurn())
-                        .alongWith(
-                            handoffCommand
-                                .get()
-                                .andThen(new WaitCommand(50))
-                                .andThen(new InstantCommand(() -> isPureHandoffComplete = true))),
-                    new InstantCommand()),
+                            .alongWith(
+                                    handoffCommand.get()
+                            .andThen(new WaitCommand(50))
+                            .andThen(new InstantCommand(() -> isPureHandoffComplete = true)))),
             false);
 
     // Chamber Command from Grab

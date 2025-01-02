@@ -35,10 +35,10 @@ public class Chamber1Plus3 extends LinearOpMode {
   Lift lift;
   AlphaSlide slide;
 
-  public static Pose2dHelperClass grab = new Pose2dHelperClass(36, -60, 90.00);
+  public static Pose2dHelperClass grab = new Pose2dHelperClass(36, -58, 90.00);
 
   public static double gap = 2;
-  public static Pose2dHelperClass chamber = new Pose2dHelperClass(6.49, -29.5, 90.00);
+  public static Pose2dHelperClass chamber = new Pose2dHelperClass(5.49, -29.5, 90.00);
   public static Pose2dHelperClass chamber1 = new Pose2dHelperClass(chamber.X - gap, chamber.Y, 90.00);
   public static Pose2dHelperClass chamber2 =
       new Pose2dHelperClass(chamber.X - gap * 2, chamber.Y, 90.00);
@@ -99,9 +99,13 @@ public class Chamber1Plus3 extends LinearOpMode {
                     .build(); // push end to grab
 
     TrajectorySequence chamberToGrab = drive.trajectorySequenceBuilder(chamber3.toPose2d())
-            .lineToConstantHeading(chamber3.toVector2d().plus(new Vector2d(0, -12)))
+            .lineToConstantHeading(chamber3.toVector2d().plus(new Vector2d(0, -1)))
             .splineToConstantHeading(grab.toVector2d(), Math.toRadians(-90))
             .build();
+
+
+
+
 
     TrajectorySequence grabToChamber1 =
             drive

@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.subsystems;
 import static org.firstinspires.ftc.teamcode.subsystems.drivetrain.DriveConstants.currentRobot;
 import static org.firstinspires.ftc.teamcode.utils.ServoUtils.setServoPosCommand;
 
+import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.arcrobotics.ftclib.command.Command;
 import com.arcrobotics.ftclib.command.ConditionalCommand;
@@ -19,6 +20,7 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.subsystems.drivetrain.DriveConstants;
 import org.firstinspires.ftc.teamcode.utils.MotorServo;
 
+@Config
 public class AlphaSlide extends SubsystemBase {
 
   // aimCommand
@@ -28,7 +30,7 @@ public class AlphaSlide extends SubsystemBase {
   private final Servo intakeClawServo, wristServo, wristTurnServo;
   private final Servo slideArmServo, slideRightServo;
   private boolean hasGamepiece = false;
-  private static double slideExtensionVal = 0.3;
+  private static double slideExtensionVal = 0.21;
   private SlideServo slideServo = SlideServo.BACK;
 
   private static double turnAngleDeg = 0;
@@ -141,10 +143,10 @@ public class AlphaSlide extends SubsystemBase {
   }
 
   public enum Goal {
-    STOW(0.3, currentRobot==DriveConstants.RobotType.ALPHA?0.4:0.255, currentRobot==DriveConstants.RobotType.ALPHA?0.39:0.47, 0.4, currentRobot==DriveConstants.RobotType.ALPHA?0.5:0.35),
+    STOW(-1, currentRobot==DriveConstants.RobotType.ALPHA?0.4:0.255, currentRobot==DriveConstants.RobotType.ALPHA?0.39:0.47, 0.4, currentRobot==DriveConstants.RobotType.ALPHA?0.5:0.35),
     AIM(slideExtensionVal, currentRobot==DriveConstants.RobotType.ALPHA?0.32:0.63, currentRobot==DriveConstants.RobotType.ALPHA?0.75:0.23, turnAngleDeg, currentRobot==DriveConstants.RobotType.ALPHA?0.5:0.35),
     GRAB(slideExtensionVal, currentRobot==DriveConstants.RobotType.ALPHA?0.47:0.8, currentRobot==DriveConstants.RobotType.ALPHA?0.75:0.23, turnAngleDeg, currentRobot==DriveConstants.RobotType.ALPHA?0.24:0.63),
-    HANDOFF(0.3, currentRobot==DriveConstants.RobotType.ALPHA?0.1:0.255, currentRobot==DriveConstants.RobotType.ALPHA?0.39:0.6, 0.4, currentRobot==DriveConstants.RobotType.ALPHA?0.24:0.35);
+    HANDOFF(0.22, currentRobot==DriveConstants.RobotType.ALPHA?0.1:0.255, currentRobot==DriveConstants.RobotType.ALPHA?0.39:0.6, 0.4, currentRobot==DriveConstants.RobotType.ALPHA?0.24:0.35);
 
     private final double slideExtension;
     private final double slideArmPos;
@@ -200,7 +202,7 @@ public class AlphaSlide extends SubsystemBase {
     }
   }
 
-  private final double preHandoffSlideExtendedVal = 0.37;
+  private final double preHandoffSlideExtendedVal = 0.25;
 
   public void preHandoffSlideExtension() {
     slideExtensionVal = preHandoffSlideExtendedVal;
@@ -281,9 +283,9 @@ public class AlphaSlide extends SubsystemBase {
   }
 
   enum SlideServo {
-    FRONT(currentRobot == DriveConstants.RobotType.ALPHA ? 0.71 : 500),
-    MIDDLE(currentRobot == DriveConstants.RobotType.ALPHA ? 0.48 : 350),
-    BACK(currentRobot == DriveConstants.RobotType.ALPHA ? 0.31 : 0);
+    FRONT(currentRobot == DriveConstants.RobotType.ALPHA ? 0.42 : 500),
+    MIDDLE(currentRobot == DriveConstants.RobotType.ALPHA ? 0.3 : 350),
+    BACK(currentRobot == DriveConstants.RobotType.ALPHA ? 0.21 : 0);
 
     private double extensionVal;
 
