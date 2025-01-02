@@ -51,7 +51,7 @@ public class Chamber1Plus3 extends LinearOpMode {
   //  public static double startY = -64.95;
   public static Pose2dHelperClass start = new Pose2dHelperClass(24.43, -64.95, 90.00);
 
-  public static long Grab2ChamberUpperDelay = 500;
+  public static long Grab2ChamberUpperDelay = 0;
 
   private SampleMecanumDrive drive;
 
@@ -83,7 +83,8 @@ public class Chamber1Plus3 extends LinearOpMode {
     drive = new SampleMecanumDrive(hardwareMap);
 
     TrajectorySequence push2Blocks = drive.trajectorySequenceBuilder(new Pose2d(1.37, -49.37, Math.toRadians(90.00)))
-            .splineToSplineHeading(new Pose2d(34.62, -27.69, Math.toRadians(90.00)), Math.toRadians(90.00))
+            .lineToConstantHeading(new Vector2d(18.69, -31.62))
+            .splineToConstantHeading(new Vector2d(34.62, -27.69), Math.toRadians(90.00))
             .splineToConstantHeading(new Vector2d(44.77, -14.54), Math.toRadians(-70.00))
             .lineToLinearHeading(new Pose2d(48.46, -53, Math.toRadians(90.00)), getVelocityConstraint(40, MAX_ANG_VEL, TRACK_WIDTH), SampleMecanumDrive.getACCEL_CONSTRAINT())
             .splineToConstantHeading(new Vector2d(57.69, -15.46), Math.toRadians(-45.00))
