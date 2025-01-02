@@ -71,10 +71,6 @@ public class AlphaLiftClaw extends SubsystemBase {
     liftClawServo.setPosition(ServoPositions.GRAB.liftClawPosition);
   }
 
-  public void closeClaw() {
-    liftClawServo.setPosition(ServoPositions.STOW.liftClawPosition);
-  }
-
   public Command closeClawCommand(long delay) {
     return setServoPosCommand(liftClawServo, ServoPositions.STOW.liftClawPosition, delay);
   }
@@ -85,10 +81,6 @@ public class AlphaLiftClaw extends SubsystemBase {
 
   public void upLiftArm() {
     liftArmServo.setPosition(ServoPositions.BASKET.liftArmPosition);
-  }
-
-  public void foldLiftArm() {
-    liftArmServo.setPosition(ServoPositions.STOW.liftArmPosition);
   }
 
   public Command foldLiftArmCommand(long delay) {
