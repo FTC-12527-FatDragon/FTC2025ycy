@@ -12,7 +12,7 @@ import org.firstinspires.ftc.teamcode.subsystems.drivetrain.TrajectoryManager;
 import org.firstinspires.ftc.teamcode.utils.Pose2dHelperClass;
 
 @Config
-@Autonomous(name = "Basket 1+3", group = "Autos")
+@Autonomous(name = "Basket 1+3 Developing", group = "Autos")
 public class Basket1Plus3 extends AutoCommandBase {
   public static boolean isAscent = true;
 

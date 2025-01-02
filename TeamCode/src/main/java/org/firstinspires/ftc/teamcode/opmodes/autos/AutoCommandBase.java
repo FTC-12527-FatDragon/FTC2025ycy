@@ -17,6 +17,8 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import lombok.Getter;
 import org.firstinspires.ftc.teamcode.commands.AutoDriveCommand;
 import org.firstinspires.ftc.teamcode.lib.roadrunner.trajectorysequence.TrajectorySequence;
+import org.firstinspires.ftc.teamcode.subsystems.AlphaLiftClaw;
+import org.firstinspires.ftc.teamcode.subsystems.AlphaSlide;
 import org.firstinspires.ftc.teamcode.subsystems.Climber;
 import org.firstinspires.ftc.teamcode.subsystems.Lift;
 import org.firstinspires.ftc.teamcode.subsystems.LiftClaw;
@@ -32,66 +34,15 @@ import org.firstinspires.ftc.teamcode.subsystems.drivetrain.SampleMecanumDrive;
  */
 @Config
 public abstract class AutoCommandBase extends LinearOpMode {
-  protected LiftClaw liftClaw;
+  protected AlphaLiftClaw liftClaw;
   protected Lift lift;
-  protected SlideSuperStructure slide;
+  protected AlphaSlide slide;
   protected SampleMecanumDrive drive;
-  protected Climber climb;
+//  protected Climber climb;
 
   public static long handoff_slide2LiftCloseDelayMs = 150;
   public static long handoff_liftClose2OpenIntakeDelayMs = 50;
 
-  public static class FieldConfig {
-    public double blockSideLengthInch = 24;
-  }
-
-  public static FieldConfig Field = new FieldConfig();
-
-  public static class RobotConfig {
-    public double robotBack2FrontXLenInch = 16.5;
-    public double robotLeft2RightYLenInch = 15.5;
-  }
-
-  public static RobotConfig Robot = new RobotConfig();
-  //
-  //  public enum StartPoseConfig{
-  //    L0(robotCentral, true),
-  //    R0(robotCentral, false),
-  //    L1(robotCentral, true),
-  //    R1(robotCentral, false),
-  //    L2(robotCentral, true),
-  //    R2(robotCentral, false),
-  //    L3(robotCentral, true),
-  //    R3(robotCentral, false),
-  //    L4(robotCentral, true),
-  //    R4(robotCentral, false),
-  //    L5(robotCentral, true),
-  //    R5(new Vector2d(0, 0), false);
-  //    public final Vector2d startPose;
-  //    StartPoseConfig(final Vector2d startPose, boolean isLeft){
-  //      if(isLeft){
-  //        this.startPose = new Vector2d(startPose.getX(), startPose.getY() - robotCentral.getY());
-  //      }else{
-  //        this.startPose = startPose.plus(robotCentral);
-  //      }
-  //    }
-  //  }
-  //  public static StartPoseConfig StartPose = StartPoseConfig.L1;
-  //
-  //  public enum StartHeadingConfig{
-  //    LEFT(Math.toRadians(-90)),
-  //    FRONT(Math.toRadians(0)),
-  //    RIGHT(Math.toRadians(90)),
-  //    BACK(Math.toRadians(180));
-  //    public final double heading;
-  //    StartHeadingConfig(double headingrad){
-  //      heading = headingrad;
-  //    }
-  //  }
-  //  public static StartHeadingConfig StartHeading = StartHeadingConfig.FRONT;
-  //  protected static Vector2d robotCentral = new Vector2d(Robot.robotBack2FrontXLenInch,
-  // Robot.robotLeft2RightYLenInch);
-  //  protected static Pose2d startPose = new Pose2d(StartPose.startPose, StartHeading.heading);
   @Getter private static Pose2d autoEndPose = new Pose2d();
 
   protected void initialize() {
@@ -105,13 +56,12 @@ public abstract class AutoCommandBase extends LinearOpMode {
     CommandScheduler.getInstance().reset();
     // Subsystems Initialized
     lift = new Lift(hardwareMap, telemetry);
-    liftClaw = new LiftClaw(hardwareMap);
-    climb = new Climber(hardwareMap);
-    slide = new SlideSuperStructure(hardwareMap, telemetry);
+    liftClaw = new AlphaLiftClaw(hardwareMap);
+    slide = new AlphaSlide(hardwareMap, telemetry);
 
     drive = new SampleMecanumDrive(hardwareMap);
 
-    slide.stow();
+    slide.initialize();;
     slide.backwardSlideExtension();
     liftClaw.closeClaw();
     liftClaw.foldLiftArm();
