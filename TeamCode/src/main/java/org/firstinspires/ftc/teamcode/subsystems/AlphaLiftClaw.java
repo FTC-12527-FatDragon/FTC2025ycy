@@ -4,6 +4,7 @@ import static org.firstinspires.ftc.teamcode.subsystems.drivetrain.DriveConstant
 import static org.firstinspires.ftc.teamcode.utils.ServoUtils.setServoPosCommand;
 
 import com.acmerobotics.dashboard.FtcDashboard;
+import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.arcrobotics.ftclib.command.Command;
 import com.arcrobotics.ftclib.command.ConditionalCommand;
@@ -14,11 +15,15 @@ import com.qualcomm.robotcore.hardware.Servo;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.subsystems.drivetrain.DriveConstants;
 
+@Config
 public class AlphaLiftClaw extends SubsystemBase {
   private final Servo liftArmServo;
   private final Servo liftClawServo;
   private final Servo liftWristServo;
   private final Telemetry telemetry;
+
+  public static double LiftClaw_Open = currentRobot==DriveConstants.RobotType.ALPHA?0.7:0.7025;
+  public static double LiftClaw_Close = currentRobot==DriveConstants.RobotType.ALPHA?0.33:0.35;
 
   public AlphaLiftClaw(final HardwareMap hardwareMap, Telemetry telemetry) {
     liftArmServo = hardwareMap.get(Servo.class, "liftArmServo"); // 0.3 Up 0.7 Down
@@ -71,6 +76,10 @@ public class AlphaLiftClaw extends SubsystemBase {
     liftClawServo.setPosition(ServoPositions.GRAB.liftClawPosition);
   }
 
+  public void closeClaw() {
+    liftClawServo.setPosition(ServoPositions.STOW.liftClawPosition);
+  }
+
   public Command closeClawCommand(long delay) {
     return setServoPosCommand(liftClawServo, ServoPositions.STOW.liftClawPosition, delay);
   }
@@ -81,6 +90,10 @@ public class AlphaLiftClaw extends SubsystemBase {
 
   public void upLiftArm() {
     liftArmServo.setPosition(ServoPositions.BASKET.liftArmPosition);
+  }
+
+  public void foldLiftArm() {
+    liftArmServo.setPosition(ServoPositions.STOW.liftArmPosition);
   }
 
   public Command foldLiftArmCommand(long delay) {
@@ -100,10 +113,10 @@ public class AlphaLiftClaw extends SubsystemBase {
   }
 
   public enum ServoPositions {
-    STOW(currentRobot==DriveConstants.RobotType.ALPHA?0.83:0.83, currentRobot==DriveConstants.RobotType.ALPHA?0.33:0.35, currentRobot==DriveConstants.RobotType.ALPHA?0.58:0.595),
-    CHAMBER(currentRobot==DriveConstants.RobotType.ALPHA?0.64:0.66, currentRobot==DriveConstants.RobotType.ALPHA?0.33:0.35, currentRobot==DriveConstants.RobotType.ALPHA?0.27:0.47),
-    BASKET(currentRobot==DriveConstants.RobotType.ALPHA?0.43:0.46, currentRobot==DriveConstants.RobotType.ALPHA?0.33:0.35, 0.5),
-    GRAB(currentRobot== DriveConstants.RobotType.ALPHA?0.21:0.225, currentRobot==DriveConstants.RobotType.ALPHA?0.7:0.7025, currentRobot==DriveConstants.RobotType.ALPHA?0.08:0.39);
+    STOW(currentRobot==DriveConstants.RobotType.ALPHA?0.83:0.83, LiftClaw_Close, currentRobot==DriveConstants.RobotType.ALPHA?0.58:0.595),
+    CHAMBER(currentRobot==DriveConstants.RobotType.ALPHA?0.64:0.66, LiftClaw_Close, currentRobot==DriveConstants.RobotType.ALPHA?0.27:0.47),
+    BASKET(currentRobot==DriveConstants.RobotType.ALPHA?0.43:0.46, LiftClaw_Close, 0.5),
+    GRAB(currentRobot== DriveConstants.RobotType.ALPHA?0.21:0.225, LiftClaw_Open, currentRobot==DriveConstants.RobotType.ALPHA?0.08:0.39);
 
     private final double liftArmPosition;
     private final double liftWristPosition;
