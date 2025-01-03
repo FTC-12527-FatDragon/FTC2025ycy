@@ -33,6 +33,8 @@ public class AlphaSlide extends SubsystemBase {
   private static double slideExtensionVal = 0.21;
   private SlideServo slideServo = SlideServo.BACK;
 
+  public static long waitGrabTimeout = 500;
+
   private static double turnAngleDeg = 0;
   private TurnServo turnServo = TurnServo.DEG_0;
 
@@ -102,12 +104,12 @@ public class AlphaSlide extends SubsystemBase {
         new InstantCommand(() -> slideExtensionVal = Goal.HANDOFF.slideExtension));
   }
 
-  public Command autoGrabCommand() { // Unused, able to delete
+  public Command autoGrabCommand() {
     return new SequentialCommandGroup(
             new InstantCommand(() -> intakeClawServo.setPosition(Goal.AIM.clawAngle))
                     .alongWith(new InstantCommand(() -> slideArmServo.setPosition(Goal.GRAB.slideArmPos)))
                     .alongWith(new InstantCommand(() -> wristServo.setPosition(Goal.GRAB.wristPos))),
-            new WaitCommand(grabTimeout),
+            new WaitCommand(waitGrabTimeout),
             new InstantCommand(() -> intakeClawServo.setPosition(Goal.GRAB.clawAngle)),
             new WaitCommand(grabTimeout),
             new InstantCommand(() -> slideArmServo.setPosition(Goal.HANDOFF.slideArmPos))
