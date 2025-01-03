@@ -70,6 +70,12 @@ public class Chamber1Plus3 extends LinearOpMode {
                     .alongWith(chamberToGrab(lift, liftClaw))
     );
   }
+  
+  public Command pushBlocksCycle(TrajectorySequence grab2DropSequence){
+    return new SequentialCommandGroup(
+            slide.grabCommand()
+    );
+  }
 
   @Override
   public void runOpMode() throws InterruptedException {
