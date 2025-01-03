@@ -117,6 +117,21 @@ public class AutoCommand {
     );
   }
 
+  public static Command grabAndBack3(AlphaLiftClaw liftClaw, AlphaSlide slide) {
+    return new SequentialCommandGroup(
+
+            slide.autoGrabCommand3A(),
+            new InstantCommand(slide::autoForwardSlideExtension),
+            new WaitCommand(slideServoResponseTime),
+            slide.autoGrabCommand3B(),
+            new InstantCommand(slide::autoBackSlideExtension),
+            new WaitCommand(slideServoResponseTime),
+            liftClaw.closeClawCommand(),
+            new WaitCommand(handoffTimeout),
+            slide.autoOpenIntakeClaw()
+    );
+  }
+
   public static Command initializeForce(AlphaLiftClaw liftClaw, AlphaSlide slide) {
     return new ParallelCommandGroup(
         new InstantCommand(liftClaw::initialize),

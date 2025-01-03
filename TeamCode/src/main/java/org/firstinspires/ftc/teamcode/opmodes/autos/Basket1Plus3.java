@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.opmodes.autos;
 
 import static org.firstinspires.ftc.teamcode.opmodes.autos.AutoCommand.grabAndBack;
+import static org.firstinspires.ftc.teamcode.opmodes.autos.AutoCommand.grabAndBack3;
 import static org.firstinspires.ftc.teamcode.opmodes.autos.AutoCommand.initialize;
 import static org.firstinspires.ftc.teamcode.opmodes.autos.AutoCommand.liftBack;
 import static org.firstinspires.ftc.teamcode.opmodes.autos.AutoCommand.liftToBasket;
@@ -33,9 +34,10 @@ public class Basket1Plus3 extends LinearOpMode {
   AlphaSlide slide;
 
   public static Pose2dHelperClass start = new Pose2dHelperClass(-31.64, -65.06, 0.00);
-  public static Pose2dHelperClass basket = new Pose2dHelperClass(-57.76, -58.25, 45.00);
+  public static Pose2dHelperClass basket = new Pose2dHelperClass(-56.76, -57.25, 45.00);
   public static Pose2dHelperClass grab1 = new Pose2dHelperClass(-47.75, -52.43, 90.00);
   public static Pose2dHelperClass grab2 = new Pose2dHelperClass(-59.53, -52.43, 90.00);
+  public static Pose2dHelperClass grab3 = new Pose2dHelperClass(-45.5, -27.91, 180.00);
 
   public static long waitDropTimeout = 200;
 
@@ -72,6 +74,15 @@ public class Basket1Plus3 extends LinearOpMode {
             .lineToSplineHeading(basket.toPose2d())
             .build();
 
+    TrajectorySequence basketToGrab3 = drive.trajectorySequenceBuilder(basket.toPose2d())
+            .lineToSplineHeading(grab3.toPose2d())
+            .build();
+
+    TrajectorySequence grab3ToBasket = drive.trajectorySequenceBuilder(grab3.toPose2d())
+            .lineToSplineHeading(basket.toPose2d())
+            .build();
+
+
 
 
 //    TrajectorySequence trajTotal = drive.trajectorySequenceBuilder(new Pose2d(-24.23, -62.40, Math.toRadians(90.00)))
@@ -106,6 +117,13 @@ public class Basket1Plus3 extends LinearOpMode {
                 new AutoDriveCommand(drive, basketToGrab2),
                 grabAndBack(liftClaw, slide),
                 new AutoDriveCommand(drive, grab2ToBasket),
+                liftToBasket(liftClaw, lift),
+                new WaitCommand(waitDropTimeout),
+                liftBack(liftClaw, lift),
+
+                new AutoDriveCommand(drive, basketToGrab3),
+                grabAndBack3(liftClaw, slide),
+                new AutoDriveCommand(drive, grab3ToBasket),
                 liftToBasket(liftClaw, lift),
                 new WaitCommand(waitDropTimeout),
                 liftBack(liftClaw, lift)

@@ -67,7 +67,8 @@ public class AlphaCar extends CommandOpMode {
                     slide.aimCommand(),
                     new InstantCommand(() -> lift.setGoal(Lift.Goal.BASKET)),
                     new WaitUntilCommand(() -> lift.getCurrentPosition() > 600)
-                        .andThen(new InstantCommand(liftClaw::upLiftArm))),
+                        .andThen(new InstantCommand(liftClaw::upLiftArm)
+                                .alongWith(new InstantCommand(liftClaw::basketWrist)))),
                 () -> !isPureHandoffComplete));
 
     // Basket Drop and Back
@@ -82,9 +83,10 @@ public class AlphaCar extends CommandOpMode {
                     new InstantCommand(),
                     () -> lift.getGoal() == Lift.Goal.HANG),
                 new InstantCommand(liftClaw::openClaw),
+                new WaitCommand(200),
+                liftClaw.foldLiftArmCommand(),
                 new InstantCommand(liftClaw::stowWrist),
                 new WaitCommand(100),
-                liftClaw.foldLiftArmCommand(),
                 new InstantCommand(() -> lift.setGoal(Lift.Goal.STOW)),
                 new InstantCommand(() -> isPureHandoffComplete = false)));
 
