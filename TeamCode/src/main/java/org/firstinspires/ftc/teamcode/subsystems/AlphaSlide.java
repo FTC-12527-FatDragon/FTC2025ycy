@@ -41,7 +41,7 @@ public class AlphaSlide extends SubsystemBase {
   public static long grabTimeout = 100;
 
   @Setter @Getter private Goal goal = Goal.STOW;
-  private boolean isIntakeClawOpen = false;
+//  private boolean isIntakeClawOpen = false;
 
   private final Telemetry telemetry; // 0 0.5 0.8
 
@@ -77,13 +77,20 @@ public class AlphaSlide extends SubsystemBase {
         new InstantCommand(() -> intakeClawServo.setPosition(Goal.AIM.clawAngle)));
   }
 
-  public Command grabCommand() {
+  public Command grabCommand(TurnServo turnServoPos) {
     return new SequentialCommandGroup(
-        new InstantCommand(() -> goal = Goal.GRAB),
-        setServoPosCommand(slideArmServo, Goal.GRAB.slideArmPos, grabTimeout),
-        setServoPosCommand(intakeClawServo, Goal.GRAB.clawAngle, grabTimeout),
-        new InstantCommand(() -> slideArmServo.setPosition(Goal.HANDOFF.slideArmPos)),
-        new InstantCommand(() -> goal = Goal.AIM));
+            new InstantCommand(() -> goal = Goal.GRAB),
+            setTurnServoPosCommand(turnServoPos, aimCommand_wristTurn2ArmDelayMs) // Won't do anything if turnServoPos is invalid
+                    .alongWith(
+                            setServoPosCommand(slideArmServo, Goal.GRAB.slideArmPos, grabTimeout)
+                    ),
+            setServoPosCommand(intakeClawServo, Goal.GRAB.clawAngle, grabTimeout),
+            new InstantCommand(() -> slideArmServo.setPosition(Goal.HANDOFF.slideArmPos)),
+            new InstantCommand(() -> goal = Goal.AIM));
+  }
+
+  public Command grabCommand() {
+    return grabCommand(TurnServo.DEFAULT);
   }
 
   public Command handoffCommand() {
@@ -140,12 +147,12 @@ public class AlphaSlide extends SubsystemBase {
 
   public void openIntakeClaw() {
     intakeClawServo.setPosition(Goal.STOW.clawAngle);
-    isIntakeClawOpen = true;
+//    isIntakeClawOpen = true;
   }
 
   public void closeIntakeClaw() {
     intakeClawServo.setPosition(Goal.HANDOFF.clawAngle);
-    isIntakeClawOpen = false;
+//    isIntakeClawOpen = false;
   }
 
   public void wristUp() {
@@ -295,7 +302,7 @@ public class AlphaSlide extends SubsystemBase {
                 })
             .andThen(new WaitCommand(delay)),
         new InstantCommand(() -> {}),
-        () -> getServoPos() != pos);
+        () -> getServoPos() != pos && pos.turnAngleDeg>=0);
   }
 
   public TurnServo getServoPos() {
@@ -307,7 +314,8 @@ public class AlphaSlide extends SubsystemBase {
     DEG_0(currentRobot == DriveConstants.RobotType.ALPHA ? 0.4 : 0.565),
     RIGHT_45(currentRobot == DriveConstants.RobotType.ALPHA ? 0.55 : 0.45),
     RIGHT_90(currentRobot == DriveConstants.RobotType.ALPHA ? 0.7 : 0.34),
-    UNKNOWN(-1);
+    UNKNOWN(-1),
+    DEFAULT(-1);
 
     private double turnAngleDeg;
 

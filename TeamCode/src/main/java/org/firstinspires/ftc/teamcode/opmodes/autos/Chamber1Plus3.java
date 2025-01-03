@@ -71,9 +71,12 @@ public class Chamber1Plus3 extends LinearOpMode {
     );
   }
   
-  public Command pushBlocksCycle(TrajectorySequence grab2DropSequence){
+  public Command pushBlocksCycle(TrajectorySequence grab2DropSequence, TrajectorySequence drop2Next){
     return new SequentialCommandGroup(
-            slide.grabCommand()
+            slide.grabCommand(),
+            new AutoDriveCommand(drive, grab2DropSequence),
+            new InstantCommand(slide::openIntakeClaw),
+            new AutoDriveCommand(drive, drop2Next)
     );
   }
 
