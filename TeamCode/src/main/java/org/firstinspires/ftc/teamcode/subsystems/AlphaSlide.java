@@ -36,6 +36,8 @@ public class AlphaSlide extends SubsystemBase {
   private static double turnAngleDeg = 0;
   private TurnServo turnServo = TurnServo.DEG_0;
 
+  public static long grabTimeout = 200;
+
   @Setter @Getter private Goal goal = Goal.STOW;
   private boolean isIntakeClawOpen = false;
 
@@ -105,13 +107,20 @@ public class AlphaSlide extends SubsystemBase {
             new InstantCommand(() -> intakeClawServo.setPosition(Goal.AIM.clawAngle))
                     .alongWith(new InstantCommand(() -> slideArmServo.setPosition(Goal.GRAB.slideArmPos)))
                     .alongWith(new InstantCommand(() -> wristServo.setPosition(Goal.GRAB.wristPos))),
-            new WaitCommand(200),
+            new WaitCommand(grabTimeout),
             new InstantCommand(() -> intakeClawServo.setPosition(Goal.GRAB.clawAngle)),
-            new WaitCommand(100),
-            new InstantCommand(() -> slideArmServo.setPosition(Goal.STOW.slideArmPos))
-                    .alongWith(new InstantCommand(() -> wristServo.setPosition(Goal.STOW.slideArmPos)))
+            new WaitCommand(grabTimeout),
+            new InstantCommand(() -> slideArmServo.setPosition(Goal.HANDOFF.slideArmPos))
+                    .alongWith(new InstantCommand(() -> wristServo.setPosition(Goal.HANDOFF.wristPos))),
+            new WaitCommand(grabTimeout)
     );
+  }
 
+  public Command autoOpenIntakeClaw() {
+    return new SequentialCommandGroup(
+            new InstantCommand(() -> intakeClawServo.setPosition(Goal.AIM.clawAngle)),
+            new WaitCommand(grabTimeout)
+    );
   }
 
 

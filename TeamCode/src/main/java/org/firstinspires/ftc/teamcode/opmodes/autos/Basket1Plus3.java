@@ -1,8 +1,10 @@
 package org.firstinspires.ftc.teamcode.opmodes.autos;
 
+import static org.firstinspires.ftc.teamcode.opmodes.autos.AutoCommand.grabAndBack;
 import static org.firstinspires.ftc.teamcode.opmodes.autos.AutoCommand.initialize;
 import static org.firstinspires.ftc.teamcode.opmodes.autos.AutoCommand.liftBack;
 import static org.firstinspires.ftc.teamcode.opmodes.autos.AutoCommand.liftToBasket;
+import static org.firstinspires.ftc.teamcode.opmodes.autos.AutoCommand.stowArmFromBasket;
 import static org.firstinspires.ftc.teamcode.opmodes.autos.AutoCommand.upLiftToBasket;
 
 import com.acmerobotics.dashboard.config.Config;
@@ -11,6 +13,7 @@ import com.acmerobotics.roadrunner.geometry.Vector2d;
 import com.arcrobotics.ftclib.command.CommandScheduler;
 import com.arcrobotics.ftclib.command.InstantCommand;
 import com.arcrobotics.ftclib.command.SequentialCommandGroup;
+import com.arcrobotics.ftclib.command.WaitCommand;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
@@ -30,8 +33,13 @@ public class Basket1Plus3 extends LinearOpMode {
   AlphaSlide slide;
 
   public static Pose2dHelperClass start = new Pose2dHelperClass(-31.64, -65.06, 0.00);
-  public static Pose2dHelperClass basket = new Pose2dHelperClass(-55.76, -56.25, 45.00);
-  public static Pose2dHelperClass grab1 = new Pose2dHelperClass(-49.25, -48.93, 90.00);
+  public static Pose2dHelperClass basket = new Pose2dHelperClass(-57.76, -58.25, 45.00);
+  public static Pose2dHelperClass grab1 = new Pose2dHelperClass(-47.75, -54.43, 90.00);
+  public static Pose2dHelperClass grab2 = new Pose2dHelperClass(-59.53, -54.43, 90.00);
+
+  public static long waitDropTimeout = 200;
+
+
 
   @Override
   public void runOpMode() throws InterruptedException {
@@ -50,6 +58,18 @@ public class Basket1Plus3 extends LinearOpMode {
 
     TrajectorySequence basketToGrab1 = drive.trajectorySequenceBuilder(basket.toPose2d())
             .lineToSplineHeading(grab1.toPose2d())
+            .build();
+
+    TrajectorySequence grab1ToBasket = drive.trajectorySequenceBuilder(grab1.toPose2d())
+            .lineToSplineHeading(basket.toPose2d())
+            .build();
+
+    TrajectorySequence basketToGrab2 = drive.trajectorySequenceBuilder(basket.toPose2d())
+            .lineToSplineHeading(grab2.toPose2d())
+            .build();
+
+    TrajectorySequence grab2ToBasket = drive.trajectorySequenceBuilder(grab2.toPose2d())
+            .lineToSplineHeading(basket.toPose2d())
             .build();
 
 
@@ -75,12 +95,20 @@ public class Basket1Plus3 extends LinearOpMode {
                 new InstantCommand(() -> drive.setPoseEstimate(startToBasket.start())),
                 new AutoDriveCommand(drive, startToBasket),
                 liftToBasket(liftClaw, lift),
+                new WaitCommand(waitDropTimeout),
                 liftBack(liftClaw, lift),
                 new AutoDriveCommand(drive, basketToGrab1),
-
-
-
-
+                grabAndBack(liftClaw, slide),
+                new AutoDriveCommand(drive, grab1ToBasket),
+                liftToBasket(liftClaw, lift),
+                new WaitCommand(waitDropTimeout),
+                liftBack(liftClaw, lift),
+                new AutoDriveCommand(drive, basketToGrab2),
+                grabAndBack(liftClaw, slide),
+                new AutoDriveCommand(drive, grab2ToBasket),
+                liftToBasket(liftClaw, lift),
+                new WaitCommand(waitDropTimeout),
+                liftBack(liftClaw, lift)
             ));
 
     // spotless:on

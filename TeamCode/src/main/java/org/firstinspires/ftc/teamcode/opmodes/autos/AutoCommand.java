@@ -1,5 +1,8 @@
 package org.firstinspires.ftc.teamcode.opmodes.autos;
 
+import static org.firstinspires.ftc.teamcode.subsystems.AlphaSlide.grabTimeout;
+
+import com.acmerobotics.dashboard.config.Config;
 import com.arcrobotics.ftclib.command.Command;
 import com.arcrobotics.ftclib.command.InstantCommand;
 import com.arcrobotics.ftclib.command.ParallelCommandGroup;
@@ -10,7 +13,13 @@ import org.firstinspires.ftc.teamcode.subsystems.AlphaLiftClaw;
 import org.firstinspires.ftc.teamcode.subsystems.AlphaSlide;
 import org.firstinspires.ftc.teamcode.subsystems.Lift;
 
+@Config
 public class AutoCommand {
+  public static long lift2BasketTimeout = 800;
+  public static long slideServoResponseTime = 600;
+  public static long basketTimeout = 600;
+  public static long handoffTimeout = 100;
+  public static long tempTimeout = 1000;
   public static Command upLiftToBasket(Lift lift, AlphaLiftClaw liftClaw) {
     return new ParallelCommandGroup(
         new InstantCommand(() -> lift.setGoal(Lift.Goal.BASKET)),
@@ -71,31 +80,40 @@ public class AutoCommand {
         new InstantCommand(slide::initialize));
   }
 
+
   public static Command liftToBasket(AlphaLiftClaw liftClaw, Lift lift) {
     return new SequentialCommandGroup(
-            new WaitCommand(800).deadlineWith(lift.setGoalCommand(Lift.Goal.BASKET))
-                    .alongWith(new InstantCommand(liftClaw::upLiftArm))
+            new WaitCommand(lift2BasketTimeout).deadlineWith(lift.setGoalCommand(Lift.Goal.BASKET)),
+            new InstantCommand(liftClaw::upLiftArm)
                     .alongWith(new InstantCommand(liftClaw::basketWrist)),
+            new WaitCommand(basketTimeout),
             new InstantCommand(liftClaw::openClaw)
 
     );
   }
 
+
   public static Command liftBack(AlphaLiftClaw liftClaw, Lift lift) {
     return new ParallelCommandGroup(
-            new InstantCommand(liftClaw::stowWrist),
             liftClaw.foldLiftArmCommand(),
-            new WaitCommand(800).deadlineWith(lift.setGoalCommand(Lift.Goal.STOW))
+            new WaitCommand(tempTimeout),
+            new InstantCommand(liftClaw::stowWrist),
+            new WaitCommand(basketTimeout),
+            new WaitCommand(lift2BasketTimeout).deadlineWith(lift.setGoalCommand(Lift.Goal.STOW))
     );
   }
 
-  @Deprecated
+
   public static Command grabAndBack(AlphaLiftClaw liftClaw, AlphaSlide slide) {
     return new SequentialCommandGroup(
             new InstantCommand(slide::autoForwardSlideExtension),
+            new WaitCommand(slideServoResponseTime),
             slide.autoGrabCommand(),
             new InstantCommand(slide::autoBackSlideExtension),
-            liftClaw.closeClawCommand()
+            new WaitCommand(slideServoResponseTime),
+            liftClaw.closeClawCommand(),
+            new WaitCommand(handoffTimeout),
+            slide.autoOpenIntakeClaw()
     );
   }
 

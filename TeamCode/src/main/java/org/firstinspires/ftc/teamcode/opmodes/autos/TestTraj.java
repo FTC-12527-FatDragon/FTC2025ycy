@@ -299,8 +299,7 @@ public class TestTraj extends LinearOpMode {
             .schedule(
                     new SequentialCommandGroup(
                             initialize(liftClaw, slide),
-                            new InstantCommand(() -> drive.setPoseEstimate(startToBasket.start())),
-                            new AutoDriveCommand(drive, startToBasket)
+                            grabAndBack(liftClaw, slide)
 //                            new InstantCommand(() -> drive.setPoseEstimate(startToChamber.start())),
 //                            new AutoDriveCommand(drive, startToChamber),
 //
