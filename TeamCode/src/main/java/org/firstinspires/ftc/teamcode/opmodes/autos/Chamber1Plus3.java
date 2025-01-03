@@ -27,6 +27,7 @@ import org.firstinspires.ftc.teamcode.subsystems.AlphaSlide;
 import org.firstinspires.ftc.teamcode.subsystems.Lift;
 import org.firstinspires.ftc.teamcode.subsystems.drivetrain.SampleMecanumDrive;
 import org.firstinspires.ftc.teamcode.utils.Pose2dHelperClass;
+import org.firstinspires.ftc.teamcode.utils.Translation2dHelperClass;
 
 @Config
 @Autonomous(name = "Chamber 1+3", group = "Autos")
@@ -46,6 +47,10 @@ public class Chamber1Plus3 extends LinearOpMode {
       new Pose2dHelperClass(chamber.X - gap * 3, chamber.Y, 90.00);
   public static Pose2dHelperClass chamber4 =
           new Pose2dHelperClass(chamber.X - gap * 4, chamber.Y, 90.00);
+
+  public static Translation2dHelperClass Sample1 = new Translation2dHelperClass(49.22, -26.44);
+  public static Translation2dHelperClass Sample2 = new Translation2dHelperClass(59.77, -26.08);
+
 
   public static Pose2dHelperClass sample1Observation = new Pose2dHelperClass(48.46, -53, 90);
 
@@ -99,7 +104,7 @@ public class Chamber1Plus3 extends LinearOpMode {
             .splineToConstantHeading(new Vector2d(44.77, -14.54), Math.toRadians(-70.00))
             .lineToLinearHeading(sample1Observation.toPose2d(), getVelocityConstraint(40, MAX_ANG_VEL, TRACK_WIDTH), SampleMecanumDrive.getACCEL_CONSTRAINT())
             .lineToLinearHeading(sample1Observation.toPose2d().plus(new Pose2d(0, 2, 0)))
-            .splineToConstantHeading(new Vector2d(57.60, -13.26), Math.toRadians(-45.00))
+            .splineToConstantHeading(new Vector2d(59.77, -26.08), Math.toRadians(-90.00))
             .lineToLinearHeading(new Pose2d(59.08, -53, Math.toRadians(90.00)), getVelocityConstraint(50, MAX_ANG_VEL, TRACK_WIDTH), SampleMecanumDrive.getACCEL_CONSTRAINT())
 //            .splineToSplineHeading(new Pose2d(64.15, -14.54, Math.toRadians(180.00)), Math.toRadians(0.00))
 //            .lineToLinearHeading(new Pose2d(64.15, -56.31, Math.toRadians(180.00)))
