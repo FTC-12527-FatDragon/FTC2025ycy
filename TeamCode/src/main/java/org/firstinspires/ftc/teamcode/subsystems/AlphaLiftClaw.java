@@ -64,7 +64,7 @@ public class AlphaLiftClaw extends SubsystemBase {
     return new ConditionalCommand(
             new InstantCommand(this::openClaw),
             closeClawCommand(),
-            () -> liftClawServo.getPosition() != ServoPositions.GRAB.liftClawPosition
+            () -> Math.abs(liftClawServo.getPosition() - LiftClaw_Close) < Math.abs(liftClawServo.getPosition() - LiftClaw_Open)//liftClawServo.getPosition() != ServoPositions.GRAB.liftClawPosition
     );
   }
 
