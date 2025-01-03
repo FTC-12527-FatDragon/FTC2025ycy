@@ -71,6 +71,34 @@ public class AutoCommand {
         new InstantCommand(slide::initialize));
   }
 
+  public static Command liftToBasket(AlphaLiftClaw liftClaw, Lift lift) {
+    return new SequentialCommandGroup(
+            new WaitCommand(800).deadlineWith(lift.setGoalCommand(Lift.Goal.BASKET))
+                    .alongWith(new InstantCommand(liftClaw::upLiftArm))
+                    .alongWith(new InstantCommand(liftClaw::basketWrist)),
+            new InstantCommand(liftClaw::openClaw)
+
+    );
+  }
+
+  public static Command liftBack(AlphaLiftClaw liftClaw, Lift lift) {
+    return new ParallelCommandGroup(
+            new InstantCommand(liftClaw::stowWrist),
+            liftClaw.foldLiftArmCommand(),
+            new WaitCommand(800).deadlineWith(lift.setGoalCommand(Lift.Goal.STOW))
+    );
+  }
+
+  @Deprecated
+  public static Command grabAndBack(AlphaLiftClaw liftClaw, AlphaSlide slide) {
+    return new SequentialCommandGroup(
+            new InstantCommand(slide::autoForwardSlideExtension),
+            slide.autoGrabCommand(),
+            new InstantCommand(slide::autoBackSlideExtension),
+            liftClaw.closeClawCommand()
+    );
+  }
+
   public static Command initializeForce(AlphaLiftClaw liftClaw, AlphaSlide slide) {
     return new ParallelCommandGroup(
         new InstantCommand(liftClaw::initialize),

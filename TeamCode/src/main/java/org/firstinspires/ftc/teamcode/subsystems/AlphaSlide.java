@@ -100,6 +100,21 @@ public class AlphaSlide extends SubsystemBase {
         new InstantCommand(() -> slideExtensionVal = Goal.HANDOFF.slideExtension));
   }
 
+  public Command autoGrabCommand() { // Unused, able to delete
+    return new SequentialCommandGroup(
+            new InstantCommand(() -> intakeClawServo.setPosition(Goal.AIM.clawAngle))
+                    .alongWith(new InstantCommand(() -> slideArmServo.setPosition(Goal.GRAB.slideArmPos)))
+                    .alongWith(new InstantCommand(() -> wristServo.setPosition(Goal.GRAB.wristPos))),
+            new WaitCommand(200),
+            new InstantCommand(() -> intakeClawServo.setPosition(Goal.GRAB.clawAngle)),
+            new WaitCommand(100),
+            new InstantCommand(() -> slideArmServo.setPosition(Goal.STOW.slideArmPos))
+                    .alongWith(new InstantCommand(() -> wristServo.setPosition(Goal.STOW.slideArmPos)))
+    );
+
+  }
+
+
   public void initialize() {
     slideArmServo.setPosition(Goal.AIM.slideArmPos);
     slideRightServo.setPosition(SlideServo.BACK.extensionVal);
@@ -200,6 +215,16 @@ public class AlphaSlide extends SubsystemBase {
         slideServo = SlideServo.BACK;
         break;
     }
+  }
+
+  public void autoForwardSlideExtension() {
+    slideExtensionVal = SlideServo.FRONT.extensionVal;
+    slideServo = SlideServo.FRONT;
+  }
+
+  public void autoBackSlideExtension() {
+    slideExtensionVal = SlideServo.BACK.extensionVal;
+    slideServo = SlideServo.BACK;
   }
 
   private final double preHandoffSlideExtendedVal = 0.25;

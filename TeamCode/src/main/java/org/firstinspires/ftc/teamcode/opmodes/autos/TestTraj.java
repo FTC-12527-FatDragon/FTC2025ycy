@@ -159,9 +159,14 @@ public class TestTraj extends LinearOpMode {
 
   //  public static double startX = 24.43;
   //  public static double startY = -64.95;
-  public static Pose2dHelperClass start = new Pose2dHelperClass(24.43, -64.95, 90.00);
+//  public static Pose2dHelperClass start = new Pose2dHelperClass(24.43, -64.95, 90.00);
 
   public static double yBottom = -50;
+
+
+  public static Pose2dHelperClass start = new Pose2dHelperClass(-31.16, -64.74, Math.toRadians(0.00));
+
+  public static Pose2dHelperClass basket = new Pose2dHelperClass(-48.27, -47.62, Math.toRadians(90.00));
 
   @Override
   public void runOpMode() throws InterruptedException {
@@ -173,6 +178,8 @@ public class TestTraj extends LinearOpMode {
     slide = new AlphaSlide(hardwareMap, telemetry);
 
     SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
+
+
 
     //    TrajectorySequence trajectory0 = drive.trajectorySequenceBuilder(new Pose2d(24.43, -64.95,
     // Math.toRadians(90.00)))
@@ -261,31 +268,60 @@ public class TestTraj extends LinearOpMode {
     // Score the first chamber
     // Push all three samples to the observation zone
     // Repeatedly score the high chamber with slightly different
+
+
+
+    TrajectorySequence startToBasket = drive.trajectorySequenceBuilder(start.toPose2d())
+            .lineToSplineHeading(new Pose2d(-61.02, -59.73, Math.toRadians(45.00)))
+            .lineToSplineHeading(basket.toPose2d())
+            .build();
+
+    TrajectorySequence grab1ToBasket = drive.trajectorySequenceBuilder(basket.toPose2d())
+            .lineToSplineHeading(basket.toPose2d())
+            .build();
+
+    TrajectorySequence basketToGrab2 = drive.trajectorySequenceBuilder(new Pose2d(-59.25, -59.09, Math.toRadians(45.00)))
+            .lineToSplineHeading(new Pose2d(-58.76, -44.07, Math.toRadians(90.00)))
+            .build();
+
+    TrajectorySequence grab2ToBasket = drive.trajectorySequenceBuilder(basketToGrab2.end())
+                    .lineToSplineHeading(basket.toPose2d())
+                            .build();
+
+
+
+
+
+
+
+
     CommandScheduler.getInstance()
             .schedule(
                     new SequentialCommandGroup(
                             initialize(liftClaw, slide),
-                            new InstantCommand(() -> drive.setPoseEstimate(startToChamber.start())),
-                            new AutoDriveCommand(drive, startToChamber),
-
-                            //                            new WaitCommand(5000),
-
-                            new AutoDriveCommand(drive, push2Blocks),
-
-                            new AutoDriveCommand(drive, pushToGrab),
-                            new AutoDriveCommand(drive, grabToChamber1),
-
-                            new AutoDriveCommand(drive, chamberToGrab)
-                                   ,
-                            new AutoDriveCommand(drive, grabToChamber2)
-                                    ,
-
-                            new AutoDriveCommand(drive, chamberToGrab)
-                                    ,
-                            new AutoDriveCommand(drive, grabToChamber3)
-                                    ,
-
-                            new AutoDriveCommand(drive, chamberToGrab)
+                            new InstantCommand(() -> drive.setPoseEstimate(startToBasket.start())),
+                            new AutoDriveCommand(drive, startToBasket)
+//                            new InstantCommand(() -> drive.setPoseEstimate(startToChamber.start())),
+//                            new AutoDriveCommand(drive, startToChamber),
+//
+//                            //                            new WaitCommand(5000),
+//
+//                            new AutoDriveCommand(drive, push2Blocks),
+//
+//                            new AutoDriveCommand(drive, pushToGrab),
+//                            new AutoDriveCommand(drive, grabToChamber1),
+//
+//                            new AutoDriveCommand(drive, chamberToGrab)
+//                                   ,
+//                            new AutoDriveCommand(drive, grabToChamber2)
+//                                    ,
+//
+//                            new AutoDriveCommand(drive, chamberToGrab)
+//                                    ,
+//                            new AutoDriveCommand(drive, grabToChamber3)
+//                                    ,
+//
+//                            new AutoDriveCommand(drive, chamberToGrab)
 
                             //                                    .andThen(new
                             // InstantCommand(liftClaw::closeClaw))
