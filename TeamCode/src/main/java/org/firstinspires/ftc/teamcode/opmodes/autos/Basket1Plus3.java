@@ -35,7 +35,7 @@ public class Basket1Plus3 extends LinearOpMode {
 
   public static Pose2dHelperClass start = new Pose2dHelperClass(-31.64, -65.06, 0.00);
   public static Pose2dHelperClass basket = new Pose2dHelperClass(-56.76, -57.25, 45.00);
-  public static Pose2dHelperClass grab1 = new Pose2dHelperClass(-47.75, -52.43, 90.00);
+  public static Pose2dHelperClass grab1 = new Pose2dHelperClass(-49.25, -52.43, 90.00);
   public static Pose2dHelperClass grab2 = new Pose2dHelperClass(-59.53, -52.43, 90.00);
   public static Pose2dHelperClass grab3 = new Pose2dHelperClass(-45.5, -27.91, 180.00);
 

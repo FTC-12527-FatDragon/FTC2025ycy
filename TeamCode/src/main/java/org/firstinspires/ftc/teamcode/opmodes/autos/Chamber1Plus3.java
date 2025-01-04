@@ -39,7 +39,7 @@ public class Chamber1Plus3 extends LinearOpMode {
   public static Pose2dHelperClass grab = new Pose2dHelperClass(36, -58, 90.00);
 
   public static double gap = 2;
-  public static Pose2dHelperClass chamber = new Pose2dHelperClass(5.49, -28, 90.00);
+  public static Pose2dHelperClass chamber = new Pose2dHelperClass(5, -28, 90.00);
   public static Pose2dHelperClass chamber1 = new Pose2dHelperClass(chamber.X - gap, chamber.Y, 90.00);
   public static Pose2dHelperClass chamber2 =
       new Pose2dHelperClass(chamber.X - gap * 2, chamber.Y, 90.00);
@@ -56,7 +56,7 @@ public class Chamber1Plus3 extends LinearOpMode {
 
   //  public static double startX = 24.43;
   //  public static double startY = -64.95;
-  public static Pose2dHelperClass start = new Pose2dHelperClass(24.43, -64.95, 90.00);
+  public static Pose2dHelperClass start = new Pose2dHelperClass(7.67, -64.95, 90.00);
 
   public static long Grab2ChamberUpperDelay = 0;
 
@@ -99,9 +99,9 @@ public class Chamber1Plus3 extends LinearOpMode {
     drive = new SampleMecanumDrive(hardwareMap);
 
     TrajectorySequence push2Blocks = drive.trajectorySequenceBuilder(new Pose2d(2.54, -32.08, Math.toRadians(90.00)))
-            .lineToConstantHeading(new Vector2d(14.17, -38.86))
+            .lineToConstantHeading(new Vector2d(6.46, -40.38))
             .splineToConstantHeading(new Vector2d(34.62, -27.69), Math.toRadians(90.00))
-            .splineToConstantHeading(new Vector2d(44.77, -14.54), Math.toRadians(-70.00))
+            .splineToConstantHeading(new Vector2d(47.54, -14.31), Math.toRadians(0.00))
             .lineToLinearHeading(sample1Observation.toPose2d(), getVelocityConstraint(40, MAX_ANG_VEL, TRACK_WIDTH), SampleMecanumDrive.getACCEL_CONSTRAINT())
             .lineToLinearHeading(sample1Observation.toPose2d().plus(new Pose2d(0, 2, 0)))
             .splineToConstantHeading(new Vector2d(54.23, -16.62), Math.toRadians(0))
@@ -114,7 +114,7 @@ public class Chamber1Plus3 extends LinearOpMode {
     TrajectorySequence pushToGrab =
             drive
                     .trajectorySequenceBuilder(push2Blocks.end())
-                    .lineToSplineHeading(new Pose2d(36.60, -60.31, Math.toRadians(90.00)))
+                    .splineToConstantHeading(new Vector2d(36.60, -60.31), Math.toRadians(-90))
                     .build(); // push end to grab
 
     TrajectorySequence chamberToGrab = drive.trajectorySequenceBuilder(chamber3.toPose2d())
