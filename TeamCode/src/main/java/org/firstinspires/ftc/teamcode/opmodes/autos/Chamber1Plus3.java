@@ -104,9 +104,9 @@ public class Chamber1Plus3 extends LinearOpMode {
             .splineToConstantHeading(new Vector2d(47.54, -14.31), Math.toRadians(0.00))
             .lineToLinearHeading(sample1Observation.toPose2d(), getVelocityConstraint(40, MAX_ANG_VEL, TRACK_WIDTH), SampleMecanumDrive.getACCEL_CONSTRAINT())
             .lineToLinearHeading(sample1Observation.toPose2d().plus(new Pose2d(0, 2, 0)))
-            .splineToConstantHeading(new Vector2d(54.23, -16.62), Math.toRadians(0))
-            .splineToConstantHeading(Sample2.toVector2d(), Math.toRadians(-90.00))
-            .splineToLinearHeading(new Pose2d(59.08, -53, Math.toRadians(90.00)), Math.toRadians(-90), getVelocityConstraint(50, MAX_ANG_VEL, TRACK_WIDTH), SampleMecanumDrive.getACCEL_CONSTRAINT())
+            .splineToConstantHeading(new Vector2d(54.23, -16.62), Math.toRadians(0), getVelocityConstraint(30, MAX_ANG_VEL, TRACK_WIDTH), SampleMecanumDrive.getACCEL_CONSTRAINT())
+            .splineToConstantHeading(Sample2.toVector2d(), Math.toRadians(-90.00), getVelocityConstraint(30, MAX_ANG_VEL, TRACK_WIDTH), SampleMecanumDrive.getACCEL_CONSTRAINT())
+            .splineToLinearHeading(new Pose2d(59.08, -53, Math.toRadians(90.00)), Math.toRadians(-90), getVelocityConstraint(40, MAX_ANG_VEL, TRACK_WIDTH), SampleMecanumDrive.getACCEL_CONSTRAINT())
 //            .splineToSplineHeading(new Pose2d(64.15, -14.54, Math.toRadians(180.00)), Math.toRadians(0.00))
 //            .lineToLinearHeading(new Pose2d(64.15, -56.31, Math.toRadians(180.00)))
             .build(); // push 2 blocks
