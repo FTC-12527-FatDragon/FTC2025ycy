@@ -36,8 +36,8 @@ public class AlphaSlide extends SubsystemBase {
   public static long waitGrabTimeout = 500;
   public static long waitGrabTimeout3 = 700;
 
-  public static long slideRetractFar = 350;
-  public static long slideRetractNear = 50;
+  public static long slideRetractFar = 400;
+  public static long slideRetractNear = 75;
 
   private static double turnAngleDeg = 0;
   private TurnServo turnServo = TurnServo.DEG_0;
