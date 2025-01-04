@@ -72,32 +72,30 @@ public class AlphaSlide extends SubsystemBase {
     return new InstantCommand(() -> goal = newGoal);
   }
 
-  public Command aimCommand(TurnServo turnServoPos) {
+  public Command aimCommand() {
     return new SequentialCommandGroup(
         setGoalCommand(Goal.AIM),
-        setTurnServoPosCommand(turnServoPos, aimCommand_wristTurn2ArmDelayMs),
+        setTurnServoPosCommand(TurnServo.DEG_0, aimCommand_wristTurn2ArmDelayMs),
         setServoPosCommand(slideArmServo, Goal.AIM.slideArmPos, aimCommand_Arm2OpenDelayMs),
         new InstantCommand(() -> wristServo.setPosition(Goal.AIM.wristPos)),
         new InstantCommand(() -> intakeClawServo.setPosition(Goal.AIM.clawAngle)));
   }
 
-  public Command aimCommand() {
-    return aimCommand(TurnServo.DEG_0);
-  }
-
-  public Command grabCommand() {
+  public Command grabCommand(TurnServo turnServoPos) {
     return new SequentialCommandGroup(
             new InstantCommand(() -> goal = Goal.GRAB),
-            setServoPosCommand(intakeClawServo, Goal.AIM.clawAngle, grabTimeout),
-            setServoPosCommand(slideArmServo, Goal.GRAB.slideArmPos, grabTimeout),
+            setTurnServoPosCommand(turnServoPos, aimCommand_wristTurn2ArmDelayMs) // Won't do anything if turnServoPos is invalid
+                    .alongWith(
+                            setServoPosCommand(slideArmServo, Goal.GRAB.slideArmPos, grabTimeout)
+                    ),
             setServoPosCommand(intakeClawServo, Goal.GRAB.clawAngle, grabTimeout),
             new InstantCommand(() -> slideArmServo.setPosition(Goal.HANDOFF.slideArmPos)),
             new InstantCommand(() -> goal = Goal.AIM));
   }
 
-//  public Command grabCommand() {
-//    return grabCommand(TurnServo.DEFAULT);
-//  }
+  public Command grabCommand() {
+    return grabCommand(TurnServo.DEFAULT);
+  }
 
   public Command handoffCommand() {
     return new SequentialCommandGroup(

@@ -39,7 +39,7 @@ public class Chamber1Plus3 extends LinearOpMode {
   public static Pose2dHelperClass grab = new Pose2dHelperClass(36, -58, 90.00);
 
   public static double gap = 2;
-  public static Pose2dHelperClass chamber = new Pose2dHelperClass(4, -28, 90.00);
+  public static Pose2dHelperClass chamber = new Pose2dHelperClass(5.49, -28, 90.00);
   public static Pose2dHelperClass chamber1 = new Pose2dHelperClass(chamber.X - gap, chamber.Y, 90.00);
   public static Pose2dHelperClass chamber2 =
       new Pose2dHelperClass(chamber.X - gap * 2, chamber.Y, 90.00);
@@ -72,7 +72,7 @@ public class Chamber1Plus3 extends LinearOpMode {
             upToChamber(lift),
 
             new AutoDriveCommand(drive, chamberToGrab)
-                    .alongWith(chamberToGrab(lift, liftClaw, true))
+                    .alongWith(chamberToGrab(lift, liftClaw))
     );
   }
   
@@ -169,7 +169,7 @@ public class Chamber1Plus3 extends LinearOpMode {
 
 //                    stowArmFromBasket(lift, liftClaw),
 
-                new AutoDriveCommand(drive, push2Blocks).alongWith(chamberToGrab(lift, liftClaw, true)),
+                new AutoDriveCommand(drive, push2Blocks).alongWith(chamberToGrab(lift, liftClaw)),
 //                    new WaitCommand(500).deadlineWith(lift.manualResetCommand()),
 //
                 new AutoDriveCommand(drive, pushToGrab),
