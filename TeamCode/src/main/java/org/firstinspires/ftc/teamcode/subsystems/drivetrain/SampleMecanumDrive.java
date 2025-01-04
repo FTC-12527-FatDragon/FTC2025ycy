@@ -7,6 +7,7 @@ import static org.firstinspires.ftc.teamcode.subsystems.drivetrain.DriveConstant
 import static org.firstinspires.ftc.teamcode.subsystems.drivetrain.DriveConstants.MOTOR_VELO_PID;
 import static org.firstinspires.ftc.teamcode.subsystems.drivetrain.DriveConstants.RUN_USING_ENCODER;
 import static org.firstinspires.ftc.teamcode.subsystems.drivetrain.DriveConstants.TRACK_WIDTH;
+import static org.firstinspires.ftc.teamcode.subsystems.drivetrain.DriveConstants.currentRobot;
 import static org.firstinspires.ftc.teamcode.subsystems.drivetrain.DriveConstants.encoderTicksToInches;
 import static org.firstinspires.ftc.teamcode.subsystems.drivetrain.DriveConstants.isReflected;
 import static org.firstinspires.ftc.teamcode.subsystems.drivetrain.DriveConstants.kA;
@@ -54,7 +55,9 @@ import org.firstinspires.ftc.teamcode.lib.roadrunner.util.LynxModuleUtil;
  */
 @Config
 public class SampleMecanumDrive extends MecanumDrive implements Subsystem {
-  public static PIDCoefficients TRANSLATIONAL_PID = new PIDCoefficients(8, 0, 0.003);
+  public static PIDCoefficients TRANSLATIONAL_PID = currentRobot == DriveConstants.RobotType.ALPHA ?
+          new PIDCoefficients(8, 0, 0.003) :
+          new PIDCoefficients(3.8, 0, 0.55);
   public static PIDCoefficients HEADING_PID = new PIDCoefficients(13, 0, 0.07);
 
   public static double LATERAL_MULTIPLIER = 1.3;
