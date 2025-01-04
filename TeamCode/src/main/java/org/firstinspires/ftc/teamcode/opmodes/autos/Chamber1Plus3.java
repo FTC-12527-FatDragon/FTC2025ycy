@@ -36,10 +36,10 @@ public class Chamber1Plus3 extends LinearOpMode {
   Lift lift;
   AlphaSlide slide;
 
-  public static Pose2dHelperClass grab = new Pose2dHelperClass(36, -58, 90.00);
+  public static Pose2dHelperClass grab = new Pose2dHelperClass(36, -60, 90.00);
 
   public static double gap = 2;
-  public static Pose2dHelperClass chamber = new Pose2dHelperClass(5, -28, 90.00);
+  public static Pose2dHelperClass chamber = new Pose2dHelperClass(5, -29, 90.00);
   public static Pose2dHelperClass chamber1 = new Pose2dHelperClass(chamber.X - gap, chamber.Y, 90.00);
   public static Pose2dHelperClass chamber2 =
       new Pose2dHelperClass(chamber.X - gap * 2, chamber.Y, 90.00);
@@ -106,7 +106,7 @@ public class Chamber1Plus3 extends LinearOpMode {
             .lineToLinearHeading(sample1Observation.toPose2d().plus(new Pose2d(0, 2, 0)))
             .splineToConstantHeading(new Vector2d(54.23, -16.62), Math.toRadians(0))
             .splineToConstantHeading(Sample2.toVector2d(), Math.toRadians(-90.00))
-            .lineToLinearHeading(new Pose2d(59.08, -53, Math.toRadians(90.00)), getVelocityConstraint(50, MAX_ANG_VEL, TRACK_WIDTH), SampleMecanumDrive.getACCEL_CONSTRAINT())
+            .splineToLinearHeading(new Pose2d(59.08, -53, Math.toRadians(90.00)), Math.toRadians(-90), getVelocityConstraint(50, MAX_ANG_VEL, TRACK_WIDTH), SampleMecanumDrive.getACCEL_CONSTRAINT())
 //            .splineToSplineHeading(new Pose2d(64.15, -14.54, Math.toRadians(180.00)), Math.toRadians(0.00))
 //            .lineToLinearHeading(new Pose2d(64.15, -56.31, Math.toRadians(180.00)))
             .build(); // push 2 blocks
@@ -114,7 +114,7 @@ public class Chamber1Plus3 extends LinearOpMode {
     TrajectorySequence pushToGrab =
             drive
                     .trajectorySequenceBuilder(push2Blocks.end())
-                    .splineToConstantHeading(new Vector2d(36.60, -60.31), Math.toRadians(-90))
+                    .splineToConstantHeading(new Vector2d(36.60, -60.31), Math.toRadians(-90), getVelocityConstraint(25, MAX_ANG_VEL, TRACK_WIDTH), SampleMecanumDrive.getACCEL_CONSTRAINT())
                     .build(); // push end to grab
 
     TrajectorySequence chamberToGrab = drive.trajectorySequenceBuilder(chamber3.toPose2d())

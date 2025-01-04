@@ -36,8 +36,8 @@ public class AlphaSlide extends SubsystemBase {
   public static long waitGrabTimeout = 500;
   public static long waitGrabTimeout3 = 700;
 
-  public static long slideRetractFar = 450;
-  public static long slideRetractNear = 100;
+  public static long slideRetractFar = 600;
+  public static long slideRetractNear = 200;
 
   private static double turnAngleDeg = 0;
   private TurnServo turnServo = TurnServo.DEG_0;
@@ -198,11 +198,14 @@ public class AlphaSlide extends SubsystemBase {
     slideArmServo.setPosition(0.6);
   }
 
+  public static double slideArmServo_Down = currentRobot==DriveConstants.RobotType.ALPHA?0.47:0.8;
+//  public static double slideArmServo_PreGrab = 0.45;
+
   public enum Goal {
     STOW(-1, currentRobot==DriveConstants.RobotType.ALPHA?0.4:0.255, currentRobot==DriveConstants.RobotType.ALPHA?0.39:0.47, 0.4, currentRobot==DriveConstants.RobotType.ALPHA?0.2:0.35),
-    AIM(slideExtensionVal, currentRobot==DriveConstants.RobotType.ALPHA?0.32:0.63, currentRobot==DriveConstants.RobotType.ALPHA?0.75:0.23, turnAngleDeg, currentRobot==DriveConstants.RobotType.ALPHA?0.2:0.35),
-    GRAB(slideExtensionVal, currentRobot==DriveConstants.RobotType.ALPHA?0.47:0.8, currentRobot==DriveConstants.RobotType.ALPHA?0.75:0.23, turnAngleDeg, currentRobot==DriveConstants.RobotType.ALPHA?0.635:0.63),
-    HANDOFF(0.22, currentRobot==DriveConstants.RobotType.ALPHA?0.13:0.255, currentRobot==DriveConstants.RobotType.ALPHA?0.39:0.6, 0.4, currentRobot==DriveConstants.RobotType.ALPHA?0.635:0.35);
+    AIM(slideExtensionVal, currentRobot==DriveConstants.RobotType.ALPHA?0.35:0.63, currentRobot==DriveConstants.RobotType.ALPHA?0.75:0.23, turnAngleDeg, currentRobot==DriveConstants.RobotType.ALPHA?0.2:0.35),
+    GRAB(slideExtensionVal, slideArmServo_Down, currentRobot==DriveConstants.RobotType.ALPHA?0.75:0.23, turnAngleDeg, currentRobot==DriveConstants.RobotType.ALPHA?0.635:0.63),
+    HANDOFF(0.21, currentRobot==DriveConstants.RobotType.ALPHA?0.13:0.255, currentRobot==DriveConstants.RobotType.ALPHA?0.39:0.6, 0.4, currentRobot==DriveConstants.RobotType.ALPHA?0.635:0.35);
 
     private final double slideExtension;
     private final double slideArmPos;
