@@ -199,10 +199,10 @@ public class AlphaSlide extends SubsystemBase {
   }
 
   public enum Goal {
-    STOW(-1, currentRobot==DriveConstants.RobotType.ALPHA?0.4:0.255, currentRobot==DriveConstants.RobotType.ALPHA?0.39:0.47, 0.4, currentRobot==DriveConstants.RobotType.ALPHA?0.2:0.35),
-    AIM(slideExtensionVal, currentRobot==DriveConstants.RobotType.ALPHA?0.32:0.63, currentRobot==DriveConstants.RobotType.ALPHA?0.75:0.23, turnAngleDeg, currentRobot==DriveConstants.RobotType.ALPHA?0.2:0.35),
-    GRAB(slideExtensionVal, currentRobot==DriveConstants.RobotType.ALPHA?0.47:0.8, currentRobot==DriveConstants.RobotType.ALPHA?0.75:0.23, turnAngleDeg, currentRobot==DriveConstants.RobotType.ALPHA?0.635:0.63),
-    HANDOFF(0.22, currentRobot==DriveConstants.RobotType.ALPHA?0.13:0.255, currentRobot==DriveConstants.RobotType.ALPHA?0.39:0.6, 0.4, currentRobot==DriveConstants.RobotType.ALPHA?0.635:0.35);
+    STOW(-1, currentRobot==DriveConstants.RobotType.ALPHA?0.4:0.255, currentRobot==DriveConstants.RobotType.ALPHA?0.39:0.47, 0.4, currentRobot==DriveConstants.RobotType.ALPHA?0.2:0.74),
+    AIM(slideExtensionVal, currentRobot==DriveConstants.RobotType.ALPHA?0.32:0.63, currentRobot==DriveConstants.RobotType.ALPHA?0.75:0.23, turnAngleDeg, currentRobot==DriveConstants.RobotType.ALPHA?0.2:0.74),
+    GRAB(slideExtensionVal, currentRobot==DriveConstants.RobotType.ALPHA?0.47:0.8, currentRobot==DriveConstants.RobotType.ALPHA?0.75:0.23, turnAngleDeg, currentRobot==DriveConstants.RobotType.ALPHA?0.635:0.35),
+    HANDOFF(0.22, currentRobot==DriveConstants.RobotType.ALPHA?0.13:0.255, currentRobot==DriveConstants.RobotType.ALPHA?0.39:0.6, 0.4, currentRobot==DriveConstants.RobotType.ALPHA?0.635:0.74);
 
     private final double slideExtension;
     private final double slideArmPos;
