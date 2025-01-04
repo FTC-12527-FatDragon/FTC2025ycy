@@ -67,7 +67,8 @@ public class AutoCommand {
     return new InstantCommand(liftClaw::openClaw)
         .andThen(new InstantCommand(liftClaw::grabWrist))
         .andThen(new InstantCommand(liftClaw::grabLiftArm))
-            .andThen(lift.setGoalCommand(Lift.Goal.GRAB, false));
+            .andThen(lift.setGoalCommand(Lift.Goal.GRAB, true))
+            .andThen(new WaitCommand(500).deadlineWith(lift.manualResetCommand()));
   }
 
   public static Command initialize(AlphaLiftClaw liftClaw, AlphaSlide slide) {

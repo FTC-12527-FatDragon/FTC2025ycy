@@ -181,7 +181,7 @@ public class Lift extends MotorPIDSlideSubsystem {
   public enum Goal {
     BASKET(1600.0),
     STOW(10.0),
-    PRE_HANG(620.0),
+    PRE_HANG(600.0),
     HANG(1000.0),
     GRAB(0),
     OPEN_LOOP(0.0);
