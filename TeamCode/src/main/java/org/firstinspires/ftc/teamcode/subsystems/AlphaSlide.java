@@ -36,8 +36,8 @@ public class AlphaSlide extends SubsystemBase {
   public static long waitGrabTimeout = 500;
   public static long waitGrabTimeout3 = 700;
 
-  public static long slideRetractFar = 400;
-  public static long slideRetractNear = 75;
+  public static long slideRetractFar = 450;
+  public static long slideRetractNear = 100;
 
   private static double turnAngleDeg = 0;
   private TurnServo turnServo = TurnServo.DEG_0;
@@ -100,16 +100,10 @@ public class AlphaSlide extends SubsystemBase {
   public Command handoffCommand() {
     return new SequentialCommandGroup(
         new InstantCommand(() -> goal = Goal.HANDOFF),
-        new InstantCommand(
-            () -> {
-              handoffWristTurn();
-              turnServo = TurnServo.DEG_0;
-            }),
-        new WaitCommand(100),
-        new InstantCommand(() -> wristServo.setPosition(Goal.HANDOFF.wristPos)),
-        new WaitCommand(200),
-        new InstantCommand(() -> slideArmServo.setPosition(Goal.HANDOFF.slideArmPos)),
-        new WaitCommand(200),
+        setTurnServoPosCommand(TurnServo.DEG_0, aimCommand_wristTurn2ArmDelayMs).alongWith(
+                  setServoPosCommand(wristServo, Goal.HANDOFF.wristPos, 200),
+                  setServoPosCommand(slideArmServo, Goal.HANDOFF.slideArmPos, 200)
+        ),
         new ConditionalCommand(
                 new InstantCommand(() -> slideExtensionVal = Goal.HANDOFF.slideExtension).andThen(new WaitCommand(slideRetractFar)),
                 new InstantCommand(() -> slideExtensionVal = Goal.HANDOFF.slideExtension).andThen(new WaitCommand(slideRetractNear)),
