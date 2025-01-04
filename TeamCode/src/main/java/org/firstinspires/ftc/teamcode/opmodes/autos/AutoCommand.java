@@ -39,7 +39,6 @@ public class AutoCommand {
     return slide
         .handoffCommand()
         .alongWith(new InstantCommand(liftClaw::openClaw))
-        .andThen(new WaitCommand(600))
         .andThen(liftClaw.closeClawCommand())
         .andThen(new InstantCommand(slide::openIntakeClaw));
   }
