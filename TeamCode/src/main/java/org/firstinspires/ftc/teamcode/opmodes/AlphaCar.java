@@ -45,7 +45,7 @@ public class AlphaCar extends CommandOpMode {
 
     slide.initialize();
     liftClaw.initialize();
-    lift.setGoal(Lift.Goal.STOW);
+//    lift.setGoal(Lift.Goal.STOW);
 
     // Teleop Drive Command
     drive.setDefaultCommand(
@@ -65,9 +65,9 @@ public class AlphaCar extends CommandOpMode {
                 new InstantCommand(),
                 new ParallelCommandGroup(
                     slide.aimCommand(),
-                    new InstantCommand(() -> lift.setGoal(Lift.Goal.BASKET)),
+                    lift.setGoalCommand(Lift.Goal.BASKET, false),
                     new WaitUntilCommand(() -> lift.getCurrentPosition() > 600)
-                        .andThen(new InstantCommand(liftClaw::upLiftArm)
+                                .andThen(new InstantCommand(liftClaw::upLiftArm)
                                 .alongWith(new InstantCommand(liftClaw::basketWrist)))),
                 () -> !isPureHandoffComplete));
 
@@ -87,7 +87,7 @@ public class AlphaCar extends CommandOpMode {
                 liftClaw.foldLiftArmCommand(),
                 new InstantCommand(liftClaw::stowWrist),
                 new WaitCommand(100),
-                new InstantCommand(() -> lift.setGoal(Lift.Goal.STOW)),
+                lift.setGoalCommand(Lift.Goal.STOW, false),
                 new InstantCommand(() -> isPureHandoffComplete = false)));
 
     // Aim
@@ -130,7 +130,7 @@ public class AlphaCar extends CommandOpMode {
     // Chamber Command from Grab
     Supplier<Command> preHang =
         () ->
-            new InstantCommand(() -> lift.setGoal(Lift.Goal.PRE_HANG))
+            lift.setGoalCommand(Lift.Goal.PRE_HANG)
                 .alongWith(new InstantCommand(() -> liftClaw.chamberWrist()))
                 .andThen(new InstantCommand(() -> liftClaw.chamberLiftArm()));
 
@@ -143,7 +143,7 @@ public class AlphaCar extends CommandOpMode {
                 new InstantCommand(() -> liftClaw.openClaw())
                     .andThen(liftClaw.foldLiftArmCommand(0))
                     .alongWith(new InstantCommand(() -> liftClaw.stowWrist()))
-                    .andThen(new InstantCommand(() -> lift.setGoal(Lift.Goal.STOW)))
+                    .andThen(lift.setGoalCommand(Lift.Goal.STOW, false))
                     .andThen(new InstantCommand(() -> isHangComplete = false)),
                 () -> !isHangComplete);
 
@@ -165,8 +165,7 @@ public class AlphaCar extends CommandOpMode {
                 gamepadEx1.getButton(GamepadKeys.Button.DPAD_UP)
                     && lift.getGoal() == Lift.Goal.PRE_HANG)
         .whenPressed(
-            new InstantCommand(() -> lift.setGoal(Lift.Goal.HANG))
-                .andThen(new WaitCommand(300))
+            lift.setGoalCommand(Lift.Goal.HANG)
                 .andThen(new InstantCommand(() -> isHangComplete = true)));
 
     new FunctionalButton(
@@ -174,8 +173,7 @@ public class AlphaCar extends CommandOpMode {
                 gamepadEx1.getButton(GamepadKeys.Button.DPAD_DOWN)
                     && lift.getGoal() == Lift.Goal.HANG)
         .whenPressed(
-            new InstantCommand(() -> lift.setGoal(Lift.Goal.PRE_HANG))
-                .andThen(new WaitCommand(300))
+            lift.setGoalCommand(Lift.Goal.PRE_HANG)
                 .andThen(new InstantCommand(() -> isHangComplete = false)));
 
     new FunctionalButton(
@@ -263,5 +261,6 @@ public class AlphaCar extends CommandOpMode {
   public void run() {
     CommandScheduler.getInstance().run();
     lift.periodicTest();
+    telemetry.update();
   }
 }

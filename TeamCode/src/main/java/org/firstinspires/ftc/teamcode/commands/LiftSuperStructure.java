@@ -23,8 +23,7 @@ public class LiftSuperStructure {
 
   public Command toNormalCommand() {
     return new ParallelCommandGroup(
-        new InstantCommand(() -> lift.setGoal(Lift.Goal.BASKET)),
-        new WaitUntilCommand(() -> lift.getCurrentPosition() > 600)
+        lift.setGoalCommand(Lift.Goal.BASKET)
             .andThen(new InstantCommand(claw::upLiftArm)));
   }
 }

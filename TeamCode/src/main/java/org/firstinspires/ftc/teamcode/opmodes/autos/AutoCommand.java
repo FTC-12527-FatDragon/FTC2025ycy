@@ -22,8 +22,7 @@ public class AutoCommand {
   public static long tempTimeout = 1000;
   public static Command upLiftToBasket(Lift lift, AlphaLiftClaw liftClaw) {
     return new ParallelCommandGroup(
-        new InstantCommand(() -> lift.setGoal(Lift.Goal.BASKET)),
-        new WaitUntilCommand(() -> lift.getCurrentPosition() > 400)
+        lift.setGoalCommand(Lift.Goal.BASKET)
             .andThen(new InstantCommand(liftClaw::upLiftArm)));
   }
 
@@ -67,8 +66,8 @@ public class AutoCommand {
     return new InstantCommand(liftClaw::openClaw)
         .andThen(new InstantCommand(liftClaw::grabWrist))
         .andThen(new InstantCommand(liftClaw::grabLiftArm))
-            .andThen(lift.setGoalCommand(Lift.Goal.GRAB, true))
-            .andThen(new WaitCommand(500).deadlineWith(lift.manualResetCommand()));
+            .andThen(lift.setGoalCommand(Lift.Goal.GRAB, true));
+//            .andThen(new WaitCommand(500).deadlineWith(lift.manualResetCommand()));
   }
 
   public static Command initialize(AlphaLiftClaw liftClaw, AlphaSlide slide) {

@@ -48,7 +48,9 @@ public class Lift extends MotorPIDSlideSubsystem {
 
   private final VoltageSensor batteryVoltageSensor;
 
-  @Getter @Setter private Goal goal = Goal.STOW;
+  @Getter private Goal goal = Goal.STOW;
+
+  public static double AtGoalTolerance = 50;
 
   public Lift(final HardwareMap hardwareMap, Telemetry telemetry) {
     if (DriveConstants.currentRobot== DriveConstants.RobotType.ALPHA) {
@@ -114,7 +116,7 @@ public class Lift extends MotorPIDSlideSubsystem {
   }
 
   public boolean atGoal() {
-    return MathUtils.isNear(goal.setpointTicks, getCurrentPosition(), 10);
+    return MathUtils.isNear(goal.setpointTicks, getCurrentPosition(), AtGoalTolerance);
   }
 
   public boolean atHome(double tolerance) {
@@ -126,7 +128,7 @@ public class Lift extends MotorPIDSlideSubsystem {
   }
 
   public Command setGoalCommand(Goal newGoal, boolean wait){
-    Command toRun = new InstantCommand(() -> setGoal(newGoal));
+    Command toRun = new InstantCommand(() -> goal = newGoal);
     if(wait){
       return toRun.andThen(waitAtGoal());
     }else{
@@ -139,7 +141,7 @@ public class Lift extends MotorPIDSlideSubsystem {
   }
 
   public boolean atPreHang() {
-    return MathUtils.isNear(Goal.PRE_HANG.setpointTicks, getCurrentPosition(), 10);
+    return MathUtils.isNear(Goal.PRE_HANG.setpointTicks, getCurrentPosition(), AtGoalTolerance);
   }
 
   public void periodicTest() {
@@ -179,8 +181,8 @@ public class Lift extends MotorPIDSlideSubsystem {
   }
 
   public enum Goal {
-    BASKET(1600.0),
-    STOW(10.0),
+    BASKET(1500),
+    STOW(0),
     PRE_HANG(600.0),
     HANG(1000.0),
     GRAB(0),
