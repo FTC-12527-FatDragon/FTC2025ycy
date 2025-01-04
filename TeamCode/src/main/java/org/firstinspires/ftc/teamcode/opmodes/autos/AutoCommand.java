@@ -64,11 +64,19 @@ public class AutoCommand {
   }
 
   public static Command chamberToGrab(Lift lift, AlphaLiftClaw liftClaw) {
+    return chamberToGrab(lift, liftClaw, false);
+  }
+
+  public static Command chamberToGrab(Lift lift, AlphaLiftClaw liftClaw, boolean isReset) {
     return new InstantCommand(liftClaw::openClaw)
-        .andThen(new InstantCommand(liftClaw::grabWrist))
-        .andThen(new InstantCommand(liftClaw::grabLiftArm))
+            .andThen(new InstantCommand(liftClaw::grabWrist))
+            .andThen(new InstantCommand(liftClaw::grabLiftArm))
             .andThen(lift.setGoalCommand(Lift.Goal.GRAB, true))
-            .andThen(new WaitCommand(500).deadlineWith(lift.manualResetCommand()));
+            .andThen(
+                    isReset?
+                    new WaitCommand(500).deadlineWith(lift.manualResetCommand())
+                    :new InstantCommand(() -> {})
+            );
   }
 
   public static Command initialize(AlphaLiftClaw liftClaw, AlphaSlide slide) {
