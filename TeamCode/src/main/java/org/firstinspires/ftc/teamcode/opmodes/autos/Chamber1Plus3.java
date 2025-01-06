@@ -38,7 +38,7 @@ public class Chamber1Plus3 extends LinearOpMode {
 
   public static Pose2dHelperClass grab = new Pose2dHelperClass(36, -60, 90.00);
 
-  public static double gap = 2;
+  public static double gap = 3;
   public static Pose2dHelperClass chamber = new Pose2dHelperClass(5, -29, 90.00);
   public static Pose2dHelperClass chamber1 = new Pose2dHelperClass(chamber.X - gap, chamber.Y, 90.00);
   public static Pose2dHelperClass chamber2 =
@@ -119,7 +119,7 @@ public class Chamber1Plus3 extends LinearOpMode {
 
     TrajectorySequence chamberToGrab = drive.trajectorySequenceBuilder(chamber3.toPose2d())
             .lineToConstantHeading(chamber3.toVector2d().plus(new Vector2d(0, -1)))
-            .splineToConstantHeading(grab.toVector2d(), Math.toRadians(-90))
+            .splineToConstantHeading(grab.toVector2d(), Math.toRadians(-90), getVelocityConstraint(25, MAX_ANG_VEL, TRACK_WIDTH), SampleMecanumDrive.getACCEL_CONSTRAINT())
             .build();
 
 
