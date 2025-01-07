@@ -16,7 +16,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import java.util.HashMap;
 import java.util.function.Supplier;
 import org.firstinspires.ftc.teamcode.commands.TeleopDriveCommand;
-import org.firstinspires.ftc.teamcode.opmodes.autos.AutoCommand;
+import org.firstinspires.ftc.teamcode.opmodes.autos.AutoCommandBase;
 import org.firstinspires.ftc.teamcode.subsystems.AlphaLiftClaw;
 import org.firstinspires.ftc.teamcode.subsystems.AlphaSlide;
 import org.firstinspires.ftc.teamcode.subsystems.Lift;
@@ -134,7 +134,7 @@ public class AlphaCar extends CommandOpMode {
                 .alongWith(new InstantCommand(() -> liftClaw.chamberWrist()))
                 .andThen(new InstantCommand(() -> liftClaw.chamberLiftArm()));
 
-    Command grab = AutoCommand.chamberToGrab(lift, liftClaw).alongWith(slide.aimCommand());
+    Command grab = AutoCommandBase.chamberToGrab(lift, liftClaw).alongWith(slide.aimCommand());
 
     Supplier<Command> stow =
         () ->

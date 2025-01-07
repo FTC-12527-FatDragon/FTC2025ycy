@@ -1,6 +1,5 @@
 package org.firstinspires.ftc.teamcode.opmodes.autos;
 
-import static org.firstinspires.ftc.teamcode.opmodes.autos.AutoCommand.*;
 import static org.firstinspires.ftc.teamcode.subsystems.drivetrain.DriveConstants.MAX_ANG_VEL;
 import static org.firstinspires.ftc.teamcode.subsystems.drivetrain.DriveConstants.TRACK_WIDTH;
 import static org.firstinspires.ftc.teamcode.subsystems.drivetrain.SampleMecanumDrive.getVelocityConstraint;
@@ -31,10 +30,7 @@ import org.firstinspires.ftc.teamcode.utils.Translation2dHelperClass;
 
 @Config
 @Autonomous(name = "Chamber 1+3", group = "Autos")
-public class Chamber1Plus3 extends LinearOpMode {
-  AlphaLiftClaw liftClaw;
-  Lift lift;
-  AlphaSlide slide;
+public class Chamber1Plus3 extends AutoCommandBase {
 
   public static Pose2dHelperClass grab = new Pose2dHelperClass(36, -60, 90.00);
 
@@ -60,19 +56,17 @@ public class Chamber1Plus3 extends LinearOpMode {
 
   public static long Grab2ChamberUpperDelay = 0;
 
-  private SampleMecanumDrive drive;
-
   public Command obersvationToChamberCycle(TrajectorySequence toChamberSequence, TrajectorySequence chamberToGrab){
     return new SequentialCommandGroup(
             liftClaw.closeClawCommand(),
 
             new AutoDriveCommand(drive, toChamberSequence)
-                    .alongWith(new WaitCommand(Grab2ChamberUpperDelay).andThen(toPreHang(lift, liftClaw))),
+                    .alongWith(new WaitCommand(Grab2ChamberUpperDelay).andThen(toPreHang())),
 
-            upToChamber(lift),
+            upToChamber(),
 
             new AutoDriveCommand(drive, chamberToGrab)
-                    .alongWith(chamberToGrab(lift, liftClaw))
+                    .alongWith(chamberToGrab())
     );
   }
   
@@ -86,17 +80,7 @@ public class Chamber1Plus3 extends LinearOpMode {
   }
 
   @Override
-  public void runOpMode() throws InterruptedException {
-    CommandScheduler.getInstance().reset();
-
-    Telemetry telemetry_M = new MultipleTelemetry(FtcDashboard.getInstance().getTelemetry(), telemetry);
-
-    // Subsystems Initialized
-    lift = new Lift(hardwareMap, telemetry_M);
-    liftClaw = new AlphaLiftClaw(hardwareMap, telemetry_M);
-    slide = new AlphaSlide(hardwareMap, telemetry_M);
-
-    drive = new SampleMecanumDrive(hardwareMap);
+  public Command runAutoCommand() {
 
     TrajectorySequence push2Blocks = drive.trajectorySequenceBuilder(new Pose2d(2.54, -32.08, Math.toRadians(90.00)))
             .lineToConstantHeading(new Vector2d(6.46, -40.38))
@@ -156,20 +140,16 @@ public class Chamber1Plus3 extends LinearOpMode {
 
     // Score the first chamber
     // Push all three samples to the observation zone
-    // Repeatedly score the high chamber with slightly different
-    CommandScheduler.getInstance()
-        .schedule(
-            new SequentialCommandGroup(
-                initialize(liftClaw, slide),
+    return new SequentialCommandGroup(
                 new InstantCommand(() -> drive.setPoseEstimate(startToChamber.start())),
                 liftClaw.closeClawCommand(),
-                new AutoDriveCommand(drive, startToChamber).alongWith(new WaitCommand(Grab2ChamberUpperDelay).andThen(toPreHang(lift, liftClaw))),
+                new AutoDriveCommand(drive, startToChamber).alongWith(new WaitCommand(Grab2ChamberUpperDelay).andThen(toPreHang())),
 
-                upToChamber(lift),
+                upToChamber(),
 
 //                    stowArmFromBasket(lift, liftClaw),
 
-                new AutoDriveCommand(drive, push2Blocks).alongWith(chamberToGrab(lift, liftClaw)),
+                new AutoDriveCommand(drive, push2Blocks).alongWith(chamberToGrab()),
 //                    new WaitCommand(500).deadlineWith(lift.manualResetCommand()),
 //
                 new AutoDriveCommand(drive, pushToGrab),
@@ -194,17 +174,6 @@ public class Chamber1Plus3 extends LinearOpMode {
                 //                ,
                 //                        new AutoDriveCommand(drive, chamberToFirst),
                 //                        new AutoDriveCommand(drive, firstToObservation),
-                ));
-
-    waitForStart();
-
-    int i=0;
-    while (opModeIsActive() && !isStopRequested()) {
-      CommandScheduler.getInstance().run();
-      lift.periodicTest();
-      telemetry_M.addData("Iterative count", i);
-      i++;
-      telemetry_M.update();
-    }
+                );
   }
 }

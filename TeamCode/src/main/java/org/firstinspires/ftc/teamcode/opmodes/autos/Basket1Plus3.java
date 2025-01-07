@@ -1,16 +1,9 @@
 package org.firstinspires.ftc.teamcode.opmodes.autos;
 
-import static org.firstinspires.ftc.teamcode.opmodes.autos.AutoCommand.grabAndBack;
-import static org.firstinspires.ftc.teamcode.opmodes.autos.AutoCommand.grabAndBack3;
-import static org.firstinspires.ftc.teamcode.opmodes.autos.AutoCommand.initialize;
-import static org.firstinspires.ftc.teamcode.opmodes.autos.AutoCommand.liftBack;
-import static org.firstinspires.ftc.teamcode.opmodes.autos.AutoCommand.liftToBasket;
-import static org.firstinspires.ftc.teamcode.opmodes.autos.AutoCommand.stowArmFromBasket;
-import static org.firstinspires.ftc.teamcode.opmodes.autos.AutoCommand.upLiftToBasket;
-
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.geometry.Vector2d;
+import com.arcrobotics.ftclib.command.Command;
 import com.arcrobotics.ftclib.command.CommandScheduler;
 import com.arcrobotics.ftclib.command.InstantCommand;
 import com.arcrobotics.ftclib.command.SequentialCommandGroup;
@@ -28,7 +21,7 @@ import org.firstinspires.ftc.teamcode.utils.Pose2dHelperClass;
 
 @Config
 @Autonomous(name = "Basket 1+3", group = "Autos")
-public class Basket1Plus3 extends LinearOpMode {
+public class Basket1Plus3 extends AutoCommandBase {
   AlphaLiftClaw liftClaw;
   Lift lift;
   AlphaSlide slide;
@@ -44,16 +37,7 @@ public class Basket1Plus3 extends LinearOpMode {
 
 
   @Override
-  public void runOpMode() throws InterruptedException {
-    CommandScheduler.getInstance().reset();
-
-    // Subsystems Initialized
-    lift = new Lift(hardwareMap, telemetry);
-    liftClaw = new AlphaLiftClaw(hardwareMap, telemetry);
-    slide = new AlphaSlide(hardwareMap, telemetry);
-
-    SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
-
+  public Command runAutoCommand() {
     TrajectorySequence startToBasket = drive.trajectorySequenceBuilder(start.toPose2d())
             .lineToSplineHeading(basket.toPose2d())
             .build();
@@ -99,42 +83,31 @@ public class Basket1Plus3 extends LinearOpMode {
 
 
     // spotless:off
-    CommandScheduler.getInstance()
-        .schedule(
-            new SequentialCommandGroup(
-                initialize(liftClaw, slide),
+    return new SequentialCommandGroup(
                 new InstantCommand(() -> drive.setPoseEstimate(startToBasket.start())),
                 new AutoDriveCommand(drive, startToBasket),
-                liftToBasket(liftClaw, lift),
+                liftToBasket(),
                 new WaitCommand(waitDropTimeout),
-                liftBack(liftClaw, lift),
+                liftBack(),
                 new AutoDriveCommand(drive, basketToGrab1),
-                grabAndBack(liftClaw, slide),
+                grabAndBack(),
                 new AutoDriveCommand(drive, grab1ToBasket),
-                liftToBasket(liftClaw, lift),
+                liftToBasket(),
                 new WaitCommand(waitDropTimeout),
-                liftBack(liftClaw, lift),
+                liftBack(),
                 new AutoDriveCommand(drive, basketToGrab2),
-                grabAndBack(liftClaw, slide),
+                grabAndBack(),
                 new AutoDriveCommand(drive, grab2ToBasket),
-                liftToBasket(liftClaw, lift),
+                liftToBasket(),
                 new WaitCommand(waitDropTimeout),
-                liftBack(liftClaw, lift),
+                liftBack(),
 
                 new AutoDriveCommand(drive, basketToGrab3),
-                grabAndBack3(liftClaw, slide),
+                grabAndBack3(),
                 new AutoDriveCommand(drive, grab3ToBasket),
-                liftToBasket(liftClaw, lift),
+                liftToBasket(),
                 new WaitCommand(waitDropTimeout),
-                liftBack(liftClaw, lift)
-            ));
-
-    // spotless:on
-    waitForStart();
-
-    while (opModeIsActive() && !isStopRequested()) {
-      CommandScheduler.getInstance().run();
-      lift.periodicTest();
-    }
+                liftBack()
+            );
   }
 }
