@@ -2,12 +2,16 @@ package org.firstinspires.ftc.teamcode.subsystems;
 
 import com.arcrobotics.ftclib.command.Command;
 import com.arcrobotics.ftclib.command.CommandBase;
+import com.arcrobotics.ftclib.command.CommandScheduler;
+import com.arcrobotics.ftclib.command.InstantCommand;
 import com.arcrobotics.ftclib.command.StartEndCommand;
 import com.arcrobotics.ftclib.command.SubsystemBase;
+import com.arcrobotics.ftclib.command.WaitCommand;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
 public abstract class MotorPIDSlideSubsystem extends SubsystemBase {
+  public static long ManualResetReleaseTimeout = 75;
   protected boolean isResetting = false;
   protected Telemetry telemetry;
 
@@ -40,8 +44,15 @@ public abstract class MotorPIDSlideSubsystem extends SubsystemBase {
           isResetting = true;
         },
         () -> {
-          resetEncoder();
-          isResetting = false;
+          runOpenLoop(getResetPower()*0.1);
+          CommandScheduler.getInstance().schedule(new WaitCommand(ManualResetReleaseTimeout).andThen(
+                  new InstantCommand(
+                          () -> {
+                            resetEncoder();
+                            isResetting = false;
+                          }
+                  )
+          ));
         },
         this);
   }

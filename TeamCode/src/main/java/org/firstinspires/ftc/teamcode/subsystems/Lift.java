@@ -84,11 +84,11 @@ public class Lift extends MotorPIDSlideSubsystem {
 
   public void runOpenLoop(double percent) {
     //    goal = Goal.OPEN_LOOP;
-    if (percent == 0) {
-      isResetting = false;
-    } else {
-      isResetting = true;
-    }
+//    if (percent == 0) {
+//      isResetting = false;
+//    } else {
+//      isResetting = true;
+//    }
     double output = Range.clip(percent, -1, 1);
     liftMotorUp.set(output);
     liftMotorDown.set(output);
