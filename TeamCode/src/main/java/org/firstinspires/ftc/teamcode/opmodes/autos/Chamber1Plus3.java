@@ -1,6 +1,5 @@
 package org.firstinspires.ftc.teamcode.opmodes.autos;
 
-import static org.firstinspires.ftc.teamcode.opmodes.autos.AutoCommand.*;
 import static org.firstinspires.ftc.teamcode.subsystems.drivetrain.DriveConstants.MAX_ANG_VEL;
 import static org.firstinspires.ftc.teamcode.subsystems.drivetrain.DriveConstants.TRACK_WIDTH;
 import static org.firstinspires.ftc.teamcode.subsystems.drivetrain.SampleMecanumDrive.getVelocityConstraint;
@@ -31,14 +30,11 @@ import org.firstinspires.ftc.teamcode.utils.Translation2dHelperClass;
 
 @Config
 @Autonomous(name = "Chamber 1+3", group = "Autos")
-public class Chamber1Plus3 extends LinearOpMode {
-  AlphaLiftClaw liftClaw;
-  Lift lift;
-  AlphaSlide slide;
+public class Chamber1Plus3 extends AutoCommandBase {
 
   public static Pose2dHelperClass grab = new Pose2dHelperClass(36, -60, 90.00);
 
-  public static double gap = 2;
+  public static double gap = 3;
   public static Pose2dHelperClass chamber = new Pose2dHelperClass(5, -29, 90.00);
   public static Pose2dHelperClass chamber1 = new Pose2dHelperClass(chamber.X - gap, chamber.Y, 90.00);
   public static Pose2dHelperClass chamber2 =
@@ -60,19 +56,17 @@ public class Chamber1Plus3 extends LinearOpMode {
 
   public static long Grab2ChamberUpperDelay = 0;
 
-  private SampleMecanumDrive drive;
-
   public Command obersvationToChamberCycle(TrajectorySequence toChamberSequence, TrajectorySequence chamberToGrab){
     return new SequentialCommandGroup(
             liftClaw.closeClawCommand(),
 
             new AutoDriveCommand(drive, toChamberSequence)
-                    .alongWith(new WaitCommand(Grab2ChamberUpperDelay).andThen(toPreHang(lift, liftClaw))),
+                    .alongWith(new WaitCommand(Grab2ChamberUpperDelay).andThen(toPreHang())),
 
-            upToChamber(lift),
+            upToChamber(),
 
             new AutoDriveCommand(drive, chamberToGrab)
-                    .alongWith(chamberToGrab(lift, liftClaw))
+                    .alongWith(chamberToGrab())
     );
   }
   
@@ -86,17 +80,7 @@ public class Chamber1Plus3 extends LinearOpMode {
   }
 
   @Override
-  public void runOpMode() throws InterruptedException {
-    CommandScheduler.getInstance().reset();
-
-    Telemetry telemetry_M = new MultipleTelemetry(FtcDashboard.getInstance().getTelemetry(), telemetry);
-
-    // Subsystems Initialized
-    lift = new Lift(hardwareMap, telemetry_M);
-    liftClaw = new AlphaLiftClaw(hardwareMap, telemetry_M);
-    slide = new AlphaSlide(hardwareMap, telemetry_M);
-
-    drive = new SampleMecanumDrive(hardwareMap);
+  public Command runAutoCommand() {
 
     TrajectorySequence push2Blocks = drive.trajectorySequenceBuilder(new Pose2d(2.54, -32.08, Math.toRadians(90.00)))
             .lineToConstantHeading(new Vector2d(6.46, -40.38))
@@ -104,9 +88,9 @@ public class Chamber1Plus3 extends LinearOpMode {
             .splineToConstantHeading(new Vector2d(47.54, -14.31), Math.toRadians(0.00))
             .lineToLinearHeading(sample1Observation.toPose2d(), getVelocityConstraint(40, MAX_ANG_VEL, TRACK_WIDTH), SampleMecanumDrive.getACCEL_CONSTRAINT())
             .lineToLinearHeading(sample1Observation.toPose2d().plus(new Pose2d(0, 2, 0)))
-            .splineToConstantHeading(new Vector2d(54.23, -16.62), Math.toRadians(0))
-            .splineToConstantHeading(Sample2.toVector2d(), Math.toRadians(-90.00))
-            .splineToLinearHeading(new Pose2d(59.08, -53, Math.toRadians(90.00)), Math.toRadians(-90), getVelocityConstraint(50, MAX_ANG_VEL, TRACK_WIDTH), SampleMecanumDrive.getACCEL_CONSTRAINT())
+            .splineToConstantHeading(new Vector2d(54.23, -16.62), Math.toRadians(0), getVelocityConstraint(30, MAX_ANG_VEL, TRACK_WIDTH), SampleMecanumDrive.getACCEL_CONSTRAINT())
+            .splineToConstantHeading(Sample2.toVector2d(), Math.toRadians(-90.00), getVelocityConstraint(30, MAX_ANG_VEL, TRACK_WIDTH), SampleMecanumDrive.getACCEL_CONSTRAINT())
+            .splineToLinearHeading(new Pose2d(59.08, -53, Math.toRadians(90.00)), Math.toRadians(-90), getVelocityConstraint(40, MAX_ANG_VEL, TRACK_WIDTH), SampleMecanumDrive.getACCEL_CONSTRAINT())
 //            .splineToSplineHeading(new Pose2d(64.15, -14.54, Math.toRadians(180.00)), Math.toRadians(0.00))
 //            .lineToLinearHeading(new Pose2d(64.15, -56.31, Math.toRadians(180.00)))
             .build(); // push 2 blocks
@@ -119,7 +103,7 @@ public class Chamber1Plus3 extends LinearOpMode {
 
     TrajectorySequence chamberToGrab = drive.trajectorySequenceBuilder(chamber3.toPose2d())
             .lineToConstantHeading(chamber3.toVector2d().plus(new Vector2d(0, -1)))
-            .splineToConstantHeading(grab.toVector2d(), Math.toRadians(-90))
+            .splineToConstantHeading(grab.toVector2d(), Math.toRadians(-90), getVelocityConstraint(25, MAX_ANG_VEL, TRACK_WIDTH), SampleMecanumDrive.getACCEL_CONSTRAINT())
             .build();
 
 
@@ -156,20 +140,16 @@ public class Chamber1Plus3 extends LinearOpMode {
 
     // Score the first chamber
     // Push all three samples to the observation zone
-    // Repeatedly score the high chamber with slightly different
-    CommandScheduler.getInstance()
-        .schedule(
-            new SequentialCommandGroup(
-                initialize(liftClaw, slide),
+    return new SequentialCommandGroup(
                 new InstantCommand(() -> drive.setPoseEstimate(startToChamber.start())),
                 liftClaw.closeClawCommand(),
-                new AutoDriveCommand(drive, startToChamber).alongWith(new WaitCommand(Grab2ChamberUpperDelay).andThen(toPreHang(lift, liftClaw))),
+                new AutoDriveCommand(drive, startToChamber).alongWith(new WaitCommand(Grab2ChamberUpperDelay).andThen(toPreHang())),
 
-                upToChamber(lift),
+                upToChamber(),
 
 //                    stowArmFromBasket(lift, liftClaw),
 
-                new AutoDriveCommand(drive, push2Blocks).alongWith(chamberToGrab(lift, liftClaw)),
+                new AutoDriveCommand(drive, push2Blocks).alongWith(chamberToGrab()),
 //                    new WaitCommand(500).deadlineWith(lift.manualResetCommand()),
 //
                 new AutoDriveCommand(drive, pushToGrab),
@@ -194,17 +174,6 @@ public class Chamber1Plus3 extends LinearOpMode {
                 //                ,
                 //                        new AutoDriveCommand(drive, chamberToFirst),
                 //                        new AutoDriveCommand(drive, firstToObservation),
-                ));
-
-    waitForStart();
-
-    int i=0;
-    while (opModeIsActive() && !isStopRequested()) {
-      CommandScheduler.getInstance().run();
-      lift.periodicTest();
-      telemetry_M.addData("Iterative count", i);
-      i++;
-      telemetry_M.update();
-    }
+                );
   }
 }
