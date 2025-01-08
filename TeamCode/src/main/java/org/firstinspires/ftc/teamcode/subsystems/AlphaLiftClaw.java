@@ -22,8 +22,8 @@ public class AlphaLiftClaw extends SubsystemBase {
   private final Servo liftWristServo;
   private final Telemetry telemetry;
 
-  public static double LiftClaw_Open = currentRobot==DriveConstants.RobotType.ALPHA?0.7:0.7025;
-  public static double LiftClaw_Close = currentRobot==DriveConstants.RobotType.ALPHA?0.33:0.35;
+  public static double LiftClaw_Open = currentRobot==DriveConstants.RobotType.ALPHA?0.7:0.35;
+  public static double LiftClaw_Close = currentRobot==DriveConstants.RobotType.ALPHA?0.33:0.7025;
 
   public AlphaLiftClaw(final HardwareMap hardwareMap, Telemetry telemetry) {
     liftArmServo = hardwareMap.get(Servo.class, "liftArmServo"); // 0.3 Up 0.7 Down
@@ -116,7 +116,7 @@ public class AlphaLiftClaw extends SubsystemBase {
     STOW(currentRobot==DriveConstants.RobotType.ALPHA?0.825:0.83, LiftClaw_Close, currentRobot==DriveConstants.RobotType.ALPHA?0.63:0.595),
     CHAMBER(currentRobot==DriveConstants.RobotType.ALPHA?0.64:0.66, LiftClaw_Close, currentRobot==DriveConstants.RobotType.ALPHA?0.27:0.47),
     BASKET(currentRobot==DriveConstants.RobotType.ALPHA?0.43:0.46, LiftClaw_Close, currentRobot==DriveConstants.RobotType.ALPHA?0.35:0.5),
-    GRAB(currentRobot== DriveConstants.RobotType.ALPHA?0.209:0.225, LiftClaw_Open, currentRobot==DriveConstants.RobotType.ALPHA?0.08:0.39);
+    GRAB(currentRobot== DriveConstants.RobotType.ALPHA?0.209:0.207, LiftClaw_Open, currentRobot==DriveConstants.RobotType.ALPHA?0.08:0.39);
 
     private final double liftArmPosition;
     private final double liftWristPosition;
