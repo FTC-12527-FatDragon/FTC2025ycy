@@ -147,7 +147,7 @@ public class AlphaCar extends CommandOpMode {
         new SelectCommand(
             new HashMap<Object, Command>() {
               {
-                put(Lift.Goal.GRAB, preHang.get());
+                put(Lift.Goal.GRAB, preHang);
                 put(Lift.Goal.STOW, grab);
                 put(Lift.Goal.HANG, stow.get());
               }
