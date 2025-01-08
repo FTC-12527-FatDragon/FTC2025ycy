@@ -58,12 +58,16 @@ public abstract class AutoCommandBase extends LinearOpMode {
         .andThen(new InstantCommand(slide::openIntakeClaw));
   }
 
-  public Command toPreHang() {
+  public static Command toPreHang(Lift lift, AlphaLiftClaw liftClaw) {
     return new SequentialCommandGroup(
         new InstantCommand(liftClaw::chamberWrist),
         new InstantCommand(liftClaw::chamberLiftArm),
         lift.setGoalCommand(Lift.Goal.PRE_HANG)
     );
+  }
+
+  public Command toPreHang() {
+    return toPreHang(lift, liftClaw);
   }
 
   public Command grabToPreHang(){

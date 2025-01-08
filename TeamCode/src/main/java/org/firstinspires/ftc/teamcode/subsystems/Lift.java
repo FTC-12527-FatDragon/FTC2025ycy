@@ -50,7 +50,7 @@ public class Lift extends MotorPIDSlideSubsystem {
 
   @Getter private Goal goal = Goal.STOW;
 
-  public static double AtGoalTolerance = 50;
+  public static double AtGoalTolerance = 10;
 
   public Lift(final HardwareMap hardwareMap, Telemetry telemetry) {
     if (DriveConstants.currentRobot== DriveConstants.RobotType.ALPHA) {
@@ -184,7 +184,7 @@ public class Lift extends MotorPIDSlideSubsystem {
     BASKET(1500),
     STOW(0),
     PRE_HANG(600.0),
-    HANG(1000.0),
+    HANG(1010.0),
     GRAB(0),
     OPEN_LOOP(0.0);
 
