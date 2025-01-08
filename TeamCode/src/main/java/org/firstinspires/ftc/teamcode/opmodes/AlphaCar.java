@@ -128,11 +128,7 @@ public class AlphaCar extends CommandOpMode {
             false);
 
     // Chamber Command from Grab
-    Supplier<Command> preHang =
-        () ->
-            lift.setGoalCommand(Lift.Goal.PRE_HANG)
-                .alongWith(new InstantCommand(() -> liftClaw.chamberWrist()))
-                .andThen(new InstantCommand(() -> liftClaw.chamberLiftArm()));
+    Command preHang = AutoCommandBase.toPreHang(lift, liftClaw);
 
     Command grab = AutoCommandBase.chamberToGrab(lift, liftClaw).alongWith(slide.aimCommand());
 
