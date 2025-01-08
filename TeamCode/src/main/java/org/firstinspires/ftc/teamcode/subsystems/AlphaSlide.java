@@ -30,7 +30,7 @@ public class AlphaSlide extends SubsystemBase {
   private final Servo intakeClawServo, wristServo, wristTurnServo;
   private final Servo slideArmServo, slideRightServo;
   private boolean hasGamepiece = false;
-  private static double slideExtensionVal = 0.21;
+  private static double slideExtensionVal = currentRobot == DriveConstants.RobotType.ALPHA ? 0.21 : 0;
   private SlideServo slideServo = SlideServo.BACK;
 
   public static long waitGrabTimeout = 500;
