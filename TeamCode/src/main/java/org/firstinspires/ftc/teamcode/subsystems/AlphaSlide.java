@@ -72,13 +72,17 @@ public class AlphaSlide extends SubsystemBase {
     return new InstantCommand(() -> goal = newGoal);
   }
 
-  public Command aimCommand() {
+  public Command aimCommand(TurnServo turnServoPos) {
     return new SequentialCommandGroup(
         setGoalCommand(Goal.AIM),
-        setTurnServoPosCommand(TurnServo.DEG_0, aimCommand_wristTurn2ArmDelayMs),
+        setTurnServoPosCommand(turnServoPos, aimCommand_wristTurn2ArmDelayMs),
         setServoPosCommand(slideArmServo, Goal.AIM.slideArmPos, aimCommand_Arm2OpenDelayMs),
         new InstantCommand(() -> wristServo.setPosition(Goal.AIM.wristPos)),
         new InstantCommand(() -> intakeClawServo.setPosition(Goal.AIM.clawAngle)));
+  }
+
+  public Command aimCommand() {
+    return aimCommand(TurnServo.DEFAULT);
   }
 
   public Command grabCommand(TurnServo turnServoPos) {
@@ -163,7 +167,7 @@ public class AlphaSlide extends SubsystemBase {
     wristServo.setPosition(Goal.HANDOFF.wristPos);
     wristTurnServo.setPosition(Goal.HANDOFF.turnAngle);
     handoffWristTurn();
-    setServoPos(TurnServo.DEG_0);
+    setTurnServoPos(TurnServo.DEG_0);
   }
 
   public void handoffWristTurn() {
@@ -295,7 +299,7 @@ public class AlphaSlide extends SubsystemBase {
         turnServo = TurnServo.RIGHT_45;
         break;
     }
-    setServoPos(turnServo);
+    setTurnServoPos(turnServo);
   }
 
   public void rightTurnServo() {
@@ -313,19 +317,19 @@ public class AlphaSlide extends SubsystemBase {
         turnServo = TurnServo.RIGHT_90;
         break;
     }
-    setServoPos(turnServo);
+    setTurnServoPos(turnServo);
   }
 
-  public void setServoPos(TurnServo pos) {
+  public void setTurnServoPos(TurnServo pos) {
     turnAngleDeg = pos.turnAngleDeg;
     turnServo = pos;
   }
 
-  private Command setTurnServoPosCommand(TurnServo pos, long delay) {
+  public Command setTurnServoPosCommand(TurnServo pos, long delay) {
     return new ConditionalCommand(
         new InstantCommand(
                 () -> {
-                  setServoPos(pos);
+                  setTurnServoPos(pos);
                 })
             .andThen(new WaitCommand(delay)),
         new InstantCommand(() -> {}),
@@ -337,6 +341,7 @@ public class AlphaSlide extends SubsystemBase {
   }
 
   public enum TurnServo {
+    LEFT_50(currentRobot == DriveConstants.RobotType.ALPHA ? 0.2 : 0.8), // TODO: Delta needs test
     LEFT_45(currentRobot == DriveConstants.RobotType.ALPHA ? 0.25 : 0.715),
     DEG_0(currentRobot == DriveConstants.RobotType.ALPHA ? 0.41 : 0.565),
     RIGHT_45(currentRobot == DriveConstants.RobotType.ALPHA ? 0.55 : 0.45),

@@ -4,26 +4,19 @@ import static org.firstinspires.ftc.teamcode.subsystems.drivetrain.DriveConstant
 import static org.firstinspires.ftc.teamcode.subsystems.drivetrain.DriveConstants.TRACK_WIDTH;
 import static org.firstinspires.ftc.teamcode.subsystems.drivetrain.SampleMecanumDrive.getVelocityConstraint;
 
-import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
-import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.geometry.Vector2d;
+import com.acmerobotics.roadrunner.trajectory.Trajectory;
 import com.arcrobotics.ftclib.command.Command;
-import com.arcrobotics.ftclib.command.CommandScheduler;
 import com.arcrobotics.ftclib.command.InstantCommand;
 import com.arcrobotics.ftclib.command.SequentialCommandGroup;
 import com.arcrobotics.ftclib.command.WaitCommand;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.hardware.HardwareMap;
 
-import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.commands.AutoDriveCommand;
 import org.firstinspires.ftc.teamcode.lib.roadrunner.trajectorysequence.TrajectorySequence;
-import org.firstinspires.ftc.teamcode.subsystems.AlphaLiftClaw;
 import org.firstinspires.ftc.teamcode.subsystems.AlphaSlide;
-import org.firstinspires.ftc.teamcode.subsystems.Lift;
 import org.firstinspires.ftc.teamcode.subsystems.drivetrain.SampleMecanumDrive;
 import org.firstinspires.ftc.teamcode.utils.Pose2dHelperClass;
 import org.firstinspires.ftc.teamcode.utils.Translation2dHelperClass;
@@ -73,10 +66,12 @@ public class TestTraj extends AutoCommandBase {
 
     public Command pushBlocksCycle(TrajectorySequence grab2DropSequence, TrajectorySequence drop2Next){
         return new SequentialCommandGroup(
+                new WaitCommand(1000),
                 slide.grabCommand(),
+                new WaitCommand(3000),
                 new AutoDriveCommand(drive, grab2DropSequence),
-                new InstantCommand(slide::openIntakeClaw),
-                new AutoDriveCommand(drive, drop2Next)
+//                new InstantCommand(slide:),
+                slide.aimCommand().alongWith(new AutoDriveCommand(drive, drop2Next))
         );
     }
 
@@ -97,12 +92,24 @@ public class TestTraj extends AutoCommandBase {
                 .build(); // push 2 blocks
 
         TrajectorySequence chamber2Sample1 = drive.trajectorySequenceBuilder(push2Blocks.start())
-                .lineToConstantHeading(new Vector2d(6.46, -40.38))
-                .splineToLinearHeading(new Pose2d(25.85, -37.62, Math.toRadians(26.17)), Math.toRadians(27.51))
+                .lineToLinearHeading(new Pose2d(6.46, -40.38, Math.toRadians(26.17)))
+                .splineToLinearHeading(new Pose2d(25.85, -37, Math.toRadians(26.17)), Math.toRadians(27.51))
                 .build();
 
         TrajectorySequence grabSample12Observation = drive.trajectorySequenceBuilder(chamber2Sample1.end())
-                .splineToLinearHeading(new Pose2d(24.00, -57.46, Math.toRadians(-20.71)), Math.toRadians(223.65))
+                .lineToLinearHeading(new Pose2d(24.00, -57.46, Math.toRadians(-20.71)), getVelocityConstraint(30, MAX_ANG_VEL, TRACK_WIDTH), SampleMecanumDrive.getACCEL_CONSTRAINT())
+                .build();
+
+        TrajectorySequence observation2Sample2 = drive.trajectorySequenceBuilder(grabSample12Observation.end())
+                .lineToLinearHeading(new Pose2d(35.54, -38.31, Math.toRadians(29.81)), getVelocityConstraint(40, MAX_ANG_VEL, TRACK_WIDTH), SampleMecanumDrive.getACCEL_CONSTRAINT())
+                .build();
+
+        TrajectorySequence grabSample22Observation = drive.trajectorySequenceBuilder(observation2Sample2.end())
+                .lineToLinearHeading(new Pose2d(40.46, -57.14, Math.toRadians(-24.44)))
+                .build();
+
+        TrajectorySequence observation2Sample3 = drive.trajectorySequenceBuilder(grabSample22Observation.end())
+                .lineToLinearHeading(new Pose2d(45.17, -37.26, Math.toRadians(25.89)))
                 .build();
 
 
@@ -152,7 +159,10 @@ public class TestTraj extends AutoCommandBase {
         // Score the first chamber
         // Push all three samples to the observation zone
         return new SequentialCommandGroup(
-                new InstantCommand(() -> drive.setPoseEstimate(startToChamber.start())),
+                new InstantCommand(() -> {
+                    drive.setPoseEstimate(startToChamber.start());
+                    slide.autoBackSlideExtension();
+                }),
                 liftClaw.closeClawCommand(),
                 new AutoDriveCommand(drive, startToChamber).alongWith(new WaitCommand(Grab2ChamberUpperDelay).andThen(toPreHang())),
 
@@ -163,11 +173,13 @@ public class TestTraj extends AutoCommandBase {
                                 chamberToGrab()
                         ).alongWith(
                                 new WaitCommand(ChamberUp2ExtendSlideToSample1Delay).andThen(
-                                        new InstantCommand(slide::autoForwardSlideExtension).alongWith(slide.aimCommand())
+                                        new InstantCommand(slide::autoForwardSlideExtension).alongWith(slide.aimCommand(AlphaSlide.TurnServo.LEFT_50))
                                 )
                         ),
 
-                pushBlocksCycle(grabSample12Observation, grabToChamber2)
+                pushBlocksCycle(grabSample12Observation, observation2Sample2),
+                pushBlocksCycle(grabSample22Observation, observation2Sample3),
+                pushBlocksCycle()
                 //.alongWith(new WaitCommand(500).deadlineWith(lift.manualResetCommand()))
 
 //                obersvationToChamberCycle(grabToChamber1, chamberToGrab),
