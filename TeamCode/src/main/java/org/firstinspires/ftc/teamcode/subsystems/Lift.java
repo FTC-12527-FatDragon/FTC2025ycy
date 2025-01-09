@@ -125,7 +125,7 @@ public class Lift extends MotorPIDSlideSubsystem {
   }
 
   public Command waitAtGoal(){
-    return new WaitCommand(3000).deadlineWith(new WaitUntilCommand(this::atGoal));
+    return new WaitUntilCommand(this::atGoal);
   }
 
   public Command setGoalCommand(Goal newGoal, boolean wait){
