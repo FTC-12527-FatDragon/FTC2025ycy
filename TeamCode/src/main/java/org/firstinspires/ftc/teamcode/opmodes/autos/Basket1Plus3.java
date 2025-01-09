@@ -67,8 +67,6 @@ public class Basket1Plus3 extends AutoCommandBase {
             .build();
 
 
-
-
 //    TrajectorySequence trajTotal = drive.trajectorySequenceBuilder(new Pose2d(-24.23, -62.40, Math.toRadians(90.00)))
 //            .lineToConstantHeading(new Vector2d(-2.97, -33.37))
 //            .lineToSplineHeading(new Pose2d(-56.91, -56.69, Math.toRadians(45.00)))
@@ -88,26 +86,22 @@ public class Basket1Plus3 extends AutoCommandBase {
                 new AutoDriveCommand(drive, startToBasket),
                 liftToBasket(),
                 new WaitCommand(waitDropTimeout),
-                liftBack(),
-                new AutoDriveCommand(drive, basketToGrab1),
+                new AutoDriveCommand(drive, basketToGrab1).alongWith(new WaitCommand(100), liftBack()),
                 grabAndBack(),
                 new AutoDriveCommand(drive, grab1ToBasket),
                 liftToBasket(),
                 new WaitCommand(waitDropTimeout),
-                liftBack(),
-                new AutoDriveCommand(drive, basketToGrab2),
+                new AutoDriveCommand(drive, basketToGrab2).alongWith(new WaitCommand(100), liftBack()),
                 grabAndBack(),
                 new AutoDriveCommand(drive, grab2ToBasket),
                 liftToBasket(),
                 new WaitCommand(waitDropTimeout),
-                liftBack(),
-
-                new AutoDriveCommand(drive, basketToGrab3),
+                new AutoDriveCommand(drive, basketToGrab3).alongWith(new WaitCommand(100), liftBack()),
                 grabAndBack3(),
                 new AutoDriveCommand(drive, grab3ToBasket),
                 liftToBasket(),
                 new WaitCommand(waitDropTimeout),
                 liftBack()
-            );
+    );
   }
 }

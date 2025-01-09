@@ -129,9 +129,14 @@ public class AlphaLiftClaw extends SubsystemBase {
     }
   }
 
+  public boolean getLiftClawPos() {
+    return Math.abs(liftClawServo.getPosition() - LiftClaw_Close) < Math.abs(liftClawServo.getPosition() - LiftClaw_Open);
+  }
+
   @Override
   public void periodic() {
     telemetry.addData("Lift Arm Position", liftArmServo.getPosition());
-//    telemetry.update();
+    telemetry.addData("lift claw pos", getLiftClawPos());
+    telemetry.update();
   }
 }
