@@ -5,6 +5,7 @@ import androidx.annotation.NonNull;
 import com.acmerobotics.dashboard.config.Config;
 import com.arcrobotics.ftclib.command.Command;
 import com.arcrobotics.ftclib.command.InstantCommand;
+import com.arcrobotics.ftclib.command.WaitCommand;
 import com.arcrobotics.ftclib.command.WaitUntilCommand;
 import com.arcrobotics.ftclib.controller.PIDController;
 import com.arcrobotics.ftclib.controller.wpilibcontroller.ElevatorFeedforward;
@@ -124,7 +125,7 @@ public class Lift extends MotorPIDSlideSubsystem {
   }
 
   public Command waitAtGoal(){
-    return new WaitUntilCommand(this::atGoal);
+    return new WaitCommand(3000).deadlineWith(new WaitUntilCommand(this::atGoal));
   }
 
   public Command setGoalCommand(Goal newGoal, boolean wait){
