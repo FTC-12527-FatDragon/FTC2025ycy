@@ -161,8 +161,10 @@ public class AlphaSlide extends SubsystemBase {
 
   public void initialize() {
     slideArmServo.setPosition(Goal.AIM.slideArmPos);
-    ((MotorServo)slideRightServo).resetEncoder();
-    ((MotorServo)slideRightServo).useEncoder();
+    if (currentRobot == DriveConstants.RobotType.DELTA) {
+      ((MotorServo)slideRightServo).resetEncoder();
+      ((MotorServo)slideRightServo).useEncoder();
+    }
     slideRightServo.setPosition(SlideServo.BACK.extensionVal);
     intakeClawServo.setPosition(Goal.HANDOFF.clawAngle);
     wristServo.setPosition(Goal.HANDOFF.wristPos);
