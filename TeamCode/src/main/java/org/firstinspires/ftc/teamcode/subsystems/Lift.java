@@ -42,6 +42,8 @@ public class Lift extends MotorPIDSlideSubsystem {
   public static double resetPower = -0.7;
   public static double hangAddtionalPower = 0;
 
+  public static double reasonableUp1000TicksMaxTimeMs = 1500;
+
   public static double MAX_VEL = 0;
   public static double MAX_ACL = 0;
 
@@ -128,10 +130,19 @@ public class Lift extends MotorPIDSlideSubsystem {
     return new WaitUntilCommand(this::atGoal);
   }
 
+  public Command waitAtGoal(long timeoutMs, Runnable onTimeout){
+    return (new WaitCommand(timeoutMs)
+            .andThen(new InstantCommand(onTimeout))
+    ).raceWith(waitAtGoal());
+  }
+
   public Command setGoalCommand(Goal newGoal, boolean wait){
+    double dl = Math.abs(getCurrentPosition() - newGoal.setpointTicks);
     Command toRun = new InstantCommand(() -> goal = newGoal);
     if(wait){
-      return toRun.andThen(waitAtGoal());
+      return toRun.andThen(waitAtGoal((long)Math.ceil(reasonableUp1000TicksMaxTimeMs*dl*0.001), () ->
+              telemetry.log().add("Function Lift::waitAtGoal exceeded the reasonable time, please check hardware status")
+      ));
     }else{
       return toRun;
     }

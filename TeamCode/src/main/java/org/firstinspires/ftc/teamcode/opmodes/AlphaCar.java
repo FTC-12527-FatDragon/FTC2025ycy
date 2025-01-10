@@ -75,10 +75,7 @@ public class AlphaCar extends CommandOpMode {
     gamepadEx1.getGamepadButton(GamepadKeys.Button.B)
         .whenPressed(
             new ConditionalCommand(
-                    new SequentialCommandGroup(
-                        new InstantCommand(liftClaw::openClaw),
-                        new WaitCommand(200)
-                    ),
+                    liftClaw.openClawCommand(),
                     new SequentialCommandGroup(
                         new ConditionalCommand(
                             new InstantCommand(() -> slide.slideArmDown())
@@ -110,7 +107,7 @@ public class AlphaCar extends CommandOpMode {
         () ->
             slide
                 .handoffCommand()
-                .alongWith(new InstantCommand(liftClaw::openClaw))
+                .alongWith(liftClaw.openClawCommand())
                 .andThen(liftClaw.closeClawCommand())
                 .andThen(new InstantCommand(() -> slide.openIntakeClaw()));
 
@@ -141,7 +138,7 @@ public class AlphaCar extends CommandOpMode {
         () ->
             new ConditionalCommand(
                 new InstantCommand(),
-                new InstantCommand(() -> liftClaw.openClaw())
+                liftClaw.openClawCommand(0)
                     .andThen(liftClaw.foldLiftArmCommand(0))
                     .alongWith(new InstantCommand(() -> liftClaw.stowWrist()))
                     .andThen(lift.setGoalCommand(Lift.Goal.STOW, false))
