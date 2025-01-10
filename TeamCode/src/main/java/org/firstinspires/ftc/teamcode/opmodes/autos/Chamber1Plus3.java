@@ -4,26 +4,17 @@ import static org.firstinspires.ftc.teamcode.subsystems.drivetrain.DriveConstant
 import static org.firstinspires.ftc.teamcode.subsystems.drivetrain.DriveConstants.TRACK_WIDTH;
 import static org.firstinspires.ftc.teamcode.subsystems.drivetrain.SampleMecanumDrive.getVelocityConstraint;
 
-import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
-import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.geometry.Vector2d;
 import com.arcrobotics.ftclib.command.Command;
-import com.arcrobotics.ftclib.command.CommandScheduler;
 import com.arcrobotics.ftclib.command.InstantCommand;
 import com.arcrobotics.ftclib.command.SequentialCommandGroup;
 import com.arcrobotics.ftclib.command.WaitCommand;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.hardware.HardwareMap;
 
-import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.commands.AutoDriveCommand;
 import org.firstinspires.ftc.teamcode.lib.roadrunner.trajectorysequence.TrajectorySequence;
-import org.firstinspires.ftc.teamcode.subsystems.AlphaLiftClaw;
-import org.firstinspires.ftc.teamcode.subsystems.AlphaSlide;
-import org.firstinspires.ftc.teamcode.subsystems.Lift;
 import org.firstinspires.ftc.teamcode.subsystems.drivetrain.SampleMecanumDrive;
 import org.firstinspires.ftc.teamcode.utils.Pose2dHelperClass;
 import org.firstinspires.ftc.teamcode.utils.Translation2dHelperClass;
@@ -53,22 +44,6 @@ public class Chamber1Plus3 extends AutoCommandBase {
   //  public static double startX = 24.43;
   //  public static double startY = -64.95;
   public static Pose2dHelperClass start = new Pose2dHelperClass(7.67, -64.95, 90.00);
-
-  public static long Grab2ChamberUpperDelay = 0;
-
-  public Command obersvationToChamberCycle(TrajectorySequence toChamberSequence, TrajectorySequence chamberToGrab){
-    return new SequentialCommandGroup(
-            liftClaw.closeClawCommand(),
-
-            new AutoDriveCommand(drive, toChamberSequence)
-                    .alongWith(new WaitCommand(Grab2ChamberUpperDelay).andThen(toPreHang())),
-
-            upToChamber(),
-
-            new AutoDriveCommand(drive, chamberToGrab)
-                    .alongWith(chamberToGrab())
-    );
-  }
   
   public Command pushBlocksCycle(TrajectorySequence grab2DropSequence, TrajectorySequence drop2Next){
     return new SequentialCommandGroup(
@@ -143,7 +118,7 @@ public class Chamber1Plus3 extends AutoCommandBase {
     return new SequentialCommandGroup(
                 new InstantCommand(() -> drive.setPoseEstimate(startToChamber.start())),
                 liftClaw.closeClawCommand(),
-                new AutoDriveCommand(drive, startToChamber).alongWith(new WaitCommand(Grab2ChamberUpperDelay).andThen(toPreHang())),
+                new AutoDriveCommand(drive, startToChamber).alongWith(new WaitCommand(Grab2ChamberUpDelay).andThen(toPreHang())),
 
                 upToChamber(),
 
@@ -155,11 +130,11 @@ public class Chamber1Plus3 extends AutoCommandBase {
                 new AutoDriveCommand(drive, pushToGrab),
                         //.alongWith(new WaitCommand(500).deadlineWith(lift.manualResetCommand()))
 
-                obersvationToChamberCycle(grabToChamber1, chamberToGrab),
+                observationToChamberCycle(grabToChamber1, chamberToGrab),
 
-                obersvationToChamberCycle(grabToChamber2, chamberToGrab),
+                observationToChamberCycle(grabToChamber2, chamberToGrab),
 
-                obersvationToChamberCycle(grabToChamber3, chamberToGrab)
+                observationToChamberCycle(grabToChamber3, chamberToGrab)
 
                 //                                    .andThen(new
                 // InstantCommand(liftClaw::closeClaw))

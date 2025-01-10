@@ -9,6 +9,7 @@ import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.geometry.Vector2d;
 import com.acmerobotics.roadrunner.trajectory.Trajectory;
 import com.arcrobotics.ftclib.command.Command;
+import com.arcrobotics.ftclib.command.CommandScheduler;
 import com.arcrobotics.ftclib.command.InstantCommand;
 import com.arcrobotics.ftclib.command.SequentialCommandGroup;
 import com.arcrobotics.ftclib.command.WaitCommand;
@@ -47,32 +48,21 @@ public class TestTraj extends AutoCommandBase {
     //  public static double startY = -64.95;
     public static Pose2dHelperClass start = new Pose2dHelperClass(7.67, -64.95, 90.00);
 
-    public static long Grab2ChamberUpperDelay = 0;
     public static long ChamberUp2ExtendSlideToSample1Delay = 2000;
 
-    public Command obersvationToChamberCycle(TrajectorySequence toChamberSequence, TrajectorySequence chamberToGrab){
+    public Command pushBlocksCycle(TrajectorySequence grab2DropSequence, TrajectorySequence drop2Next, Command drop2NextRun){
         return new SequentialCommandGroup(
-                liftClaw.closeClawCommand(),
-
-                new AutoDriveCommand(drive, toChamberSequence)
-                        .alongWith(new WaitCommand(Grab2ChamberUpperDelay).andThen(toPreHang())),
-
-                upToChamber(),
-
-                new AutoDriveCommand(drive, chamberToGrab)
-                        .alongWith(chamberToGrab())
+//                new WaitCommand(1000),
+                slide.grabCommand(),
+//                new WaitCommand(3000),
+                new AutoDriveCommand(drive, grab2DropSequence),
+//                new InstantCommand(slide:),
+                slide.aimCommand().andThen(new AutoDriveCommand(drive, drop2Next).alongWith(drop2NextRun))
         );
     }
 
     public Command pushBlocksCycle(TrajectorySequence grab2DropSequence, TrajectorySequence drop2Next){
-        return new SequentialCommandGroup(
-                new WaitCommand(1000),
-                slide.grabCommand(),
-                new WaitCommand(3000),
-                new AutoDriveCommand(drive, grab2DropSequence),
-//                new InstantCommand(slide:),
-                slide.aimCommand().alongWith(new AutoDriveCommand(drive, drop2Next))
-        );
+        return pushBlocksCycle(grab2DropSequence, drop2Next, new InstantCommand(() -> {}));
     }
 
     @Override
@@ -93,15 +83,16 @@ public class TestTraj extends AutoCommandBase {
 
         TrajectorySequence chamber2Sample1 = drive.trajectorySequenceBuilder(push2Blocks.start())
                 .lineToLinearHeading(new Pose2d(6.46, -40.38, Math.toRadians(26.17)))
-                .splineToLinearHeading(new Pose2d(25.85, -37, Math.toRadians(26.17)), Math.toRadians(27.51))
+                .splineToLinearHeading(new Pose2d(25.85, -36, Math.toRadians(26.17)), Math.toRadians(27.51))
                 .build();
 
         TrajectorySequence grabSample12Observation = drive.trajectorySequenceBuilder(chamber2Sample1.end())
                 .lineToLinearHeading(new Pose2d(24.00, -57.46, Math.toRadians(-20.71)), getVelocityConstraint(30, MAX_ANG_VEL, TRACK_WIDTH), SampleMecanumDrive.getACCEL_CONSTRAINT())
+                .addTemporalMarker(() -> CommandScheduler.getInstance().schedule(slide.aimCommand()))
                 .build();
 
         TrajectorySequence observation2Sample2 = drive.trajectorySequenceBuilder(grabSample12Observation.end())
-                .lineToLinearHeading(new Pose2d(35.54, -38.31, Math.toRadians(29.81)), getVelocityConstraint(40, MAX_ANG_VEL, TRACK_WIDTH), SampleMecanumDrive.getACCEL_CONSTRAINT())
+                .lineToLinearHeading(new Pose2d(35.54, -37.31, Math.toRadians(29.81)), getVelocityConstraint(40, MAX_ANG_VEL, TRACK_WIDTH), SampleMecanumDrive.getACCEL_CONSTRAINT())
                 .build();
 
         TrajectorySequence grabSample22Observation = drive.trajectorySequenceBuilder(observation2Sample2.end())
@@ -109,7 +100,11 @@ public class TestTraj extends AutoCommandBase {
                 .build();
 
         TrajectorySequence observation2Sample3 = drive.trajectorySequenceBuilder(grabSample22Observation.end())
-                .lineToLinearHeading(new Pose2d(45.17, -37.26, Math.toRadians(25.89)))
+                .lineToLinearHeading(new Pose2d(45.17, -36.76, Math.toRadians(25.89)))
+                .build();
+
+        TrajectorySequence grabSample32Observation = drive.trajectorySequenceBuilder(observation2Sample3.end())
+                .lineToLinearHeading(new Pose2d(48.69, -56.23, Math.toRadians(-25.39)))
                 .build();
 
 
@@ -120,7 +115,7 @@ public class TestTraj extends AutoCommandBase {
                         .build(); // push end to grab
 
         TrajectorySequence chamberToGrab = drive.trajectorySequenceBuilder(chamber3.toPose2d())
-                .lineToConstantHeading(chamber3.toVector2d().plus(new Vector2d(0, -1)))
+                .lineToConstantHeading(grab.toVector2d().plus(new Vector2d(0, 1)))
                 .splineToConstantHeading(grab.toVector2d(), Math.toRadians(-90), getVelocityConstraint(25, MAX_ANG_VEL, TRACK_WIDTH), SampleMecanumDrive.getACCEL_CONSTRAINT())
                 .build();
 
@@ -163,8 +158,8 @@ public class TestTraj extends AutoCommandBase {
                     drive.setPoseEstimate(startToChamber.start());
                     slide.autoBackSlideExtension();
                 }),
-                liftClaw.closeClawCommand(),
-                new AutoDriveCommand(drive, startToChamber).alongWith(new WaitCommand(Grab2ChamberUpperDelay).andThen(toPreHang())),
+                liftClaw.closeClawCommand(0),
+                new AutoDriveCommand(drive, startToChamber).alongWith(new WaitCommand(Grab2ChamberUpDelay).andThen(toPreHang())),
 
                 upToChamber(),
 
@@ -173,34 +168,19 @@ public class TestTraj extends AutoCommandBase {
                                 chamberToGrab()
                         ).alongWith(
                                 new WaitCommand(ChamberUp2ExtendSlideToSample1Delay).andThen(
-                                        new InstantCommand(slide::autoForwardSlideExtension).alongWith(slide.aimCommand(AlphaSlide.TurnServo.LEFT_50))
+                                        (new InstantCommand(slide::autoForwardSlideExtension).andThen(new WaitCommand(slide.slideRetractFar))).alongWith(slide.aimCommand(AlphaSlide.TurnServo.LEFT_50))
                                 )
                         ),
 
                 pushBlocksCycle(grabSample12Observation, observation2Sample2),
                 pushBlocksCycle(grabSample22Observation, observation2Sample3),
-                pushBlocksCycle()
+                pushBlocksCycle(grabSample32Observation, pushToGrab, new InstantCommand(() -> slide.autoBackSlideExtension())),
                 //.alongWith(new WaitCommand(500).deadlineWith(lift.manualResetCommand()))
 
-//                obersvationToChamberCycle(grabToChamber1, chamberToGrab),
-//
-//                obersvationToChamberCycle(grabToChamber2, chamberToGrab),
-//
-//                obersvationToChamberCycle(grabToChamber3, chamberToGrab)
-
-                //                                    .andThen(new
-                // InstantCommand(liftClaw::closeClaw))
-                //                            ,
-                //                            new AutoDriveCommand(drive, trajectory3)
-                //                                    .alongWith(grabToPreHang(lift, liftClaw))
-                //                                    .andThen(new WaitCommand(300))
-                //                                    .andThen(upToChamber(lift))
-                //                                    .andThen(new WaitCommand(500))
-                //                                    .andThen(chamberToGrab(lift, liftClaw))
-
-                //                ,
-                //                        new AutoDriveCommand(drive, chamberToFirst),
-                //                        new AutoDriveCommand(drive, firstToObservation),
+                observationToChamberCycle(grabToChamber1, chamberToGrab),
+                observationToChamberCycle(grabToChamber2, chamberToGrab),
+                observationToChamberCycle(grabToChamber3, chamberToGrab),
+                observationToChamberCycle(grabToChamber4, chamberToGrab)
         );
     }
 }
