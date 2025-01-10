@@ -1,13 +1,13 @@
 package org.firstinspires.ftc.teamcode.opmodes.autos;
 
 import static org.firstinspires.ftc.teamcode.subsystems.drivetrain.DriveConstants.MAX_ANG_VEL;
+import static org.firstinspires.ftc.teamcode.subsystems.drivetrain.DriveConstants.MAX_VEL;
 import static org.firstinspires.ftc.teamcode.subsystems.drivetrain.DriveConstants.TRACK_WIDTH;
 import static org.firstinspires.ftc.teamcode.subsystems.drivetrain.SampleMecanumDrive.getVelocityConstraint;
 
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.geometry.Vector2d;
-import com.acmerobotics.roadrunner.trajectory.Trajectory;
 import com.arcrobotics.ftclib.command.Command;
 import com.arcrobotics.ftclib.command.CommandScheduler;
 import com.arcrobotics.ftclib.command.InstantCommand;
@@ -82,21 +82,21 @@ public class TestTraj extends AutoCommandBase {
                 .build(); // push 2 blocks
 
         TrajectorySequence chamber2Sample1 = drive.trajectorySequenceBuilder(push2Blocks.start())
-                .lineToLinearHeading(new Pose2d(6.46, -40.38, Math.toRadians(26.17)))
+                .lineToSplineHeading(new Pose2d(6.46, -40.38, Math.toRadians(26.17)))
                 .splineToLinearHeading(new Pose2d(25.85, -36, Math.toRadians(26.17)), Math.toRadians(27.51))
                 .build();
 
         TrajectorySequence grabSample12Observation = drive.trajectorySequenceBuilder(chamber2Sample1.end())
-                .lineToLinearHeading(new Pose2d(24.00, -57.46, Math.toRadians(-20.71)), getVelocityConstraint(30, MAX_ANG_VEL, TRACK_WIDTH), SampleMecanumDrive.getACCEL_CONSTRAINT())
+                .lineToLinearHeading(new Pose2d(24.00, -57.46, Math.toRadians(-20.71)))//, getVelocityConstraint(30, MAX_ANG_VEL, TRACK_WIDTH), SampleMecanumDrive.getACCEL_CONSTRAINT())
                 .addTemporalMarker(() -> CommandScheduler.getInstance().schedule(slide.aimCommand()))
                 .build();
 
         TrajectorySequence observation2Sample2 = drive.trajectorySequenceBuilder(grabSample12Observation.end())
-                .lineToLinearHeading(new Pose2d(35.54, -37.31, Math.toRadians(29.81)), getVelocityConstraint(40, MAX_ANG_VEL, TRACK_WIDTH), SampleMecanumDrive.getACCEL_CONSTRAINT())
+                .lineToLinearHeading(new Pose2d(35.54, -37.31, Math.toRadians(29.81)))//, getVelocityConstraint(40, MAX_ANG_VEL, TRACK_WIDTH), SampleMecanumDrive.getACCEL_CONSTRAINT())
                 .build();
 
         TrajectorySequence grabSample22Observation = drive.trajectorySequenceBuilder(observation2Sample2.end())
-                .lineToLinearHeading(new Pose2d(40.46, -57.14, Math.toRadians(-24.44)))
+                .lineToLinearHeading(new Pose2d(39.91, -51.14, Math.toRadians(-30)))
                 .build();
 
         TrajectorySequence observation2Sample3 = drive.trajectorySequenceBuilder(grabSample22Observation.end())
@@ -104,19 +104,21 @@ public class TestTraj extends AutoCommandBase {
                 .build();
 
         TrajectorySequence grabSample32Observation = drive.trajectorySequenceBuilder(observation2Sample3.end())
-                .lineToLinearHeading(new Pose2d(48.69, -56.23, Math.toRadians(-25.39)))
+                .lineToLinearHeading(new Pose2d(41.52, -55.96, Math.toRadians(-25.39)))
                 .build();
 
 
-        TrajectorySequence pushToGrab =
+        TrajectorySequence observationToGrab =
                 drive
-                        .trajectorySequenceBuilder(push2Blocks.end())
-                        .splineToConstantHeading(new Vector2d(36.60, -60.31), Math.toRadians(-90), getVelocityConstraint(25, MAX_ANG_VEL, TRACK_WIDTH), SampleMecanumDrive.getACCEL_CONSTRAINT())
-                        .build(); // push end to grab
+                        .trajectorySequenceBuilder(grabSample32Observation.end())
+                        .splineToLinearHeading(new Pose2d(36.60, -60.31, Math.toRadians(90)), Math.toRadians(-90), getVelocityConstraint(25, MAX_ANG_VEL, TRACK_WIDTH), SampleMecanumDrive.getACCEL_CONSTRAINT())
+                        .build(); // 3 sample to grab
 
         TrajectorySequence chamberToGrab = drive.trajectorySequenceBuilder(chamber3.toPose2d())
-                .lineToConstantHeading(grab.toVector2d().plus(new Vector2d(0, 1)))
-                .splineToConstantHeading(grab.toVector2d(), Math.toRadians(-90), getVelocityConstraint(25, MAX_ANG_VEL, TRACK_WIDTH), SampleMecanumDrive.getACCEL_CONSTRAINT())
+                .setVelConstraint(getVelocityConstraint(MAX_VEL, 40, TRACK_WIDTH))
+                .lineToConstantHeading(grab.toVector2d().plus(new Vector2d(0, 4)))
+                .setVelConstraint(getVelocityConstraint(25, MAX_ANG_VEL, TRACK_WIDTH))
+                .splineToConstantHeading(grab.toVector2d(), Math.toRadians(-90))
                 .build();
 
 
@@ -174,7 +176,7 @@ public class TestTraj extends AutoCommandBase {
 
                 pushBlocksCycle(grabSample12Observation, observation2Sample2),
                 pushBlocksCycle(grabSample22Observation, observation2Sample3),
-                pushBlocksCycle(grabSample32Observation, pushToGrab, new InstantCommand(() -> slide.autoBackSlideExtension())),
+                pushBlocksCycle(grabSample32Observation, observationToGrab, new InstantCommand(() -> slide.autoBackSlideExtension())),
                 //.alongWith(new WaitCommand(500).deadlineWith(lift.manualResetCommand()))
 
                 observationToChamberCycle(grabToChamber1, chamberToGrab),
