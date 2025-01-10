@@ -72,23 +72,28 @@ public class AlphaCar extends CommandOpMode {
                 () -> !isPureHandoffComplete));
 
     // Basket Drop and Back
-    gamepadEx1
-        .getGamepadButton(GamepadKeys.Button.B)
+    gamepadEx1.getGamepadButton(GamepadKeys.Button.B)
         .whenPressed(
-            new SequentialCommandGroup(
-                new ConditionalCommand(
-                    new InstantCommand(() -> slide.slideArmDown())
-                        .andThen(new WaitCommand(100))
-                        .andThen(new InstantCommand(() -> slide.setGoal(AlphaSlide.Goal.AIM))),
-                    new InstantCommand(),
-                    () -> lift.getGoal() == Lift.Goal.HANG),
-                new InstantCommand(liftClaw::openClaw),
-                new WaitCommand(200),
-                liftClaw.foldLiftArmCommand(),
-                new InstantCommand(liftClaw::stowWrist),
-                new WaitCommand(100),
-                lift.setGoalCommand(Lift.Goal.STOW, false),
-                new InstantCommand(() -> isPureHandoffComplete = false)));
+            new ConditionalCommand(
+                    new SequentialCommandGroup(
+                        new InstantCommand(liftClaw::openClaw),
+                        new WaitCommand(200)
+                    ),
+                    new SequentialCommandGroup(
+                        new ConditionalCommand(
+                            new InstantCommand(() -> slide.slideArmDown())
+                                .andThen(new WaitCommand(100))
+                                .andThen(new InstantCommand(() -> slide.setGoal(AlphaSlide.Goal.AIM))),
+                            new InstantCommand(),
+                            () -> lift.getGoal() == Lift.Goal.HANG),
+                        liftClaw.foldLiftArmCommand(),
+                        new InstantCommand(liftClaw::stowWrist),
+                        new WaitCommand(100),
+                        lift.setGoalCommand(Lift.Goal.STOW, false),
+                        new InstantCommand(() -> isPureHandoffComplete = false)),
+                        liftClaw::getLiftClawPos
+            ));
+
 
     // Aim
     gamepadEx1.getGamepadButton(GamepadKeys.Button.Y).whenPressed(slide.aimCommand(), false);

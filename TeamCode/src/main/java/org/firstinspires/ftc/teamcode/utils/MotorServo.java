@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.utils;
 
 import com.arcrobotics.ftclib.controller.PIDController;
+import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
@@ -58,7 +59,7 @@ public class MotorServo implements Servo {
     }
 
     public double getPosition(){
-        return motorPID.getSetPoint();
+        return motor.getCurrentPosition();
     }
 
     public void scaleRange(double lower, double upper){
@@ -91,5 +92,13 @@ public class MotorServo implements Servo {
 
     public void update(){
         motor.setPower(motorPID.calculate(motor.getCurrentPosition()));
+    }
+
+    public void resetEncoder() {
+        motor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+    }
+
+    public void useEncoder() {
+        motor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
     }
 }

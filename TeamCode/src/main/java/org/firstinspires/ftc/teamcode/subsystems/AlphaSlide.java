@@ -30,7 +30,7 @@ public class AlphaSlide extends SubsystemBase {
   private final Servo intakeClawServo, wristServo, wristTurnServo;
   private final Servo slideArmServo, slideRightServo;
   private boolean hasGamepiece = false;
-  private static double slideExtensionVal = currentRobot == DriveConstants.RobotType.ALPHA ? 0.21 : 0;
+  private static double slideExtensionVal = SlideServo.BACK.extensionVal;
   private SlideServo slideServo = SlideServo.BACK;
 
   public static long waitGrabTimeout = 500;
@@ -54,18 +54,21 @@ public class AlphaSlide extends SubsystemBase {
   public AlphaSlide(final HardwareMap hardwareMap, final Telemetry telemetry) {
     slideArmServo = hardwareMap.get(Servo.class, "slideArmServo"); // 0.5 up 0.9 half 1 down
 
+
     if(currentRobot== DriveConstants.RobotType.ALPHA){
       slideRightServo = hardwareMap.get(Servo.class, "slideLeftServo");
-    }else slideRightServo = new MotorServo(hardwareMap, "slideMotor");//
+    }else
+      slideRightServo = new MotorServo(hardwareMap, "slideMotor");//
 
     intakeClawServo = hardwareMap.get(Servo.class, "intakeClawServo"); // 0.3 close 0.7 open
     wristServo = hardwareMap.get(Servo.class, "wristServo"); // 0.05 up 0.75 down
 
     wristTurnServo = hardwareMap.get(Servo.class, "wristTurnServo");
-    this.telemetry = new MultipleTelemetry();
+    this.telemetry = telemetry;
     goal = Goal.STOW;
     telemetry.addData("Current State", goal);
-    // telemetry.update();
+    telemetry.addData("slide pos", slideRightServo.getPosition());
+    telemetry.update();
   }
 
   public Command setGoalCommand(Goal newGoal) {
@@ -162,6 +165,8 @@ public class AlphaSlide extends SubsystemBase {
 
   public void initialize() {
     slideArmServo.setPosition(Goal.AIM.slideArmPos);
+    ((MotorServo)slideRightServo).resetEncoder();
+    ((MotorServo)slideRightServo).useEncoder();
     slideRightServo.setPosition(SlideServo.BACK.extensionVal);
     intakeClawServo.setPosition(Goal.HANDOFF.clawAngle);
     wristServo.setPosition(Goal.HANDOFF.wristPos);
@@ -206,10 +211,10 @@ public class AlphaSlide extends SubsystemBase {
 //  public static double slideArmServo_PreGrab = 0.45;
 
   public enum Goal {
-    STOW(-1,                currentRobot==DriveConstants.RobotType.ALPHA?0.4:0.255,  currentRobot==DriveConstants.RobotType.ALPHA?0.39:0.47, 0.4,          currentRobot==DriveConstants.RobotType.ALPHA?0.2:0.74),
-    AIM(slideExtensionVal,  currentRobot==DriveConstants.RobotType.ALPHA?0.35:0.63,  currentRobot==DriveConstants.RobotType.ALPHA?0.75:0.23, turnAngleDeg, currentRobot==DriveConstants.RobotType.ALPHA?0.2:0.74),
-    GRAB(slideExtensionVal, slideArmServo_Down                                    ,  currentRobot==DriveConstants.RobotType.ALPHA?0.75:0.23, turnAngleDeg, currentRobot==DriveConstants.RobotType.ALPHA?0.635:0.35),
-    HANDOFF(0.21,           currentRobot==DriveConstants.RobotType.ALPHA?0.13:0.255, currentRobot==DriveConstants.RobotType.ALPHA?0.39:0.6,  0.4,          currentRobot==DriveConstants.RobotType.ALPHA?0.635:0.74);
+    STOW(-1,                currentRobot==DriveConstants.RobotType.ALPHA?0.4:0.255,  currentRobot==DriveConstants.RobotType.ALPHA?0.39:0.55, 0.4,          currentRobot==DriveConstants.RobotType.ALPHA?0.2:0.35),
+    AIM(slideExtensionVal,  currentRobot==DriveConstants.RobotType.ALPHA?0.35:0.63,  currentRobot==DriveConstants.RobotType.ALPHA?0.75:0.27, turnAngleDeg, currentRobot==DriveConstants.RobotType.ALPHA?0.2:0.35),
+    GRAB(slideExtensionVal, slideArmServo_Down                                    ,  currentRobot==DriveConstants.RobotType.ALPHA?0.75:0.27, turnAngleDeg, currentRobot==DriveConstants.RobotType.ALPHA?0.635:0.727),
+    HANDOFF(0.21,           currentRobot==DriveConstants.RobotType.ALPHA?0.13:0.2, currentRobot==DriveConstants.RobotType.ALPHA?0.39:0.62,  0.4,          currentRobot==DriveConstants.RobotType.ALPHA?0.635:0.35);
     private final double slideExtension;
     private final double slideArmPos;
     private final double wristPos;
@@ -274,7 +279,7 @@ public class AlphaSlide extends SubsystemBase {
     slideServo = SlideServo.BACK;
   }
 
-  private final double preHandoffSlideExtendedVal = 0.25;
+  private final double preHandoffSlideExtendedVal = currentRobot == DriveConstants.RobotType.ALPHA ? 0.25: 200;
 
   public void preHandoffSlideExtension() {
     slideExtensionVal = preHandoffSlideExtendedVal;
@@ -358,8 +363,8 @@ public class AlphaSlide extends SubsystemBase {
 
   enum SlideServo {
     FRONT(currentRobot == DriveConstants.RobotType.ALPHA ? 0.42 : 500),
-    MIDDLE(currentRobot == DriveConstants.RobotType.ALPHA ? 0.3 : 350),
-    BACK(currentRobot == DriveConstants.RobotType.ALPHA ? 0.21 : 0);
+    MIDDLE(currentRobot == DriveConstants.RobotType.ALPHA ? 0.3 : 250),
+    BACK(currentRobot == DriveConstants.RobotType.ALPHA ? 0.21 : -10);
 
     private double extensionVal;
 
@@ -373,7 +378,13 @@ public class AlphaSlide extends SubsystemBase {
 
     if (wristTurnServo != null) {
       wristTurnServo.setPosition(Range.clip(turnAngleDeg, 0, 1));
-      slideRightServo.setPosition(Range.clip(slideExtensionVal, 0, 1));
+
+      if (currentRobot == DriveConstants.RobotType.ALPHA)
+        slideRightServo.setPosition(Range.clip(slideExtensionVal, 0, 1));
+      else {
+        slideRightServo.setPosition(slideExtensionVal);
+        ((MotorServo) slideRightServo).update();
+      }
 
       telemetry.addData("Current State", goal);
       telemetry.addData("Bur Gemen", goal == Goal.HANDOFF);
@@ -382,11 +393,6 @@ public class AlphaSlide extends SubsystemBase {
       telemetry.addData("Turn Angle", turnAngleDeg);
       telemetry.addData("SLideServo Position", slideRightServo.getPosition());
     }
-
-    if (currentRobot == DriveConstants.RobotType.DELTA) {
-      ((MotorServo)slideRightServo).update();
-    }
-    // slidetelemetry.update();
   }
 }
 
