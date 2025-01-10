@@ -209,10 +209,10 @@ public abstract class AutoCommandBase extends LinearOpMode {
 
   @Override
   public void runOpMode() throws InterruptedException {
+//    telemetry.setAutoClear(false); // FTC Dashboard does not support this, so set it separately.
     if (telemetryInDashboard) {
       telemetry_M = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
     }else telemetry_M = telemetry;
-    telemetry_M.setAutoClear(false);
     telemetry_M.setMsTransmissionInterval(TelemetryTransmissionIntervalMs);
     CommandScheduler.getInstance().reset();
 

@@ -96,9 +96,6 @@ public class MotorServo implements Servo {
 
     public void resetEncoder() {
         motor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-    }
-
-    public void useEncoder() {
         motor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
     }
 }
