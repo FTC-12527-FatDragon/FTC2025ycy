@@ -8,8 +8,9 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.ServoController;
 import com.qualcomm.robotcore.util.RobotLog;
+import org.firstinspires.ftc.teamcode.subsystems.MotorPIDSlideSubsystem;
 
-public class MotorServo implements Servo {
+public class MotorServo implements Servo{
     public static double kP = 0.01, kI = 0.0, kD = 0.0004;
     private final PIDController motorPID;
     private final DcMotorEx motor;
@@ -52,6 +53,10 @@ public class MotorServo implements Servo {
                 RobotLog.ee("ServoMotor", "Invalid MotorEx Direction "+motor.getDirection());
         }
         return Direction.FORWARD;
+    }
+
+    public void setPower(double x) {
+        motor.setPower(x);
     }
 
     public void setPosition(double position){
