@@ -25,6 +25,8 @@ public class AlphaLiftClaw extends SubsystemBase {
   public static double LiftClaw_Open = currentRobot==DriveConstants.RobotType.ALPHA?0.7:0.35;
   public static double LiftClaw_Close = currentRobot==DriveConstants.RobotType.ALPHA?0.33:0.7025;
 
+  public static long LiftClaw_SwitchDelay = 150;
+
   public AlphaLiftClaw(final HardwareMap hardwareMap, Telemetry telemetry) {
     liftArmServo = hardwareMap.get(Servo.class, "liftArmServo"); // 0.3 Up 0.7 Down
     liftClawServo = hardwareMap.get(Servo.class, "liftClawServo"); // 0 Close 0.5 Open
@@ -62,7 +64,7 @@ public class AlphaLiftClaw extends SubsystemBase {
 
   public Command switchLiftClawCommand() {
     return new ConditionalCommand(
-            new InstantCommand(this::openClaw),
+            openClawCommand(),
             closeClawCommand(),
             () -> Math.abs(liftClawServo.getPosition() - LiftClaw_Close) < Math.abs(liftClawServo.getPosition() - LiftClaw_Open)//liftClawServo.getPosition() != ServoPositions.GRAB.liftClawPosition
     );
@@ -76,6 +78,14 @@ public class AlphaLiftClaw extends SubsystemBase {
     liftClawServo.setPosition(ServoPositions.GRAB.liftClawPosition);
   }
 
+  public Command openClawCommand(long delay) {
+    return setServoPosCommand(liftClawServo, LiftClaw_Open, delay);
+  }
+
+  public Command openClawCommand() {
+    return openClawCommand(LiftClaw_SwitchDelay);
+  }
+
   public void closeClaw() {
     liftClawServo.setPosition(ServoPositions.STOW.liftClawPosition);
   }
@@ -85,7 +95,7 @@ public class AlphaLiftClaw extends SubsystemBase {
   }
 
   public Command closeClawCommand() {
-    return closeClawCommand(200);
+    return closeClawCommand(LiftClaw_SwitchDelay);
   }
 
   public void upLiftArm() {

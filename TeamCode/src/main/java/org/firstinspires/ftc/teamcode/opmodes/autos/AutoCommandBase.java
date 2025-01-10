@@ -46,8 +46,7 @@ public abstract class AutoCommandBase extends LinearOpMode {
 
   public Command stowArmFromBasket() {
     return new SequentialCommandGroup(
-        new InstantCommand(liftClaw::openClaw),
-        new WaitCommand(100),
+        liftClaw.openClawCommand(),
         liftClaw.foldLiftArmCommand(),
         lift.setGoalCommand(Lift.Goal.STOW));
   }
@@ -55,7 +54,7 @@ public abstract class AutoCommandBase extends LinearOpMode {
   public Command handoff() {
     return slide
         .handoffCommand()
-        .alongWith(new InstantCommand(liftClaw::openClaw))
+        .alongWith(liftClaw.openClawCommand())
         .andThen(liftClaw.closeClawCommand())
         .andThen(new InstantCommand(slide::openIntakeClaw));
   }
@@ -80,19 +79,21 @@ public abstract class AutoCommandBase extends LinearOpMode {
     return new WaitCommand(500).raceWith(lift.setGoalCommand(Lift.Goal.HANG));
   }
 
-  public Command chamberOpenClaw() {
-    return new InstantCommand(liftClaw::openClaw);
-  }
+//  public Command chamberOpenClaw() {
+//    return new InstantCommand(liftClaw::openClaw);
+//  }
 
   public Command chamberToGrab() {
     return chamberToGrab(lift, liftClaw);
   }
 
   public static Command chamberToGrab(Lift lift, AlphaLiftClaw liftClaw) {
-    return new InstantCommand(liftClaw::openClaw)
-            .andThen(new InstantCommand(liftClaw::grabWrist))
-            .andThen(new InstantCommand(liftClaw::grabLiftArm))
-            .andThen(lift.setGoalCommand(Lift.Goal.GRAB, true));
+    return new ParallelCommandGroup(
+            liftClaw.openClawCommand(),
+            new InstantCommand(liftClaw::grabWrist),
+            new InstantCommand(liftClaw::grabLiftArm),
+            lift.setGoalCommand(Lift.Goal.GRAB, true)
+    );
 //            .andThen(new WaitCommand(500).raceWith(lift.manualResetCommand()));
   }
 
