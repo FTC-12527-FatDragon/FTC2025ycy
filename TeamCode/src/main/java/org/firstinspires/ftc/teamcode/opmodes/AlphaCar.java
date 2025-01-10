@@ -20,8 +20,10 @@ import org.firstinspires.ftc.teamcode.opmodes.autos.AutoCommandBase;
 import org.firstinspires.ftc.teamcode.subsystems.AlphaLiftClaw;
 import org.firstinspires.ftc.teamcode.subsystems.AlphaSlide;
 import org.firstinspires.ftc.teamcode.subsystems.Lift;
+import org.firstinspires.ftc.teamcode.subsystems.drivetrain.DriveConstants;
 import org.firstinspires.ftc.teamcode.subsystems.drivetrain.SampleMecanumDrive;
 import org.firstinspires.ftc.teamcode.utils.FunctionalButton;
+import static org.firstinspires.ftc.teamcode.subsystems.drivetrain.DriveConstants.currentRobot;
 
 @TeleOp(name = "AlphaYCYTeleop")
 public class AlphaCar extends CommandOpMode {
@@ -228,8 +230,11 @@ public class AlphaCar extends CommandOpMode {
             () ->
                 gamepadEx1.getButton(GamepadKeys.Button.RIGHT_STICK_BUTTON)
                     && lift.getGoal() == Lift.Goal.STOW)
-        .whenHeld(lift.manualResetCommand(),
-                slide.manualResetCommand());
+        .whenHeld(
+                currentRobot == DriveConstants.RobotType.DELTA ?
+                lift.manualResetCommand().alongWith(slide.manualResetCommand()) :
+                lift.manualResetCommand()
+        );
 
     new FunctionalButton(
             () ->
