@@ -22,6 +22,7 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.subsystems.drivetrain.DriveConstants;
 import org.firstinspires.ftc.teamcode.utils.EmptyMotor;
 import org.firstinspires.ftc.teamcode.utils.MathUtils;
+import org.firstinspires.ftc.teamcode.utils.ParallelRaceGroup;
 
 @Config
 public class Lift extends MotorPIDSlideSubsystem {
@@ -131,9 +132,10 @@ public class Lift extends MotorPIDSlideSubsystem {
   }
 
   public Command waitAtGoal(long timeoutMs, Runnable onTimeout){
-    return (new WaitCommand(timeoutMs)
-            .andThen(new InstantCommand(onTimeout))
-    ).raceWith(waitAtGoal());
+    return new ParallelRaceGroup(
+            new WaitCommand(timeoutMs).andThen(new InstantCommand(onTimeout)),
+            waitAtGoal()
+    );
   }
 
   public Command setGoalCommand(Goal newGoal, boolean wait){

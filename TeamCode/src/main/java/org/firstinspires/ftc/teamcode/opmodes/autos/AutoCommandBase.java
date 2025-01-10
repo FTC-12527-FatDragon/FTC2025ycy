@@ -17,6 +17,7 @@ import org.firstinspires.ftc.teamcode.subsystems.AlphaLiftClaw;
 import org.firstinspires.ftc.teamcode.subsystems.AlphaSlide;
 import org.firstinspires.ftc.teamcode.subsystems.Lift;
 import org.firstinspires.ftc.teamcode.subsystems.drivetrain.SampleMecanumDrive;
+import org.firstinspires.ftc.teamcode.utils.ParallelRaceGroup;
 
 public abstract class AutoCommandBase extends LinearOpMode {
   public static long lift2BasketTimeout = 800;
@@ -76,7 +77,10 @@ public abstract class AutoCommandBase extends LinearOpMode {
   }
 
   public Command upToChamber() {
-    return new WaitCommand(500).raceWith(lift.setGoalCommand(Lift.Goal.HANG));
+    return new ParallelRaceGroup(
+            new WaitCommand(500),
+            lift.setGoalCommand(Lift.Goal.HANG)
+    );
   }
 
 //  public Command chamberOpenClaw() {
@@ -94,7 +98,6 @@ public abstract class AutoCommandBase extends LinearOpMode {
             new InstantCommand(liftClaw::grabLiftArm),
             lift.setGoalCommand(Lift.Goal.GRAB, true)
     );
-//            .andThen(new WaitCommand(500).raceWith(lift.manualResetCommand()));
   }
 
   public Command initialize() {
@@ -109,7 +112,10 @@ public abstract class AutoCommandBase extends LinearOpMode {
 
   public Command liftToBasket() {
     return new SequentialCommandGroup(
-            new WaitCommand(lift2BasketTimeout).raceWith(lift.setGoalCommand(Lift.Goal.BASKET)),
+            new ParallelRaceGroup(
+                    new WaitCommand(lift2BasketTimeout),
+                    lift.setGoalCommand(Lift.Goal.BASKET)
+            ),
             new InstantCommand(liftClaw::upLiftArm)
                     .alongWith(new InstantCommand(liftClaw::basketWrist)),
             new WaitCommand(basketTimeout),
@@ -125,7 +131,10 @@ public abstract class AutoCommandBase extends LinearOpMode {
             new WaitCommand(tempTimeout),
             new InstantCommand(liftClaw::stowWrist),
             new WaitCommand(basketTimeout),
-            new WaitCommand(lift2BasketTimeout).raceWith(lift.setGoalCommand(Lift.Goal.STOW))
+            new ParallelRaceGroup(
+                    new WaitCommand(lift2BasketTimeout),
+                    lift.setGoalCommand(Lift.Goal.STOW)
+            )
     );
   }
 
