@@ -6,9 +6,11 @@ import static org.firstinspires.ftc.teamcode.utils.ServoUtils.setServoPosCommand
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.arcrobotics.ftclib.command.Command;
+import com.arcrobotics.ftclib.command.CommandScheduler;
 import com.arcrobotics.ftclib.command.ConditionalCommand;
 import com.arcrobotics.ftclib.command.InstantCommand;
 import com.arcrobotics.ftclib.command.SequentialCommandGroup;
+import com.arcrobotics.ftclib.command.StartEndCommand;
 import com.arcrobotics.ftclib.command.SubsystemBase;
 import com.arcrobotics.ftclib.command.WaitCommand;
 import com.qualcomm.robotcore.hardware.HardwareMap;
@@ -21,7 +23,7 @@ import org.firstinspires.ftc.teamcode.subsystems.drivetrain.DriveConstants;
 import org.firstinspires.ftc.teamcode.utils.MotorServo;
 
 @Config
-public class AlphaSlide extends SubsystemBase {
+public class AlphaSlide extends MotorPIDSlideSubsystem{
 
   // aimCommand
   public static long aimCommand_wristTurn2ArmDelayMs = 0;
@@ -209,6 +211,27 @@ public class AlphaSlide extends SubsystemBase {
   }
 
   public static double slideArmServo_Down = currentRobot==DriveConstants.RobotType.ALPHA?0.47:0.8;
+
+  @Override
+  void runOpenLoop(double percent) {
+    double output = Range.clip(percent, -1, 1);
+    ((MotorServo)slideRightServo).setPower(output);
+  }
+
+  @Override
+  long getCurrentPosition() {
+    return (long)((MotorServo)slideRightServo).getPosition();
+  }
+
+  @Override
+  double getResetPower() {
+    return -0.7;
+  }
+
+  @Override
+  void resetEncoder() {
+    ((MotorServo)slideRightServo).resetEncoder();
+  }
 //  public static double slideArmServo_PreGrab = 0.45;
 
   public enum Goal {
