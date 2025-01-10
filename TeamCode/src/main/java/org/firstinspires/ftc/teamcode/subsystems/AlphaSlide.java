@@ -30,7 +30,7 @@ public class AlphaSlide extends SubsystemBase {
   private final Servo intakeClawServo, wristServo, wristTurnServo;
   private final Servo slideArmServo, slideRightServo;
   private boolean hasGamepiece = false;
-  private static double slideExtensionVal = currentRobot == DriveConstants.RobotType.ALPHA ? 0.21 : 0;
+  private static double slideExtensionVal = SlideServo.BACK.extensionVal;
   private SlideServo slideServo = SlideServo.BACK;
 
   public static long waitGrabTimeout = 500;
@@ -359,7 +359,7 @@ public class AlphaSlide extends SubsystemBase {
   enum SlideServo {
     FRONT(currentRobot == DriveConstants.RobotType.ALPHA ? 0.42 : 500),
     MIDDLE(currentRobot == DriveConstants.RobotType.ALPHA ? 0.3 : 250),
-    BACK(currentRobot == DriveConstants.RobotType.ALPHA ? 0.21 : 0);
+    BACK(currentRobot == DriveConstants.RobotType.ALPHA ? 0.21 : -10);
 
     private double extensionVal;
 
