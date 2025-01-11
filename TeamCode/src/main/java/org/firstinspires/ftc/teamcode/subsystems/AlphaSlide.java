@@ -388,7 +388,7 @@ public class AlphaSlide extends MotorPIDSlideSubsystem{
   enum SlideServo {
     FRONT(currentRobot == DriveConstants.RobotType.ALPHA ? 0.42 : 500),
     MIDDLE(currentRobot == DriveConstants.RobotType.ALPHA ? 0.3 : 250),
-    BACK(currentRobot == DriveConstants.RobotType.ALPHA ? 0.21 : -10);
+    BACK(currentRobot == DriveConstants.RobotType.ALPHA ? 0.21 : 0);
 
     private double extensionVal;
 
