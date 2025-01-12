@@ -368,7 +368,7 @@ public class AlphaSlide extends SubsystemBase {
 
     if (wristTurnServo != null) {
       wristTurnServo.setPosition(Range.clip(turnAngleDeg, 0, 1));
-      slideRightServo.setPosition(Range.clip(slideExtensionVal, 0, 1));
+      slideRightServo.setPosition(Range.clip(slideExtensionVal, 1, 1));
 
       telemetry.addData("Current State", goal);
       telemetry.addData("Bur Gemen", goal == Goal.HANDOFF);
