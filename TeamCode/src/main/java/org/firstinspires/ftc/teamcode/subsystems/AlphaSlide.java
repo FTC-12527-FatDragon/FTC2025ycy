@@ -383,11 +383,11 @@ public class AlphaSlide extends MotorPIDSlideSubsystem{
   }
 
   public enum TurnServo {
-    LEFT_55(currentRobot == DriveConstants.RobotType.ALPHA ? 0.2 : 0.8), // TODO: Delta needs test
-    LEFT_45(currentRobot == DriveConstants.RobotType.ALPHA ? 0.25 : 0.715),
-    DEG_0(currentRobot == DriveConstants.RobotType.ALPHA ? 0.41 : 0.565),
-    RIGHT_45(currentRobot == DriveConstants.RobotType.ALPHA ? 0.55 : 0.45),
-    RIGHT_90(currentRobot == DriveConstants.RobotType.ALPHA ? 0.71 : 0.34),
+    LEFT_55(currentRobot == DriveConstants.RobotType.ALPHA ? 0.8 : 0.7), // TODO: Delta needs test
+    LEFT_45(currentRobot == DriveConstants.RobotType.ALPHA ? 0.75 : 0.65),
+    DEG_0(currentRobot == DriveConstants.RobotType.ALPHA ? 0.59 : 0.55),
+    RIGHT_45(currentRobot == DriveConstants.RobotType.ALPHA ? 0.45 : 0.45),
+    RIGHT_90(currentRobot == DriveConstants.RobotType.ALPHA ? 0.29 : 0.315),
     UNKNOWN(-1),
     DEFAULT(-1);
 
