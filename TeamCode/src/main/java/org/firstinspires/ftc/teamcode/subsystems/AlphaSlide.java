@@ -88,10 +88,11 @@ public class AlphaSlide extends MotorPIDSlideSubsystem{
   public Command aimCommand(TurnServo turnServoPos) {
     return new SequentialCommandGroup(
         setGoalCommand(Goal.AIM),
-        setTurnServoPosCommand(turnServoPos, aimCommand_wristTurn2ArmDelayMs),
-        setServoPosCommand(slideArmServo, Goal.AIM.slideArmPos, aimCommand_Arm2OpenDelayMs),
         new InstantCommand(() -> wristServo.setPosition(Goal.AIM.wristPos)),
-        new InstantCommand(() -> intakeClawServo.setPosition(Goal.AIM.clawAngle)));
+        new InstantCommand(() -> intakeClawServo.setPosition(Goal.AIM.clawAngle)),
+        setTurnServoPosCommand(turnServoPos, aimCommand_wristTurn2ArmDelayMs),
+        setServoPosCommand(slideArmServo, Goal.AIM.slideArmPos, aimCommand_Arm2OpenDelayMs)
+    );
   }
 
   public Command aimCommand() {

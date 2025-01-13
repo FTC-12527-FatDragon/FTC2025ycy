@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.opmodes.autos;
 import static org.firstinspires.ftc.teamcode.subsystems.drivetrain.DriveConstants.MAX_ANG_VEL;
 import static org.firstinspires.ftc.teamcode.subsystems.drivetrain.DriveConstants.MAX_VEL;
 import static org.firstinspires.ftc.teamcode.subsystems.drivetrain.DriveConstants.TRACK_WIDTH;
+import static org.firstinspires.ftc.teamcode.subsystems.drivetrain.SampleMecanumDrive.getAccelerationConstraint;
 import static org.firstinspires.ftc.teamcode.subsystems.drivetrain.SampleMecanumDrive.getVelocityConstraint;
 
 import com.acmerobotics.dashboard.config.Config;
@@ -48,7 +49,7 @@ public class TestTraj extends AutoCommandBase {
     //  public static double startY = -64.95;
     public static Pose2dHelperClass start = new Pose2dHelperClass(7.67, -64.95, 90.00);
 
-    public static long ChamberUp2ExtendSlideToSample1Delay = 2000;
+    public static long ChamberUp2ExtendSlideToSample1Delay = 1000;
 
     public Command pushBlocksCycle(TrajectorySequence grab2DropSequence, TrajectorySequence drop2Next, Command drop2NextRun){
         return new SequentialCommandGroup(
@@ -83,7 +84,7 @@ public class TestTraj extends AutoCommandBase {
 
         TrajectorySequence chamber2Sample1 = drive.trajectorySequenceBuilder(push2Blocks.start())
                 .lineToSplineHeading(new Pose2d(6.46, -40.38, Math.toRadians(26.17)))
-                .splineToLinearHeading(new Pose2d(25.85, -36, Math.toRadians(26.17)), Math.toRadians(27.51))
+                .splineToLinearHeading(new Pose2d(25.85, -37, Math.toRadians(26.17)), Math.toRadians(27.51), getVelocityConstraint(30, MAX_ANG_VEL, TRACK_WIDTH), getAccelerationConstraint(30))
                 .build();
 
         TrajectorySequence grabSample12Observation = drive.trajectorySequenceBuilder(chamber2Sample1.end())
@@ -92,7 +93,7 @@ public class TestTraj extends AutoCommandBase {
                 .build();
 
         TrajectorySequence observation2Sample2 = drive.trajectorySequenceBuilder(grabSample12Observation.end())
-                .lineToLinearHeading(new Pose2d(35.54, -37.31, Math.toRadians(29.81)))//, getVelocityConstraint(40, MAX_ANG_VEL, TRACK_WIDTH), SampleMecanumDrive.getACCEL_CONSTRAINT())
+                .lineToLinearHeading(new Pose2d(35.54, -38.31, Math.toRadians(29.81)))//, getVelocityConstraint(40, MAX_ANG_VEL, TRACK_WIDTH), SampleMecanumDrive.getACCEL_CONSTRAINT())
                 .build();
 
         TrajectorySequence grabSample22Observation = drive.trajectorySequenceBuilder(observation2Sample2.end())
@@ -100,7 +101,7 @@ public class TestTraj extends AutoCommandBase {
                 .build();
 
         TrajectorySequence observation2Sample3 = drive.trajectorySequenceBuilder(grabSample22Observation.end())
-                .lineToLinearHeading(new Pose2d(45.17, -36.76, Math.toRadians(25.89)))
+                .lineToLinearHeading(new Pose2d(45.17, -37.76, Math.toRadians(25.89)))
                 .build();
 
         TrajectorySequence grabSample32Observation = drive.trajectorySequenceBuilder(observation2Sample3.end())
@@ -114,10 +115,11 @@ public class TestTraj extends AutoCommandBase {
                         .splineToLinearHeading(new Pose2d(36.60, -60.31, Math.toRadians(90)), Math.toRadians(-90), getVelocityConstraint(25, MAX_ANG_VEL, TRACK_WIDTH), SampleMecanumDrive.getACCEL_CONSTRAINT())
                         .build(); // 3 sample to grab
 
+        Vector2d grabOffsetByChamber3 = grab.toVector2d().minus(chamber3.toVector2d());
+
         TrajectorySequence chamberToGrab = drive.trajectorySequenceBuilder(chamber3.toPose2d())
-                .setVelConstraint(getVelocityConstraint(MAX_VEL, 40, TRACK_WIDTH))
-                .lineToConstantHeading(grab.toVector2d().plus(new Vector2d(0, 4)))
-                .setVelConstraint(getVelocityConstraint(25, MAX_ANG_VEL, TRACK_WIDTH))
+                .lineToConstantHeading(chamber3.toVector2d().plus(grabOffsetByChamber3.times(0.9)))
+                .setVelConstraint(getVelocityConstraint(10, MAX_ANG_VEL, TRACK_WIDTH))
                 .splineToConstantHeading(grab.toVector2d(), Math.toRadians(-90))
                 .build();
 
