@@ -10,6 +10,7 @@ import com.arcrobotics.ftclib.command.InstantCommand;
 import com.arcrobotics.ftclib.command.SequentialCommandGroup;
 import com.arcrobotics.ftclib.command.WaitCommand;
 import com.arcrobotics.ftclib.hardware.ServoEx;
+import com.arcrobotics.ftclib.hardware.SimpleServo;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.Range;
@@ -65,9 +66,10 @@ public class AlphaSlide extends MotorPIDSlideSubsystem{
     intakeClawServo = hardwareMap.get(Servo.class, "intakeClawServo"); // 0.3 close 0.7 open
     wristServo = hardwareMap.get(Servo.class, "wristServo"); // 0.05 up 0.75 down
 
-    wristTurnServo = hardwareMap.get(ServoEx.class, "wristTurnServo");
+    wristTurnServo = new SimpleServo(hardwareMap, "wristTurnServo", 0, 180);
     if(currentRobot == DriveConstants.RobotType.ALPHA){
-      wristTurnServo.setRange(119.506920415225, -176.3408304498271);
+      wristTurnServo.setInverted(true);
+      wristTurnServo.setRange(-176.3408304498271, 119.506920415225);
     }else{
       wristTurnServo.setRange(0, 0); // TODO: finish this
     }
