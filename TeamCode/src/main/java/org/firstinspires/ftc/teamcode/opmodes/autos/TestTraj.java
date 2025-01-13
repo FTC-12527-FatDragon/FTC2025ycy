@@ -170,7 +170,7 @@ public class TestTraj extends AutoCommandBase {
                                 chamberToGrab()
                         ).alongWith(
                                 new WaitCommand(ChamberUp2ExtendSlideToSample1Delay).andThen(
-                                        (new InstantCommand(slide::autoForwardSlideExtension).andThen(new WaitCommand(slide.slideRetractFar))).alongWith(slide.aimCommand(AlphaSlide.TurnServo.LEFT_50))
+                                        (new InstantCommand(slide::autoForwardSlideExtension).andThen(new WaitCommand(slide.slideRetractFar))).alongWith(slide.aimCommand(AlphaSlide.TurnServo.LEFT_55))
                                 )
                         ),
 

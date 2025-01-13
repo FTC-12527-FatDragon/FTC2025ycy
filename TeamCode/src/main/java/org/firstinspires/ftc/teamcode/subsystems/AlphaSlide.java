@@ -4,15 +4,12 @@ import static org.firstinspires.ftc.teamcode.subsystems.drivetrain.DriveConstant
 import static org.firstinspires.ftc.teamcode.utils.ServoUtils.setServoPosCommand;
 
 import com.acmerobotics.dashboard.config.Config;
-import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.arcrobotics.ftclib.command.Command;
-import com.arcrobotics.ftclib.command.CommandScheduler;
 import com.arcrobotics.ftclib.command.ConditionalCommand;
 import com.arcrobotics.ftclib.command.InstantCommand;
 import com.arcrobotics.ftclib.command.SequentialCommandGroup;
-import com.arcrobotics.ftclib.command.StartEndCommand;
-import com.arcrobotics.ftclib.command.SubsystemBase;
 import com.arcrobotics.ftclib.command.WaitCommand;
+import com.arcrobotics.ftclib.hardware.ServoEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.Range;
@@ -29,7 +26,10 @@ public class AlphaSlide extends MotorPIDSlideSubsystem{
   public static long aimCommand_wristTurn2ArmDelayMs = 0;
   public static long aimCommand_Arm2OpenDelayMs = 20;
 
-  private final Servo intakeClawServo, wristServo, wristTurnServo;
+  private final Servo intakeClawServo, wristServo;
+  // <----> 0 DEG_0
+  // CCW +
+  private final ServoEx wristTurnServo;
   private final Servo slideArmServo, slideRightServo;
   private boolean hasGamepiece = false;
   private static double slideExtensionVal = SlideServo.BACK.extensionVal;
@@ -65,7 +65,13 @@ public class AlphaSlide extends MotorPIDSlideSubsystem{
     intakeClawServo = hardwareMap.get(Servo.class, "intakeClawServo"); // 0.3 close 0.7 open
     wristServo = hardwareMap.get(Servo.class, "wristServo"); // 0.05 up 0.75 down
 
-    wristTurnServo = hardwareMap.get(Servo.class, "wristTurnServo");
+    wristTurnServo = hardwareMap.get(ServoEx.class, "wristTurnServo");
+    if(currentRobot == DriveConstants.RobotType.ALPHA){
+      wristTurnServo.setRange(119.506920415225, -176.3408304498271);
+    }else{
+      wristTurnServo.setRange(0, 0); // TODO: finish this
+    }
+
     this.telemetry = telemetry;
     goal = Goal.STOW;
     telemetry.addData("Current State", goal);
@@ -354,6 +360,11 @@ public class AlphaSlide extends MotorPIDSlideSubsystem{
     turnServo = pos;
   }
 
+  public void setTurnServoPos(double desiredRotDeg) {
+    wristTurnServo.turnToAngle(desiredRotDeg);
+    turnAngleDeg = wristTurnServo.getPosition();
+  }
+
   public Command setTurnServoPosCommand(TurnServo pos, long delay) {
     return new ConditionalCommand(
         new InstantCommand(
@@ -370,7 +381,7 @@ public class AlphaSlide extends MotorPIDSlideSubsystem{
   }
 
   public enum TurnServo {
-    LEFT_50(currentRobot == DriveConstants.RobotType.ALPHA ? 0.2 : 0.8), // TODO: Delta needs test
+    LEFT_55(currentRobot == DriveConstants.RobotType.ALPHA ? 0.2 : 0.8), // TODO: Delta needs test
     LEFT_45(currentRobot == DriveConstants.RobotType.ALPHA ? 0.25 : 0.715),
     DEG_0(currentRobot == DriveConstants.RobotType.ALPHA ? 0.41 : 0.565),
     RIGHT_45(currentRobot == DriveConstants.RobotType.ALPHA ? 0.55 : 0.45),
