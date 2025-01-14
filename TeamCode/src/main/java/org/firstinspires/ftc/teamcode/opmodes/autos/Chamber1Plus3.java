@@ -118,7 +118,7 @@ public class Chamber1Plus3 extends AutoCommandBase {
     return new SequentialCommandGroup(
                 new InstantCommand(() -> drive.setPoseEstimate(startToChamber.start())),
                 liftClaw.closeClawCommand(),
-                new AutoDriveCommand(drive, startToChamber).alongWith(new WaitCommand(Grab2ChamberUpDelay).andThen(toPreHang())),
+                new AutoDriveCommand(drive, startToChamber).alongWith(new WaitCommand(Grab2PreHangDelay).andThen(toPreHang())),
 
                 upToChamber(),
 

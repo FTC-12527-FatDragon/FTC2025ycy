@@ -28,7 +28,8 @@ public abstract class AutoCommandBase extends LinearOpMode {
 
   public static boolean telemetryInDashboard = true;
 
-  public static long Grab2ChamberUpDelay = 0;
+  public static long Grab2PreHangDelay = 0;
+  public static long ChamberUpOffsetMs = -400;
 
   public static int TelemetryTransmissionIntervalMs = 50;
 
@@ -193,13 +194,21 @@ public abstract class AutoCommandBase extends LinearOpMode {
             liftClaw.closeClawCommand(),
 
             new AutoDriveCommand(drive, toChamberSequence)
-                    .alongWith(new WaitCommand(Grab2ChamberUpDelay).andThen(toPreHang())),
-
-            upToChamber(),
+                    .alongWith(new WaitCommand(Grab2PreHangDelay).andThen(toPreHang()))
+                    .alongWith(new WaitCommand((long)(toChamberSequence.duration()*1000)+ChamberUpOffsetMs).andThen(upToChamber())),
 
             new AutoDriveCommand(drive, chamberToGrab)
                     .alongWith(chamberToGrab())
     );
+  }
+
+  /**
+   * 对CommandScheduler.getInstance().schedule的简写，功能一样。
+   * @param commands Command to run
+   * @see CommandScheduler#schedule(Command...)
+   */
+  protected void schedule(Command ...commands){
+    CommandScheduler.getInstance().schedule(commands);
   }
 
   /**
