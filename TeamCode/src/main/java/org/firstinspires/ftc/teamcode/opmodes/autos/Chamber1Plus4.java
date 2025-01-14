@@ -164,7 +164,7 @@ public class Chamber1Plus4 extends AutoCommandBase {
                     slide.autoBackSlideExtension();
                 }),
                 liftClaw.closeClawCommand(0),
-                new AutoDriveCommand(drive, startToChamber)
+                new AutoDriveCommand(drive, startToChamber).raceWith(new WaitCommand((long)(startToChamber.duration()*1000)))
                         .alongWith(new WaitCommand(Grab2PreHangDelay).andThen(toPreHang()))
                         .alongWith(new WaitCommand((long)(startToChamber.duration()*1000)+ChamberUpOffsetMs).andThen(upToChamber())),
 

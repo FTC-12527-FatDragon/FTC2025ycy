@@ -29,7 +29,7 @@ public abstract class AutoCommandBase extends LinearOpMode {
   public static boolean telemetryInDashboard = true;
 
   public static long Grab2PreHangDelay = 0;
-  public static long ChamberUpOffsetMs = -400;
+  public static long ChamberUpOffsetMs = -300;
 
   public static int TelemetryTransmissionIntervalMs = 50;
 
@@ -193,7 +193,7 @@ public abstract class AutoCommandBase extends LinearOpMode {
     return new SequentialCommandGroup(
             liftClaw.closeClawCommand(),
 
-            new AutoDriveCommand(drive, toChamberSequence)
+            new AutoDriveCommand(drive, toChamberSequence).raceWith(new WaitCommand((long)(toChamberSequence.duration()*1000))) // No auto collaborate needed
                     .alongWith(new WaitCommand(Grab2PreHangDelay).andThen(toPreHang()))
                     .alongWith(new WaitCommand((long)(toChamberSequence.duration()*1000)+ChamberUpOffsetMs).andThen(upToChamber())),
 
