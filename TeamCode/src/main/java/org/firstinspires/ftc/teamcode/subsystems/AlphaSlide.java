@@ -219,7 +219,7 @@ public class AlphaSlide extends MotorPIDSlideSubsystem{
     slideArmServo.setPosition(0.6);
   }
 
-  public static double slideArmServo_Down = currentRobot==DriveConstants.RobotType.ALPHA?0.47:0.8;
+  public static double slideArmServo_Down = currentRobot==DriveConstants.RobotType.ALPHA?0.5:0.8;
 
   @Override
   void runOpenLoop(double percent) {
