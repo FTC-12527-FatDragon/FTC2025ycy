@@ -22,7 +22,7 @@ import org.firstinspires.ftc.teamcode.utils.Translation2dHelperClass;
  */
 @Config
 public class DriveConstants {
-  public static final RobotType currentRobot = RobotType.ALPHA;
+  public static final RobotType currentRobot = RobotType.GAMMA;
 
   public enum RobotType {
     ALPHA,
