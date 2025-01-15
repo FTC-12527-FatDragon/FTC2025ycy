@@ -234,7 +234,7 @@ public class AlphaSlide extends MotorPIDSlideSubsystem{
 
   @Override
   double getResetPower() {
-    return -0.7;
+    return -1;
   }
 
   @Override
