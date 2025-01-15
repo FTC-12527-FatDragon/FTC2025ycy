@@ -23,6 +23,7 @@ import org.firstinspires.ftc.teamcode.subsystems.drivetrain.DriveConstants;
 import org.firstinspires.ftc.teamcode.utils.EmptyMotor;
 import org.firstinspires.ftc.teamcode.utils.MathUtils;
 import org.firstinspires.ftc.teamcode.utils.ParallelRaceGroup;
+import static org.firstinspires.ftc.teamcode.subsystems.drivetrain.DriveConstants.currentRobot;
 
 @Config
 public class Lift extends MotorPIDSlideSubsystem {
@@ -40,7 +41,7 @@ public class Lift extends MotorPIDSlideSubsystem {
   private double lastTime;
 
   //  private boolean isResetting = false;
-  public static double resetPower = -0.7;
+  public static double resetPower = currentRobot == DriveConstants.RobotType.ALPHA ? -0.7 : -0.35;
   public static double hangAddtionalPower = 0;
 
   public static double reasonableUp1000TicksMaxTimeMs = 1500;
