@@ -64,7 +64,7 @@ public class SampleMecanumDrive extends MecanumDrive implements Subsystem {
   public static double VY_WEIGHT = 1;
   public static double OMEGA_WEIGHT = 1;
 
-  public static double ADMISSIBLE_TIMEOUT = 0.5;
+  public static double ADMISSIBLE_TIMEOUT = 3;
 
   private TrajectorySequenceRunner trajectorySequenceRunner;
 

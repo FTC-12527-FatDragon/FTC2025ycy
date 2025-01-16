@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.opmodes;
 
+import com.acmerobotics.dashboard.FtcDashboard;
+import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.arcrobotics.ftclib.command.Command;
 import com.arcrobotics.ftclib.command.CommandOpMode;
 import com.arcrobotics.ftclib.command.CommandScheduler;
@@ -16,6 +18,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import java.util.HashMap;
 import java.util.function.Supplier;
 import org.firstinspires.ftc.teamcode.commands.TeleopDriveCommand;
+import org.firstinspires.ftc.teamcode.lib.roadrunner.drive.opmode.LocalizationTest;
 import org.firstinspires.ftc.teamcode.opmodes.autos.AutoCommandBase;
 import org.firstinspires.ftc.teamcode.subsystems.AlphaLiftClaw;
 import org.firstinspires.ftc.teamcode.subsystems.AlphaSlide;
@@ -267,5 +270,9 @@ public class AlphaCar extends CommandOpMode {
     CommandScheduler.getInstance().run();
     lift.periodicTest();
     telemetry.update();
+    TelemetryPacket packet = new TelemetryPacket();
+    packet.fieldOverlay().setStroke("#3F51B5");
+    LocalizationTest.drawRobot(packet.fieldOverlay(), drive.getPoseEstimate());
+    FtcDashboard.getInstance().sendTelemetryPacket(packet);
   }
 }
