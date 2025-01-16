@@ -34,7 +34,6 @@ public class AlphaSlide extends MotorPIDSlideSubsystem{
   private final Servo slideArmServo, slideRightServo;
   private boolean hasGamepiece = false;
   private static double slideExtensionVal = SlideServo.BACK.extensionVal;
-  private SlideServo slideServo = SlideServo.BACK;
 
   public static long waitGrabTimeout = 500;
   public static long waitGrabTimeout3 = 700;
@@ -53,6 +52,8 @@ public class AlphaSlide extends MotorPIDSlideSubsystem{
   private final Telemetry telemetry; // 0 0.5 0.8
 
   @Getter @Setter private boolean normalHandoff = false;
+
+  @Setter @Getter private SlideServo slideServo = SlideServo.BACK;
 
   public AlphaSlide(final HardwareMap hardwareMap, final Telemetry telemetry) {
     slideArmServo = hardwareMap.get(Servo.class, "slideArmServo"); // 0.5 up 0.9 half 1 down
@@ -234,7 +235,7 @@ public class AlphaSlide extends MotorPIDSlideSubsystem{
 
   @Override
   double getResetPower() {
-    return -0.7;
+    return -1;
   }
 
   @Override
@@ -247,7 +248,7 @@ public class AlphaSlide extends MotorPIDSlideSubsystem{
     STOW(-1,                currentRobot==DriveConstants.RobotType.ALPHA?0.4:0.255,  currentRobot==DriveConstants.RobotType.ALPHA?0.39:0.55, 0.4,          currentRobot==DriveConstants.RobotType.ALPHA?0.2:0.35),
     AIM(slideExtensionVal,  currentRobot==DriveConstants.RobotType.ALPHA?0.35:0.63,  currentRobot==DriveConstants.RobotType.ALPHA?0.75:0.27, turnAngleDeg, currentRobot==DriveConstants.RobotType.ALPHA?0.2:0.35),
     GRAB(slideExtensionVal, slideArmServo_Down                                    ,  currentRobot==DriveConstants.RobotType.ALPHA?0.75:0.27, turnAngleDeg, currentRobot==DriveConstants.RobotType.ALPHA?0.635:0.727),
-    HANDOFF(0.21,           currentRobot==DriveConstants.RobotType.ALPHA?0.13:0.2, currentRobot==DriveConstants.RobotType.ALPHA?0.39:0.62,  0.4,          currentRobot==DriveConstants.RobotType.ALPHA?0.635:0.35);
+    HANDOFF(0.21,           currentRobot==DriveConstants.RobotType.ALPHA?0.13:0.185, currentRobot==DriveConstants.RobotType.ALPHA?0.39:0.67,  0.4,          currentRobot==DriveConstants.RobotType.ALPHA?0.635:0.35);
     private final double slideExtension;
     private final double slideArmPos;
     private final double wristPos;
@@ -399,7 +400,7 @@ public class AlphaSlide extends MotorPIDSlideSubsystem{
     }
   }
 
-  enum SlideServo {
+  public enum SlideServo {
     FRONT(currentRobot == DriveConstants.RobotType.ALPHA ? 0.42 : 500),
     MIDDLE(currentRobot == DriveConstants.RobotType.ALPHA ? 0.3 : 250),
     BACK(currentRobot == DriveConstants.RobotType.ALPHA ? 0.21 : 0);

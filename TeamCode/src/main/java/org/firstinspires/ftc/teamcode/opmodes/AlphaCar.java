@@ -229,11 +229,12 @@ public class AlphaCar extends CommandOpMode {
     new FunctionalButton(
             () ->
                 gamepadEx1.getButton(GamepadKeys.Button.RIGHT_STICK_BUTTON)
-                    && lift.getGoal() == Lift.Goal.STOW)
+                    && lift.getGoal() == Lift.Goal.STOW
+                        && (currentRobot == DriveConstants.RobotType.ALPHA ? true : slide.getSlideServo() == AlphaSlide.SlideServo.BACK))
         .whenHeld(
-                currentRobot == DriveConstants.RobotType.DELTA ?
-                lift.manualResetCommand().alongWith(slide.manualResetCommand()) :
-                lift.manualResetCommand()
+                currentRobot == DriveConstants.RobotType.ALPHA ?
+                lift.manualResetCommand() :
+                lift.manualResetCommand().alongWith(slide.manualResetCommand())
         );
 
     new FunctionalButton(
