@@ -78,12 +78,12 @@ public class Chamber1Plus4 extends AutoCommandBase {
                 .build(); // push 2 blocks
 
         TrajectorySequence chamber2Sample1 = drive.trajectorySequenceBuilder(push2Blocks.start())
-                .lineToSplineHeading(new Pose2d(6.46, -40.38, Math.toRadians(26.17)))
+                .lineToSplineHeading(new Pose2d(6.46, -36.46, Math.toRadians(26.17)))
                 .splineToLinearHeading(new Pose2d(25.85, -37, Math.toRadians(26.17)), Math.toRadians(27.51), getVelocityConstraint(30, MAX_ANG_VEL, TRACK_WIDTH), getAccelerationConstraint(30))
                 .build();
 
         TrajectorySequence grabSample12Observation2Sample2 = drive.trajectorySequenceBuilder(chamber2Sample1.end())
-                .lineToLinearHeading(new Pose2d(24.00, -57.46, Math.toRadians(-20.71)))//, getVelocityConstraint(30, MAX_ANG_VEL, TRACK_WIDTH), SampleMecanumDrive.getACCEL_CONSTRAINT())
+                .lineToLinearHeading(new Pose2d(30.23, -54, Math.toRadians(-20.71)))//, getVelocityConstraint(30, MAX_ANG_VEL, TRACK_WIDTH), SampleMecanumDrive.getACCEL_CONSTRAINT())
                 .UNSTABLE_addTemporalMarkerOffset(GrabCycleReleaseOffsetSec, () -> schedule(slide.aimCommand()))
                 .lineToLinearHeading(new Pose2d(35.54, -38.31, Math.toRadians(29.81)))
                 .build();
@@ -102,24 +102,27 @@ public class Chamber1Plus4 extends AutoCommandBase {
 //                .lineToLinearHeading(new Pose2d(45.17, -37.76, Math.toRadians(25.89)))
 //                .build();
 
-        TrajectorySequence grabSample32Observation = drive.trajectorySequenceBuilder(grabSample22Observation2Sample3.end())
-                .lineToLinearHeading(new Pose2d(41.52, -55.96, Math.toRadians(-25.39)))
-                .UNSTABLE_addTemporalMarkerOffset(GrabCycleReleaseOffsetSec, () -> schedule(slide.aimCommand()))
+        TrajectorySequence grabSample32Observation2Grab = drive.trajectorySequenceBuilder(grabSample22Observation2Sample3.end())
+                .lineToLinearHeading(new Pose2d(36.92, -52.15, Math.toRadians(-25.39)))
+                .UNSTABLE_addTemporalMarkerOffset(GrabCycleReleaseOffsetSec, () -> schedule(slide.aimCommand().andThen(new InstantCommand(() -> slide.autoBackSlideExtension()))))
+                .splineToLinearHeading(grab.toPose2d(), Math.toRadians(-90), getVelocityConstraint(25, MAX_ANG_VEL, TRACK_WIDTH), SampleMecanumDrive.getACCEL_CONSTRAINT())
                 .build();
 
 
-        TrajectorySequence observationToGrab =
-                drive
-                        .trajectorySequenceBuilder(grabSample32Observation.end())
-                        .splineToLinearHeading(new Pose2d(36.60, -60.31, Math.toRadians(90)), Math.toRadians(-90), getVelocityConstraint(25, MAX_ANG_VEL, TRACK_WIDTH), SampleMecanumDrive.getACCEL_CONSTRAINT())
-                        .build(); // 3 sample to grab
+//        TrajectorySequence observationToGrab =
+//                drive
+//                        .trajectorySequenceBuilder(grabSample32Observation2Grab.end())
+//
+//                        .build(); // 3 sample to grab
 
         Vector2d grabOffsetByChamber3 = grab.toVector2d().minus(chamber3.toVector2d());
 
         TrajectorySequence chamberToGrab = drive.trajectorySequenceBuilder(chamber3.toPose2d())
-                .lineToConstantHeading(chamber3.toVector2d().plus(grabOffsetByChamber3.times(0.9)))
-                .setVelConstraint(getVelocityConstraint(10, MAX_ANG_VEL, TRACK_WIDTH))
-                .splineToConstantHeading(grab.toVector2d(), Math.toRadians(-90))
+//                .lineToConstantHeading(chamber3.toVector2d().plus(grabOffsetByChamber3.times(0.9)))
+//                .setVelConstraint(getVelocityConstraint(10, MAX_ANG_VEL, TRACK_WIDTH))
+//                .lineToConstantHeading(chamber3.toVector2d().plus(new Vector2d(0, -1)))
+                .setAccelConstraint(getAccelerationConstraint(35))
+                .lineToConstantHeading(grab.toVector2d())
                 .build();
 
 
@@ -179,8 +182,8 @@ public class Chamber1Plus4 extends AutoCommandBase {
 
                 pushBlocksCycle(grabSample12Observation2Sample2),
                 pushBlocksCycle(grabSample22Observation2Sample3),
-                pushBlocksCycle(grabSample32Observation),
-                new AutoDriveCommand(drive, observationToGrab).alongWith(new InstantCommand(() -> slide.autoBackSlideExtension())),
+                pushBlocksCycle(grabSample32Observation2Grab),
+//                new AutoDriveCommand(drive, observationToGrab).alongWith(),
                 //.alongWith(new WaitCommand(500).deadlineWith(lift.manualResetCommand()))
 
                 observationToChamberCycle(grabToChamber1, chamberToGrab),

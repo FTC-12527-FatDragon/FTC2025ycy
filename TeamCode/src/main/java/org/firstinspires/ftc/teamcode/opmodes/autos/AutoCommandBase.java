@@ -29,7 +29,7 @@ public abstract class AutoCommandBase extends LinearOpMode {
   public static boolean telemetryInDashboard = true;
 
   public static long Grab2PreHangDelay = 0;
-  public static long ChamberUpOffsetMs = -300;
+  public static long ChamberUpOffsetMs = -200;
 
   public static int TelemetryTransmissionIntervalMs = 50;
 

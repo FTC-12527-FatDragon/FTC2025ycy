@@ -124,7 +124,7 @@ public class DriveConstants {
         kV = 0.015;
         kA = 0.0022;
         kStatic = 0.05;
-        MAX_VEL = 50;//62.89457585940184;
+        MAX_VEL = 62.89457585940184;
         MAX_ANG_VEL = Math.toRadians(134.16);
         break;
       case DELTA:
