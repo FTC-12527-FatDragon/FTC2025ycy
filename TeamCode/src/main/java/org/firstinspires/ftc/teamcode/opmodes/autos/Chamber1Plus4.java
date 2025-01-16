@@ -18,6 +18,7 @@ import org.firstinspires.ftc.teamcode.commands.AutoDriveCommand;
 import org.firstinspires.ftc.teamcode.lib.roadrunner.trajectorysequence.TrajectorySequence;
 import org.firstinspires.ftc.teamcode.subsystems.AlphaSlide;
 import org.firstinspires.ftc.teamcode.subsystems.drivetrain.SampleMecanumDrive;
+import org.firstinspires.ftc.teamcode.utils.ParallelRaceGroup;
 import org.firstinspires.ftc.teamcode.utils.Pose2dHelperClass;
 import org.firstinspires.ftc.teamcode.utils.Translation2dHelperClass;
 
@@ -49,13 +50,17 @@ public class Chamber1Plus4 extends AutoCommandBase {
 
     public static long ChamberUp2ExtendSlideToSample1Delay = 1000;
     public static double GrabCycleReleaseOffsetSec = -0.5;
+    public static long GrabCycleAdmissibleTimeout = 1000;
 
     public Command pushBlocksCycle(TrajectorySequence grab2DropSequence){
         return new SequentialCommandGroup(
 //                new WaitCommand(1000),
                 slide.grabCommand(),
 //                new WaitCommand(3000),
-                new AutoDriveCommand(drive, grab2DropSequence)
+                new ParallelRaceGroup(
+                        new AutoDriveCommand(drive, grab2DropSequence),
+                        new WaitCommand((long)(grab2DropSequence.duration()*1000)+GrabCycleAdmissibleTimeout)
+                )
 //                new InstantCommand(slide:),
 //                slide.aimCommand().andThen(new AutoDriveCommand(drive, drop2Next).alongWith(drop2NextRun))
         );
@@ -171,12 +176,16 @@ public class Chamber1Plus4 extends AutoCommandBase {
                         .alongWith(new WaitCommand(Grab2PreHangDelay).andThen(toPreHang()))
                         .alongWith(new WaitCommand((long)(startToChamber.duration()*1000)+ChamberUpOffsetMs).andThen(upToChamber())),
 
-                new AutoDriveCommand(drive, chamber2Sample1)
+                new ParallelRaceGroup(
+                        new AutoDriveCommand(drive, chamber2Sample1),
+                        new WaitCommand((long)(chamber2Sample1.duration()*1000)+GrabCycleAdmissibleTimeout)
+                )
                         .alongWith(
                                 chamberToGrab()
                         ).alongWith(
                                 new WaitCommand(ChamberUp2ExtendSlideToSample1Delay).andThen(
-                                        (new InstantCommand(slide::autoForwardSlideExtension).andThen(new WaitCommand(slide.slideRetractFar))).alongWith(slide.aimCommand(AlphaSlide.TurnServo.LEFT_55))
+                                        (new InstantCommand(slide::autoForwardSlideExtension).andThen(new WaitCommand(slide.slideRetractFar)))
+                                                .alongWith(slide.aimCommand(AlphaSlide.TurnServo.LEFT_55))
                                 )
                         ),
 
