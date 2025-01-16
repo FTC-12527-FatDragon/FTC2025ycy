@@ -23,7 +23,7 @@ public class AlphaLiftClaw extends SubsystemBase {
   private final Telemetry telemetry;
 
   public static double LiftClaw_Open = currentRobot==DriveConstants.RobotType.ALPHA?0.7:0.35;
-  public static double LiftClaw_Close = currentRobot==DriveConstants.RobotType.ALPHA?0.33:0.58;
+  public static double LiftClaw_Close = currentRobot==DriveConstants.RobotType.ALPHA?0.33:0.52;
 
   public static long LiftClaw_SwitchDelay = 150;
 
