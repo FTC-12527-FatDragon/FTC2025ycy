@@ -17,6 +17,14 @@ public class Translation2dHelperClass {
     this.Y = other.Y;
   }
 
+  public Translation2dHelperClass plus(Translation2dHelperClass other){
+    return new Translation2dHelperClass(X + other.X, Y + other.Y);
+  }
+
+  public Translation2dHelperClass times(double scalar){
+    return new Translation2dHelperClass(X * scalar, Y * scalar);
+  }
+
   public Translation2d toTranslation2d() {
     return new Translation2d(X, Y);
   }
