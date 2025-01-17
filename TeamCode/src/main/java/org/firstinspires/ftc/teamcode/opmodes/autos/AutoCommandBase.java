@@ -8,6 +8,7 @@ import com.arcrobotics.ftclib.command.InstantCommand;
 import com.arcrobotics.ftclib.command.ParallelCommandGroup;
 import com.arcrobotics.ftclib.command.SequentialCommandGroup;
 import com.arcrobotics.ftclib.command.WaitCommand;
+import com.arcrobotics.ftclib.command.WaitUntilCommand;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
@@ -18,6 +19,8 @@ import org.firstinspires.ftc.teamcode.subsystems.AlphaSlide;
 import org.firstinspires.ftc.teamcode.subsystems.Lift;
 import org.firstinspires.ftc.teamcode.subsystems.drivetrain.SampleMecanumDrive;
 import org.firstinspires.ftc.teamcode.utils.ParallelRaceGroup;
+import org.firstinspires.ftc.teamcode.utils.RoadRunnerPose.BooleanArea;
+import org.firstinspires.ftc.teamcode.utils.RoadRunnerPose.PoseArea;
 
 public abstract class AutoCommandBase extends LinearOpMode {
   public static long lift2BasketTimeout = 800;
@@ -180,6 +183,55 @@ public abstract class AutoCommandBase extends LinearOpMode {
   public Command autoFinish() {
     return new SequentialCommandGroup(
         initialize().andThen(slide.aimCommand()).andThen(new WaitCommand(100)));
+  }
+
+  /**
+   * Follow a trajectory
+   * @param toFollow The trajectory to follow
+   * @return The command to follow
+   */
+  protected Command drive(TrajectorySequence toFollow) {
+    return new AutoDriveCommand(drive, toFollow);
+  }
+
+  private static final BooleanArea FalseArea = new BooleanArea(false);
+
+  /**
+   * Follow a trajectory with your custom timeout.
+   * @param toFollow The trajectory to follow
+   * @param admissibleTimeout Your timeout, note that this timeout can only be smaller than ADMISSIBLE_TIMEOUT in SampleMecanumDrive.
+   * @return The command to follow
+   */
+  protected Command drive(TrajectorySequence toFollow, double admissibleTimeout){
+    return drive(toFollow, admissibleTimeout, FalseArea);
+  }
+
+  /**
+   * Follow a trajectory with your custom finish location.
+   * @param toFollow The trajectory to follow
+   * @param finishAt The area in which can be considered as finished
+   * @return The command to follow
+   * @apiNote ADMISSIBLE_TIMEOUT are also applied here, so in some case even it doesn't goes to finishAt it will stop.
+   */
+  protected Command drive(TrajectorySequence toFollow, PoseArea finishAt){
+    return drive(toFollow, Double.MAX_VALUE, finishAt);
+  }
+
+  /**
+   * Follow a trajectory, ends at either at your custom finish location or the timeout has expired.
+   * @param toFollow The trajectory to follow
+   * @param admissibleTimeout Your timeout, note that this timeout can only be smaller than ADMISSIBLE_TIMEOUT in SampleMecanumDrive.
+   * @param finishAt The area in which can be considered as finished
+   * @return The command to follow
+   * @see #drive(TrajectorySequence, PoseArea)
+   * @see #drive(TrajectorySequence, double)
+   */
+  protected Command drive(TrajectorySequence toFollow, double admissibleTimeout, PoseArea finishAt){
+    return new ParallelRaceGroup(
+            drive(toFollow),
+            new WaitCommand((long)((toFollow.duration()+admissibleTimeout)*1000)),
+            new WaitUntilCommand(() -> finishAt.covers(drive.getPoseEstimate()))
+    );
   }
 
   /**
