@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.opmodes.autos;
 
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
+import com.acmerobotics.roadrunner.geometry.Vector2d;
 import com.arcrobotics.ftclib.command.Command;
 import com.arcrobotics.ftclib.command.CommandScheduler;
 import com.arcrobotics.ftclib.command.InstantCommand;
@@ -21,6 +22,7 @@ import org.firstinspires.ftc.teamcode.subsystems.drivetrain.SampleMecanumDrive;
 import org.firstinspires.ftc.teamcode.utils.ParallelRaceGroup;
 import org.firstinspires.ftc.teamcode.utils.RoadRunnerPose.BooleanArea;
 import org.firstinspires.ftc.teamcode.utils.RoadRunnerPose.PoseArea;
+import org.firstinspires.ftc.teamcode.utils.RoadRunnerPose.RectangularArea;
 
 public abstract class AutoCommandBase extends LinearOpMode {
   public static long lift2BasketTimeout = 800;
@@ -245,9 +247,9 @@ public abstract class AutoCommandBase extends LinearOpMode {
     return new SequentialCommandGroup(
             liftClaw.closeClawCommand(),
 
-            new AutoDriveCommand(drive, toChamberSequence).raceWith(new WaitCommand((long)(toChamberSequence.duration()*1000))) // No auto collaborate needed
-                    .alongWith(new WaitCommand(Grab2PreHangDelay).andThen(toPreHang()))
-                    .alongWith(new WaitCommand((long)(toChamberSequence.duration()*1000)+ChamberUpOffsetMs).andThen(upToChamber())),
+            (drive(toChamberSequence, new RectangularArea(new Vector2d(0, 23), 26.5, 1)) // No auto collaborate needed
+                    .alongWith(new WaitCommand(Grab2PreHangDelay).andThen(toPreHang())))
+                    .andThen(upToChamber()),
 
             new AutoDriveCommand(drive, chamberToGrab)
                     .alongWith(chamberToGrab())
