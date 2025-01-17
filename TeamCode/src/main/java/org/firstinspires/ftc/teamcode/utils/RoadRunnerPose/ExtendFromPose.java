@@ -1,7 +1,11 @@
 package org.firstinspires.ftc.teamcode.utils.RoadRunnerPose;
 
+import com.acmerobotics.dashboard.FtcDashboard;
+import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.geometry.Vector2d;
+
+import org.firstinspires.ftc.teamcode.lib.roadrunner.drive.opmode.LocalizationTest;
 
 // NOTE: It's a custom pose
 public class ExtendFromPose implements PoseArea{
@@ -20,6 +24,16 @@ public class ExtendFromPose implements PoseArea{
         this.extendOffset = extendOffset;
     }
     public boolean covers(Pose2d pose){
-        return extendArea.covers(pose.plus(new Pose2d(extendOffset.rotated(pose.getHeading()), 0)));
+        Pose2d extendPose = pose.plus(new Pose2d(extendOffset.rotated(pose.getHeading()), 0));
+        boolean covers = extendArea.covers(extendPose);
+        TelemetryPacket packet = new TelemetryPacket();
+        if(covers){
+            packet.fieldOverlay().setStroke("#7FE1FF");
+        }else packet.fieldOverlay().setStroke("#1A94BA");
+        LocalizationTest.drawRobot(packet.fieldOverlay(), extendPose);
+        packet.put("Extend Pose", extendPose);
+        packet.put("Extend Covers", covers);
+        FtcDashboard.getInstance().sendTelemetryPacket(packet);
+        return covers;
     }
 }

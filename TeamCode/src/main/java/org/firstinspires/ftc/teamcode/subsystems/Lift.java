@@ -199,7 +199,7 @@ public class Lift extends MotorPIDSlideSubsystem {
     BASKET(1500),
     STOW(0),
     PRE_HANG(600.0),
-    HANG(1010.0),
+    HANG(1020.0),
     GRAB(0),
     OPEN_LOOP(0.0);
 

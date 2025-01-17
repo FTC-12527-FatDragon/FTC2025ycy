@@ -25,7 +25,7 @@ public class AlphaLiftClaw extends SubsystemBase {
   public static double LiftClaw_Open = currentRobot==DriveConstants.RobotType.ALPHA?0.8:0.35;
   public static double LiftClaw_Close = currentRobot==DriveConstants.RobotType.ALPHA?0.33:0.58;
 
-  public static long LiftClaw_SwitchDelay = 150;
+  public static long LiftClaw_SwitchDelay = 50;
 
   public AlphaLiftClaw(final HardwareMap hardwareMap, Telemetry telemetry) {
     liftArmServo = hardwareMap.get(Servo.class, "liftArmServo"); // 0.3 Up 0.7 Down
