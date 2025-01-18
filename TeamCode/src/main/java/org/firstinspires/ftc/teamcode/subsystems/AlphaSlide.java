@@ -39,7 +39,7 @@ public class AlphaSlide extends MotorPIDSlideSubsystem{
   public static long waitGrabTimeout3 = 700;
 
   public static long slideRetractFar = 500;
-  public static long slideRetractNear = 100;
+  public static long slideRetractNear = 150;
 
   private static double turnAngleDeg = 0;
   private TurnServo turnServo = TurnServo.DEG_0;
