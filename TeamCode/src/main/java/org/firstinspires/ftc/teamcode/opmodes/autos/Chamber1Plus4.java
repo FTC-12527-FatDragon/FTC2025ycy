@@ -20,6 +20,10 @@ import org.firstinspires.ftc.teamcode.subsystems.AlphaSlide;
 import org.firstinspires.ftc.teamcode.subsystems.drivetrain.SampleMecanumDrive;
 import org.firstinspires.ftc.teamcode.utils.ParallelRaceGroup;
 import org.firstinspires.ftc.teamcode.utils.Pose2dHelperClass;
+import org.firstinspires.ftc.teamcode.utils.RoadRunnerPose.BooleanArea;
+import org.firstinspires.ftc.teamcode.utils.RoadRunnerPose.ExtendFromPose;
+import org.firstinspires.ftc.teamcode.utils.RoadRunnerPose.PoseArea;
+import org.firstinspires.ftc.teamcode.utils.RoadRunnerPose.RectangularArea;
 import org.firstinspires.ftc.teamcode.utils.Translation2dHelperClass;
 
 @Config
@@ -38,8 +42,11 @@ public class Chamber1Plus4 extends AutoCommandBase {
     public static Pose2dHelperClass chamber4 =
             new Pose2dHelperClass(chamber.X - gap * 4, chamber.Y, 90.00);
 
-    public static Translation2dHelperClass Sample1 = new Translation2dHelperClass(49.22, -26.44);
-    public static Translation2dHelperClass Sample2 = new Translation2dHelperClass(59.77, -26.08);
+    public static Translation2dHelperClass SampleRect = new Translation2dHelperClass(1.5, -3.5);
+    public static Translation2dHelperClass SampleValidRect = new Translation2dHelperClass(2, 3.5);
+    public static Translation2dHelperClass Sample1 = new Translation2dHelperClass(48, -24).plus(SampleRect.times(0.5));
+    public static Translation2dHelperClass Sample2 = new Translation2dHelperClass(48+10, -24).plus(SampleRect.times(0.5));
+    public static Translation2dHelperClass Sample3 = new Translation2dHelperClass(48+20, -24).plus(SampleRect.times(0.5));
 
 
     public static Pose2dHelperClass sample1Observation = new Pose2dHelperClass(48.46, -53, 90);
@@ -52,15 +59,12 @@ public class Chamber1Plus4 extends AutoCommandBase {
     public static double GrabCycleReleaseOffsetSec = -0.5;
     public static long GrabCycleAdmissibleTimeout = 1000;
 
-    public Command pushBlocksCycle(TrajectorySequence grab2DropSequence){
+    public Command pushBlocksCycle(TrajectorySequence grab2DropSequence, PoseArea atGoal){
         return new SequentialCommandGroup(
 //                new WaitCommand(1000),
                 slide.grabCommand(),
 //                new WaitCommand(3000),
-                new ParallelRaceGroup(
-                        new AutoDriveCommand(drive, grab2DropSequence),
-                        new WaitCommand((long)(grab2DropSequence.duration()*1000)+GrabCycleAdmissibleTimeout)
-                )
+                drive(grab2DropSequence, GrabCycleAdmissibleTimeout, atGoal)
 //                new InstantCommand(slide:),
 //                slide.aimCommand().andThen(new AutoDriveCommand(drive, drop2Next).alongWith(drop2NextRun))
         );
@@ -137,23 +141,23 @@ public class Chamber1Plus4 extends AutoCommandBase {
         TrajectorySequence grabToChamber1 =
                 drive
                         .trajectorySequenceBuilder(grab.toPose2d())
-                        .lineToSplineHeading(chamber1.toPose2d())
+                        .lineToLinearHeading(chamber1.toPose2d())
                         .build(); // grab to chamber1
         TrajectorySequence grabToChamber2 =
                 drive
                         .trajectorySequenceBuilder(grab.toPose2d())
-                        .lineToSplineHeading(chamber2.toPose2d())
+                        .lineToLinearHeading(chamber2.toPose2d())
                         .build(); // grab to chamber2
         TrajectorySequence grabToChamber3 =
                 drive
                         .trajectorySequenceBuilder(grab.toPose2d())
-                        .lineToSplineHeading(chamber3.toPose2d())
+                        .lineToLinearHeading(chamber3.toPose2d())
                         .build(); // grab to chamber3
 
         TrajectorySequence grabToChamber4 =
                 drive
                         .trajectorySequenceBuilder(grab.toPose2d())
-                        .lineToSplineHeading(chamber4.toPose2d())
+                        .lineToLinearHeading(chamber4.toPose2d())
                         .build();
 
         TrajectorySequence startToChamber =
@@ -172,14 +176,11 @@ public class Chamber1Plus4 extends AutoCommandBase {
                     slide.autoBackSlideExtension();
                 }),
                 liftClaw.closeClawCommand(0),
-                new AutoDriveCommand(drive, startToChamber).raceWith(new WaitCommand((long)(startToChamber.duration()*1000)))
+                drive(startToChamber, 0)
                         .alongWith(new WaitCommand(Grab2PreHangDelay).andThen(toPreHang()))
                         .alongWith(new WaitCommand((long)(startToChamber.duration()*1000)+ChamberUpOffsetMs).andThen(upToChamber())),
 
-                new ParallelRaceGroup(
-                        new AutoDriveCommand(drive, chamber2Sample1),
-                        new WaitCommand((long)(chamber2Sample1.duration()*1000)+GrabCycleAdmissibleTimeout)
-                )
+                drive(chamber2Sample1, GrabCycleAdmissibleTimeout)
                         .alongWith(
                                 chamberToGrab()
                         ).alongWith(
@@ -189,9 +190,10 @@ public class Chamber1Plus4 extends AutoCommandBase {
                                 )
                         ),
 
-                pushBlocksCycle(grabSample12Observation2Sample2),
-                pushBlocksCycle(grabSample22Observation2Sample3),
-                pushBlocksCycle(grabSample32Observation2Grab),
+
+                pushBlocksCycle(grabSample12Observation2Sample2, new ExtendFromPose(new RectangularArea(Sample2.toVector2d(), SampleValidRect.getX(), SampleValidRect.getY()), new Vector2d(24.45, 0))),
+                pushBlocksCycle(grabSample22Observation2Sample3, new ExtendFromPose(new RectangularArea(Sample3.toVector2d(), SampleValidRect.getX(), SampleValidRect.getY()), new Vector2d(24.45, 0))),
+                pushBlocksCycle(grabSample32Observation2Grab, new BooleanArea(false)),
 //                new AutoDriveCommand(drive, observationToGrab).alongWith(),
                 //.alongWith(new WaitCommand(500).deadlineWith(lift.manualResetCommand()))
 

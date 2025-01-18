@@ -176,7 +176,7 @@ public class AlphaSlide extends MotorPIDSlideSubsystem{
 
 
   public void initialize() {
-    slideArmServo.setPosition(Goal.AIM.slideArmPos);
+    slideArmServo.setPosition(Goal.HANDOFF.slideArmPos);
     if(currentRobot== DriveConstants.RobotType.DELTA){
       ((MotorServo)slideRightServo).resetEncoder();
     }
