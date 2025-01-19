@@ -162,7 +162,6 @@ public abstract class AutoCommandBase extends LinearOpMode {
 
   public Command grabAndBack3() {
     return new SequentialCommandGroup(
-
             slide.autoGrabCommand3A(),
             new InstantCommand(slide::autoForwardSlideExtension),
             new WaitCommand(slideRetractFar),
