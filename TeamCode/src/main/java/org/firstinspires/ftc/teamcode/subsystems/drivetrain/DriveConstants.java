@@ -1,10 +1,14 @@
 package org.firstinspires.ftc.teamcode.subsystems.drivetrain;
 
+import android.provider.Settings.Secure;
+
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 import com.qualcomm.robotcore.util.RobotLog;
+
+import org.firstinspires.ftc.robotcontroller.internal.FtcRobotControllerActivity;
 import org.firstinspires.ftc.teamcode.lib.Units;
 import org.firstinspires.ftc.teamcode.lib.gobilda.GoBildaPinpointDriver;
 import org.firstinspires.ftc.teamcode.utils.Translation2dHelperClass;
@@ -22,6 +26,9 @@ import org.firstinspires.ftc.teamcode.utils.Translation2dHelperClass;
  */
 @Config
 public class DriveConstants {
+  public static String android_id = FtcRobotControllerActivity.getAndroidId();
+
+
   public static final RobotType currentRobot = RobotType.DELTA;
 
   public enum RobotType {

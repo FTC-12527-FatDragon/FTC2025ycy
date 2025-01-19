@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.opmodes.autos;
 
+import static org.firstinspires.ftc.teamcode.subsystems.AlphaSlide.slideRetractFar;
+
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.acmerobotics.roadrunner.geometry.Vector2d;
@@ -26,7 +28,7 @@ import org.firstinspires.ftc.teamcode.utils.RoadRunnerPose.RectangularArea;
 
 public abstract class AutoCommandBase extends LinearOpMode {
   public static long lift2BasketTimeout = 800;
-  public static long slideServoResponseTime = 600;
+//  public static long slideServoResponseTime = 600;
   public static long basketTimeout = 600;
   public static long handoffTimeout = 100;
   public static long tempTimeout = 1000;
@@ -34,7 +36,7 @@ public abstract class AutoCommandBase extends LinearOpMode {
   public static boolean telemetryInDashboard = true;
 
   public static long Grab2PreHangDelay = 0;
-  public static long ChamberUpOffsetMs = -200;
+  public static long ChamberUpOffsetMs = -100;
 
   public static int TelemetryTransmissionIntervalMs = 50;
 
@@ -148,10 +150,10 @@ public abstract class AutoCommandBase extends LinearOpMode {
   public Command grabAndBack() {
     return new SequentialCommandGroup(
             new InstantCommand(slide::autoForwardSlideExtension),
-            new WaitCommand(slideServoResponseTime),
+            new WaitCommand(slideRetractFar),
             slide.autoGrabCommand(),
             new InstantCommand(slide::autoBackSlideExtension),
-            new WaitCommand(slideServoResponseTime),
+            new WaitCommand(slideRetractFar),
             liftClaw.closeClawCommand(),
             new WaitCommand(handoffTimeout),
             slide.autoOpenIntakeClaw()
@@ -163,10 +165,10 @@ public abstract class AutoCommandBase extends LinearOpMode {
 
             slide.autoGrabCommand3A(),
             new InstantCommand(slide::autoForwardSlideExtension),
-            new WaitCommand(slideServoResponseTime),
+            new WaitCommand(slideRetractFar),
             slide.autoGrabCommand3B(),
             new InstantCommand(slide::autoBackSlideExtension),
-            new WaitCommand(slideServoResponseTime),
+            new WaitCommand(slideRetractFar),
             liftClaw.closeClawCommand(),
             new WaitCommand(handoffTimeout),
             slide.autoOpenIntakeClaw()
@@ -247,11 +249,11 @@ public abstract class AutoCommandBase extends LinearOpMode {
     return new SequentialCommandGroup(
             liftClaw.closeClawCommand(),
 
-            (drive(toChamberSequence, new RectangularArea(new Vector2d(0, 23), 26.5, 1)) // No auto collaborate needed
-                    .alongWith(new WaitCommand(Grab2PreHangDelay).andThen(toPreHang())))
-                    .andThen(upToChamber()),
+            drive(toChamberSequence, 0/*, new RectangularArea(new Vector2d(0, -24), 26.5, 2)*/) // No auto collaborate needed
+                    .alongWith(new WaitCommand(Grab2PreHangDelay).andThen(toPreHang()))
+                    .alongWith(new WaitCommand((long)(toChamberSequence.duration()*1000)+ChamberUpOffsetMs).andThen(upToChamber())),
 
-            new AutoDriveCommand(drive, chamberToGrab)
+            drive(chamberToGrab, 1)
                     .alongWith(chamberToGrab())
     );
   }

@@ -38,8 +38,8 @@ public class AlphaSlide extends MotorPIDSlideSubsystem{
   public static long waitGrabTimeout = 500;
   public static long waitGrabTimeout3 = 700;
 
-  public static long slideRetractFar = 500;
-  public static long slideRetractNear = 100;
+  public static long slideRetractFar = currentRobot == DriveConstants.RobotType.ALPHA?500:350;
+  public static long slideRetractNear = 150;
 
   private static double turnAngleDeg = 0;
   private TurnServo turnServo = TurnServo.DEG_0;
@@ -176,7 +176,7 @@ public class AlphaSlide extends MotorPIDSlideSubsystem{
 
 
   public void initialize() {
-    slideArmServo.setPosition(Goal.AIM.slideArmPos);
+    slideArmServo.setPosition(Goal.HANDOFF.slideArmPos);
     if(currentRobot== DriveConstants.RobotType.DELTA){
       ((MotorServo)slideRightServo).resetEncoder();
     }

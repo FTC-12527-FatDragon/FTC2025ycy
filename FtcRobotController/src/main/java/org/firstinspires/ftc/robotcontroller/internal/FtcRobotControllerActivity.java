@@ -49,6 +49,8 @@ import android.preference.PreferenceManager;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.StringRes;
+
+import android.provider.Settings.Secure;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
@@ -119,17 +121,18 @@ import org.firstinspires.ftc.robotcore.internal.system.AppAliveNotifier;
 import org.firstinspires.ftc.robotcore.internal.system.AppUtil;
 import org.firstinspires.ftc.robotcore.internal.system.Assert;
 import org.firstinspires.ftc.robotcore.internal.system.PreferencesHelper;
+import org.firstinspires.ftc.robotcore.internal.system.RobotApplication;
 import org.firstinspires.ftc.robotcore.internal.system.ServiceController;
 import org.firstinspires.ftc.robotcore.internal.ui.ThemedActivity;
 import org.firstinspires.ftc.robotcore.internal.ui.UILocation;
 import org.firstinspires.ftc.robotcore.internal.webserver.RobotControllerWebInfo;
 import org.firstinspires.ftc.robotserver.internal.programmingmode.ProgrammingModeManager;
 import org.firstinspires.inspection.RcInspectionActivity;
-import org.threeten.bp.YearMonth;
 import org.xmlpull.v1.XmlPullParserException;
 
 import java.io.FileNotFoundException;
 import java.util.List;
+import java.util.Objects;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
@@ -178,6 +181,8 @@ public class FtcRobotControllerActivity extends Activity
 
   protected WifiMuteStateMachine wifiMuteStateMachine;
   protected MotionDetection motionDetection;
+
+  protected static String ANDROID_ID = "";
 
   private static boolean permissionsValidated = false;
 
@@ -409,6 +414,9 @@ public class FtcRobotControllerActivity extends Activity
     checkPreferredChannel();
 
     AnnotatedHooksClassFilter.getInstance().callOnCreateMethods(this);
+
+    ANDROID_ID = Secure.getString(context.getContentResolver(),
+            Secure.ANDROID_ID);
   }
 
   protected UpdateUI createUpdateUI() {
@@ -841,5 +849,9 @@ public class FtcRobotControllerActivity extends Activity
     if (wifiMuteStateMachine != null) {
       wifiMuteStateMachine.consumeEvent(WifiMuteEvent.USER_ACTIVITY);
     }
+  }
+
+  public static String getAndroidId(){
+    return ANDROID_ID;
   }
 }
