@@ -38,6 +38,7 @@ public class Basket1Plus3 extends AutoCommandBase {
   public static Pose2dHelperClass grab3 = new Pose2dHelperClass(-44.5, -27.91, 180.00);
 
   public static long waitDropTimeout = 200;
+  public static long liftBackTimeout = 200;
 
 
 
@@ -91,17 +92,17 @@ public class Basket1Plus3 extends AutoCommandBase {
                 new AutoDriveCommand(drive, startToBasket),
                 liftToBasket(),
                 new WaitCommand(waitDropTimeout),
-                new AutoDriveCommand(drive, basketToGrab1).alongWith(new WaitCommand(100).andThen(liftBack())),
+                new AutoDriveCommand(drive, basketToGrab1).alongWith(new WaitCommand(liftBackTimeout).andThen(liftBack())),
                 grabAndBack(),
                 new AutoDriveCommand(drive, grab1ToBasket),
                 liftToBasket(),
                 new WaitCommand(waitDropTimeout),
-                new AutoDriveCommand(drive, basketToGrab2).alongWith(new WaitCommand(100).andThen(liftBack())),
+                new AutoDriveCommand(drive, basketToGrab2).alongWith(new WaitCommand(liftBackTimeout).andThen(liftBack())),
                 grabAndBack(),
                 new AutoDriveCommand(drive, grab2ToBasket),
                 liftToBasket(),
                 new WaitCommand(waitDropTimeout),
-                new AutoDriveCommand(drive, basketToGrab3).alongWith(new WaitCommand(100).andThen(liftBack())),
+                new AutoDriveCommand(drive, basketToGrab3).alongWith(new WaitCommand(liftBackTimeout).andThen(liftBack())),
                 grabAndBack3(),
                 new AutoDriveCommand(drive, grab3ToBasket),
                 liftToBasket(),

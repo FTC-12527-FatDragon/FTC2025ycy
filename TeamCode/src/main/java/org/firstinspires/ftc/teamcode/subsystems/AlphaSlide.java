@@ -38,7 +38,7 @@ public class AlphaSlide extends MotorPIDSlideSubsystem{
   public static long waitGrabTimeout = 500;
   public static long waitGrabTimeout3 = 700;
 
-  public static long slideRetractFar = currentRobot == DriveConstants.RobotType.ALPHA?500:350;
+  public static long slideRetractFar = currentRobot == DriveConstants.RobotType.ALPHA?500:400;
   public static long slideRetractNear = 150;
 
   private static double turnAngleDeg = 0;
@@ -220,7 +220,7 @@ public class AlphaSlide extends MotorPIDSlideSubsystem{
     slideArmServo.setPosition(0.6);
   }
 
-  public static double slideArmServo_Down = currentRobot==DriveConstants.RobotType.ALPHA?0.5:0.8;
+  public static double slideArmServo_Down = currentRobot==DriveConstants.RobotType.ALPHA?0.5:0.775;
 
   @Override
   void runOpenLoop(double percent) {
@@ -313,7 +313,7 @@ public class AlphaSlide extends MotorPIDSlideSubsystem{
     slideServo = SlideServo.BACK;
   }
 
-  private final double preHandoffSlideExtendedVal = currentRobot == DriveConstants.RobotType.ALPHA ? 0.25: 200;
+  private final double preHandoffSlideExtendedVal = currentRobot == DriveConstants.RobotType.ALPHA ? 0.25: 400;
 
   public void preHandoffSlideExtension() {
     slideExtensionVal = preHandoffSlideExtendedVal;
