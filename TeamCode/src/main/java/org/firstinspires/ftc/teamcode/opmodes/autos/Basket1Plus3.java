@@ -16,8 +16,10 @@ import org.firstinspires.ftc.teamcode.lib.roadrunner.trajectorysequence.Trajecto
 import org.firstinspires.ftc.teamcode.subsystems.AlphaLiftClaw;
 import org.firstinspires.ftc.teamcode.subsystems.AlphaSlide;
 import org.firstinspires.ftc.teamcode.subsystems.Lift;
+import org.firstinspires.ftc.teamcode.subsystems.drivetrain.DriveConstants;
 import org.firstinspires.ftc.teamcode.subsystems.drivetrain.SampleMecanumDrive;
 import org.firstinspires.ftc.teamcode.utils.Pose2dHelperClass;
+import static org.firstinspires.ftc.teamcode.subsystems.drivetrain.DriveConstants.currentRobot;
 
 @Config
 @Autonomous(name = "Basket 1+3", group = "Autos")
@@ -27,7 +29,10 @@ public class Basket1Plus3 extends AutoCommandBase {
   AlphaSlide slide;
 
   public static Pose2dHelperClass start = new Pose2dHelperClass(-31.64, -65.06, 0.00);
-  public static Pose2dHelperClass basket = new Pose2dHelperClass(-56.76, -57.25, 45.00);
+  public static Pose2dHelperClass basket =
+          currentRobot == DriveConstants.RobotType.ALPHA ?
+                  new Pose2dHelperClass(-56.76, -57.25, 45.00) :
+                  new Pose2dHelperClass(-57.76, -58.25, 45.00);
   public static Pose2dHelperClass grab1 = new Pose2dHelperClass(-49.25, -52.43, 90.00);
   public static Pose2dHelperClass grab2 = new Pose2dHelperClass(-59.53, -52.43, 90.00);
   public static Pose2dHelperClass grab3 = new Pose2dHelperClass(-44.5, -27.91, 180.00);
@@ -86,17 +91,17 @@ public class Basket1Plus3 extends AutoCommandBase {
                 new AutoDriveCommand(drive, startToBasket),
                 liftToBasket(),
                 new WaitCommand(waitDropTimeout),
-                new AutoDriveCommand(drive, basketToGrab1).alongWith(new WaitCommand(100), liftBack()),
+                new AutoDriveCommand(drive, basketToGrab1).alongWith(new WaitCommand(100).andThen(liftBack())),
                 grabAndBack(),
                 new AutoDriveCommand(drive, grab1ToBasket),
                 liftToBasket(),
                 new WaitCommand(waitDropTimeout),
-                new AutoDriveCommand(drive, basketToGrab2).alongWith(new WaitCommand(100), liftBack()),
+                new AutoDriveCommand(drive, basketToGrab2).alongWith(new WaitCommand(100).andThen(liftBack())),
                 grabAndBack(),
                 new AutoDriveCommand(drive, grab2ToBasket),
                 liftToBasket(),
                 new WaitCommand(waitDropTimeout),
-                new AutoDriveCommand(drive, basketToGrab3).alongWith(new WaitCommand(100), liftBack()),
+                new AutoDriveCommand(drive, basketToGrab3).alongWith(new WaitCommand(100).andThen(liftBack())),
                 grabAndBack3(),
                 new AutoDriveCommand(drive, grab3ToBasket),
                 liftToBasket(),

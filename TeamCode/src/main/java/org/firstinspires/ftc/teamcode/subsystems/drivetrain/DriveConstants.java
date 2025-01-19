@@ -1,10 +1,14 @@
 package org.firstinspires.ftc.teamcode.subsystems.drivetrain;
 
+import android.provider.Settings.Secure;
+
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 import com.qualcomm.robotcore.util.RobotLog;
+
+import org.firstinspires.ftc.robotcontroller.internal.FtcRobotControllerActivity;
 import org.firstinspires.ftc.teamcode.lib.Units;
 import org.firstinspires.ftc.teamcode.lib.gobilda.GoBildaPinpointDriver;
 import org.firstinspires.ftc.teamcode.utils.Translation2dHelperClass;
@@ -22,6 +26,9 @@ import org.firstinspires.ftc.teamcode.utils.Translation2dHelperClass;
  */
 @Config
 public class DriveConstants {
+  public static String android_id = FtcRobotControllerActivity.getAndroidId();
+
+
   public static final RobotType currentRobot = RobotType.DELTA;
 
   public enum RobotType {
@@ -124,7 +131,7 @@ public class DriveConstants {
         kV = 0.015;
         kA = 0.0022;
         kStatic = 0.05;
-        MAX_VEL = 50;//62.89457585940184;
+        MAX_VEL = 62.89457585940184;
         MAX_ANG_VEL = Math.toRadians(134.16);
         break;
       case DELTA:
@@ -133,12 +140,12 @@ public class DriveConstants {
         GoBildaLocalizerEncoderResolution =
                 GoBildaPinpointDriver.GoBildaOdometryPods.goBILDA_SWINGARM_POD;
         GoBildaLocalizerPerpendicularOffset = new Translation2dHelperClass(97, 108);
-        TRACK_WIDTH = 10.47;
-        kV = 0.013;
-        kA = 0.00172;
-        kStatic = 0.03;
-        MAX_VEL = 74.78187676904524;
-        MAX_ANG_VEL = 2.3250158309936526;
+        TRACK_WIDTH = 14.5;
+        kV = 0.0116;
+        kA = 0.00225;
+        kStatic = 0.04;
+        MAX_VEL = 84.97331647926711;
+        MAX_ANG_VEL = 2.2771860122680665;
         isReflected = true;
         break;
       case BETA:

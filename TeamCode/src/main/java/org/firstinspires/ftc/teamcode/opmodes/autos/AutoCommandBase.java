@@ -1,13 +1,17 @@
 package org.firstinspires.ftc.teamcode.opmodes.autos;
 
+import static org.firstinspires.ftc.teamcode.subsystems.AlphaSlide.slideRetractFar;
+
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
+import com.acmerobotics.roadrunner.geometry.Vector2d;
 import com.arcrobotics.ftclib.command.Command;
 import com.arcrobotics.ftclib.command.CommandScheduler;
 import com.arcrobotics.ftclib.command.InstantCommand;
 import com.arcrobotics.ftclib.command.ParallelCommandGroup;
 import com.arcrobotics.ftclib.command.SequentialCommandGroup;
 import com.arcrobotics.ftclib.command.WaitCommand;
+import com.arcrobotics.ftclib.command.WaitUntilCommand;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
@@ -18,10 +22,13 @@ import org.firstinspires.ftc.teamcode.subsystems.AlphaSlide;
 import org.firstinspires.ftc.teamcode.subsystems.Lift;
 import org.firstinspires.ftc.teamcode.subsystems.drivetrain.SampleMecanumDrive;
 import org.firstinspires.ftc.teamcode.utils.ParallelRaceGroup;
+import org.firstinspires.ftc.teamcode.utils.RoadRunnerPose.BooleanArea;
+import org.firstinspires.ftc.teamcode.utils.RoadRunnerPose.PoseArea;
+import org.firstinspires.ftc.teamcode.utils.RoadRunnerPose.RectangularArea;
 
 public abstract class AutoCommandBase extends LinearOpMode {
   public static long lift2BasketTimeout = 800;
-  public static long slideServoResponseTime = 600;
+//  public static long slideServoResponseTime = 600;
   public static long basketTimeout = 600;
   public static long handoffTimeout = 100;
   public static long tempTimeout = 1000;
@@ -29,7 +36,7 @@ public abstract class AutoCommandBase extends LinearOpMode {
   public static boolean telemetryInDashboard = true;
 
   public static long Grab2PreHangDelay = 0;
-  public static long ChamberUpOffsetMs = -300;
+  public static long ChamberUpOffsetMs = -100;
 
   public static int TelemetryTransmissionIntervalMs = 50;
 
@@ -143,10 +150,10 @@ public abstract class AutoCommandBase extends LinearOpMode {
   public Command grabAndBack() {
     return new SequentialCommandGroup(
             new InstantCommand(slide::autoForwardSlideExtension),
-            new WaitCommand(slideServoResponseTime),
+            new WaitCommand(slideRetractFar),
             slide.autoGrabCommand(),
             new InstantCommand(slide::autoBackSlideExtension),
-            new WaitCommand(slideServoResponseTime),
+            new WaitCommand(slideRetractFar),
             liftClaw.closeClawCommand(),
             new WaitCommand(handoffTimeout),
             slide.autoOpenIntakeClaw()
@@ -158,10 +165,10 @@ public abstract class AutoCommandBase extends LinearOpMode {
 
             slide.autoGrabCommand3A(),
             new InstantCommand(slide::autoForwardSlideExtension),
-            new WaitCommand(slideServoResponseTime),
+            new WaitCommand(slideRetractFar),
             slide.autoGrabCommand3B(),
             new InstantCommand(slide::autoBackSlideExtension),
-            new WaitCommand(slideServoResponseTime),
+            new WaitCommand(slideRetractFar),
             liftClaw.closeClawCommand(),
             new WaitCommand(handoffTimeout),
             slide.autoOpenIntakeClaw()
@@ -183,6 +190,55 @@ public abstract class AutoCommandBase extends LinearOpMode {
   }
 
   /**
+   * Follow a trajectory
+   * @param toFollow The trajectory to follow
+   * @return The command to follow
+   */
+  protected Command drive(TrajectorySequence toFollow) {
+    return new AutoDriveCommand(drive, toFollow);
+  }
+
+  private static final BooleanArea FalseArea = new BooleanArea(false);
+
+  /**
+   * Follow a trajectory with your custom timeout.
+   * @param toFollow The trajectory to follow
+   * @param admissibleTimeout Your timeout, note that this timeout can only be smaller than ADMISSIBLE_TIMEOUT in SampleMecanumDrive.
+   * @return The command to follow
+   */
+  protected Command drive(TrajectorySequence toFollow, double admissibleTimeout){
+    return drive(toFollow, admissibleTimeout, FalseArea);
+  }
+
+  /**
+   * Follow a trajectory with your custom finish location.
+   * @param toFollow The trajectory to follow
+   * @param finishAt The area in which can be considered as finished
+   * @return The command to follow
+   * @apiNote ADMISSIBLE_TIMEOUT are also applied here, so in some case even it doesn't goes to finishAt it will stop.
+   */
+  protected Command drive(TrajectorySequence toFollow, PoseArea finishAt){
+    return drive(toFollow, Double.MAX_VALUE, finishAt);
+  }
+
+  /**
+   * Follow a trajectory, ends at either at your custom finish location or the timeout has expired.
+   * @param toFollow The trajectory to follow
+   * @param admissibleTimeout Your timeout, note that this timeout can only be smaller than ADMISSIBLE_TIMEOUT in SampleMecanumDrive.
+   * @param finishAt The area in which can be considered as finished
+   * @return The command to follow
+   * @see #drive(TrajectorySequence, PoseArea)
+   * @see #drive(TrajectorySequence, double)
+   */
+  protected Command drive(TrajectorySequence toFollow, double admissibleTimeout, PoseArea finishAt){
+    return new ParallelRaceGroup(
+            drive(toFollow),
+            new WaitCommand((long)((toFollow.duration()+admissibleTimeout)*1000)),
+            new WaitUntilCommand(() -> finishAt.covers(drive.getPoseEstimate()))
+    );
+  }
+
+  /**
    * The cycle to hang specimen from observation zone grab to hang complete and stow lift
    * @param toChamberSequence The trajectory to follow to move robot to chamber
    * @param chamberToGrab The trajectory to follow to move robot back to grab position to grab the next specimen
@@ -193,11 +249,11 @@ public abstract class AutoCommandBase extends LinearOpMode {
     return new SequentialCommandGroup(
             liftClaw.closeClawCommand(),
 
-            new AutoDriveCommand(drive, toChamberSequence).raceWith(new WaitCommand((long)(toChamberSequence.duration()*1000))) // No auto collaborate needed
+            drive(toChamberSequence, 0/*, new RectangularArea(new Vector2d(0, -24), 26.5, 2)*/) // No auto collaborate needed
                     .alongWith(new WaitCommand(Grab2PreHangDelay).andThen(toPreHang()))
                     .alongWith(new WaitCommand((long)(toChamberSequence.duration()*1000)+ChamberUpOffsetMs).andThen(upToChamber())),
 
-            new AutoDriveCommand(drive, chamberToGrab)
+            drive(chamberToGrab, 1)
                     .alongWith(chamberToGrab())
     );
   }

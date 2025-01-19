@@ -38,13 +38,13 @@ public class AlphaSlide extends MotorPIDSlideSubsystem{
   public static long waitGrabTimeout = 500;
   public static long waitGrabTimeout3 = 700;
 
-  public static long slideRetractFar = 600;
-  public static long slideRetractNear = 200;
+  public static long slideRetractFar = currentRobot == DriveConstants.RobotType.ALPHA?500:350;
+  public static long slideRetractNear = 150;
 
   private static double turnAngleDeg = 0;
   private TurnServo turnServo = TurnServo.DEG_0;
 
-  public static long grabTimeout = 100;
+  public static long grabTimeout = 50;
 
   @Setter @Getter private Goal goal = Goal.STOW;
 //  private boolean isIntakeClawOpen = false;
@@ -120,8 +120,8 @@ public class AlphaSlide extends MotorPIDSlideSubsystem{
     return new SequentialCommandGroup(
         new InstantCommand(() -> goal = Goal.HANDOFF),
         setTurnServoPosCommand(TurnServo.DEG_0, aimCommand_wristTurn2ArmDelayMs).alongWith(
-                  setServoPosCommand(wristServo, Goal.HANDOFF.wristPos, 200),
-                  setServoPosCommand(slideArmServo, Goal.HANDOFF.slideArmPos, 200)
+                  setServoPosCommand(wristServo, Goal.HANDOFF.wristPos, 100),
+                  setServoPosCommand(slideArmServo, Goal.HANDOFF.slideArmPos, 100)
         ),
         new ConditionalCommand(
                 new InstantCommand(() -> slideExtensionVal = Goal.HANDOFF.slideExtension).andThen(new WaitCommand(slideRetractFar)),
@@ -176,7 +176,7 @@ public class AlphaSlide extends MotorPIDSlideSubsystem{
 
 
   public void initialize() {
-    slideArmServo.setPosition(Goal.AIM.slideArmPos);
+    slideArmServo.setPosition(Goal.HANDOFF.slideArmPos);
     if(currentRobot== DriveConstants.RobotType.DELTA){
       ((MotorServo)slideRightServo).resetEncoder();
     }
@@ -246,7 +246,7 @@ public class AlphaSlide extends MotorPIDSlideSubsystem{
 
   public enum Goal {
     STOW(-1,                currentRobot==DriveConstants.RobotType.ALPHA?0.4:0.255,  currentRobot==DriveConstants.RobotType.ALPHA?0.39:0.55, 0.4,          currentRobot==DriveConstants.RobotType.ALPHA?0.2:0.35),
-    AIM(slideExtensionVal,  currentRobot==DriveConstants.RobotType.ALPHA?0.35:0.63,  currentRobot==DriveConstants.RobotType.ALPHA?0.75:0.27, turnAngleDeg, currentRobot==DriveConstants.RobotType.ALPHA?0.2:0.35),
+    AIM(slideExtensionVal,  currentRobot==DriveConstants.RobotType.ALPHA?0.4:0.63,  currentRobot==DriveConstants.RobotType.ALPHA?0.75:0.27, turnAngleDeg, currentRobot==DriveConstants.RobotType.ALPHA?0.2:0.35),
     GRAB(slideExtensionVal, slideArmServo_Down                                    ,  currentRobot==DriveConstants.RobotType.ALPHA?0.75:0.27, turnAngleDeg, currentRobot==DriveConstants.RobotType.ALPHA?0.635:0.727),
     HANDOFF(0.21,           currentRobot==DriveConstants.RobotType.ALPHA?0.13:0.185, currentRobot==DriveConstants.RobotType.ALPHA?0.39:0.67,  0.4,          currentRobot==DriveConstants.RobotType.ALPHA?0.635:0.35);
     private final double slideExtension;
