@@ -29,7 +29,7 @@ public class DriveConstants {
   public static String android_id = FtcRobotControllerActivity.getAndroidId();
 
 
-  public static final RobotType currentRobot = RobotType.DELTA;
+  public static final RobotType currentRobot = RobotType.ALPHA;
 
   public enum RobotType {
     ALPHA,
