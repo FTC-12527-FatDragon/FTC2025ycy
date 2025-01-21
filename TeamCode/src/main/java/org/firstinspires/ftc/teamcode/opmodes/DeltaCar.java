@@ -25,7 +25,7 @@ import org.firstinspires.ftc.teamcode.subsystems.drivetrain.SampleMecanumDrive;
 import org.firstinspires.ftc.teamcode.utils.FunctionalButton;
 import static org.firstinspires.ftc.teamcode.subsystems.drivetrain.DriveConstants.currentRobot;
 
-@TeleOp(name = "DeltaYCYTeleop")
+@TeleOp(name = "DeltaHALTeleop")
 public class DeltaCar extends CommandOpMode {
     private GamepadEx gamepadEx1;
     private Lift lift;
