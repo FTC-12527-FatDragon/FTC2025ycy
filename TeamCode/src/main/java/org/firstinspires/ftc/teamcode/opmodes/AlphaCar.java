@@ -82,18 +82,21 @@ public class AlphaCar extends CommandOpMode {
             new ConditionalCommand(
                     liftClaw.openClawCommand(),
                     new SequentialCommandGroup(
-                        new ConditionalCommand(
-                            new InstantCommand(() -> slide.slideArmDown())
-                                .andThen(new WaitCommand(100))
-                                .andThen(new InstantCommand(() -> slide.setGoal(AlphaSlide.Goal.AIM))),
-                            new InstantCommand(),
-                            () -> lift.getGoal() == Lift.Goal.HANG),
-                        liftClaw.foldLiftArmCommand(),
+                        liftClaw.openClawCommand(),
+                        new ParallelCommandGroup(
+                            new ConditionalCommand(
+                                    new InstantCommand(() -> slide.slideArmDown())
+                                            .andThen(new WaitCommand(100))
+                                            .andThen(new InstantCommand(() -> slide.setGoal(AlphaSlide.Goal.AIM))),
+                                    new InstantCommand(),
+                                    () -> lift.getGoal() == Lift.Goal.HANG),
+                            liftClaw.foldLiftArmCommand()
+                        ),
                         new InstantCommand(liftClaw::stowWrist),
                         new WaitCommand(100),
                         lift.setGoalCommand(Lift.Goal.STOW, false),
                         new InstantCommand(() -> isPureHandoffComplete = false)),
-                        liftClaw::getLiftClawPos
+                        () -> false//liftClaw::getLiftClawPos
             ));
 
 

@@ -114,7 +114,8 @@ public class Chamber1Plus4 extends AutoCommandBase {
         TrajectorySequence grabSample32Observation2Grab = drive.trajectorySequenceBuilder(grabSample22Observation2Sample3.end())
                 .lineToLinearHeading(new Pose2d(36.92, -52.15, Math.toRadians(-25.39)))
                 .UNSTABLE_addTemporalMarkerOffset(GrabCycleReleaseOffsetSec, () -> schedule(slide.aimCommand().andThen(new InstantCommand(() -> slide.autoBackSlideExtension()))))
-                .splineToLinearHeading(grab.toPose2d(), Math.toRadians(-90), getVelocityConstraint(25, MAX_ANG_VEL, TRACK_WIDTH), SampleMecanumDrive.getACCEL_CONSTRAINT())
+                .setVelConstraint(getVelocityConstraint(35, MAX_ANG_VEL, TRACK_WIDTH))
+                .splineToLinearHeading(grab.toPose2d(), Math.toRadians(-90))
                 .build();
 
 

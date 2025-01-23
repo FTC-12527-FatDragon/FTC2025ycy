@@ -428,12 +428,12 @@ public class AlphaSlide extends MotorPIDSlideSubsystem{
         }
       }
 
-      telemetry.addData("Current State", goal);
-      telemetry.addData("Bur Gemen", goal == Goal.HANDOFF);
-      telemetry.addData("Claw Position", intakeClawServo.getPosition());
-      telemetry.addData("Slide Extension", slideExtensionVal);
-      telemetry.addData("Turn Angle", turnAngleDeg);
-      telemetry.addData("SLideServo Position", slideRightServo.getPosition());
+      telemetry.addData("Slide.Current State", goal);
+      telemetry.addData("Slide.Current State.Is at handoff", goal == Goal.HANDOFF);
+      telemetry.addData("Slide.Claw Position", intakeClawServo.getPosition());
+      telemetry.addData("Slide.Extension", slideExtensionVal);
+      telemetry.addData("Slide.Turn Angle", turnAngleDeg);
+      telemetry.addData("Slide.Servo Position", slideRightServo.getPosition());
     }
   }
 }
