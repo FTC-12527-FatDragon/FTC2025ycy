@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.opmodes.autos;
 
+import static org.firstinspires.ftc.teamcode.subsystems.AlphaSlide.slideRetractAuto;
 import static org.firstinspires.ftc.teamcode.subsystems.AlphaSlide.slideRetractFar;
 
 import com.acmerobotics.dashboard.FtcDashboard;
@@ -117,6 +118,13 @@ public abstract class AutoCommandBase extends LinearOpMode {
         new InstantCommand(slide::initialize));
   }
 
+  public Command endClimbCommand() {
+    return new ParallelCommandGroup(
+         new InstantCommand(liftClaw::climbArm),
+         new InstantCommand(liftClaw::basketWrist)
+    );
+  }
+
 
   public Command liftToBasket() {
     return new SequentialCommandGroup(
@@ -153,7 +161,7 @@ public abstract class AutoCommandBase extends LinearOpMode {
             new WaitCommand(slideRetractFar),
             slide.autoGrabCommand(),
             new InstantCommand(slide::autoBackSlideExtension),
-            new WaitCommand(slideRetractFar),
+            new WaitCommand(slideRetractAuto),
             liftClaw.closeClawCommand(),
             new WaitCommand(handoffTimeout),
             slide.autoOpenIntakeClaw()
@@ -167,7 +175,7 @@ public abstract class AutoCommandBase extends LinearOpMode {
             new WaitCommand(slideRetractFar),
             slide.autoGrabCommand3B(),
             new InstantCommand(slide::autoBackSlideExtension),
-            new WaitCommand(slideRetractFar),
+            new WaitCommand(slideRetractAuto),
             liftClaw.closeClawCommand(),
             new WaitCommand(handoffTimeout),
             slide.autoOpenIntakeClaw()

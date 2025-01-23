@@ -35,11 +35,12 @@ public class AlphaSlide extends MotorPIDSlideSubsystem{
   private boolean hasGamepiece = false;
   private static double slideExtensionVal = SlideServo.BACK.extensionVal;
 
-  public static long waitGrabTimeout = 500;
-  public static long waitGrabTimeout3 = 700;
+  public static long waitGrabTimeout = 300;
+  public static long waitGrabTimeout3 = 400;
 
-  public static long slideRetractFar = currentRobot == DriveConstants.RobotType.ALPHA?500:400;
+  public static long slideRetractFar = currentRobot == DriveConstants.RobotType.ALPHA ? 500 : 400;
   public static long slideRetractNear = 150;
+  public static long slideRetractAuto = 500;
 
   private static double turnAngleDeg = 0;
   private TurnServo turnServo = TurnServo.DEG_0;
