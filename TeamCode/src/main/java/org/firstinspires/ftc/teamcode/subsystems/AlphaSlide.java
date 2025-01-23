@@ -177,7 +177,7 @@ public class AlphaSlide extends MotorPIDSlideSubsystem{
 
 
   public void initialize() {
-    slideArmServo.setPosition(Goal.HANDOFF.slideArmPos);
+    slideArmServo.setPosition(Goal.STOW.slideArmPos);
     if(currentRobot== DriveConstants.RobotType.DELTA){
       ((MotorServo)slideRightServo).resetEncoder();
     }
@@ -423,7 +423,9 @@ public class AlphaSlide extends MotorPIDSlideSubsystem{
         slideRightServo.setPosition(Range.clip(slideExtensionVal, 0, 1));
       else {
         slideRightServo.setPosition(slideExtensionVal);
-        ((MotorServo) slideRightServo).update();
+        if(!isResetting){
+          ((MotorServo) slideRightServo).update();
+        }
       }
 
       telemetry.addData("Current State", goal);
