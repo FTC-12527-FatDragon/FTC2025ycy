@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.opmodes.autos;
 
+import static org.firstinspires.ftc.teamcode.subsystems.AlphaLiftClaw.LiftArm_Handoff2BackwardGrabDelay;
 import static org.firstinspires.ftc.teamcode.subsystems.AlphaSlide.slideRetractAuto;
 import static org.firstinspires.ftc.teamcode.subsystems.AlphaSlide.slideRetractFar;
 
@@ -102,9 +103,8 @@ public abstract class AutoCommandBase extends LinearOpMode {
 
   public static Command chamberToGrab(Lift lift, AlphaLiftClaw liftClaw) {
     return new ParallelCommandGroup(
-            liftClaw.openClawCommand(),
             new InstantCommand(liftClaw::grabWrist),
-            new InstantCommand(liftClaw::grabLiftArm),
+            new InstantCommand(liftClaw::grabLiftArm).andThen(new WaitCommand(LiftArm_Handoff2BackwardGrabDelay)).andThen(liftClaw.openClawCommand()),
             lift.setGoalCommand(Lift.Goal.GRAB, true)
     );
   }

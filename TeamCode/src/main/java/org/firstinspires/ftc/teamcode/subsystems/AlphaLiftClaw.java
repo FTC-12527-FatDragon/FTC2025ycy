@@ -28,6 +28,7 @@ public class AlphaLiftClaw extends SubsystemBase {
 
 
   public static long LiftClaw_SwitchDelay = 50;
+  public static long LiftArm_Handoff2BackwardGrabDelay = 500;
 
   public AlphaLiftClaw(final HardwareMap hardwareMap, Telemetry telemetry) {
     liftArmServo = hardwareMap.get(Servo.class, "liftArmServo"); // 0.3 Up 0.7 Down
