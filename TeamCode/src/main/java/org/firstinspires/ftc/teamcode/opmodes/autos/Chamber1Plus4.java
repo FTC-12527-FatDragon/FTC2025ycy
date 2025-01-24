@@ -138,6 +138,10 @@ public class Chamber1Plus4 extends AutoCommandBase {
 //                .lineToConstantHeading(grab.toVector2d())
                 .build();
 
+        TrajectorySequence chamberToGrabFully = drive.trajectorySequenceBuilder(chamber3.toPose2d())
+                .lineToConstantHeading(grab.toVector2d())
+                .build();
+
 
 
 
@@ -145,22 +149,26 @@ public class Chamber1Plus4 extends AutoCommandBase {
         TrajectorySequence grabToChamber1 =
                 drive
                         .trajectorySequenceBuilder(grab.toPose2d())
+                        .setAccelConstraint(getAccelerationConstraint(40))
                         .lineToLinearHeading(chamber1.toPose2d())
                         .build(); // grab to chamber1
         TrajectorySequence grabToChamber2 =
                 drive
                         .trajectorySequenceBuilder(grab.toPose2d())
+                        .setAccelConstraint(getAccelerationConstraint(40))
                         .lineToLinearHeading(chamber2.toPose2d())
                         .build(); // grab to chamber2
         TrajectorySequence grabToChamber3 =
                 drive
                         .trajectorySequenceBuilder(grab.toPose2d())
+                        .setAccelConstraint(getAccelerationConstraint(40))
                         .lineToLinearHeading(chamber3.toPose2d())
                         .build(); // grab to chamber3
 
         TrajectorySequence grabToChamber4 =
                 drive
                         .trajectorySequenceBuilder(grab.toPose2d())
+                        .setAccelConstraint(getAccelerationConstraint(50))
                         .lineToLinearHeading(chamber4.toPose2d())
                         .build();
 
@@ -204,7 +212,7 @@ public class Chamber1Plus4 extends AutoCommandBase {
                 observationToChamberCycle(grabToChamber4, chamberToGrab, 0).alongWith(slide.aimCommand(AlphaSlide.TurnServo.DEG_0)), // To avoid claw pieces hitting barrier and damaging servo
                 observationToChamberCycle(grabToChamber3, chamberToGrab, 0),
                 observationToChamberCycle(grabToChamber2, chamberToGrab, 0),
-                observationToChamberCycle(grabToChamber1, chamberToGrab, 0)
+                observationToChamberCycle(grabToChamber1, chamberToGrabFully, 0)
         );
     }
 }

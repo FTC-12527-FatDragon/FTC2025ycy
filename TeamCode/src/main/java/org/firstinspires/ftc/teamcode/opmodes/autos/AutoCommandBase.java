@@ -38,7 +38,7 @@ public abstract class AutoCommandBase extends LinearOpMode {
   public static boolean telemetryInDashboard = true;
 
   public static long Grab2PreHangDelay = 0;
-  public static long ChamberUpOffsetMs = -150;
+  public static long ChamberUpOffsetMs = -100;
 
   public static int TelemetryTransmissionIntervalMs = 50;
 
@@ -98,7 +98,7 @@ public abstract class AutoCommandBase extends LinearOpMode {
 //  }
 
   public Command chamberToGrab() {
-    return chamberToGrab(lift, liftClaw);
+    return chamberToGrab(lift, liftClaw).alongWith(liftClaw.openClawCommand()); // To override behavior used in teleop.
   }
 
   public static Command chamberToGrab(Lift lift, AlphaLiftClaw liftClaw) {
