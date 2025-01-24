@@ -37,7 +37,7 @@ public abstract class AutoCommandBase extends LinearOpMode {
   public static boolean telemetryInDashboard = true;
 
   public static long Grab2PreHangDelay = 0;
-  public static long ChamberUpOffsetMs = -100;
+  public static long ChamberUpOffsetMs = -200;
 
   public static int TelemetryTransmissionIntervalMs = 50;
 
@@ -73,7 +73,7 @@ public abstract class AutoCommandBase extends LinearOpMode {
     return new SequentialCommandGroup(
         new InstantCommand(liftClaw::chamberWrist),
         new InstantCommand(liftClaw::chamberLiftArm),
-        lift.setGoalCommand(Lift.Goal.PRE_HANG)
+        new WaitCommand(100).andThen(lift.setGoalCommand(Lift.Goal.PRE_HANG))
     );
   }
 
