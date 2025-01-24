@@ -132,7 +132,7 @@ public class Chamber1Plus4 extends AutoCommandBase {
 //                .lineToConstantHeading(chamber3.toVector2d().plus(grabOffsetByChamber3.times(0.9)))
 //                .setVelConstraint(getVelocityConstraint(10, MAX_ANG_VEL, TRACK_WIDTH))
 //                .lineToConstantHeading(chamber3.toVector2d().plus(new Vector2d(0, -1)))
-                .lineToConstantHeading(chamber3.toVector2d().plus(grabOffsetByChamber3.times(0.9)))
+                .lineToConstantHeading(chamber3.toVector2d().plus(grabOffsetByChamber3.times(0.95)))
 //                .setAccelConstraint(getAccelerationConstraint(35))
 //                .setVelConstraint(getVelocityConstraint(10, MAX_ANG_VEL, TRACK_WIDTH))
 //                .lineToConstantHeading(grab.toVector2d())
@@ -209,10 +209,10 @@ public class Chamber1Plus4 extends AutoCommandBase {
 //                new AutoDriveCommand(drive, observationToGrab).alongWith(),
                 //.alongWith(new WaitCommand(500).deadlineWith(lift.manualResetCommand()))
 
-                observationToChamberCycle(grabToChamber4, chamberToGrab, 0).alongWith(slide.aimCommand(AlphaSlide.TurnServo.DEG_0)), // To avoid claw pieces hitting barrier and damaging servo
-                observationToChamberCycle(grabToChamber3, chamberToGrab, 0),
-                observationToChamberCycle(grabToChamber2, chamberToGrab, 0),
-                observationToChamberCycle(grabToChamber1, chamberToGrabFully, 0)
+                observationToChamberCycle(grabToChamber4, chamberToGrab, -0.3).alongWith(slide.aimCommand(AlphaSlide.TurnServo.DEG_0)), // To avoid claw pieces hitting barrier and damaging servo
+                observationToChamberCycle(grabToChamber3, chamberToGrab, -0.3),
+                observationToChamberCycle(grabToChamber2, chamberToGrab, -0.3),
+                observationToChamberCycle(grabToChamber1, chamberToGrabFully, -0.3)
         );
     }
 }
