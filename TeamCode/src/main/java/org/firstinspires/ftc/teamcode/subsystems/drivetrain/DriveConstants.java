@@ -13,6 +13,9 @@ import org.firstinspires.ftc.teamcode.lib.Units;
 import org.firstinspires.ftc.teamcode.lib.gobilda.GoBildaPinpointDriver;
 import org.firstinspires.ftc.teamcode.utils.Translation2dHelperClass;
 
+import lombok.Getter;
+import lombok.Setter;
+
 /*
  * Constants shared between multiple drive types.
  *
@@ -27,6 +30,8 @@ import org.firstinspires.ftc.teamcode.utils.Translation2dHelperClass;
 @Config
 public class DriveConstants {
   public static String android_id = FtcRobotControllerActivity.getAndroidId();
+
+  @Setter @Getter private static Pose2d robotTeleOpStartPose = new Pose2d();
 
 
   public static final RobotType currentRobot = RobotType.ALPHA;

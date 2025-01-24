@@ -5,7 +5,6 @@ import static org.firstinspires.ftc.teamcode.subsystems.AlphaSlide.slideRetractF
 
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
-import com.acmerobotics.roadrunner.geometry.Vector2d;
 import com.arcrobotics.ftclib.command.Command;
 import com.arcrobotics.ftclib.command.CommandScheduler;
 import com.arcrobotics.ftclib.command.InstantCommand;
@@ -21,6 +20,7 @@ import org.firstinspires.ftc.teamcode.lib.roadrunner.trajectorysequence.Trajecto
 import org.firstinspires.ftc.teamcode.subsystems.AlphaLiftClaw;
 import org.firstinspires.ftc.teamcode.subsystems.AlphaSlide;
 import org.firstinspires.ftc.teamcode.subsystems.Lift;
+import org.firstinspires.ftc.teamcode.subsystems.drivetrain.DriveConstants;
 import org.firstinspires.ftc.teamcode.subsystems.drivetrain.SampleMecanumDrive;
 import org.firstinspires.ftc.teamcode.utils.ParallelRaceGroup;
 import org.firstinspires.ftc.teamcode.utils.RoadRunnerPose.BooleanArea;
@@ -313,6 +313,8 @@ public abstract class AutoCommandBase extends LinearOpMode {
     while (opModeIsActive() && !isStopRequested()) {
       periodic();
     }
+
+    DriveConstants.setRobotTeleOpStartPose(drive.getPoseEstimate());
 
     CommandScheduler.getInstance().reset();
   }
