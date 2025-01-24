@@ -37,7 +37,7 @@ public abstract class AutoCommandBase extends LinearOpMode {
   public static boolean telemetryInDashboard = true;
 
   public static long Grab2PreHangDelay = 0;
-  public static long ChamberUpOffsetMs = -200;
+  public static long ChamberUpOffsetMs = -150;
 
   public static int TelemetryTransmissionIntervalMs = 50;
 
@@ -249,9 +249,10 @@ public abstract class AutoCommandBase extends LinearOpMode {
    * The cycle to hang specimen from observation zone grab to hang complete and stow lift
    * @param toChamberSequence The trajectory to follow to move robot to chamber
    * @param chamberToGrab The trajectory to follow to move robot back to grab position to grab the next specimen
+   * @param chamberToGrabAdmissibleTimeout Admissible timeout of chamberToGrab
    * @return The command running these actions
    */
-  public Command observationToChamberCycle(TrajectorySequence toChamberSequence, TrajectorySequence chamberToGrab){
+  public Command observationToChamberCycle(TrajectorySequence toChamberSequence, TrajectorySequence chamberToGrab, double chamberToGrabAdmissibleTimeout){
     // NOTE: This function was shared by Chamber 1+3 and Chamber 1+4, be careful when modifying the code.
     return new SequentialCommandGroup(
             liftClaw.closeClawCommand(),
@@ -260,9 +261,16 @@ public abstract class AutoCommandBase extends LinearOpMode {
                     .alongWith(new WaitCommand(Grab2PreHangDelay).andThen(toPreHang()))
                     .alongWith(new WaitCommand((long)(toChamberSequence.duration()*1000)+ChamberUpOffsetMs).andThen(upToChamber())),
 
-            drive(chamberToGrab, 1)
+            drive(chamberToGrab, chamberToGrabAdmissibleTimeout)
                     .alongWith(chamberToGrab())
     );
+  }
+
+  /**
+   * @see #observationToChamberCycle(TrajectorySequence, TrajectorySequence, double)
+   */
+  public Command observationToChamberCycle(TrajectorySequence toChamberSequence, TrajectorySequence chamberToGrab){
+    return observationToChamberCycle(toChamberSequence, chamberToGrab, 1);
   }
 
   /**
