@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.subsystems;
 import com.arcrobotics.ftclib.command.SubsystemBase;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.NormalizedColorSensor;
+import com.qualcomm.robotcore.hardware.NormalizedRGBA;
 
 import org.firstinspires.ftc.vision.opencv.ColorRange;
 
@@ -17,6 +18,11 @@ public class ColorSensor extends SubsystemBase {
     public ColorSensor(HardwareMap hardwareMap, String hardwareName, float gain) {
         sensor = hardwareMap.get(NormalizedColorSensor.class, hardwareName);
         sensor.setGain(gain);
+        NormalizedRGBA returnValue = sensor.getNormalizedColors();
+
+    }
+    public NormalizedRGBA getColor(){
+        return sensor.getNormalizedColors();
     }
     public boolean objectNear() {
         return sensor.getNormalizedColors().alpha > 0.5;

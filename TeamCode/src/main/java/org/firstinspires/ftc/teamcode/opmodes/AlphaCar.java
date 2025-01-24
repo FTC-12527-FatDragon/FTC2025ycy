@@ -15,6 +15,8 @@ import com.arcrobotics.ftclib.command.WaitUntilCommand;
 import com.arcrobotics.ftclib.gamepad.GamepadEx;
 import com.arcrobotics.ftclib.gamepad.GamepadKeys;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.NormalizedRGBA;
+
 import java.util.HashMap;
 import java.util.function.Supplier;
 import org.firstinspires.ftc.teamcode.commands.TeleopDriveCommand;
@@ -22,6 +24,7 @@ import org.firstinspires.ftc.teamcode.lib.roadrunner.drive.opmode.LocalizationTe
 import org.firstinspires.ftc.teamcode.opmodes.autos.AutoCommandBase;
 import org.firstinspires.ftc.teamcode.subsystems.AlphaLiftClaw;
 import org.firstinspires.ftc.teamcode.subsystems.AlphaSlide;
+import org.firstinspires.ftc.teamcode.subsystems.ColorSensor;
 import org.firstinspires.ftc.teamcode.subsystems.Lift;
 import org.firstinspires.ftc.teamcode.subsystems.drivetrain.DriveConstants;
 import org.firstinspires.ftc.teamcode.subsystems.drivetrain.SampleMecanumDrive;
@@ -30,6 +33,7 @@ import static org.firstinspires.ftc.teamcode.subsystems.drivetrain.DriveConstant
 
 @TeleOp(name = "AlphaYCYTeleop")
 public class AlphaCar extends CommandOpMode {
+  private ColorSensor intakeClawSensor;
   private GamepadEx gamepadEx1;
   private Lift lift;
   private AlphaLiftClaw liftClaw;
@@ -47,10 +51,11 @@ public class AlphaCar extends CommandOpMode {
     liftClaw = new AlphaLiftClaw(hardwareMap, telemetry);
     slide = new AlphaSlide(hardwareMap, telemetry);
     drive = new SampleMecanumDrive(hardwareMap);
-
+    if (currentRobot==DriveConstants.RobotType.DELTA) {
+      intakeClawSensor = new ColorSensor(hardwareMap, "intakeClawSensor");
+    }
     slide.initialize();
     liftClaw.initialize();
-
     drive.setPoseEstimate(DriveConstants.getRobotTeleOpStartPose());
 //    lift.setGoal(Lift.Goal.STOW);
 
@@ -272,6 +277,9 @@ public class AlphaCar extends CommandOpMode {
 
   @Override
   public void run() {
+    if (currentRobot==DriveConstants.RobotType.DELTA) {
+      telemetry.addData("blueValue", intakeClawSensor.getColor().blue);
+    }
     CommandScheduler.getInstance().run();
     lift.periodicTest();
     telemetry.update();
