@@ -314,14 +314,12 @@ public class AlphaSlide extends MotorPIDSlideSubsystem{
     slideServo = SlideServo.BACK;
   }
 
-  private final double preHandoffSlideExtendedVal = currentRobot == DriveConstants.RobotType.ALPHA ? 0.25: 400;
-
   public void preHandoffSlideExtension() {
-    slideExtensionVal = preHandoffSlideExtendedVal;
+    slideExtensionVal = SlideServo.PRE_HANDOFF.extensionVal;
   }
 
   public boolean isSlideForward() {
-    return slideExtensionVal > preHandoffSlideExtendedVal;
+    return slideExtensionVal > SlideServo.PRE_HANDOFF.extensionVal;
   }
 
   public void leftTurnServo() {
@@ -402,9 +400,10 @@ public class AlphaSlide extends MotorPIDSlideSubsystem{
   }
 
   public enum SlideServo {
-    FRONT(currentRobot == DriveConstants.RobotType.ALPHA ? 0.42 : 500),
-    MIDDLE(currentRobot == DriveConstants.RobotType.ALPHA ? 0.3 : 250),
-    BACK(currentRobot == DriveConstants.RobotType.ALPHA ? 0.21 : 0);
+    FRONT(currentRobot == DriveConstants.RobotType.ALPHA ? 0.395 : 500),
+    MIDDLE(currentRobot == DriveConstants.RobotType.ALPHA ? 0.275 : 250),
+    PRE_HANDOFF(currentRobot == DriveConstants.RobotType.ALPHA ? 0.225: 400),
+    BACK(currentRobot == DriveConstants.RobotType.ALPHA ? 0.19 : 0);
 
     private double extensionVal;
 
