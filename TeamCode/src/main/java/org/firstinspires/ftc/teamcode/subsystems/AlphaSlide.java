@@ -236,7 +236,7 @@ public class AlphaSlide extends MotorPIDSlideSubsystem{
   }
 
   public boolean isSlideMotorZeroed() {
-    return MathUtils.isNear(0, getCurrentPosition(), 0.2);
+    return MathUtils.isNear(0, getCurrentPosition(), 10);
   }
 
   @Override
