@@ -18,6 +18,7 @@ import lombok.Getter;
 import lombok.Setter;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.subsystems.drivetrain.DriveConstants;
+import org.firstinspires.ftc.teamcode.utils.MathUtils;
 import org.firstinspires.ftc.teamcode.utils.MotorServo;
 
 @Config
@@ -234,6 +235,10 @@ public class AlphaSlide extends MotorPIDSlideSubsystem{
     return (long)((MotorServo)slideRightServo).getPosition();
   }
 
+  public boolean isSlideMotorZeroed() {
+    return MathUtils.isNear(0, getCurrentPosition(), 0.2);
+  }
+
   @Override
   double getResetPower() {
     return -1;
@@ -249,7 +254,7 @@ public class AlphaSlide extends MotorPIDSlideSubsystem{
     STOW(-1,                currentRobot==DriveConstants.RobotType.ALPHA?0.4:0.255,  currentRobot==DriveConstants.RobotType.ALPHA?0.39:0.55, 0.4,          currentRobot==DriveConstants.RobotType.ALPHA?0.2:0.35),
     AIM(slideExtensionVal,  currentRobot==DriveConstants.RobotType.ALPHA?0.4:0.63,  currentRobot==DriveConstants.RobotType.ALPHA?0.75:0.27, turnAngleDeg, currentRobot==DriveConstants.RobotType.ALPHA?0.2:0.35),
     GRAB(slideExtensionVal, slideArmServo_Down                                    ,  currentRobot==DriveConstants.RobotType.ALPHA?0.75:0.27, turnAngleDeg, currentRobot==DriveConstants.RobotType.ALPHA?0.635:0.727),
-    HANDOFF(-1,           currentRobot==DriveConstants.RobotType.ALPHA?0.13:0.185, currentRobot==DriveConstants.RobotType.ALPHA?0.39:0.67,  0.4,          currentRobot==DriveConstants.RobotType.ALPHA?0.635:0.35);
+    HANDOFF(-1,           currentRobot==DriveConstants.RobotType.ALPHA?0.13:0.33, currentRobot==DriveConstants.RobotType.ALPHA?0.39:0.75,  0.4,          currentRobot==DriveConstants.RobotType.ALPHA?0.635:0.35);
     private final double slideExtension;
     private final double slideArmPos;
     private final double wristPos;

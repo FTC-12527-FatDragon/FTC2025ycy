@@ -243,7 +243,7 @@ public class AlphaCar extends CommandOpMode {
             () ->
                 gamepadEx1.getButton(GamepadKeys.Button.RIGHT_STICK_BUTTON)
                     && lift.getGoal() == Lift.Goal.STOW
-                        && (currentRobot == DriveConstants.RobotType.ALPHA ? true : slide.getSlideServo() == AlphaSlide.SlideServo.BACK))
+                        && (currentRobot == DriveConstants.RobotType.ALPHA ? true : (slide.getSlideServo() == AlphaSlide.SlideServo.BACK) || (slide.getSlideServo() == AlphaSlide.SlideServo.HANDOFF)) )
         .whenHeld(
                 currentRobot == DriveConstants.RobotType.ALPHA ?
                 lift.manualResetCommand() :
