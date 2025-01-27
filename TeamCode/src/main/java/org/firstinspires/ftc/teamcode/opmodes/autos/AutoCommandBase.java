@@ -1,11 +1,11 @@
 package org.firstinspires.ftc.teamcode.opmodes.autos;
 
+import static org.firstinspires.ftc.teamcode.subsystems.AlphaLiftClaw.LiftArm_Handoff2BackwardGrabDelay;
 import static org.firstinspires.ftc.teamcode.subsystems.AlphaSlide.slideRetractAuto;
 import static org.firstinspires.ftc.teamcode.subsystems.AlphaSlide.slideRetractFar;
 
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
-import com.acmerobotics.roadrunner.geometry.Vector2d;
 import com.arcrobotics.ftclib.command.Command;
 import com.arcrobotics.ftclib.command.CommandScheduler;
 import com.arcrobotics.ftclib.command.InstantCommand;
@@ -21,6 +21,7 @@ import org.firstinspires.ftc.teamcode.lib.roadrunner.trajectorysequence.Trajecto
 import org.firstinspires.ftc.teamcode.subsystems.AlphaLiftClaw;
 import org.firstinspires.ftc.teamcode.subsystems.AlphaSlide;
 import org.firstinspires.ftc.teamcode.subsystems.Lift;
+import org.firstinspires.ftc.teamcode.subsystems.drivetrain.DriveConstants;
 import org.firstinspires.ftc.teamcode.subsystems.drivetrain.SampleMecanumDrive;
 import org.firstinspires.ftc.teamcode.utils.ParallelRaceGroup;
 import org.firstinspires.ftc.teamcode.utils.RoadRunnerPose.BooleanArea;
@@ -73,7 +74,7 @@ public abstract class AutoCommandBase extends LinearOpMode {
     return new SequentialCommandGroup(
         new InstantCommand(liftClaw::chamberWrist),
         new InstantCommand(liftClaw::chamberLiftArm),
-        lift.setGoalCommand(Lift.Goal.PRE_HANG)
+        new WaitCommand(100).andThen(lift.setGoalCommand(Lift.Goal.PRE_HANG))
     );
   }
 
@@ -97,14 +98,13 @@ public abstract class AutoCommandBase extends LinearOpMode {
 //  }
 
   public Command chamberToGrab() {
-    return chamberToGrab(lift, liftClaw);
+    return chamberToGrab(lift, liftClaw).alongWith(liftClaw.openClawCommand()); // To override behavior used in teleop.
   }
 
   public static Command chamberToGrab(Lift lift, AlphaLiftClaw liftClaw) {
     return new ParallelCommandGroup(
-            liftClaw.openClawCommand(),
             new InstantCommand(liftClaw::grabWrist),
-            new InstantCommand(liftClaw::grabLiftArm),
+            new InstantCommand(liftClaw::grabLiftArm).andThen(new WaitCommand(LiftArm_Handoff2BackwardGrabDelay)).andThen(liftClaw.openClawCommand()),
             lift.setGoalCommand(Lift.Goal.GRAB, true)
     );
   }
@@ -249,9 +249,10 @@ public abstract class AutoCommandBase extends LinearOpMode {
    * The cycle to hang specimen from observation zone grab to hang complete and stow lift
    * @param toChamberSequence The trajectory to follow to move robot to chamber
    * @param chamberToGrab The trajectory to follow to move robot back to grab position to grab the next specimen
+   * @param chamberToGrabAdmissibleTimeout Admissible timeout of chamberToGrab
    * @return The command running these actions
    */
-  public Command observationToChamberCycle(TrajectorySequence toChamberSequence, TrajectorySequence chamberToGrab){
+  public Command observationToChamberCycle(TrajectorySequence toChamberSequence, TrajectorySequence chamberToGrab, double chamberToGrabAdmissibleTimeout){
     // NOTE: This function was shared by Chamber 1+3 and Chamber 1+4, be careful when modifying the code.
     return new SequentialCommandGroup(
             liftClaw.closeClawCommand(),
@@ -260,9 +261,16 @@ public abstract class AutoCommandBase extends LinearOpMode {
                     .alongWith(new WaitCommand(Grab2PreHangDelay).andThen(toPreHang()))
                     .alongWith(new WaitCommand((long)(toChamberSequence.duration()*1000)+ChamberUpOffsetMs).andThen(upToChamber())),
 
-            drive(chamberToGrab, 1)
+            drive(chamberToGrab, chamberToGrabAdmissibleTimeout)
                     .alongWith(chamberToGrab())
     );
+  }
+
+  /**
+   * @see #observationToChamberCycle(TrajectorySequence, TrajectorySequence, double)
+   */
+  public Command observationToChamberCycle(TrajectorySequence toChamberSequence, TrajectorySequence chamberToGrab){
+    return observationToChamberCycle(toChamberSequence, chamberToGrab, 1);
   }
 
   /**
@@ -313,6 +321,8 @@ public abstract class AutoCommandBase extends LinearOpMode {
     while (opModeIsActive() && !isStopRequested()) {
       periodic();
     }
+
+    DriveConstants.setRobotTeleOpStartPose(drive.getPoseEstimate());
 
     CommandScheduler.getInstance().reset();
   }

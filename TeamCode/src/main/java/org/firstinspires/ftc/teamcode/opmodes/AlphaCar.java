@@ -15,6 +15,8 @@ import com.arcrobotics.ftclib.command.WaitUntilCommand;
 import com.arcrobotics.ftclib.gamepad.GamepadEx;
 import com.arcrobotics.ftclib.gamepad.GamepadKeys;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.NormalizedRGBA;
+
 import java.util.HashMap;
 import java.util.function.Supplier;
 import org.firstinspires.ftc.teamcode.commands.TeleopDriveCommand;
@@ -22,6 +24,7 @@ import org.firstinspires.ftc.teamcode.lib.roadrunner.drive.opmode.LocalizationTe
 import org.firstinspires.ftc.teamcode.opmodes.autos.AutoCommandBase;
 import org.firstinspires.ftc.teamcode.subsystems.AlphaLiftClaw;
 import org.firstinspires.ftc.teamcode.subsystems.AlphaSlide;
+import org.firstinspires.ftc.teamcode.subsystems.ColorSensor;
 import org.firstinspires.ftc.teamcode.subsystems.Lift;
 import org.firstinspires.ftc.teamcode.subsystems.drivetrain.DriveConstants;
 import org.firstinspires.ftc.teamcode.subsystems.drivetrain.SampleMecanumDrive;
@@ -30,6 +33,7 @@ import static org.firstinspires.ftc.teamcode.subsystems.drivetrain.DriveConstant
 
 @TeleOp(name = "AlphaYCYTeleop")
 public class AlphaCar extends CommandOpMode {
+  private ColorSensor intakeClawSensor;
   private GamepadEx gamepadEx1;
   private Lift lift;
   private AlphaLiftClaw liftClaw;
@@ -47,9 +51,12 @@ public class AlphaCar extends CommandOpMode {
     liftClaw = new AlphaLiftClaw(hardwareMap, telemetry);
     slide = new AlphaSlide(hardwareMap, telemetry);
     drive = new SampleMecanumDrive(hardwareMap);
-
+    if (currentRobot==DriveConstants.RobotType.DELTA) {
+      intakeClawSensor = new ColorSensor(hardwareMap, "intakeClawSensor");
+    }
     slide.initialize();
     liftClaw.initialize();
+    drive.setPoseEstimate(DriveConstants.getRobotTeleOpStartPose());
 //    lift.setGoal(Lift.Goal.STOW);
 
     // Teleop Drive Command
@@ -82,18 +89,21 @@ public class AlphaCar extends CommandOpMode {
             new ConditionalCommand(
                     liftClaw.openClawCommand(),
                     new SequentialCommandGroup(
-                        new ConditionalCommand(
-                            new InstantCommand(() -> slide.slideArmDown())
-                                .andThen(new WaitCommand(100))
-                                .andThen(new InstantCommand(() -> slide.setGoal(AlphaSlide.Goal.AIM))),
-                            new InstantCommand(),
-                            () -> lift.getGoal() == Lift.Goal.HANG),
-                        liftClaw.foldLiftArmCommand(),
+                        liftClaw.openClawCommand(),
+                        new ParallelCommandGroup(
+                            new ConditionalCommand(
+                                    new InstantCommand(() -> slide.slideArmDown())
+                                            .andThen(new WaitCommand(100))
+                                            .andThen(new InstantCommand(() -> slide.setGoal(AlphaSlide.Goal.AIM))),
+                                    new InstantCommand(),
+                                    () -> lift.getGoal() == Lift.Goal.HANG),
+                            liftClaw.foldLiftArmCommand()
+                        ),
                         new InstantCommand(liftClaw::stowWrist),
                         new WaitCommand(100),
                         lift.setGoalCommand(Lift.Goal.STOW, false),
                         new InstantCommand(() -> isPureHandoffComplete = false)),
-                        liftClaw::getLiftClawPos
+                        () -> false//liftClaw::getLiftClawPos
             ));
 
 
@@ -233,7 +243,7 @@ public class AlphaCar extends CommandOpMode {
             () ->
                 gamepadEx1.getButton(GamepadKeys.Button.RIGHT_STICK_BUTTON)
                     && lift.getGoal() == Lift.Goal.STOW
-                        && (currentRobot == DriveConstants.RobotType.ALPHA ? true : slide.getSlideServo() == AlphaSlide.SlideServo.BACK))
+                        && (currentRobot == DriveConstants.RobotType.ALPHA ? true : slide.getSlideServo() == (AlphaSlide.SlideServo.BACK) || slide.isSlideMotorZeroed() ) )
         .whenHeld(
                 currentRobot == DriveConstants.RobotType.ALPHA ?
                 lift.manualResetCommand() :
@@ -267,6 +277,9 @@ public class AlphaCar extends CommandOpMode {
 
   @Override
   public void run() {
+    if (currentRobot==DriveConstants.RobotType.DELTA) {
+      telemetry.addData("blueValue", intakeClawSensor.getColor().blue);
+    }
     CommandScheduler.getInstance().run();
     lift.periodicTest();
     telemetry.update();

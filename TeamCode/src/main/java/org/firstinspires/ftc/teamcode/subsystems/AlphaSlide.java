@@ -18,6 +18,7 @@ import lombok.Getter;
 import lombok.Setter;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.subsystems.drivetrain.DriveConstants;
+import org.firstinspires.ftc.teamcode.utils.MathUtils;
 import org.firstinspires.ftc.teamcode.utils.MotorServo;
 
 @Config
@@ -125,8 +126,8 @@ public class AlphaSlide extends MotorPIDSlideSubsystem{
                   setServoPosCommand(slideArmServo, Goal.HANDOFF.slideArmPos, 100)
         ),
         new ConditionalCommand(
-                new InstantCommand(() -> slideExtensionVal = Goal.HANDOFF.slideExtension).andThen(new WaitCommand(slideRetractFar)),
-                new InstantCommand(() -> slideExtensionVal = Goal.HANDOFF.slideExtension).andThen(new WaitCommand(slideRetractNear)),
+                new InstantCommand(() -> slideExtensionVal = SlideServo.HANDOFF.extensionVal).andThen(new WaitCommand(slideRetractFar)),
+                new InstantCommand(() -> slideExtensionVal = SlideServo.HANDOFF.extensionVal).andThen(new WaitCommand(slideRetractNear)),
                 () -> slideExtensionVal >= SlideServo.MIDDLE.extensionVal
         )
     );
@@ -177,7 +178,7 @@ public class AlphaSlide extends MotorPIDSlideSubsystem{
 
 
   public void initialize() {
-    slideArmServo.setPosition(Goal.HANDOFF.slideArmPos);
+    slideArmServo.setPosition(Goal.STOW.slideArmPos);
     if(currentRobot== DriveConstants.RobotType.DELTA){
       ((MotorServo)slideRightServo).resetEncoder();
     }
@@ -234,6 +235,10 @@ public class AlphaSlide extends MotorPIDSlideSubsystem{
     return (long)((MotorServo)slideRightServo).getPosition();
   }
 
+  public boolean isSlideMotorZeroed() {
+    return MathUtils.isNear(0, getCurrentPosition(), 10);
+  }
+
   @Override
   double getResetPower() {
     return -1;
@@ -249,7 +254,7 @@ public class AlphaSlide extends MotorPIDSlideSubsystem{
     STOW(-1,                currentRobot==DriveConstants.RobotType.ALPHA?0.4:0.255,  currentRobot==DriveConstants.RobotType.ALPHA?0.39:0.55, 0.4,          currentRobot==DriveConstants.RobotType.ALPHA?0.2:0.35),
     AIM(slideExtensionVal,  currentRobot==DriveConstants.RobotType.ALPHA?0.4:0.63,  currentRobot==DriveConstants.RobotType.ALPHA?0.75:0.27, turnAngleDeg, currentRobot==DriveConstants.RobotType.ALPHA?0.2:0.35),
     GRAB(slideExtensionVal, slideArmServo_Down                                    ,  currentRobot==DriveConstants.RobotType.ALPHA?0.75:0.27, turnAngleDeg, currentRobot==DriveConstants.RobotType.ALPHA?0.635:0.727),
-    HANDOFF(0.21,           currentRobot==DriveConstants.RobotType.ALPHA?0.13:0.185, currentRobot==DriveConstants.RobotType.ALPHA?0.39:0.67,  0.4,          currentRobot==DriveConstants.RobotType.ALPHA?0.635:0.35);
+    HANDOFF(-1,           currentRobot==DriveConstants.RobotType.ALPHA?0.13:0.33, currentRobot==DriveConstants.RobotType.ALPHA?0.39:0.75,  0.4,          currentRobot==DriveConstants.RobotType.ALPHA?0.635:0.35);
     private final double slideExtension;
     private final double slideArmPos;
     private final double wristPos;
@@ -314,14 +319,12 @@ public class AlphaSlide extends MotorPIDSlideSubsystem{
     slideServo = SlideServo.BACK;
   }
 
-  private final double preHandoffSlideExtendedVal = currentRobot == DriveConstants.RobotType.ALPHA ? 0.25: 400;
-
   public void preHandoffSlideExtension() {
-    slideExtensionVal = preHandoffSlideExtendedVal;
+    slideExtensionVal = SlideServo.PRE_HANDOFF.extensionVal;
   }
 
   public boolean isSlideForward() {
-    return slideExtensionVal > preHandoffSlideExtendedVal;
+    return slideExtensionVal > SlideServo.PRE_HANDOFF.extensionVal;
   }
 
   public void leftTurnServo() {
@@ -402,9 +405,11 @@ public class AlphaSlide extends MotorPIDSlideSubsystem{
   }
 
   public enum SlideServo {
-    FRONT(currentRobot == DriveConstants.RobotType.ALPHA ? 0.42 : 500),
-    MIDDLE(currentRobot == DriveConstants.RobotType.ALPHA ? 0.3 : 250),
-    BACK(currentRobot == DriveConstants.RobotType.ALPHA ? 0.21 : 0);
+    FRONT(currentRobot == DriveConstants.RobotType.ALPHA ? 0.395 : 500),
+    MIDDLE(currentRobot == DriveConstants.RobotType.ALPHA ? 0.275 : 250),
+    PRE_HANDOFF(currentRobot == DriveConstants.RobotType.ALPHA ? 0.225: 400),
+    HANDOFF(0.19),
+    BACK(currentRobot == DriveConstants.RobotType.ALPHA ? 0.19 : 0);
 
     private double extensionVal;
 
@@ -423,15 +428,17 @@ public class AlphaSlide extends MotorPIDSlideSubsystem{
         slideRightServo.setPosition(Range.clip(slideExtensionVal, 0, 1));
       else {
         slideRightServo.setPosition(slideExtensionVal);
-        ((MotorServo) slideRightServo).update();
+        if(!isResetting){
+          ((MotorServo) slideRightServo).update();
+        }
       }
 
-      telemetry.addData("Current State", goal);
-      telemetry.addData("Bur Gemen", goal == Goal.HANDOFF);
-      telemetry.addData("Claw Position", intakeClawServo.getPosition());
-      telemetry.addData("Slide Extension", slideExtensionVal);
-      telemetry.addData("Turn Angle", turnAngleDeg);
-      telemetry.addData("SLideServo Position", slideRightServo.getPosition());
+      telemetry.addData("Slide.Current State", goal);
+      telemetry.addData("Slide.Current State.Is at handoff", goal == Goal.HANDOFF);
+      telemetry.addData("Slide.Claw Position", intakeClawServo.getPosition());
+      telemetry.addData("Slide.Extension", slideExtensionVal);
+      telemetry.addData("Slide.Turn Angle", turnAngleDeg);
+      telemetry.addData("Slide.Servo Position", slideRightServo.getPosition());
     }
   }
 }
