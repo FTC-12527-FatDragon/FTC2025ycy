@@ -46,6 +46,40 @@ public class DeltaCar extends CommandOpMode {
         slide.initialize();
         liftClaw.initialize();
 
+        Command preHang = AutoCommandBase.toPreHang(lift, liftClaw);
+        Command grab = AutoCommandBase.chamberToGrab(lift, liftClaw).alongWith(slide.aimCommand());
+
+        Supplier<Command> stow =
+                () ->
+                        new ConditionalCommand(
+                                new InstantCommand(),
+                                liftClaw.openClawCommand(0)
+                                        .andThen(liftClaw.foldLiftArmCommand(0))
+                                        .alongWith(new InstantCommand(() -> liftClaw.stowWrist()))
+                                        .andThen(lift.setGoalCommand(Lift.Goal.STOW, false))
+                                        .andThen(new InstantCommand(() -> isHangComplete = false)),
+                                () -> !isHangComplete);
+
+        SelectCommand specimenCommands =
+                new SelectCommand(
+                        new HashMap<Object, Command>() {
+                            {
+                                put(Lift.Goal.GRAB, preHang);
+                                put(Lift.Goal.STOW, grab);
+                                put(Lift.Goal.HANG, stow.get());
+                            }
+                        },
+                        () -> lift.getGoal());
+
+        Supplier<Command> handoffCommand =
+                () ->
+                        slide
+                                .handoffCommand()
+                                .alongWith(liftClaw.openClawCommand())
+                                .andThen(liftClaw.closeClawCommand())
+                                .andThen(new InstantCommand(() -> slide.openIntakeClaw()));
+
+        // Drive
         drive.setDefaultCommand(
                 new TeleopDriveCommand(
                         drive,
@@ -55,9 +89,9 @@ public class DeltaCar extends CommandOpMode {
                         () -> gamepadEx1.getButton(GamepadKeys.Button.LEFT_STICK_BUTTON),
                         () -> gamepadEx1.getButton(GamepadKeys.Button.START)));
 
-
+        // Basket Up
         gamepadEx1
-                .getGamepadButton(GamepadKeys.Button.X)
+                .getGamepadButton(GamepadKeys.Button.DPAD_UP)
                 .whenPressed(
                         new ConditionalCommand(
                                 new InstantCommand(),
@@ -70,17 +104,12 @@ public class DeltaCar extends CommandOpMode {
                                 () -> !isPureHandoffComplete));
 
 
-        gamepadEx1.getGamepadButton(GamepadKeys.Button.B)
+        // Basket Down
+        gamepadEx1.getGamepadButton(GamepadKeys.Button.DPAD_DOWN)
                 .whenPressed(
                         new ConditionalCommand(
                                 liftClaw.openClawCommand(),
                                 new SequentialCommandGroup(
-                                        new ConditionalCommand(
-                                                new InstantCommand(() -> slide.slideArmDown())
-                                                        .andThen(new WaitCommand(100))
-                                                        .andThen(new InstantCommand(() -> slide.setGoal(AlphaSlide.Goal.AIM))),
-                                                new InstantCommand(),
-                                                () -> lift.getGoal() == Lift.Goal.HANG),
                                         liftClaw.foldLiftArmCommand(),
                                         new InstantCommand(liftClaw::stowWrist),
                                         new WaitCommand(100),
@@ -89,24 +118,25 @@ public class DeltaCar extends CommandOpMode {
                                 liftClaw::getLiftClawPos
                         ));
 
-
-        gamepadEx1.getGamepadButton(GamepadKeys.Button.Y).whenPressed(slide.aimCommand(), false);
-
+        // Chamber Grab
         new FunctionalButton(
                 () ->
-                        gamepadEx1.getButton(GamepadKeys.Button.A)
-                                && slide.getGoal() == AlphaSlide.Goal.AIM)
-                .whenPressed(slide.grabCommand(), false);
+                        gamepadEx1.getButton(GamepadKeys.Button.B)
+                                && lift.getGoal() == Lift.Goal.GRAB)
+                .whenPressed(liftClaw.switchLiftClawCommand());
 
+        // ChamberUp / Down
+        gamepadEx1.getGamepadButton(GamepadKeys.Button.Y).whenPressed(
+                new ConditionalCommand(
+                        lift.setGoalCommand(Lift.Goal.HANG)
+                                .andThen(new InstantCommand(() -> isHangComplete = true)),
+                        lift.setGoalCommand(Lift.Goal.PRE_HANG)
+                                .andThen(new InstantCommand(() -> isHangComplete = false)),
+                        () -> lift.getGoal() == Lift.Goal.PRE_HANG
+                )
+        );
 
-        Supplier<Command> handoffCommand =
-                () ->
-                        slide
-                                .handoffCommand()
-                                .alongWith(liftClaw.openClawCommand())
-                                .andThen(liftClaw.closeClawCommand())
-                                .andThen(new InstantCommand(() -> slide.openIntakeClaw()));
-
+        // STOW Connect
         new FunctionalButton(
                 () ->
                         gamepadEx1.getButton(GamepadKeys.Button.DPAD_RIGHT)
@@ -125,61 +155,21 @@ public class DeltaCar extends CommandOpMode {
                                                                 .andThen(new InstantCommand(() -> isPureHandoffComplete = true)))),
                         false);
 
-        Command preHang = AutoCommandBase.toPreHang(lift, liftClaw);
-        Command grab = AutoCommandBase.chamberToGrab(lift, liftClaw).alongWith(slide.aimCommand());
+        // Reset to Stow
+        gamepadEx1.getGamepadButton(GamepadKeys.Button.DPAD_LEFT).whenPressed(
+                new ConditionalCommand(
+                new InstantCommand(() -> slide.slideArmDown())
+                        .andThen(new WaitCommand(100))
+                        .andThen(new InstantCommand(() -> slide.setGoal(AlphaSlide.Goal.AIM))),
+                new InstantCommand(),
+                () -> lift.getGoal() == Lift.Goal.HANG)
+        );
 
-        Supplier<Command> stow =
-                () ->
-                        new ConditionalCommand(
-                                new InstantCommand(),
-                                liftClaw.openClawCommand(0)
-                                        .andThen(liftClaw.foldLiftArmCommand(0))
-                                        .alongWith(new InstantCommand(() -> liftClaw.stowWrist()))
-                                        .andThen(lift.setGoalCommand(Lift.Goal.STOW, false))
-                                        .andThen(new InstantCommand(() -> isHangComplete = false)),
-                                () -> !isHangComplete);
-
-
-        SelectCommand specimenCommands =
-                new SelectCommand(
-                        new HashMap<Object, Command>() {
-                            {
-                                put(Lift.Goal.GRAB, preHang);
-                                put(Lift.Goal.STOW, grab);
-                                put(Lift.Goal.HANG, stow.get());
-                            }
-                        },
-                        () -> lift.getGoal());
+        // Chamber Next Mode
+        gamepadEx1.getGamepadButton(GamepadKeys.Button.X).whenPressed(specimenCommands, false);
 
 
-        gamepadEx1.getGamepadButton(GamepadKeys.Button.DPAD_LEFT).whenPressed(specimenCommands, false);
-
-
-        new FunctionalButton(
-                () ->
-                        gamepadEx1.getButton(GamepadKeys.Button.DPAD_UP)
-                                && lift.getGoal() == Lift.Goal.PRE_HANG)
-                .whenPressed(
-                        lift.setGoalCommand(Lift.Goal.HANG)
-                                .andThen(new InstantCommand(() -> isHangComplete = true)));
-
-
-        new FunctionalButton(
-                () ->
-                        gamepadEx1.getButton(GamepadKeys.Button.DPAD_DOWN)
-                                && lift.getGoal() == Lift.Goal.HANG)
-                .whenPressed(
-                        lift.setGoalCommand(Lift.Goal.PRE_HANG)
-                                .andThen(new InstantCommand(() -> isHangComplete = false)));
-
-
-        new FunctionalButton(
-                () ->
-                        gamepadEx1.getButton(GamepadKeys.Button.DPAD_DOWN)
-                                && lift.getGoal() == Lift.Goal.GRAB)
-                .whenPressed(liftClaw.switchLiftClawCommand());
-
-
+        // Reset Slides
         new FunctionalButton(
                 () ->
                         gamepadEx1.getButton(GamepadKeys.Button.RIGHT_STICK_BUTTON)
@@ -190,7 +180,19 @@ public class DeltaCar extends CommandOpMode {
                                 lift.manualResetCommand() :
                                 lift.manualResetCommand().alongWith(slide.manualResetCommand())
                 );
+        // Grab
+        new FunctionalButton(
+                () ->
+                        gamepadEx1.getButton(GamepadKeys.Button.A)
+                                && slide.getGoal() == AlphaSlide.Goal.AIM)
+                .whenPressed(slide.grabCommand(), false);
 
+        // Aim
+        new FunctionalButton(
+                () ->
+                        gamepadEx1.getButton(GamepadKeys.Button.A)
+                                && slide.getGoal() != AlphaSlide.Goal.AIM)
+                .whenPressed(slide.aimCommand(), false);
 
         new FunctionalButton(
                 () ->
