@@ -35,6 +35,7 @@ public class DeltaCar extends CommandOpMode {
 
     private boolean isPureHandoffComplete = false;
     private boolean isHangComplete = false;
+    private boolean aimFinished = false;
 
     @Override
     public void initialize() {
@@ -116,7 +117,7 @@ public class DeltaCar extends CommandOpMode {
                                         lift.setGoalCommand(Lift.Goal.STOW, false),
                                         new InstantCommand(() -> isPureHandoffComplete = false)),
                                 liftClaw::getLiftClawPos
-                        ));
+                        ).andThen(new InstantCommand(() -> aimFinished = true)));
 
         // Chamber Grab
         new FunctionalButton(
@@ -157,16 +158,21 @@ public class DeltaCar extends CommandOpMode {
 
         // Reset to Stow
         gamepadEx1.getGamepadButton(GamepadKeys.Button.DPAD_LEFT).whenPressed(
-                new ConditionalCommand(
-                new InstantCommand(() -> slide.slideArmDown())
-                        .andThen(new WaitCommand(100))
-                        .andThen(new InstantCommand(() -> slide.setGoal(AlphaSlide.Goal.AIM))),
-                new InstantCommand(),
-                () -> lift.getGoal() == Lift.Goal.HANG)
-        );
+                slide.aimCommand()
+                        .alongWith(new InstantCommand(() -> aimFinished = true))
+                        .alongWith(new SequentialCommandGroup(
+                                liftClaw.foldLiftArmCommand(),
+                                new InstantCommand(liftClaw::stowWrist),
+                                new WaitCommand(100),
+                                lift.setGoalCommand(Lift.Goal.STOW, false)))
+                );
 
         // Chamber Next Mode
-        gamepadEx1.getGamepadButton(GamepadKeys.Button.X).whenPressed(specimenCommands, false);
+        gamepadEx1.getGamepadButton(GamepadKeys.Button.X)
+                .whenPressed(
+                        specimenCommands
+                        .andThen(new InstantCommand(() -> aimFinished = true))
+                        , false);
 
 
         // Reset Slides
@@ -184,15 +190,18 @@ public class DeltaCar extends CommandOpMode {
         new FunctionalButton(
                 () ->
                         gamepadEx1.getButton(GamepadKeys.Button.A)
-                                && slide.getGoal() == AlphaSlide.Goal.AIM)
-                .whenPressed(slide.grabCommand(), false);
+                                && slide.getGoal() == AlphaSlide.Goal.AIM && aimFinished)
+                .whenPressed(slide.grabCommand()
+                        .andThen(new InstantCommand(() -> aimFinished = false)));
 
         // Aim
         new FunctionalButton(
                 () ->
                         gamepadEx1.getButton(GamepadKeys.Button.A)
-                                && slide.getGoal() != AlphaSlide.Goal.AIM)
-                .whenPressed(slide.aimCommand(), false);
+                                && slide.getGoal() != AlphaSlide.Goal.AIM && !aimFinished)
+                .whenPressed(
+                        slide.aimCommand().andThen(new InstantCommand(() -> aimFinished = true))
+                );
 
         new FunctionalButton(
                 () ->
