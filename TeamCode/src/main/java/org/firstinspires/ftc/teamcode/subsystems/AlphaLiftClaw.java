@@ -24,7 +24,7 @@ public class AlphaLiftClaw extends SubsystemBase {
 
   public static double LiftClaw_Open = currentRobot==DriveConstants.RobotType.ALPHA?0.8:0.35;
   public static double LiftClaw_Close = currentRobot==DriveConstants.RobotType.ALPHA?0.341:0.518;
-  public static double liftArmClimbPos = currentRobot==DriveConstants.RobotType.ALPHA ? 0.64 : 0.43;
+  public static double liftArmClimbPos = currentRobot==DriveConstants.RobotType.ALPHA ? 0.38 : 0.43;
 
 
   public static long LiftClaw_SwitchDelay = 50;
