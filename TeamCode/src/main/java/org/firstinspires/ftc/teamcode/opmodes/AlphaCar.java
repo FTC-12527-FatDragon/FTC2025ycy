@@ -1,6 +1,8 @@
 package org.firstinspires.ftc.teamcode.opmodes;
 
 import com.acmerobotics.dashboard.FtcDashboard;
+import com.acmerobotics.dashboard.config.Config;
+import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.arcrobotics.ftclib.command.Command;
 import com.arcrobotics.ftclib.command.CommandOpMode;
@@ -17,6 +19,9 @@ import com.arcrobotics.ftclib.gamepad.GamepadKeys;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.NormalizedRGBA;
 
+
+import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.firstinspires.ftc.teamcode.commands.AutoDriveCommand;
 import java.util.HashMap;
 import java.util.function.Supplier;
 import org.firstinspires.ftc.teamcode.commands.TeleopDriveCommand;
@@ -39,23 +44,27 @@ public class AlphaCar extends CommandOpMode {
   private AlphaLiftClaw liftClaw;
   private AlphaSlide slide;
   private SampleMecanumDrive drive;
+  private Telemetry telemetry_M;
 
   private boolean isPureHandoffComplete = false;
   private boolean isHangComplete = false;
 
   @Override
   public void initialize() {
+    telemetry_M = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
     gamepadEx1 = new GamepadEx(gamepad1);
 
-    lift = new Lift(hardwareMap, telemetry);
-    liftClaw = new AlphaLiftClaw(hardwareMap, telemetry);
-    slide = new AlphaSlide(hardwareMap, telemetry);
+    lift = new Lift(hardwareMap, telemetry_M);
+    liftClaw = new AlphaLiftClaw(hardwareMap, telemetry_M);
+    slide = new AlphaSlide(hardwareMap, telemetry_M);
     drive = new SampleMecanumDrive(hardwareMap);
     if (currentRobot==DriveConstants.RobotType.DELTA) {
       intakeClawSensor = new ColorSensor(hardwareMap, "intakeClawSensor");
     }
     slide.initialize();
     liftClaw.initialize();
+
+    telemetry_M.addData("Current Robot Pose", DriveConstants.getRobotTeleOpStartPose());
     drive.setPoseEstimate(DriveConstants.getRobotTeleOpStartPose());
 //    lift.setGoal(Lift.Goal.STOW);
 
@@ -278,11 +287,11 @@ public class AlphaCar extends CommandOpMode {
   @Override
   public void run() {
     if (currentRobot==DriveConstants.RobotType.DELTA) {
-      telemetry.addData("blueValue", intakeClawSensor.getColor().blue);
+      telemetry_M.addData("blueValue", intakeClawSensor.getColor().blue);
     }
     CommandScheduler.getInstance().run();
     lift.periodicTest();
-    telemetry.update();
+    telemetry_M.update();
     TelemetryPacket packet = new TelemetryPacket();
     packet.fieldOverlay().setStroke("#3F51B5");
     LocalizationTest.drawRobot(packet.fieldOverlay(), drive.getPoseEstimate());
