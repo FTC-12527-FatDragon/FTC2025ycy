@@ -11,6 +11,7 @@ import com.qualcomm.robotcore.util.RobotLog;
 import org.firstinspires.ftc.robotcontroller.internal.FtcRobotControllerActivity;
 import org.firstinspires.ftc.teamcode.lib.Units;
 import org.firstinspires.ftc.teamcode.lib.gobilda.GoBildaPinpointDriver;
+import org.firstinspires.ftc.teamcode.utils.Pose2dHelperClass;
 import org.firstinspires.ftc.teamcode.utils.Translation2dHelperClass;
 
 import lombok.Getter;
@@ -31,7 +32,7 @@ import lombok.Setter;
 public class DriveConstants {
   public static String android_id = FtcRobotControllerActivity.getAndroidId();
 
-  @Setter @Getter private static Pose2d robotTeleOpStartPose = new Pose2d();
+  @Setter @Getter public static Pose2dHelperClass robotTeleOpStartPose = new Pose2dHelperClass();
 
 
   public static final RobotType currentRobot = RobotType.ALPHA;

@@ -16,6 +16,11 @@ public class Pose2dHelperClass extends Translation2dHelperClass {
     this.HeadingDeg = headingdeg;
   }
 
+  public Pose2dHelperClass(Pose2d pose){
+    super(pose.getX(), pose.getY());
+    this.HeadingDeg = Math.toDegrees(pose.getHeading());
+  }
+
   public Pose2dHelperClass() {
     this(0, 0, 0);
   }

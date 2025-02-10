@@ -24,6 +24,7 @@ import org.firstinspires.ftc.teamcode.subsystems.Lift;
 import org.firstinspires.ftc.teamcode.subsystems.drivetrain.DriveConstants;
 import org.firstinspires.ftc.teamcode.subsystems.drivetrain.SampleMecanumDrive;
 import org.firstinspires.ftc.teamcode.utils.ParallelRaceGroup;
+import org.firstinspires.ftc.teamcode.utils.Pose2dHelperClass;
 import org.firstinspires.ftc.teamcode.utils.RoadRunnerPose.BooleanArea;
 import org.firstinspires.ftc.teamcode.utils.RoadRunnerPose.PoseArea;
 import org.firstinspires.ftc.teamcode.utils.RoadRunnerPose.RectangularArea;
@@ -322,7 +323,7 @@ public abstract class AutoCommandBase extends LinearOpMode {
       periodic();
     }
 
-    DriveConstants.setRobotTeleOpStartPose(drive.getPoseEstimate());
+    DriveConstants.setRobotTeleOpStartPose(new Pose2dHelperClass(drive.getPoseEstimate()));
 
     CommandScheduler.getInstance().reset();
   }
