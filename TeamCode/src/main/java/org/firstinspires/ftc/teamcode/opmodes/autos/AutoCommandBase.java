@@ -62,12 +62,16 @@ public abstract class AutoCommandBase extends LinearOpMode {
         lift.setGoalCommand(Lift.Goal.STOW));
   }
 
-  public Command handoff() {
+  public static Command handoff(AlphaSlide slide, AlphaLiftClaw liftClaw ) {
+
     return slide
         .handoffCommand()
         .alongWith(liftClaw.openClawCommand())
         .andThen(liftClaw.closeClawCommand())
         .andThen(new InstantCommand(slide::openIntakeClaw));
+  }
+  public Command handoff(){
+    return (handoff(slide, liftClaw));
   }
 
   public static Command toPreHang(Lift lift, AlphaLiftClaw liftClaw) {
@@ -86,11 +90,14 @@ public abstract class AutoCommandBase extends LinearOpMode {
     return liftClaw.closeClawCommand().andThen(toPreHang());
   }
 
-  public Command upToChamber() {
+  public static Command upToChamber(Lift lift) {
     return new ParallelRaceGroup(
             new WaitCommand(500),
             lift.setGoalCommand(Lift.Goal.HANG)
     );
+  }
+  public Command upToChamber(){
+    return upToChamber(lift);
   }
 
 //  public Command chamberOpenClaw() {
@@ -126,7 +133,7 @@ public abstract class AutoCommandBase extends LinearOpMode {
   }
 
 
-  public Command liftToBasket() {
+  public static Command liftToBasket(Lift lift, AlphaLiftClaw liftClaw) {
     return new SequentialCommandGroup(
             new ParallelRaceGroup(
                     new WaitCommand(lift2BasketTimeout),
@@ -140,8 +147,11 @@ public abstract class AutoCommandBase extends LinearOpMode {
     );
   }
 
+  public Command liftToBasket(){
+    return liftToBasket(lift,liftClaw);
+  }
 
-  public Command liftBack() {
+  public static Command liftBack(Lift lift, AlphaLiftClaw liftClaw) {
     return new ParallelCommandGroup(
             liftClaw.foldLiftArmCommand(),
             new WaitCommand(tempTimeout),
@@ -152,6 +162,10 @@ public abstract class AutoCommandBase extends LinearOpMode {
                     lift.setGoalCommand(Lift.Goal.STOW)
             )
     );
+  }
+
+  public Command liftBack(){
+    return liftBack(lift, liftClaw);
   }
 
 

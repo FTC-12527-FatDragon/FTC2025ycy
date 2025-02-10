@@ -1,7 +1,10 @@
 package org.firstinspires.ftc.teamcode.opmodes;
 
 import com.acmerobotics.dashboard.FtcDashboard;
+import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
+import com.acmerobotics.roadrunner.geometry.Pose2d;
+import com.acmerobotics.roadrunner.trajectory.Trajectory;
 import com.arcrobotics.ftclib.command.Command;
 import com.arcrobotics.ftclib.command.CommandOpMode;
 import com.arcrobotics.ftclib.command.CommandScheduler;
@@ -16,11 +19,12 @@ import com.arcrobotics.ftclib.gamepad.GamepadEx;
 import com.arcrobotics.ftclib.gamepad.GamepadKeys;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.NormalizedRGBA;
-
+import org.firstinspires.ftc.teamcode.commands.AutoDriveCommand;
 import java.util.HashMap;
 import java.util.function.Supplier;
 import org.firstinspires.ftc.teamcode.commands.TeleopDriveCommand;
 import org.firstinspires.ftc.teamcode.lib.roadrunner.drive.opmode.LocalizationTest;
+import org.firstinspires.ftc.teamcode.lib.roadrunner.trajectorysequence.TrajectorySequence;
 import org.firstinspires.ftc.teamcode.opmodes.autos.AutoCommandBase;
 import org.firstinspires.ftc.teamcode.subsystems.AlphaLiftClaw;
 import org.firstinspires.ftc.teamcode.subsystems.AlphaSlide;
@@ -29,8 +33,15 @@ import org.firstinspires.ftc.teamcode.subsystems.Lift;
 import org.firstinspires.ftc.teamcode.subsystems.drivetrain.DriveConstants;
 import org.firstinspires.ftc.teamcode.subsystems.drivetrain.SampleMecanumDrive;
 import org.firstinspires.ftc.teamcode.utils.FunctionalButton;
+import org.firstinspires.ftc.teamcode.utils.Pose2dHelperClass;
+import org.firstinspires.ftc.teamcode.commands.AutoDriveCommand;
 import static org.firstinspires.ftc.teamcode.subsystems.drivetrain.DriveConstants.currentRobot;
+import static org.firstinspires.ftc.teamcode.subsystems.drivetrain.DriveConstants.currentRobot;
+import org.firstinspires.ftc.teamcode.opmodes.autos.AutoCommandBase;
 
+import edu.wpi.first.units.Units;
+
+@Config
 @TeleOp(name = "AlphaYCYTeleop")
 public class AlphaCar extends CommandOpMode {
   private ColorSensor intakeClawSensor;
@@ -42,10 +53,47 @@ public class AlphaCar extends CommandOpMode {
 
   private boolean isPureHandoffComplete = false;
   private boolean isHangComplete = false;
+  private boolean shouldDisable = false;
+
+  public static boolean isSetPose = true;
+  public static double xPose = 0;
+  public static double yPose = 0;
+  public static double headingDegree = 0;
+
+  private OSState currentState = OSState.Teleop;
+
+  public enum OSState{
+    Teleop,
+    Halfauto;
+  }
+  //Trajectories
+  public Pose2d start = DriveConstants.getRobotTeleOpStartPose();
+  public static Pose2dHelperClass basket =
+          currentRobot == DriveConstants.RobotType.ALPHA ?
+                  new Pose2dHelperClass(-56.76, -57.25, 45.00) :
+                  new Pose2dHelperClass(-57.76, -58.25, 45.00);
+  public static Pose2dHelperClass oberservationZone = new Pose2dHelperClass(51.5,-58.4,90);
+  public static Pose2dHelperClass positionofSample = new Pose2dHelperClass(51.5, -65.29,90);
+  public static double gap = 3;
+  public static Pose2dHelperClass chamber = new Pose2dHelperClass(-7, -29, 90.00);
+  public static Pose2dHelperClass chamber1 = new Pose2dHelperClass(chamber.X + gap, chamber.Y, 90.00);
 
   @Override
   public void initialize() {
     gamepadEx1 = new GamepadEx(gamepad1);
+
+    gamepadEx1.getGamepadButton(GamepadKeys.Button.BACK).whenPressed(
+            new InstantCommand(() -> {
+              switch (currentState) {
+                case Teleop:
+                  currentState = OSState.Halfauto;
+                  break;
+                case Halfauto:
+                  currentState = OSState.Teleop;
+                  break;
+              }
+            })
+    );
 
     lift = new Lift(hardwareMap, telemetry);
     liftClaw = new AlphaLiftClaw(hardwareMap, telemetry);
@@ -56,7 +104,10 @@ public class AlphaCar extends CommandOpMode {
     }
     slide.initialize();
     liftClaw.initialize();
+
+    telemetry.addData("Current Robot Pose", DriveConstants.getRobotTeleOpStartPose());
     drive.setPoseEstimate(DriveConstants.getRobotTeleOpStartPose());
+
 //    lift.setGoal(Lift.Goal.STOW);
 
     // Teleop Drive Command
@@ -67,24 +118,61 @@ public class AlphaCar extends CommandOpMode {
             () -> -gamepadEx1.getLeftX(),
             () -> -gamepadEx1.getRightX(),
             () -> gamepadEx1.getButton(GamepadKeys.Button.LEFT_STICK_BUTTON),
-            () -> gamepadEx1.getButton(GamepadKeys.Button.START)));
+            () -> gamepadEx1.getButton(GamepadKeys.Button.START),
+                () -> currentState==OSState.Halfauto));
 
+    TrajectorySequence halfautoToBasket = drive.trajectorySequenceBuilder(DriveConstants.getRobotTeleOpStartPose())
+            .lineToSplineHeading(basket.toPose2d())
+            .build();
+
+    TrajectorySequence halfautoToHumanPlayer = drive.trajectorySequenceBuilder(DriveConstants.getRobotTeleOpStartPose())
+            .lineToSplineHeading(oberservationZone.toPose2d())
+            .build();
+
+    TrajectorySequence halfautoToChamber = drive.trajectorySequenceBuilder(DriveConstants.getRobotTeleOpStartPose())
+            .lineToSplineHeading(chamber.toPose2d())
+            .build();
+
+    TrajectorySequence toGrab = drive.trajectorySequenceBuilder(DriveConstants.getRobotTeleOpStartPose())
+            .lineToSplineHeading(positionofSample.toPose2d())
+            .build();
+
+    TrajectorySequence transPlace = drive.trajectorySequenceBuilder(DriveConstants.getRobotTeleOpStartPose())
+            .lineToSplineHeading(chamber1.toPose2d())
+            .build();
     // Basket Up Command
-    gamepadEx1
-        .getGamepadButton(GamepadKeys.Button.X)
-        .whenPressed(
-            new ConditionalCommand(
-                new InstantCommand(),
-                new ParallelCommandGroup(
-                    slide.aimCommand(),
-                    lift.setGoalCommand(Lift.Goal.BASKET, false),
-                    new WaitUntilCommand(() -> lift.getCurrentPosition() > 600)
-                                .andThen(new InstantCommand(liftClaw::upLiftArm)
-                                .alongWith(new InstantCommand(liftClaw::basketWrist)))),
-                () -> !isPureHandoffComplete));
-
+    new FunctionalButton(
+            () ->
+                    gamepadEx1.getButton(GamepadKeys.Button.X)
+                            && currentState == OSState.Teleop)
+            .whenPressed(
+                    new ConditionalCommand(
+                            new InstantCommand(),
+                            new ParallelCommandGroup(
+                                    slide.aimCommand(),
+                                    lift.setGoalCommand(Lift.Goal.BASKET, false),
+                                    new WaitUntilCommand(() -> lift.getCurrentPosition() > 600)
+                                            .andThen(new InstantCommand(liftClaw::upLiftArm)
+                                                    .alongWith(new InstantCommand(liftClaw::basketWrist)))),
+                            () -> !isPureHandoffComplete));
+//    gamepadEx1
+//        .getGamepadButton(GamepadKeys.Button.X)
+//        .whenPressed(
+//            new ConditionalCommand(
+//                new InstantCommand(),
+//                new ParallelCommandGroup(
+//                    slide.aimCommand(),
+//                    lift.setGoalCommand(Lift.Goal.BASKET, false),
+//                    new WaitUntilCommand(() -> lift.getCurrentPosition() > 600)
+//                                .andThen(new InstantCommand(liftClaw::upLiftArm)
+//                                .alongWith(new InstantCommand(liftClaw::basketWrist)))),
+//                () -> !isPureHandoffComplete));
+    //Teleop mode
     // Basket Drop and Back
-    gamepadEx1.getGamepadButton(GamepadKeys.Button.B)
+    new FunctionalButton(
+            () ->
+                    gamepadEx1.getButton(GamepadKeys.Button.B)
+                            && currentState == OSState.Teleop)
         .whenPressed(
             new ConditionalCommand(
                     liftClaw.openClawCommand(),
@@ -108,13 +196,17 @@ public class AlphaCar extends CommandOpMode {
 
 
     // Aim
-    gamepadEx1.getGamepadButton(GamepadKeys.Button.Y).whenPressed(slide.aimCommand(), false);
+    new FunctionalButton(
+            () ->
+                    gamepadEx1.getButton(GamepadKeys.Button.Y)
+                            )
+            .whenPressed(slide.aimCommand(), false);
 
     // Grab when aim
     new FunctionalButton(
             () ->
                 gamepadEx1.getButton(GamepadKeys.Button.A)
-                    && slide.getGoal() == AlphaSlide.Goal.AIM)
+                    && slide.getGoal() == AlphaSlide.Goal.AIM )
         .whenPressed(slide.grabCommand(), false);
 
     // Pure Handoff
@@ -130,7 +222,8 @@ public class AlphaCar extends CommandOpMode {
             () ->
                 gamepadEx1.getButton(GamepadKeys.Button.DPAD_RIGHT)
                     && slide.getGoal() == AlphaSlide.Goal.AIM
-                    && lift.getGoal() == Lift.Goal.STOW)
+                    && lift.getGoal() == Lift.Goal.STOW
+                    && currentState == OSState.Teleop)
         .whenPressed(
             new ConditionalCommand(
                     new InstantCommand(() -> slide.preHandoffSlideExtension()),
@@ -171,12 +264,17 @@ public class AlphaCar extends CommandOpMode {
             },
             () -> lift.getGoal());
 
-    gamepadEx1.getGamepadButton(GamepadKeys.Button.DPAD_LEFT).whenPressed(specimenCommands, false);
+    new FunctionalButton(
+            () ->
+                    gamepadEx1.getButton(GamepadKeys.Button.DPAD_LEFT)
+                            && lift.getGoal() == Lift.Goal.PRE_HANG && currentState == OSState.Teleop)
+            .whenPressed(specimenCommands, false);
+    //gamepadEx1.getGamepadButton(GamepadKeys.Button.DPAD_LEFT).whenPressed(specimenCommands, false);
 
     new FunctionalButton(
             () ->
                 gamepadEx1.getButton(GamepadKeys.Button.DPAD_UP)
-                    && lift.getGoal() == Lift.Goal.PRE_HANG)
+                    && lift.getGoal() == Lift.Goal.PRE_HANG && currentState == OSState.Teleop)
         .whenPressed(
             lift.setGoalCommand(Lift.Goal.HANG)
                 .andThen(new InstantCommand(() -> isHangComplete = true)));
@@ -184,7 +282,7 @@ public class AlphaCar extends CommandOpMode {
     new FunctionalButton(
             () ->
                 gamepadEx1.getButton(GamepadKeys.Button.DPAD_DOWN)
-                    && lift.getGoal() == Lift.Goal.HANG)
+                    && lift.getGoal() == Lift.Goal.HANG && currentState == OSState.Teleop)
         .whenPressed(
             lift.setGoalCommand(Lift.Goal.PRE_HANG)
                 .andThen(new InstantCommand(() -> isHangComplete = false)));
@@ -192,7 +290,7 @@ public class AlphaCar extends CommandOpMode {
     new FunctionalButton(
             () ->
                 gamepadEx1.getButton(GamepadKeys.Button.DPAD_DOWN)
-                    && lift.getGoal() == Lift.Goal.GRAB)
+                    && lift.getGoal() == Lift.Goal.GRAB && currentState == OSState.Teleop)
         .whenPressed(liftClaw.switchLiftClawCommand());
 
     //        // Handoff from Aim
@@ -243,6 +341,7 @@ public class AlphaCar extends CommandOpMode {
             () ->
                 gamepadEx1.getButton(GamepadKeys.Button.RIGHT_STICK_BUTTON)
                     && lift.getGoal() == Lift.Goal.STOW
+                        && currentState == OSState.Teleop
                         && (currentRobot == DriveConstants.RobotType.ALPHA ? true : slide.getSlideServo() == (AlphaSlide.SlideServo.BACK) || slide.isSlideMotorZeroed() ) )
         .whenHeld(
                 currentRobot == DriveConstants.RobotType.ALPHA ?
@@ -253,7 +352,8 @@ public class AlphaCar extends CommandOpMode {
     new FunctionalButton(
             () ->
                 gamepadEx1.getTrigger(GamepadKeys.Trigger.LEFT_TRIGGER) > 0.5
-                    && slide.getGoal() != AlphaSlide.Goal.HANDOFF)
+                    && slide.getGoal() != AlphaSlide.Goal.HANDOFF
+                        )
         .whenPressed(new InstantCommand(slide::forwardSlideExtension));
 
     new FunctionalButton(
@@ -265,14 +365,58 @@ public class AlphaCar extends CommandOpMode {
     new FunctionalButton(
             () ->
                 gamepadEx1.getButton(GamepadKeys.Button.LEFT_BUMPER)
-                    && slide.getGoal() == AlphaSlide.Goal.AIM)
+                    && slide.getGoal() == AlphaSlide.Goal.AIM && currentState == OSState.Teleop)
         .whenPressed(new InstantCommand(() -> slide.leftTurnServo()));
 
     new FunctionalButton(
             () ->
                 gamepadEx1.getButton(GamepadKeys.Button.RIGHT_BUMPER)
-                    && slide.getGoal() == AlphaSlide.Goal.AIM)
+                    && slide.getGoal() == AlphaSlide.Goal.AIM && currentState == OSState.Teleop)
         .whenPressed(new InstantCommand(() -> slide.rightTurnServo()));
+    // Halfauto part
+    // Halfauto basket
+    new FunctionalButton(
+            () ->
+                    gamepadEx1.getButton(GamepadKeys.Button.DPAD_LEFT)
+                            && slide.getGoal() == AlphaSlide.Goal.GRAB && currentState == OSState.Halfauto)
+            .whenPressed( new InstantCommand(() -> shouldDisable = true)
+                            .alongWith( new AutoDriveCommand(drive, halfautoToBasket))
+                            .alongWith(AutoCommandBase.handoff(slide,liftClaw)
+                                    .andThen(AutoCommandBase.liftToBasket(lift,liftClaw)))
+                            .andThen(new WaitCommand(200))
+                            .andThen(AutoCommandBase.liftBack(lift, liftClaw))
+                            .alongWith(new InstantCommand(()-> shouldDisable = false))
+            );
+    // Halfauto Chamber
+    new FunctionalButton(
+            () ->
+                    gamepadEx1.getButton(GamepadKeys.Button.X)
+                            && slide.getGoal() == AlphaSlide.Goal.GRAB && currentState == OSState.Halfauto)
+            .whenPressed(
+                    new InstantCommand(() -> shouldDisable = true)
+                    .alongWith(new AutoDriveCommand(drive,halfautoToHumanPlayer))
+                            .alongWith(AutoCommandBase.handoff(slide,liftClaw))
+                            .andThen(AutoCommandBase.chamberToGrab(lift, liftClaw))
+                            .alongWith(new InstantCommand(()-> shouldDisable = false))
+            );
+    new FunctionalButton(
+            () ->
+                    gamepadEx1.getButton(GamepadKeys.Button.B)
+                            && slide.getGoal() == AlphaSlide.Goal.GRAB && currentState == OSState.Halfauto)
+            .whenPressed(
+                    new InstantCommand(()-> shouldDisable = true)
+                            .andThen(new AutoDriveCommand(drive,toGrab))
+                            .andThen(new AutoDriveCommand(drive,halfautoToChamber))
+                            .alongWith(AutoCommandBase.toPreHang(lift,liftClaw))
+                            .andThen(new AutoDriveCommand(drive,transPlace))
+                            .andThen(AutoCommandBase.upToChamber(lift))
+                            .andThen(new WaitCommand(300))
+                            .andThen(AutoCommandBase.liftBack(lift,liftClaw))
+                            .andThen(new AutoDriveCommand(drive,halfautoToHumanPlayer)
+                                    .alongWith(AutoCommandBase.handoff(slide,liftClaw))
+                                    .andThen(AutoCommandBase.chamberToGrab(lift, liftClaw)))
+                            .alongWith(new InstantCommand(()-> shouldDisable = false))
+            );
   }
 
   @Override
@@ -287,5 +431,10 @@ public class AlphaCar extends CommandOpMode {
     packet.fieldOverlay().setStroke("#3F51B5");
     LocalizationTest.drawRobot(packet.fieldOverlay(), drive.getPoseEstimate());
     FtcDashboard.getInstance().sendTelemetryPacket(packet);
+
+    if(isSetPose) {
+      drive.setPoseEstimate(new Pose2d(xPose, yPose, Math.toRadians(headingDegree)));
+      isSetPose = false;
+    }
   }
 }

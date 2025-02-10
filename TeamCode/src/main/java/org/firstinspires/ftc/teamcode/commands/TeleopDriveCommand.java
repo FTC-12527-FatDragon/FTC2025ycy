@@ -13,6 +13,7 @@ public class TeleopDriveCommand extends CommandBase {
   private final DoubleSupplier fun;
   private final BooleanSupplier shouldReset;
   private final BooleanSupplier shouldSlow;
+  private final BooleanSupplier shouldDisable;
 
   public TeleopDriveCommand(
       SampleMecanumDrive drive,
@@ -20,13 +21,15 @@ public class TeleopDriveCommand extends CommandBase {
       DoubleSupplier fun,
       DoubleSupplier rotate,
       BooleanSupplier shouldReset,
-      BooleanSupplier shouldSlow) {
+      BooleanSupplier shouldSlow,
+      BooleanSupplier shouldDisable) {
     this.drive = drive;
     this.forward = forward;
     this.rotate = rotate;
     this.fun = fun;
     this.shouldReset = shouldReset;
     this.shouldSlow = shouldSlow;
+    this.shouldDisable = shouldDisable;
 
     addRequirements(drive);
   }
@@ -46,7 +49,8 @@ public class TeleopDriveCommand extends CommandBase {
       funValue *= 0.3;
       rotateValue *= 0.3;
     }
-
-    drive.setFieldRelativeDrivePower(new Pose2d(forwardValue, funValue, rotateValue));
+    if (shouldDisable.getAsBoolean() == false) {
+      drive.setFieldRelativeDrivePower(new Pose2d(forwardValue, funValue, rotateValue));
+    }
   }
 }
