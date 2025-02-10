@@ -106,6 +106,7 @@ public class AlphaCar extends CommandOpMode {
     liftClaw.initialize();
 
     telemetry.addData("Current Robot Pose", DriveConstants.getRobotTeleOpStartPose());
+    telemetry.update();
     drive.setPoseEstimate(DriveConstants.getRobotTeleOpStartPose());
 
 //    lift.setGoal(Lift.Goal.STOW);

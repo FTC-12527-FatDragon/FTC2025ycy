@@ -323,6 +323,8 @@ public abstract class AutoCommandBase extends LinearOpMode {
     liftClaw = new AlphaLiftClaw(hardwareMap, telemetry_M);
     slide = new AlphaSlide(hardwareMap, telemetry_M);
 
+    telemetry_M.addData("Current Robot Pose", drive.getPoseEstimate());
+    telemetry_M.update();
     drive = new SampleMecanumDrive(hardwareMap);
 
 //    drive.setPoseEstimate(getStartPose());
