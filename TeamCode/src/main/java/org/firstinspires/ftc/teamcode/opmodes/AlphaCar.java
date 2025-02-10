@@ -119,7 +119,7 @@ public class AlphaCar extends CommandOpMode {
             () -> -gamepadEx1.getRightX(),
             () -> gamepadEx1.getButton(GamepadKeys.Button.LEFT_STICK_BUTTON),
             () -> gamepadEx1.getButton(GamepadKeys.Button.START),
-                () -> currentState==OSState.Halfauto));
+                () -> currentState==OSState.Halfauto && drive.isBusy()));
 
     TrajectorySequence halfautoToBasket = drive.trajectorySequenceBuilder(DriveConstants.getRobotTeleOpStartPose())
             .lineToSplineHeading(basket.toPose2d())
