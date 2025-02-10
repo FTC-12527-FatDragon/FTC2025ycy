@@ -378,7 +378,7 @@ public class AlphaCar extends CommandOpMode {
     new FunctionalButton(
             () ->
                     gamepadEx1.getButton(GamepadKeys.Button.DPAD_LEFT)
-                            && slide.getGoal() == AlphaSlide.Goal.GRAB && currentState == OSState.Halfauto)
+                            && slide.getGoal() == AlphaSlide.Goal.AIM && currentState == OSState.Halfauto)
             .whenPressed( new InstantCommand(() -> shouldDisable = true)
                             .alongWith( new AutoDriveCommand(drive, halfautoToBasket))
                             .alongWith(AutoCommandBase.handoff(slide,liftClaw)
@@ -391,7 +391,7 @@ public class AlphaCar extends CommandOpMode {
     new FunctionalButton(
             () ->
                     gamepadEx1.getButton(GamepadKeys.Button.X)
-                            && slide.getGoal() == AlphaSlide.Goal.GRAB && currentState == OSState.Halfauto)
+                            && slide.getGoal() == AlphaSlide.Goal.AIM && currentState == OSState.Halfauto)
             .whenPressed(
                     new InstantCommand(() -> shouldDisable = true)
                     .alongWith(new AutoDriveCommand(drive,halfautoToHumanPlayer))
@@ -402,7 +402,7 @@ public class AlphaCar extends CommandOpMode {
     new FunctionalButton(
             () ->
                     gamepadEx1.getButton(GamepadKeys.Button.B)
-                            && slide.getGoal() == AlphaSlide.Goal.GRAB && currentState == OSState.Halfauto)
+                            && slide.getGoal() == AlphaSlide.Goal.AIM && currentState == OSState.Halfauto)
             .whenPressed(
                     new InstantCommand(()-> shouldDisable = true)
                             .andThen(new AutoDriveCommand(drive,toGrab))
