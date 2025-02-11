@@ -31,6 +31,7 @@ import org.firstinspires.ftc.teamcode.lib.roadrunner.trajectorysequence.Trajecto
 import org.firstinspires.ftc.teamcode.opmodes.autos.AutoCommandBase;
 import org.firstinspires.ftc.teamcode.subsystems.AlphaLiftClaw;
 import org.firstinspires.ftc.teamcode.subsystems.AlphaSlide;
+import org.firstinspires.ftc.teamcode.subsystems.Climber;
 import org.firstinspires.ftc.teamcode.subsystems.ColorSensor;
 import org.firstinspires.ftc.teamcode.subsystems.Lift;
 import org.firstinspires.ftc.teamcode.subsystems.drivetrain.DriveConstants;
@@ -43,6 +44,7 @@ import static org.firstinspires.ftc.teamcode.subsystems.drivetrain.DriveConstant
 @TeleOp(name = "AlphaYCYTeleOp")
 public class AlphaCar extends CommandOpMode {
 //  private ColorSensor intakeClawSensor;
+  private Climber climber;
   private GamepadEx gamepadEx1;
   private Lift lift;
   private AlphaLiftClaw liftClaw;
@@ -103,6 +105,9 @@ public class AlphaCar extends CommandOpMode {
 //    if (currentRobot==DriveConstants.RobotType.DELTA) {
 //      intakeClawSensor = new ColorSensor(hardwareMap, "intakeClawSensor");
 //    }
+    if(currentRobot == DriveConstants.RobotType.EPSILON){
+      climber = new Climber(hardwareMap);
+    }
     slide.initialize();
     liftClaw.initialize();
 
