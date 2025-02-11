@@ -127,7 +127,7 @@ public class AlphaSlide extends MotorPIDSlideSubsystem{
         new InstantCommand(() -> goal = Goal.HANDOFF),
         setTurnServoPosCommand(TurnServo.DEG_0, aimCommand_wristTurn2ArmDelayMs).alongWith(
                   setServoPosCommand(wristServo, Goal.HANDOFF.wristPos, 100),
-                  setServoPosCommand(slideArmServo, Goal.HANDOFF.slideArmPos, 100)
+                  setServoPosCommand(slideArmServo, Goal.HANDOFF.slideArmPos, 150)
         ),
         new InstantCommand(() -> slideServo = SlideServo.HANDOFF).andThen(
                   new ConditionalCommand(
@@ -409,8 +409,8 @@ public class AlphaSlide extends MotorPIDSlideSubsystem{
   public enum SlideServo {
     FRONT(currentRobot == DriveConstants.RobotType.ALPHA ? 0.395 : slideExtensionMax),
     MIDDLE(currentRobot == DriveConstants.RobotType.ALPHA ? 0.275 : slideExtensionMax*0.5),
-    PRE_HANDOFF(currentRobot == DriveConstants.RobotType.ALPHA ? 0.225: slideExtensionMax*0.1),
-    HANDOFF(currentRobot == DriveConstants.RobotType.ALPHA ? 0.19 : 0),
+    PRE_HANDOFF(currentRobot == DriveConstants.RobotType.ALPHA ? 0.225: 20),//slideExtensionMax*0.1),
+    HANDOFF(currentRobot == DriveConstants.RobotType.ALPHA ? 0.19 : 20),
     BACK(currentRobot == DriveConstants.RobotType.ALPHA ? 0.19 : 0);
 
     private double extensionVal;
