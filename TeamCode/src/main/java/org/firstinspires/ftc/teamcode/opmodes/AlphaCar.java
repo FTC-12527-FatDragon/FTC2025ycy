@@ -42,7 +42,7 @@ import org.firstinspires.ftc.teamcode.opmodes.autos.AutoCommandBase;
 import edu.wpi.first.units.Units;
 
 @Config
-@TeleOp(name = "AlphaYCYTeleop")
+@TeleOp(name = "HalfAutoReconstructTeleop")
 public class AlphaCar extends CommandOpMode {
   private ColorSensor intakeClawSensor;
   private GamepadEx gamepadEx1;
