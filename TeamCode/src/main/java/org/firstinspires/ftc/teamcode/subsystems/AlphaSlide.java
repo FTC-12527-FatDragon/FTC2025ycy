@@ -38,7 +38,7 @@ public class AlphaSlide extends MotorPIDSlideSubsystem{
   public static long waitGrabTimeout = 300;
   public static long waitGrabTimeout3 = 400;
 
-  public static long slideRetractFar = currentRobot == DriveConstants.RobotType.ALPHA ? 500 : 400;
+  public static long slideRetractFar = currentRobot == DriveConstants.RobotType.ALPHA ? 500 : 300;
   public static long slideRetractNear = 150;
   public static long slideRetractAuto = 500;
   public static long slideExtensionMax = 510;
@@ -292,9 +292,12 @@ public class AlphaSlide extends MotorPIDSlideSubsystem{
       case MIDDLE:
         slideServo = SlideServo.FRONT;
         break;
+      case HANDOFF:
       case BACK:
         slideServo = SlideServo.MIDDLE;
         break;
+      default:
+        telemetry.addLine("Warning: Unprocessed state: " + slideServo);
     }
     telemetry.addLine("SLIDESERVO FORWARD");
   }
@@ -307,9 +310,12 @@ public class AlphaSlide extends MotorPIDSlideSubsystem{
       case MIDDLE:
         slideServo = SlideServo.BACK;
         break;
+      case HANDOFF:
       case BACK:
         slideServo = SlideServo.BACK;
         break;
+      default:
+        telemetry.addLine("Warning: Unprocessed state: " + slideServo);
     }
     telemetry.addLine("SLIDESERVO BACKWARD");
   }
@@ -410,8 +416,8 @@ public class AlphaSlide extends MotorPIDSlideSubsystem{
   public enum SlideServo {
     FRONT(currentRobot == DriveConstants.RobotType.ALPHA ? 0.395 : slideExtensionMax),
     MIDDLE(currentRobot == DriveConstants.RobotType.ALPHA ? 0.275 : slideExtensionMax*0.5),
-    PRE_HANDOFF(currentRobot == DriveConstants.RobotType.ALPHA ? 0.225: 20),//slideExtensionMax*0.1),
-    HANDOFF(currentRobot == DriveConstants.RobotType.ALPHA ? 0.19 : 20),
+    PRE_HANDOFF(currentRobot == DriveConstants.RobotType.ALPHA ? 0.225: 25),//slideExtensionMax*0.1),
+    HANDOFF(currentRobot == DriveConstants.RobotType.ALPHA ? 0.19 : 25),
     BACK(currentRobot == DriveConstants.RobotType.ALPHA ? 0.19 : 0);
 
     private double extensionVal;
