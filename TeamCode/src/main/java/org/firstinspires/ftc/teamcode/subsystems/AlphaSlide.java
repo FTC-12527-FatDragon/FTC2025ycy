@@ -256,6 +256,7 @@ public class AlphaSlide extends MotorPIDSlideSubsystem{
     GRAB(slideExtensionVal, slideArmServo_Down                                    ,  currentRobot==DriveConstants.RobotType.ALPHA?0.75:0.1, turnAngleDeg, currentRobot==DriveConstants.RobotType.ALPHA?0.635:0.727),
     HANDOFF(-1,           currentRobot==DriveConstants.RobotType.ALPHA?0.13:0.1, currentRobot==DriveConstants.RobotType.ALPHA?0.39:0.45
             ,  0.4,          currentRobot==DriveConstants.RobotType.ALPHA?0.635:0.35);
+    //Arm, Wrist, Wrist Turn
     private final double slideExtension;
     private final double slideArmPos;
     private final double wristPos;
