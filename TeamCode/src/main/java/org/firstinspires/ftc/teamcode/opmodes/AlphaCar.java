@@ -42,9 +42,9 @@ import org.firstinspires.ftc.teamcode.opmodes.autos.AutoCommandBase;
 import edu.wpi.first.units.Units;
 
 @Config
-@TeleOp(name = "HalfAutoReconstructTeleop")
+@TeleOp(name = "AlphaYCYTeleOp")
 public class AlphaCar extends CommandOpMode {
-  private ColorSensor intakeClawSensor;
+//  private ColorSensor intakeClawSensor;
   private GamepadEx gamepadEx1;
   private Lift lift;
   private AlphaLiftClaw liftClaw;
@@ -99,9 +99,9 @@ public class AlphaCar extends CommandOpMode {
     liftClaw = new AlphaLiftClaw(hardwareMap, telemetry);
     slide = new AlphaSlide(hardwareMap, telemetry);
     drive = new SampleMecanumDrive(hardwareMap);
-    if (currentRobot==DriveConstants.RobotType.DELTA) {
-      intakeClawSensor = new ColorSensor(hardwareMap, "intakeClawSensor");
-    }
+//    if (currentRobot==DriveConstants.RobotType.DELTA) {
+//      intakeClawSensor = new ColorSensor(hardwareMap, "intakeClawSensor");
+//    }
     slide.initialize();
     liftClaw.initialize();
 
@@ -422,9 +422,9 @@ public class AlphaCar extends CommandOpMode {
 
   @Override
   public void run() {
-    if (currentRobot==DriveConstants.RobotType.DELTA) {
-      telemetry.addData("blueValue", intakeClawSensor.getColor().blue);
-    }
+//    if (currentRobot==DriveConstants.RobotType.DELTA) {
+//      telemetry.addData("blueValue", intakeClawSensor.getColor().blue);
+//    }
     CommandScheduler.getInstance().run();
     lift.periodicTest();
     telemetry.update();
