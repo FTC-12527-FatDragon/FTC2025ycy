@@ -229,6 +229,8 @@ public class AlphaSlide extends MotorPIDSlideSubsystem{
   }
 
   public static double slideArmServo_Down = currentRobot==DriveConstants.RobotType.ALPHA?0.5:0.75;
+  public static double intakeClawServo_Open = currentRobot==DriveConstants.RobotType.ALPHA?0.2:0.35;
+  public static double intakeClawServo_Close = currentRobot==DriveConstants.RobotType.ALPHA?0.635:0.735;
 
   @Override
   void runOpenLoop(double percent) {
@@ -257,11 +259,10 @@ public class AlphaSlide extends MotorPIDSlideSubsystem{
 //  public static double slideArmServo_PreGrab = 0.45;
 
   public enum Goal {
-    STOW(-1,                currentRobot==DriveConstants.RobotType.ALPHA?0.4:0.3,  currentRobot==DriveConstants.RobotType.ALPHA?0.39:0.5, 0.4,          currentRobot==DriveConstants.RobotType.ALPHA?0.2:0.35),
-    AIM(-1,  currentRobot==DriveConstants.RobotType.ALPHA?0.35:0.6,  currentRobot==DriveConstants.RobotType.ALPHA?0.75:0.1, turnAngleDeg, currentRobot==DriveConstants.RobotType.ALPHA?0.2:0.35),
-    GRAB(-1, slideArmServo_Down                                    ,  currentRobot==DriveConstants.RobotType.ALPHA?0.75:0.1, turnAngleDeg, currentRobot==DriveConstants.RobotType.ALPHA?0.635:0.727),
-    HANDOFF(-1,           currentRobot==DriveConstants.RobotType.ALPHA?0.13:0.1, currentRobot==DriveConstants.RobotType.ALPHA?0.39:0.45
-            ,  0.4,          currentRobot==DriveConstants.RobotType.ALPHA?0.635:0.35);
+    STOW(-1,                currentRobot==DriveConstants.RobotType.ALPHA?0.4:0.3,  currentRobot==DriveConstants.RobotType.ALPHA?0.39:0.5, 0.4,          intakeClawServo_Open),
+    AIM(-1,  currentRobot==DriveConstants.RobotType.ALPHA?0.35:0.6,  currentRobot==DriveConstants.RobotType.ALPHA?0.75:0.1, turnAngleDeg, intakeClawServo_Open),
+    GRAB(-1, slideArmServo_Down                                    ,  currentRobot==DriveConstants.RobotType.ALPHA?0.75:0.1, turnAngleDeg, intakeClawServo_Close),
+    HANDOFF(-1,           currentRobot==DriveConstants.RobotType.ALPHA?0.13:0.1, currentRobot==DriveConstants.RobotType.ALPHA?0.39:0.45,  0.4,          intakeClawServo_Close);
     //Arm, Wrist, Wrist Turn
     private final double slideExtension;
     private final double slideArmPos;
