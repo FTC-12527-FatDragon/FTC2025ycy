@@ -84,6 +84,7 @@ public class AlphaCar extends CommandOpMode {
     telemetry_M = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
 
     gamepadEx1 = new GamepadEx(gamepad1);
+    gamepadEx2 = new GamepadEx(gamepad2);
 
     gamepadEx1.getGamepadButton(GamepadKeys.Button.BACK).whenPressed(
             new InstantCommand(() -> {
