@@ -45,7 +45,7 @@ import static org.firstinspires.ftc.teamcode.subsystems.drivetrain.DriveConstant
 public class AlphaCar extends CommandOpMode {
 //  private ColorSensor intakeClawSensor;
   private Climber climber;
-  private GamepadEx gamepadEx1;
+  private GamepadEx gamepadEx1, gamepadEx2;
   private Lift lift;
   private AlphaLiftClaw liftClaw;
   private AlphaSlide slide;
@@ -424,6 +424,23 @@ public class AlphaCar extends CommandOpMode {
                                     .andThen(AutoCommandBase.chamberToGrab(lift, liftClaw)))
                             .alongWith(new InstantCommand(()-> shouldDisable = false))
             );
+
+    new FunctionalButton(
+            () ->
+                    gamepadEx2.getButton(GamepadKeys.Button.DPAD_UP) &&
+                            currentRobot == DriveConstants.RobotType.EPSILON)
+            .whenPressed(
+                    climber.elevateCommand()
+            );
+
+    new FunctionalButton(
+            () ->
+                    gamepadEx2.getButton(GamepadKeys.Button.DPAD_DOWN) &&
+                            currentRobot == DriveConstants.RobotType.EPSILON)
+            .whenPressed(
+                    climber.declineCommand()
+            );
+
   }
 
   @Override
