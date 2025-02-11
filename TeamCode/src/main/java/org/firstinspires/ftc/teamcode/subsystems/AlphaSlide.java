@@ -222,7 +222,7 @@ public class AlphaSlide extends MotorPIDSlideSubsystem{
     slideArmServo.setPosition(0.6);
   }
 
-  public static double slideArmServo_Down = currentRobot==DriveConstants.RobotType.ALPHA?0.5:0.775;
+  public static double slideArmServo_Down = currentRobot==DriveConstants.RobotType.ALPHA?0.5:0.75;
 
   @Override
   void runOpenLoop(double percent) {
@@ -251,10 +251,12 @@ public class AlphaSlide extends MotorPIDSlideSubsystem{
 //  public static double slideArmServo_PreGrab = 0.45;
 
   public enum Goal {
-    STOW(-1,                currentRobot==DriveConstants.RobotType.ALPHA?0.4:0.255,  currentRobot==DriveConstants.RobotType.ALPHA?0.39:0.55, 0.4,          currentRobot==DriveConstants.RobotType.ALPHA?0.2:0.35),
-    AIM(slideExtensionVal,  currentRobot==DriveConstants.RobotType.ALPHA?0.35:0.63,  currentRobot==DriveConstants.RobotType.ALPHA?0.75:0.27, turnAngleDeg, currentRobot==DriveConstants.RobotType.ALPHA?0.2:0.35),
-    GRAB(slideExtensionVal, slideArmServo_Down                                    ,  currentRobot==DriveConstants.RobotType.ALPHA?0.75:0.27, turnAngleDeg, currentRobot==DriveConstants.RobotType.ALPHA?0.635:0.727),
-    HANDOFF(-1,           currentRobot==DriveConstants.RobotType.ALPHA?0.13:0.33, currentRobot==DriveConstants.RobotType.ALPHA?0.39:0.75,  0.4,          currentRobot==DriveConstants.RobotType.ALPHA?0.635:0.35);
+    STOW(-1,                currentRobot==DriveConstants.RobotType.ALPHA?0.4:0.3,  currentRobot==DriveConstants.RobotType.ALPHA?0.39:0.5, 0.4,          currentRobot==DriveConstants.RobotType.ALPHA?0.2:0.35),
+    AIM(slideExtensionVal,  currentRobot==DriveConstants.RobotType.ALPHA?0.35:0.6,  currentRobot==DriveConstants.RobotType.ALPHA?0.75:0.1, turnAngleDeg, currentRobot==DriveConstants.RobotType.ALPHA?0.2:0.35),
+    GRAB(slideExtensionVal, slideArmServo_Down                                    ,  currentRobot==DriveConstants.RobotType.ALPHA?0.75:0.1, turnAngleDeg, currentRobot==DriveConstants.RobotType.ALPHA?0.635:0.727),
+    HANDOFF(-1,           currentRobot==DriveConstants.RobotType.ALPHA?0.13:0.1, currentRobot==DriveConstants.RobotType.ALPHA?0.39:0.45
+            ,  0.4,          currentRobot==DriveConstants.RobotType.ALPHA?0.635:0.35);
+    //Arm, Wrist, Wrist Turn
     private final double slideExtension;
     private final double slideArmPos;
     private final double wristPos;

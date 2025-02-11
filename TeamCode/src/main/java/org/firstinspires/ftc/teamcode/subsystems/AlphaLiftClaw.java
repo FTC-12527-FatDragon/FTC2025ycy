@@ -130,10 +130,11 @@ public class AlphaLiftClaw extends SubsystemBase {
   }
 
   public enum ServoPositions {
-    STOW(currentRobot==DriveConstants.RobotType.ALPHA?0.76:0.82, LiftClaw_Close, currentRobot==DriveConstants.RobotType.ALPHA?0.64:0.615),
+    STOW(currentRobot==DriveConstants.RobotType.ALPHA?0.76:0.85, LiftClaw_Close, currentRobot==DriveConstants.RobotType.ALPHA?0.64:0.64),
     CHAMBER(currentRobot==DriveConstants.RobotType.ALPHA?0.58:0.66, LiftClaw_Close, currentRobot==DriveConstants.RobotType.ALPHA?0.27:0.47),
-    BASKET(currentRobot==DriveConstants.RobotType.ALPHA?0.37:0.47, LiftClaw_Close, currentRobot==DriveConstants.RobotType.ALPHA?0.35:0.54),
-    GRAB(currentRobot==DriveConstants.RobotType.ALPHA?0.15:0.207, LiftClaw_Open, currentRobot==DriveConstants.RobotType.ALPHA?0.08:0.35);
+    BASKET(currentRobot==DriveConstants.RobotType.ALPHA?0.37:0.44, LiftClaw_Close, currentRobot==DriveConstants.RobotType.ALPHA?0.35:0.57),
+    GRAB(currentRobot==DriveConstants.RobotType.ALPHA?0.15:0.208, LiftClaw_Open, currentRobot==DriveConstants.RobotType.ALPHA?0.08:0.35);
+    //liftarm,liftclaw,liftwrist
 
     private final double liftArmPosition;
     private final double liftWristPosition;

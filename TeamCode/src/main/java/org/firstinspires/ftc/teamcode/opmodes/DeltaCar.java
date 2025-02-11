@@ -88,7 +88,8 @@ public class DeltaCar extends CommandOpMode {
                         () -> -gamepadEx1.getLeftX(),
                         () -> -gamepadEx1.getRightX(),
                         () -> gamepadEx1.getButton(GamepadKeys.Button.LEFT_STICK_BUTTON),
-                        () -> gamepadEx1.getButton(GamepadKeys.Button.START)));
+                        () -> gamepadEx1.getButton(GamepadKeys.Button.START),
+                        () -> false));
 
         // Basket Up
         gamepadEx1

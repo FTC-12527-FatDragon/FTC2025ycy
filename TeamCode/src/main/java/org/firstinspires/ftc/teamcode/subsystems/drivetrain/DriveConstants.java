@@ -35,7 +35,7 @@ public class DriveConstants {
   @Setter @Getter public static Pose2dHelperClass robotTeleOpStartPose = new Pose2dHelperClass();
 
 
-  public static final RobotType currentRobot = RobotType.ALPHA;
+  public static final RobotType currentRobot = RobotType.DELTA;
 
   public enum RobotType {
     ALPHA,

@@ -25,7 +25,8 @@ import static org.firstinspires.ftc.teamcode.subsystems.drivetrain.DriveConstant
 @Autonomous(name = "Basket 1+3", group = "Autos")
 public class Basket1Plus3 extends AutoCommandBase {
 
-  public static Pose2dHelperClass start = new Pose2dHelperClass(-31.64, -65.06, 0.00);
+  public static Pose2dHelperClass
+          start = new Pose2dHelperClass(-31.64, -65.06, 0.00);
   public static Pose2dHelperClass basket =
           currentRobot == DriveConstants.RobotType.ALPHA ?
                   new Pose2dHelperClass(-56.76, -57.25, 45.00) :
