@@ -42,6 +42,7 @@ public class AlphaSlide extends MotorPIDSlideSubsystem{
   public static long slideRetractFar = currentRobot == DriveConstants.RobotType.ALPHA ? 500 : 400;
   public static long slideRetractNear = 150;
   public static long slideRetractAuto = 500;
+  public static long slideExtensionMax = 510;
 
   private static double turnAngleDeg = 0;
   private TurnServo turnServo = TurnServo.DEG_0;
@@ -411,10 +412,10 @@ public class AlphaSlide extends MotorPIDSlideSubsystem{
   }
 
   public enum SlideServo {
-    FRONT(currentRobot == DriveConstants.RobotType.ALPHA ? 0.395 : 500),
-    MIDDLE(currentRobot == DriveConstants.RobotType.ALPHA ? 0.275 : 250),
-    PRE_HANDOFF(currentRobot == DriveConstants.RobotType.ALPHA ? 0.225: 400),
-    HANDOFF(0.19),
+    FRONT(currentRobot == DriveConstants.RobotType.ALPHA ? 0.395 : slideExtensionMax),
+    MIDDLE(currentRobot == DriveConstants.RobotType.ALPHA ? 0.275 : slideExtensionMax*0.5),
+    PRE_HANDOFF(currentRobot == DriveConstants.RobotType.ALPHA ? 0.225: slideExtensionMax*0.2),
+    HANDOFF(currentRobot == DriveConstants.RobotType.ALPHA ? 0.19 : slideExtensionMax*0.1),
     BACK(currentRobot == DriveConstants.RobotType.ALPHA ? 0.19 : 0);
 
     private double extensionVal;
