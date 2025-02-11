@@ -63,8 +63,12 @@ public class AlphaSlide extends MotorPIDSlideSubsystem{
 
     if(currentRobot== DriveConstants.RobotType.ALPHA){
       slideRightServo = hardwareMap.get(Servo.class, "slideLeftServo");
-    }else
+    }else{
       slideRightServo = new MotorServo(hardwareMap, "slideMotor");//
+      if(currentRobot == DriveConstants.RobotType.EPSILON){
+        slideRightServo.setDirection(Servo.Direction.REVERSE);
+      }
+    }
 
     intakeClawServo = hardwareMap.get(Servo.class, "intakeClawServo"); // 0.3 close 0.7 open
     wristServo = hardwareMap.get(Servo.class, "wristServo"); // 0.05 up 0.75 down
@@ -391,7 +395,7 @@ public class AlphaSlide extends MotorPIDSlideSubsystem{
   }
 
   public enum TurnServo {
-    LEFT_55(currentRobot == DriveConstants.RobotType.ALPHA ? 0.8 : 0.7), // TODO: Delta needs test
+    LEFT_55(currentRobot == DriveConstants.RobotType.ALPHA ? 0.8 : 0.7),
     LEFT_45(currentRobot == DriveConstants.RobotType.ALPHA ? 0.75 : 0.65),
     DEG_0(currentRobot == DriveConstants.RobotType.ALPHA ? 0.59 : 0.55),
     RIGHT_45(currentRobot == DriveConstants.RobotType.ALPHA ? 0.45 : 0.45),
