@@ -152,7 +152,7 @@ public class DriveConstants {
         kStatic = 0.04;
         MAX_VEL = 84.97331647926711;
         MAX_ANG_VEL = 2.2771860122680665;
-        isReflected = true;
+        isReflected = false;
         break;
       case BETA:
         GoBildaXLocalizerDirection = GoBildaPinpointDriver.EncoderDirection.FORWARD;
