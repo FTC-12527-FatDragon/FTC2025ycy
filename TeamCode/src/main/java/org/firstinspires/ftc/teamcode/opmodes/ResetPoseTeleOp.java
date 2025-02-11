@@ -11,7 +11,7 @@ import org.firstinspires.ftc.teamcode.utils.Pose2dHelperClass;
 public class ResetPoseTeleOp extends LinearOpMode {
     @Override
     public void runOpMode() {
-        DriveConstants.setRobotTeleOpStartPose(new Pose2dHelperClass());
+        DriveConstants.robotTeleOpStartPose = new Pose2dHelperClass();
         telemetry.addLine("Start pose being reset (x: 0, y: 0, heading: 0)");
         telemetry.update();
     }

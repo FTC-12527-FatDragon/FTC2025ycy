@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.opmodes;
 
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
+import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.trajectory.Trajectory;
@@ -19,6 +20,8 @@ import com.arcrobotics.ftclib.gamepad.GamepadEx;
 import com.arcrobotics.ftclib.gamepad.GamepadKeys;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.NormalizedRGBA;
+
+import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.commands.AutoDriveCommand;
 import java.util.HashMap;
 import java.util.function.Supplier;
@@ -34,12 +37,7 @@ import org.firstinspires.ftc.teamcode.subsystems.drivetrain.DriveConstants;
 import org.firstinspires.ftc.teamcode.subsystems.drivetrain.SampleMecanumDrive;
 import org.firstinspires.ftc.teamcode.utils.FunctionalButton;
 import org.firstinspires.ftc.teamcode.utils.Pose2dHelperClass;
-import org.firstinspires.ftc.teamcode.commands.AutoDriveCommand;
 import static org.firstinspires.ftc.teamcode.subsystems.drivetrain.DriveConstants.currentRobot;
-import static org.firstinspires.ftc.teamcode.subsystems.drivetrain.DriveConstants.currentRobot;
-import org.firstinspires.ftc.teamcode.opmodes.autos.AutoCommandBase;
-
-import edu.wpi.first.units.Units;
 
 @Config
 @TeleOp(name = "AlphaYCYTeleOp")
@@ -50,6 +48,7 @@ public class AlphaCar extends CommandOpMode {
   private AlphaLiftClaw liftClaw;
   private AlphaSlide slide;
   private SampleMecanumDrive drive;
+  private Telemetry telemetry_M;
 
   private boolean isPureHandoffComplete = false;
   private boolean isHangComplete = false;
@@ -80,6 +79,8 @@ public class AlphaCar extends CommandOpMode {
 
   @Override
   public void initialize() {
+    telemetry_M = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
+
     gamepadEx1 = new GamepadEx(gamepad1);
 
     gamepadEx1.getGamepadButton(GamepadKeys.Button.BACK).whenPressed(
@@ -95,9 +96,9 @@ public class AlphaCar extends CommandOpMode {
             })
     );
 
-    lift = new Lift(hardwareMap, telemetry);
-    liftClaw = new AlphaLiftClaw(hardwareMap, telemetry);
-    slide = new AlphaSlide(hardwareMap, telemetry);
+    lift = new Lift(hardwareMap, telemetry_M);
+    liftClaw = new AlphaLiftClaw(hardwareMap, telemetry_M);
+    slide = new AlphaSlide(hardwareMap, telemetry_M);
     drive = new SampleMecanumDrive(hardwareMap);
 //    if (currentRobot==DriveConstants.RobotType.DELTA) {
 //      intakeClawSensor = new ColorSensor(hardwareMap, "intakeClawSensor");
@@ -105,10 +106,10 @@ public class AlphaCar extends CommandOpMode {
     slide.initialize();
     liftClaw.initialize();
 
-    telemetry.addData("Current Robot Pose", DriveConstants.getRobotTeleOpStartPose());
-    telemetry.update();
-    drive.setPoseEstimate(DriveConstants.getRobotTeleOpStartPose().toPose2d());
-
+    telemetry_M.addData("Current Robot Pose", DriveConstants.robotTeleOpStartPose.toPose2d());
+//    telemetry_M.addData("Local Robot Pose", LocalRobotTeleOpStartPose.toPose2d());
+    telemetry_M.update();
+    drive.setPoseEstimate(DriveConstants.robotTeleOpStartPose.toPose2d());
 //    lift.setGoal(Lift.Goal.STOW);
 
     // Teleop Drive Command
@@ -423,11 +424,11 @@ public class AlphaCar extends CommandOpMode {
   @Override
   public void run() {
 //    if (currentRobot==DriveConstants.RobotType.DELTA) {
-//      telemetry.addData("blueValue", intakeClawSensor.getColor().blue);
+//      telemetry_M.addData("blueValue", intakeClawSensor.getColor().blue);
 //    }
     CommandScheduler.getInstance().run();
     lift.periodicTest();
-    telemetry.update();
+    telemetry_M.update();
     TelemetryPacket packet = new TelemetryPacket();
     packet.fieldOverlay().setStroke("#3F51B5");
     LocalizationTest.drawRobot(packet.fieldOverlay(), drive.getPoseEstimate());
