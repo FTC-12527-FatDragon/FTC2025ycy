@@ -30,7 +30,7 @@ public class Lift extends MotorPIDSlideSubsystem {
   public static double kP = 0.008, kI = 0.0, kD = 0.0, kV = 0.0003, kS = 0.12, kG = 0.12;
   private final PIDController pidController;
   private final Motor liftMotorUp;
-//  private final Motor liftMotorDown;
+  private final Motor liftMotorDown;
 
   private double lastSetpoint = 0;
 
@@ -58,22 +58,23 @@ public class Lift extends MotorPIDSlideSubsystem {
   public static double AtGoalTolerance = 10;
 
   public Lift(final HardwareMap hardwareMap, Telemetry telemetry) {
-    if (DriveConstants.currentRobot== DriveConstants.RobotType.ALPHA) {
+    if (DriveConstants.currentRobot == DriveConstants.RobotType.ALPHA ||
+            DriveConstants.currentRobot == DriveConstants.RobotType.EPSILON) {
       liftMotorUp = new Motor(hardwareMap, "liftMotor");
-      //liftMotorDown = new EmptyMotor();
+      liftMotorDown = new EmptyMotor();
       liftMotorUp.setInverted(true);
     } else {
       liftMotorUp = new Motor(hardwareMap, "liftMotorUp");
-      //liftMotorDown = new Motor(hardwareMap, "liftMotorDown");
+      liftMotorDown = new Motor(hardwareMap, "liftMotorDown");
       liftMotorUp.setInverted(false);
     }
 
 
 
     liftMotorUp.stopAndResetEncoder();
-    //liftMotorDown.stopAndResetEncoder();
+    liftMotorDown.stopAndResetEncoder();
     liftMotorUp.setRunMode(Motor.RunMode.RawPower);
-    //liftMotorDown.setRunMode(Motor.RunMode.RawPower);
+    liftMotorDown.setRunMode(Motor.RunMode.RawPower);
 
     pidController = new PIDController(kP, kI, kD);
     pidController.setIntegrationBounds(-1 / kI, 1 / kI);
@@ -96,7 +97,7 @@ public class Lift extends MotorPIDSlideSubsystem {
 //    }
     double output = Range.clip(percent, -1, 1);
     liftMotorUp.set(output);
-    //liftMotorDown.set(output);
+    liftMotorDown.set(output);
   }
 
   public double getResetPower() {
@@ -110,7 +111,7 @@ public class Lift extends MotorPIDSlideSubsystem {
     goal = Goal.STOW;
     // TODO: does this work?
     liftMotorUp.resetEncoder();
-    //liftMotorDown.resetEncoder();
+    liftMotorDown.resetEncoder();
     telemetry.addData("Lift.Current Position", getCurrentPosition());
     telemetry.addData("Lift.Error", pidController.getPositionError());
     // telemetry.update();

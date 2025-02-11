@@ -179,7 +179,7 @@ public class AlphaSlide extends MotorPIDSlideSubsystem{
 
   public void initialize() {
     slideArmServo.setPosition(Goal.STOW.slideArmPos);
-    if(currentRobot== DriveConstants.RobotType.DELTA){
+    if(currentRobot== DriveConstants.RobotType.EPSILON){
       ((MotorServo)slideRightServo).resetEncoder();
     }
     slideRightServo.setPosition(SlideServo.BACK.extensionVal);

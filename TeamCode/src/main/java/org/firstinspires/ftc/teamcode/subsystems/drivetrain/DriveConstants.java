@@ -1,7 +1,5 @@
 package org.firstinspires.ftc.teamcode.subsystems.drivetrain;
 
-import android.provider.Settings.Secure;
-
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
@@ -35,13 +33,14 @@ public class DriveConstants {
   @Setter @Getter public static Pose2dHelperClass robotTeleOpStartPose = new Pose2dHelperClass();
 
 
-  public static final RobotType currentRobot = RobotType.DELTA;
+  public static final RobotType currentRobot = RobotType.EPSILON;
 
   public enum RobotType {
     ALPHA,
     BETA,
     GAMMA,
-    DELTA
+    DELTA,
+    EPSILON
   }
 
   @Deprecated
@@ -140,7 +139,7 @@ public class DriveConstants {
         MAX_VEL = 62.89457585940184;
         MAX_ANG_VEL = Math.toRadians(134.16);
         break;
-      case DELTA:
+      case EPSILON:
         GoBildaXLocalizerDirection = GoBildaPinpointDriver.EncoderDirection.FORWARD;
         GoBildaYLocalizerDirection = GoBildaPinpointDriver.EncoderDirection.FORWARD;
         GoBildaLocalizerEncoderResolution =
