@@ -223,7 +223,7 @@ public class AlphaCar extends CommandOpMode {
                     gamepadEx1.getButton(GamepadKeys.Button.A)
                             && slide.getGoal() == AlphaSlide.Goal.STOW)
             .whenPressed(
-                    slide.aimCommand()
+                    slide.openClawCommand()
                             .andThen(slide.grabCommand())
                     , false);
 
