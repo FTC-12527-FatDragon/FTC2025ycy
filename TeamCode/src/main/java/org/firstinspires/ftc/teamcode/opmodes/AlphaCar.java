@@ -240,7 +240,7 @@ public class AlphaCar extends CommandOpMode {
     new FunctionalButton(
             () ->
                     gamepadEx1.getButton(GamepadKeys.Button.DPAD_RIGHT)
-                            && slide.getGoal() == AlphaSlide.Goal.AIM
+                            && slide.getGoal() == AlphaSlide.Goal.STOW
                             && lift.getGoal() == Lift.Goal.STOW
                             && currentState == OSState.Teleop)
             .whenPressed(
