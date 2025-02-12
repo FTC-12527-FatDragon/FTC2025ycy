@@ -210,22 +210,11 @@ public class AlphaCar extends CommandOpMode {
     )
             .whenPressed(slide.aimCommand(), false);
 
-    // Grab when aim
-    new FunctionalButton(
-            () ->
-                    gamepadEx1.getButton(GamepadKeys.Button.A)
-                            && slide.getGoal() == AlphaSlide.Goal.AIM)
-            .whenPressed(slide.grabCommand(), false);
 
-    // Grab when stow
-    new FunctionalButton(
-            () ->
-                    gamepadEx1.getButton(GamepadKeys.Button.A)
-                            && slide.getGoal() == AlphaSlide.Goal.STOW)
-            .whenPressed(
-                    slide.openClawCommand()
-                            .andThen(slide.grabCommand())
-                    , false);
+    // Grab when aim
+    gamepadEx1.getGamepadButton(GamepadKeys.Button.A)
+            .whenPressed(slide.openClawCommand()
+                    .andThen(slide.grabCommand()), false);
 
 
     // Pure Handoff
