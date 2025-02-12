@@ -102,6 +102,13 @@ public class AlphaSlide extends MotorPIDSlideSubsystem{
     );
   }
 
+  public Command openClawCommand() {
+    return new SequentialCommandGroup(
+            new InstantCommand(() -> intakeClawServo.setPosition(intakeClawServo_Open)),
+            new WaitCommand(aimCommand_Arm2OpenDelayMs)
+    );
+  }
+
   public Command aimCommand() {
     return aimCommand(TurnServo.DEFAULT);
   }

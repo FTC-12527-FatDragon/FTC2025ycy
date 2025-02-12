@@ -222,7 +222,10 @@ public class AlphaCar extends CommandOpMode {
             () ->
                     gamepadEx1.getButton(GamepadKeys.Button.A)
                             && slide.getGoal() == AlphaSlide.Goal.STOW)
-            .whenPressed(slide.grabCommand(), false);
+            .whenPressed(
+                    slide.openClawCommand()
+                            .andThen(slide.grabCommand())
+                    , false);
 
 
     // Pure Handoff
