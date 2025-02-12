@@ -214,8 +214,16 @@ public class AlphaCar extends CommandOpMode {
     new FunctionalButton(
             () ->
                     gamepadEx1.getButton(GamepadKeys.Button.A)
-                            && slide.getGoal() == AlphaSlide.Goal.AIM )
+                            && slide.getGoal() == AlphaSlide.Goal.AIM)
             .whenPressed(slide.grabCommand(), false);
+
+    // Grab when stow
+    new FunctionalButton(
+            () ->
+                    gamepadEx1.getButton(GamepadKeys.Button.A)
+                            && slide.getGoal() == AlphaSlide.Goal.STOW)
+            .whenPressed(slide.grabCommand(), false);
+
 
     // Pure Handoff
     Supplier<Command> handoffCommand =
@@ -359,7 +367,8 @@ public class AlphaCar extends CommandOpMode {
                     gamepadEx1.getButton(GamepadKeys.Button.RIGHT_STICK_BUTTON)
                             && currentState == OSState.Teleop
                             && currentRobot != DriveConstants.RobotType.ALPHA
-                            && slide.getSlideServo() == AlphaSlide.SlideServo.BACK)
+                            && (slide.getSlideServo() == AlphaSlide.SlideServo.BACK
+                            || slide.getSlideServo() == AlphaSlide.SlideServo.HANDOFF))
             .whenHeld(
                     slide.manualResetCommand()
             );
