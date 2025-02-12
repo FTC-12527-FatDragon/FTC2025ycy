@@ -275,7 +275,7 @@ public class AlphaCar extends CommandOpMode {
     new FunctionalButton(
             () ->
                     gamepadEx1.getButton(GamepadKeys.Button.DPAD_LEFT)
-                            && lift.getGoal() == Lift.Goal.PRE_HANG && currentState == OSState.Teleop)
+                            && currentState == OSState.Teleop)
             .whenPressed(specimenCommands, false);
     //gamepadEx1.getGamepadButton(GamepadKeys.Button.DPAD_LEFT).whenPressed(specimenCommands, false);
 
