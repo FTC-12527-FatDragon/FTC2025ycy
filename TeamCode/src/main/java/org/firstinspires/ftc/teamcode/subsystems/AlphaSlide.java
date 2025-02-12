@@ -122,7 +122,7 @@ public class AlphaSlide extends MotorPIDSlideSubsystem{
                     ),
             setServoPosCommand(intakeClawServo, Goal.GRAB.clawAngle, grabTimeout),
             new InstantCommand(() -> slideArmServo.setPosition(Goal.HANDOFF.slideArmPos)),
-            new InstantCommand(() -> goal = Goal.AIM));
+            new InstantCommand(() -> goal = Goal.STOW));
   }
 
   public Command grabCommand() {
