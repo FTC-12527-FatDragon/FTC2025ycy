@@ -449,7 +449,7 @@ public class AlphaCar extends CommandOpMode {
             () ->
                     gamepadEx2.getButton(GamepadKeys.Button.DPAD_UP) &&
                             currentRobot == DriveConstants.RobotType.EPSILON)
-            .whenPressed(
+            .whenHeld(
                     climber.elevateCommand()
             );
 
@@ -457,7 +457,7 @@ public class AlphaCar extends CommandOpMode {
             () ->
                     gamepadEx2.getButton(GamepadKeys.Button.DPAD_DOWN) &&
                             currentRobot == DriveConstants.RobotType.EPSILON)
-            .whenPressed(
+            .whenHeld(
                     climber.declineCommand()
             );
 

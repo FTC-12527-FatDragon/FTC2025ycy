@@ -103,10 +103,7 @@ public class AlphaSlide extends MotorPIDSlideSubsystem{
   }
 
   public Command openClawCommand() {
-    return new SequentialCommandGroup(
-            new InstantCommand(() -> intakeClawServo.setPosition(intakeClawServo_Open)),
-            new WaitCommand(aimCommand_Arm2OpenDelayMs)
-    );
+    return setServoPosCommand(intakeClawServo, intakeClawServo_Open, grabTimeout);
   }
 
   public Command aimCommand() {
