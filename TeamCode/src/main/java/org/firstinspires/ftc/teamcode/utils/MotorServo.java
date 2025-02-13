@@ -11,7 +11,7 @@ import com.qualcomm.robotcore.util.RobotLog;
 import org.firstinspires.ftc.teamcode.subsystems.MotorPIDSlideSubsystem;
 
 public class MotorServo implements Servo{
-    public static double kP = 0.02, kI = 0.0, kD = 0.0006;
+    public static double kP = 0.01, kI = 0.0, kD = 0.0002;
     private final PIDController motorPID;
     private final DcMotorEx motor;
 
