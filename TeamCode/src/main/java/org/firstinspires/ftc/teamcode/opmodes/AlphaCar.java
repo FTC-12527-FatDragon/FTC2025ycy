@@ -434,23 +434,25 @@ public class AlphaCar extends CommandOpMode {
                             .alongWith(new InstantCommand(()-> shouldDisable = false))
             );
 
-    new FunctionalButton(
-            () ->
-                    gamepadEx2.getButton(GamepadKeys.Button.DPAD_UP) &&
-                            currentRobot == DriveConstants.RobotType.EPSILON)
-            .whenHeld(
-                    climber.elevateCommand()
-            );
+    if(climber!=null){
+      new FunctionalButton(
+              () ->
+                      gamepadEx2.getButton(GamepadKeys.Button.DPAD_UP) &&
+                              currentRobot == DriveConstants.RobotType.EPSILON)
+              .whenHeld(
+                      climber.elevateCommand()
+              );
 
-    new FunctionalButton(
-            () ->
-                    gamepadEx2.getButton(GamepadKeys.Button.DPAD_DOWN) &&
-                            currentRobot == DriveConstants.RobotType.EPSILON)
-            .whenHeld(
-                    climber.declineCommand()
-            );
+      new FunctionalButton(
+              () ->
+                      gamepadEx2.getButton(GamepadKeys.Button.DPAD_DOWN) &&
+                              currentRobot == DriveConstants.RobotType.EPSILON)
+              .whenHeld(
+                      climber.declineCommand()
+              );
 
-  }
+    }
+    }
 
   @Override
   public void run() {
