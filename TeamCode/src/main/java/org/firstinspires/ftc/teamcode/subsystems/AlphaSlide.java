@@ -48,6 +48,8 @@ public class AlphaSlide extends MotorPIDSlideSubsystem{
 
   public static long grabTimeout = 70;
 
+  public static double resetPower = -0.3;
+
   @Setter @Getter private Goal goal = Goal.STOW;
 //  private boolean isIntakeClawOpen = false;
 
@@ -253,7 +255,7 @@ public class AlphaSlide extends MotorPIDSlideSubsystem{
 
   @Override
   double getResetPower() {
-    return -0.5;
+    return resetPower;
   }
 
   @Override
