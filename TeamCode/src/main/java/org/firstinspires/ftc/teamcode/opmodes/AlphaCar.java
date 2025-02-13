@@ -362,7 +362,9 @@ public class AlphaCar extends CommandOpMode {
                             && (slide.getSlideServo() == AlphaSlide.SlideServo.BACK
                             || slide.getSlideServo() == AlphaSlide.SlideServo.HANDOFF))
             .whenHeld(
-                    slide.manualResetCommand()
+                    new InstantCommand(() -> slide.setSlideServo(AlphaSlide.SlideServo.BACK)).andThen(
+                            slide.manualResetCommand()
+                    )
             );
 
     new FunctionalButton(
