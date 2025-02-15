@@ -118,8 +118,9 @@ public class AlphaSlide extends MotorPIDSlideSubsystem{
             setTurnServoPosCommand(turnServoPos, aimCommand_wristTurn2ArmDelayMs) // Won't do anything if turnServoPos is invalid
                     .alongWith(
                             setServoPosCommand(slideArmServo, Goal.GRAB.slideArmPos, grabTimeout)
+                                    .alongWith(new WaitCommand(40).andThen(setServoPosCommand(intakeClawServo, Goal.GRAB.clawAngle, grabTimeout)))
+
                     ),
-            setServoPosCommand(intakeClawServo, Goal.GRAB.clawAngle, grabTimeout),
             new InstantCommand(() -> slideArmServo.setPosition(Goal.HANDOFF.slideArmPos)),
             new InstantCommand(() -> goal = Goal.STOW));
   }
@@ -235,7 +236,7 @@ public class AlphaSlide extends MotorPIDSlideSubsystem{
 //  }
 
   public static double slideArmServo_Down = currentRobot==DriveConstants.RobotType.ALPHA?0.5:0.76;
-  public static double intakeClawServo_Open = currentRobot==DriveConstants.RobotType.ALPHA?0.2:0.5;
+  public static double intakeClawServo_Open = currentRobot==DriveConstants.RobotType.ALPHA?0.2:0.57;
   public static double intakeClawServo_Close = currentRobot==DriveConstants.RobotType.ALPHA?0.635:0.76;
 
   @Override
