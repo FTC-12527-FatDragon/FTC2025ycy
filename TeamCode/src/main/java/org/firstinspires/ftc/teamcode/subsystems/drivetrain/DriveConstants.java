@@ -30,10 +30,10 @@ import lombok.Setter;
 public class DriveConstants {
   public static String android_id = FtcRobotControllerActivity.getAndroidId();
 
-  @Setter @Getter public static Pose2dHelperClass robotTeleOpStartPose = new Pose2dHelperClass();
+  @Setter @Getter public static volatile Pose2dHelperClass robotTeleOpStartPose = new Pose2dHelperClass();
 
 
-  public static final RobotType currentRobot = RobotType.EPSILON;
+  public static final RobotType currentRobot = RobotType.ALPHA;
 
   public enum RobotType {
     ALPHA,

@@ -365,10 +365,11 @@ public abstract class AutoCommandBase extends LinearOpMode {
     waitForStart();
 
     while (opModeIsActive() && !isStopRequested()) {
+      DriveConstants.robotTeleOpStartPose = new Pose2dHelperClass(drive.getPoseEstimate());
+      telemetry_M.addData("Robot TeleOp Pose", DriveConstants.robotTeleOpStartPose.toPose2d());
+      telemetry_M.addData("Robot Current Pose", drive.getPoseEstimate());
       periodic();
     }
-
-    DriveConstants.robotTeleOpStartPose = new Pose2dHelperClass(drive.getPoseEstimate());
 
     CommandScheduler.getInstance().reset();
   }
