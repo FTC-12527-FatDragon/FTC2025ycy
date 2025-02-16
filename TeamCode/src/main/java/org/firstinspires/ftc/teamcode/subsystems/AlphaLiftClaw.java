@@ -23,7 +23,7 @@ public class AlphaLiftClaw extends SubsystemBase {
   private final Telemetry telemetry;
 
   public static double LiftClaw_Open = currentRobot==DriveConstants.RobotType.ALPHA?0.7:0.35;
-  public static double LiftClaw_Close = currentRobot==DriveConstants.RobotType.ALPHA?0.4:0.575;
+  public static double LiftClaw_Close = currentRobot==DriveConstants.RobotType.ALPHA?0.4:0.58;
   public static double liftArmClimbPos = currentRobot==DriveConstants.RobotType.ALPHA ? 0.38 : 0.43;
 
 
@@ -132,7 +132,7 @@ public class AlphaLiftClaw extends SubsystemBase {
   public enum ServoPositions {
     STOW(currentRobot==DriveConstants.RobotType.ALPHA?0.76:0.84, LiftClaw_Close, currentRobot==DriveConstants.RobotType.ALPHA?0.64:0.64),
     CHAMBER(currentRobot==DriveConstants.RobotType.ALPHA?0.58:0.65, LiftClaw_Close, currentRobot==DriveConstants.RobotType.ALPHA?0.27:0.47),
-    BASKET(currentRobot==DriveConstants.RobotType.ALPHA?0.37:0.43, LiftClaw_Close, currentRobot==DriveConstants.RobotType.ALPHA?0.35:0.57),
+    BASKET(currentRobot==DriveConstants.RobotType.ALPHA?0.37:0.43, LiftClaw_Close, currentRobot==DriveConstants.RobotType.ALPHA?0.35:0.5),
     GRAB(currentRobot==DriveConstants.RobotType.ALPHA?0.15:0.198, LiftClaw_Open, currentRobot==DriveConstants.RobotType.ALPHA?0.08:0.35);
     //liftarm,liftclaw,liftwrist
 
