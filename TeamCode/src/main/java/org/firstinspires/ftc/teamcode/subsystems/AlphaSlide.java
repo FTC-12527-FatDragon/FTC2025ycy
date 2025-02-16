@@ -46,7 +46,7 @@ public class AlphaSlide extends MotorPIDSlideSubsystem{
   private static double turnAngleDeg = 0;
   private TurnServo turnServo = TurnServo.DEG_0;
 
-  public static long grabTimeout = 70;
+  public static long grabTimeout = currentRobot == DriveConstants.RobotType.ALPHA ?70 : 100;
 
   public static double resetPower = -0.3;
 
@@ -118,8 +118,9 @@ public class AlphaSlide extends MotorPIDSlideSubsystem{
             setTurnServoPosCommand(turnServoPos, aimCommand_wristTurn2ArmDelayMs) // Won't do anything if turnServoPos is invalid
                     .alongWith(
                             setServoPosCommand(slideArmServo, Goal.GRAB.slideArmPos, grabTimeout)
+                                    .alongWith(new WaitCommand(40).andThen(setServoPosCommand(intakeClawServo, Goal.GRAB.clawAngle, grabTimeout)))
+
                     ),
-            setServoPosCommand(intakeClawServo, Goal.GRAB.clawAngle, grabTimeout),
             new InstantCommand(() -> slideArmServo.setPosition(Goal.HANDOFF.slideArmPos)),
             new InstantCommand(() -> goal = Goal.STOW));
   }
@@ -216,26 +217,26 @@ public class AlphaSlide extends MotorPIDSlideSubsystem{
 //    isIntakeClawOpen = false;
   }
 
-  public void wristUp() {
-    wristServo.setPosition(0.75);
-  }
+//  public void wristUp() {
+//    wristServo.setPosition(0.75);
+//  }
 
-  public void wristDown() {
-    wristServo.setPosition(0.05);
-  }
+//  public void wristDown() {
+//    wristServo.setPosition(0.05);
+//  }
 
   public void slideArmDown() {
     // This is down for stowing the liftArm when scoring the speciemen
     slideArmServo.setPosition(Goal.AIM.slideArmPos);
   }
 
-  public void slideArmUp() {
-    // This is up for the auto
-    slideArmServo.setPosition(0.6);
-  }
+//  public void slideArmUp() {
+//    // This is up for the auto
+//    slideArmServo.setPosition(0.6);
+//  }
 
   public static double slideArmServo_Down = currentRobot==DriveConstants.RobotType.ALPHA?0.5:0.76;
-  public static double intakeClawServo_Open = currentRobot==DriveConstants.RobotType.ALPHA?0.2:0.5;
+  public static double intakeClawServo_Open = currentRobot==DriveConstants.RobotType.ALPHA?0.2:0.57;
   public static double intakeClawServo_Close = currentRobot==DriveConstants.RobotType.ALPHA?0.635:0.76;
 
   @Override
@@ -266,9 +267,9 @@ public class AlphaSlide extends MotorPIDSlideSubsystem{
 
   public enum Goal {
     STOW(-1,                currentRobot==DriveConstants.RobotType.ALPHA?0.4:0.3,  currentRobot==DriveConstants.RobotType.ALPHA?0.39:0.5, 0.4,          intakeClawServo_Open),
-    AIM(-1,  currentRobot==DriveConstants.RobotType.ALPHA?0.35:0.6,  currentRobot==DriveConstants.RobotType.ALPHA?0.75:0.04, turnAngleDeg, intakeClawServo_Open),
-    GRAB(-1, slideArmServo_Down                                    ,  currentRobot==DriveConstants.RobotType.ALPHA?0.75:0.04, turnAngleDeg, intakeClawServo_Close),
-    HANDOFF(-1,           currentRobot==DriveConstants.RobotType.ALPHA?0.11:0.14, currentRobot==DriveConstants.RobotType.ALPHA?0.45:0.47,  0.4,          intakeClawServo_Close);
+    AIM(-1,  currentRobot==DriveConstants.RobotType.ALPHA?0.35:0.6,  currentRobot==DriveConstants.RobotType.ALPHA?0.75:0.74, turnAngleDeg, intakeClawServo_Open),
+    GRAB(-1, slideArmServo_Down                                    ,  currentRobot==DriveConstants.RobotType.ALPHA?0.75:0.74, turnAngleDeg, intakeClawServo_Close),
+    HANDOFF(-1,           currentRobot==DriveConstants.RobotType.ALPHA?0.11:0.1, currentRobot==DriveConstants.RobotType.ALPHA?0.45:0.37,  0.4,          intakeClawServo_Close);
     //Arm, Wrist, Wrist Turn
     private final double slideExtension;
     private final double slideArmPos;
@@ -422,7 +423,7 @@ public class AlphaSlide extends MotorPIDSlideSubsystem{
   public enum SlideServo {
     FRONT(currentRobot == DriveConstants.RobotType.ALPHA ? 0.61 : slideExtensionMax),
     MIDDLE(currentRobot == DriveConstants.RobotType.ALPHA ? 0.375 : slideExtensionMax*0.5),
-    PRE_HANDOFF(currentRobot == DriveConstants.RobotType.ALPHA ? 0.225 : 25),//slideExtensionMax*0.1),
+    PRE_HANDOFF(currentRobot == DriveConstants.RobotType.ALPHA ? 0.225 : 150),//slideExtensionMax*0.1),
     HANDOFF(currentRobot == DriveConstants.RobotType.ALPHA ? 0.215 : 20),
     BACK(currentRobot == DriveConstants.RobotType.ALPHA ? 0.215 : 0);
 

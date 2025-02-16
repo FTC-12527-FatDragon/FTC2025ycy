@@ -140,17 +140,17 @@ public class DriveConstants {
         MAX_ANG_VEL = Math.toRadians(134.16);
         break;
       case EPSILON:
-        GoBildaXLocalizerDirection = GoBildaPinpointDriver.EncoderDirection.FORWARD;
-        GoBildaYLocalizerDirection = GoBildaPinpointDriver.EncoderDirection.FORWARD;
+        GoBildaXLocalizerDirection = GoBildaPinpointDriver.EncoderDirection.REVERSED;
+        GoBildaYLocalizerDirection = GoBildaPinpointDriver.EncoderDirection.REVERSED;
         GoBildaLocalizerEncoderResolution =
                 GoBildaPinpointDriver.GoBildaOdometryPods.goBILDA_SWINGARM_POD;
         GoBildaLocalizerPerpendicularOffset = new Translation2dHelperClass(97, 108);
-        TRACK_WIDTH = 14.5;
-        kV = 0.0116;
-        kA = 0.00225;
-        kStatic = 0.04;
-        MAX_VEL = 84.97331647926711;
-        MAX_ANG_VEL = 2.2771860122680665;
+        TRACK_WIDTH = 14.75;
+        kV = 0.013;
+        kA = 0.0023;
+        kStatic = 0.02;
+        MAX_VEL = 85.65532110468519;
+        MAX_ANG_VEL = 2.43857479095459;
         isReflected = false;
         break;
       case BETA:
