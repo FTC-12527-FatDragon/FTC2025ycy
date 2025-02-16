@@ -56,10 +56,10 @@ public class AlphaCar extends CommandOpMode {
   private boolean isHangComplete = false;
   private boolean shouldDisable = false;
 
-  public static boolean isSetPose = true;
-  public static double xPose = 0;
-  public static double yPose = 0;
-  public static double headingDegree = 0;
+  public static boolean isSetPose = false;
+//  public static double xPose = 0;
+//  public static double yPose = 0;
+//  public static double headingDegree = 0;
 
   private OSState currentState = OSState.Teleop;
 
@@ -68,7 +68,7 @@ public class AlphaCar extends CommandOpMode {
     Halfauto;
   }
   //Trajectories
-  public Pose2dHelperClass start = DriveConstants.getRobotTeleOpStartPose();
+//  public Pose2dHelperClass start = DriveConstants.getRobotTeleOpStartPose();
   public static Pose2dHelperClass basket =
           currentRobot == DriveConstants.RobotType.ALPHA ?
                   new Pose2dHelperClass(-56.76, -57.25, 45.00) :
@@ -115,7 +115,6 @@ public class AlphaCar extends CommandOpMode {
     telemetry_M.addData("Current Robot Pose", DriveConstants.robotTeleOpStartPose.toPose2d());
 //    telemetry_M.addData("Local Robot Pose", LocalRobotTeleOpStartPose.toPose2d());
     telemetry_M.update();
-    drive.setPoseEstimate(DriveConstants.robotTeleOpStartPose.toPose2d());
 //    lift.setGoal(Lift.Goal.STOW);
 
     // Teleop Drive Command
@@ -454,8 +453,9 @@ public class AlphaCar extends CommandOpMode {
                       climber.declineCommand()
               );
 
-    }
-    }
+      }
+    drive.setPoseEstimate(DriveConstants.robotTeleOpStartPose.toPose2d());
+  }
 
   @Override
   public void run() {
@@ -471,7 +471,7 @@ public class AlphaCar extends CommandOpMode {
     FtcDashboard.getInstance().sendTelemetryPacket(packet);
 
     if(isSetPose) {
-      drive.setPoseEstimate(new Pose2d(xPose, yPose, Math.toRadians(headingDegree)));
+      drive.setPoseEstimate(DriveConstants.robotTeleOpStartPose.toPose2d());
       isSetPose = false;
     }
   }
