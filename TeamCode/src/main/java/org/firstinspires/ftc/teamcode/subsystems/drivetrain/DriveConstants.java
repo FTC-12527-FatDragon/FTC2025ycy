@@ -78,7 +78,7 @@ public class DriveConstants {
    * angular distances although most angular parameters are wrapped in Math.toRadians() for
    * convenience. Make sure to exclude any gear ratio included in MOTOR_CONFIG from GEAR_RATIO.
    */
-  public static double WHEEL_RADIUS = 2; // INCH!!
+  public static double WHEEL_RADIUS = currentRobot == RobotType.ALPHA?2:2.05; // INCH!!
   public static double GEAR_RATIO =
       1; // output (wheel) speed / input (motor) speed, >1 -> 加速 <1 -> 减速
   public static double TRACK_WIDTH; // INCH!!
