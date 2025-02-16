@@ -420,11 +420,11 @@ public class AlphaSlide extends MotorPIDSlideSubsystem{
   }
 
   public enum SlideServo {
-    FRONT(currentRobot == DriveConstants.RobotType.ALPHA ? 0.395 : slideExtensionMax),
-    MIDDLE(currentRobot == DriveConstants.RobotType.ALPHA ? 0.275 : slideExtensionMax*0.5),
-    PRE_HANDOFF(currentRobot == DriveConstants.RobotType.ALPHA ? 0.225: 25),//slideExtensionMax*0.1),
-    HANDOFF(currentRobot == DriveConstants.RobotType.ALPHA ? 0.19 : 20),
-    BACK(currentRobot == DriveConstants.RobotType.ALPHA ? 0.19 : 0);
+    FRONT(currentRobot == DriveConstants.RobotType.ALPHA ? 0.61 : slideExtensionMax),
+    MIDDLE(currentRobot == DriveConstants.RobotType.ALPHA ? 0.375 : slideExtensionMax*0.5),
+    PRE_HANDOFF(currentRobot == DriveConstants.RobotType.ALPHA ? 0.225 : 25),//slideExtensionMax*0.1),
+    HANDOFF(currentRobot == DriveConstants.RobotType.ALPHA ? 0.215 : 20),
+    BACK(currentRobot == DriveConstants.RobotType.ALPHA ? 0.215 : 0);
 
     private double extensionVal;
 
