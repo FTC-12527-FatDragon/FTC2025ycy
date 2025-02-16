@@ -148,6 +148,20 @@ public abstract class AutoCommandBase extends LinearOpMode {
     );
   }
 
+  public Command liftToBasket(long delay) {
+    return new SequentialCommandGroup(
+            new ParallelRaceGroup(
+                    new WaitCommand(lift2BasketTimeout),
+                    lift.setGoalCommand(Lift.Goal.BASKET)
+            ),
+            new InstantCommand(liftClaw::upLiftArm)
+                    .alongWith(new InstantCommand(liftClaw::basketWrist)),
+            new WaitCommand(basketTimeout + delay),
+            new InstantCommand(liftClaw::openClaw)
+
+    );
+  }
+
   public Command liftToBasket(){
     return liftToBasket(lift,liftClaw);
   }
@@ -175,8 +189,7 @@ public abstract class AutoCommandBase extends LinearOpMode {
             new InstantCommand(slide::autoForwardSlideExtension),
             new WaitCommand(slideRetractFar),
             slide.autoGrabCommand(),
-            new InstantCommand(slide::autoBackSlideExtension),
-            new WaitCommand(slideRetractAuto),
+            slide.handoffCommand(),
             liftClaw.closeClawCommand(),
             new WaitCommand(handoffTimeout),
             slide.autoOpenIntakeClaw()
@@ -187,10 +200,25 @@ public abstract class AutoCommandBase extends LinearOpMode {
     return new SequentialCommandGroup(
             new InstantCommand(slide::autoForwardSlideExtension),
             new WaitCommand(slideRetractFar),
-            slide.autoGrabCommand3A(),
-            slide.autoGrabCommand3B(),
-            new InstantCommand(slide::autoBackSlideExtension),
-            new WaitCommand(slideRetractAuto),
+            slide.autoGrabCommand3(),
+            slide.handoffCommand(),
+            liftClaw.closeClawCommand(),
+            new WaitCommand(handoffTimeout),
+            slide.autoOpenIntakeClaw()
+    );
+  }
+
+  public Command forwardslideCommand() {
+    return new SequentialCommandGroup(
+            new InstantCommand(slide::autoForwardSlideExtension),
+            new WaitCommand(slideRetractFar)
+    );
+  }
+
+  public Command grabWithoutForwardAndBack() {
+    return new SequentialCommandGroup(
+            slide.autoGrabCommand(),
+            slide.handoffCommand(),
             liftClaw.closeClawCommand(),
             new WaitCommand(handoffTimeout),
             slide.autoOpenIntakeClaw()
@@ -313,6 +341,7 @@ public abstract class AutoCommandBase extends LinearOpMode {
 
   @Override
   public void runOpMode() throws InterruptedException {
+    drive = new SampleMecanumDrive(hardwareMap);
 //    telemetry.setAutoClear(false); // FTC Dashboard does not support this, so set it separately.
     if (telemetryInDashboard) {
       telemetry_M = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
@@ -326,7 +355,7 @@ public abstract class AutoCommandBase extends LinearOpMode {
 
     telemetry_M.addData("Current Robot Pose", drive.getPoseEstimate());
     telemetry_M.update();
-    drive = new SampleMecanumDrive(hardwareMap);
+
 
 //    drive.setPoseEstimate(getStartPose());
     Command toRun = initialize().andThen(runAutoCommand());//.andThen(autoFinish());

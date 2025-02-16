@@ -147,30 +147,23 @@ public class AlphaSlide extends MotorPIDSlideSubsystem{
 
   public Command autoGrabCommand() {
     return new SequentialCommandGroup(
-            new InstantCommand(() -> intakeClawServo.setPosition(Goal.AIM.clawAngle))
-                    .alongWith(new InstantCommand(() -> slideArmServo.setPosition(Goal.GRAB.slideArmPos)))
+            new InstantCommand(() -> intakeClawServo.setPosition(Goal.AIM.clawAngle)),
+            new InstantCommand(() -> slideArmServo.setPosition(Goal.GRAB.slideArmPos))
                     .alongWith(new InstantCommand(() -> wristServo.setPosition(Goal.GRAB.wristPos))),
             new WaitCommand(waitGrabTimeout3),
             new InstantCommand(() -> intakeClawServo.setPosition(Goal.GRAB.clawAngle)),
-            new WaitCommand(grabTimeout),
-            new InstantCommand(() -> slideArmServo.setPosition(Goal.HANDOFF.slideArmPos))
-                    .alongWith(new InstantCommand(() -> wristServo.setPosition(Goal.HANDOFF.wristPos))),
             new WaitCommand(grabTimeout)
     );
   }
 
-  public Command autoGrabCommand3A() {
+
+  public Command autoGrabCommand3() {
     return new SequentialCommandGroup(
             setTurnServoPosCommand(TurnServo.RIGHT_90, 200),
-            new InstantCommand(() -> intakeClawServo.setPosition(Goal.AIM.clawAngle))
-                    .alongWith(new InstantCommand(() -> slideArmServo.setPosition(Goal.GRAB.slideArmPos)))
-                    .alongWith(new InstantCommand(() -> wristServo.setPosition(Goal.GRAB.wristPos)))
+            new InstantCommand(() -> intakeClawServo.setPosition(Goal.AIM.clawAngle)),
+            new InstantCommand(() -> slideArmServo.setPosition(Goal.GRAB.slideArmPos))
+                    .alongWith(new InstantCommand(() -> wristServo.setPosition(Goal.GRAB.wristPos))),
 //            new InstantCommand(() -> wristTurnServo.setPosition(TurnServo.RIGHT_90.turnAngleDeg)),
-    );
-  }
-
-  public Command autoGrabCommand3B() {
-    return new SequentialCommandGroup(
             new WaitCommand(waitGrabTimeout),
             new InstantCommand(() -> intakeClawServo.setPosition(Goal.GRAB.clawAngle)),
             new WaitCommand(grabTimeout),
@@ -235,8 +228,8 @@ public class AlphaSlide extends MotorPIDSlideSubsystem{
 //  }
 
   public static double slideArmServo_Down = currentRobot==DriveConstants.RobotType.ALPHA?0.5:0.76;
-  public static double intakeClawServo_Open = currentRobot==DriveConstants.RobotType.ALPHA?0.2:0.57;
-  public static double intakeClawServo_Close = currentRobot==DriveConstants.RobotType.ALPHA?0.635:0.76;
+  public static double intakeClawServo_Open = currentRobot==DriveConstants.RobotType.ALPHA?0.57:0.2;
+  public static double intakeClawServo_Close = currentRobot==DriveConstants.RobotType.ALPHA?0.76:0.635;
 
   @Override
   void runOpenLoop(double percent) {

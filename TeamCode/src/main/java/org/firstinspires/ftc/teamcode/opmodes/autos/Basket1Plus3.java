@@ -30,13 +30,13 @@ public class Basket1Plus3 extends AutoCommandBase {
   public static Pose2dHelperClass basket =
           currentRobot == DriveConstants.RobotType.ALPHA ?
                   new Pose2dHelperClass(-56.76, -57.25, 45.00) :
-                  new Pose2dHelperClass(-57.76, -58.25, 45.00);
+                  new Pose2dHelperClass(-58.76, -59.25, 45.00);
   public static Pose2dHelperClass grab1 =
           currentRobot == DriveConstants.RobotType.ALPHA ?
                   new Pose2dHelperClass(-49.25, -52.43, 90.00) :
-                  new Pose2dHelperClass(-49.25, -51.43, 90.00);
-  public static Pose2dHelperClass grab2 = new Pose2dHelperClass(-59.53, -52.43, 90.00);
-  public static Pose2dHelperClass grab3 = new Pose2dHelperClass(-44.5, -27.91, 180.00);
+                  new Pose2dHelperClass(-49.25, -53.43, 90.00);
+  public static Pose2dHelperClass grab2 = new Pose2dHelperClass(-60.03, -54.43, 90.00);
+  public static Pose2dHelperClass grab3 = new Pose2dHelperClass(-42, -25.91, 180.00);
   public static Pose2dHelperClass climb = new Pose2dHelperClass(-22.78, -11.10, 180.00);
 
   public static long waitDropTimeout = 200;
@@ -99,15 +99,15 @@ public class Basket1Plus3 extends AutoCommandBase {
                 new WaitCommand(waitDropTimeout),
                 new AutoDriveCommand(drive, basketToGrab1).alongWith(new WaitCommand(liftBackTimeout).andThen(liftBack())),
                 grabAndBack(),
-                new AutoDriveCommand(drive, grab1ToBasket).alongWith(liftToBasket()),
+                new AutoDriveCommand(drive, grab1ToBasket).alongWith(slide.aimCommand(), liftToBasket()),
                 new WaitCommand(waitDropTimeout),
                 new AutoDriveCommand(drive, basketToGrab2).alongWith(new WaitCommand(liftBackTimeout).andThen(liftBack())),
                 grabAndBack(),
-                new AutoDriveCommand(drive, grab2ToBasket).alongWith(liftToBasket()),
+                new AutoDriveCommand(drive, grab2ToBasket).alongWith(slide.aimCommand(), liftToBasket()),
                 new WaitCommand(waitDropTimeout),
                 new AutoDriveCommand(drive, basketToGrab3).alongWith(new WaitCommand(liftBackTimeout).andThen(liftBack())),
                 grabAndBack3(),
-                new AutoDriveCommand(drive, grab3ToBasket).alongWith(liftToBasket()),
+                new AutoDriveCommand(drive, grab3ToBasket).alongWith(slide.aimCommand(), liftToBasket()),
                 new WaitCommand(waitDropTimeout),
 
                 new AutoDriveCommand(drive, basketToClimb)
