@@ -39,14 +39,14 @@ public class AlphaSlide extends MotorPIDSlideSubsystem{
   public static long waitGrabTimeout3 = 400;
 
   public static long slideRetractFar = currentRobot == DriveConstants.RobotType.ALPHA ? 500 : 400;
-  public static long slideRetractNear = 150;
+  public static long slideRetractNear = currentRobot == DriveConstants.RobotType.ALPHA ? 150 : 200;
   public static long slideRetractAuto = 500;
   public static long slideExtensionMax = 510;
 
   private static double turnAngleDeg = 0;
   private TurnServo turnServo = TurnServo.DEG_0;
 
-  public static long grabTimeout = currentRobot == DriveConstants.RobotType.ALPHA ?70 : 100;
+  public static long grabTimeout = currentRobot == DriveConstants.RobotType.ALPHA ? 70 : 100;
 
   public static double resetPower = -0.3;
 
@@ -117,9 +117,8 @@ public class AlphaSlide extends MotorPIDSlideSubsystem{
             new InstantCommand(() -> goal = Goal.GRAB),
             setTurnServoPosCommand(turnServoPos, aimCommand_wristTurn2ArmDelayMs) // Won't do anything if turnServoPos is invalid
                     .alongWith(
-                            setServoPosCommand(slideArmServo, Goal.GRAB.slideArmPos, grabTimeout)
-                                    .alongWith(new WaitCommand(40).andThen(setServoPosCommand(intakeClawServo, Goal.GRAB.clawAngle, grabTimeout)))
-
+                            setServoPosCommand(slideArmServo, Goal.GRAB.slideArmPos, grabTimeout),
+                            new WaitCommand(40).andThen(setServoPosCommand(intakeClawServo, Goal.GRAB.clawAngle, grabTimeout))
                     ),
             new InstantCommand(() -> slideArmServo.setPosition(Goal.HANDOFF.slideArmPos)),
             new InstantCommand(() -> goal = Goal.STOW));
