@@ -136,7 +136,7 @@ public class AlphaSlide extends MotorPIDSlideSubsystem{
                   setServoPosCommand(wristServo, Goal.HANDOFF.wristPos, 100),
                   setServoPosCommand(slideArmServo, Goal.HANDOFF.slideArmPos, 150)
         ),
-        new InstantCommand(() -> slideServo = SlideServo.BACK).andThen(
+        new InstantCommand(() -> slideServo = SlideServo.HANDOFF).andThen(
                   new ConditionalCommand(
                           new WaitCommand(slideRetractFar),
                           new WaitCommand(slideRetractNear),
@@ -267,9 +267,9 @@ public class AlphaSlide extends MotorPIDSlideSubsystem{
 
   public enum Goal {
     STOW(-1,                currentRobot==DriveConstants.RobotType.ALPHA?0.4:0.3,  currentRobot==DriveConstants.RobotType.ALPHA?0.39:0.5, 0.4,          intakeClawServo_Open),
-    AIM(-1,  currentRobot==DriveConstants.RobotType.ALPHA?0.35:0.6,  currentRobot==DriveConstants.RobotType.ALPHA?0.75:0.04, turnAngleDeg, intakeClawServo_Open),
-    GRAB(-1, slideArmServo_Down                                    ,  currentRobot==DriveConstants.RobotType.ALPHA?0.75:0.04, turnAngleDeg, intakeClawServo_Close),
-    HANDOFF(-1,           currentRobot==DriveConstants.RobotType.ALPHA?0.11:0.1, currentRobot==DriveConstants.RobotType.ALPHA?0.45:0.47,  0.4,          intakeClawServo_Close);
+    AIM(-1,  currentRobot==DriveConstants.RobotType.ALPHA?0.35:0.6,  currentRobot==DriveConstants.RobotType.ALPHA?0.75:0.74, turnAngleDeg, intakeClawServo_Open),
+    GRAB(-1, slideArmServo_Down                                    ,  currentRobot==DriveConstants.RobotType.ALPHA?0.75:0.74, turnAngleDeg, intakeClawServo_Close),
+    HANDOFF(-1,           currentRobot==DriveConstants.RobotType.ALPHA?0.11:0.1, currentRobot==DriveConstants.RobotType.ALPHA?0.45:0.37,  0.4,          intakeClawServo_Close);
     //Arm, Wrist, Wrist Turn
     private final double slideExtension;
     private final double slideArmPos;
@@ -423,7 +423,7 @@ public class AlphaSlide extends MotorPIDSlideSubsystem{
   public enum SlideServo {
     FRONT(currentRobot == DriveConstants.RobotType.ALPHA ? 0.395 : slideExtensionMax),
     MIDDLE(currentRobot == DriveConstants.RobotType.ALPHA ? 0.275 : slideExtensionMax*0.5),
-    PRE_HANDOFF(currentRobot == DriveConstants.RobotType.ALPHA ? 0.225: 25),//slideExtensionMax*0.1),
+    PRE_HANDOFF(currentRobot == DriveConstants.RobotType.ALPHA ? 0.225: 150),//slideExtensionMax*0.1),
     HANDOFF(currentRobot == DriveConstants.RobotType.ALPHA ? 0.19 : 20),
     BACK(currentRobot == DriveConstants.RobotType.ALPHA ? 0.19 : 0);
 
