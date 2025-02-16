@@ -55,8 +55,8 @@ import org.firstinspires.ftc.teamcode.lib.roadrunner.util.LynxModuleUtil;
  */
 @Config
 public class SampleMecanumDrive extends MecanumDrive implements Subsystem {
-  public static PIDCoefficients TRANSLATIONAL_PID = currentRobot == DriveConstants.RobotType.ALPHA ? new PIDCoefficients(8, 0, 0.003) : new PIDCoefficients(5, 0, 0.0035);
-  public static PIDCoefficients HEADING_PID = currentRobot == DriveConstants.RobotType.ALPHA ? new PIDCoefficients(13, 0, 0.07) : new PIDCoefficients(16, 0, 0.03);
+  public static PIDCoefficients TRANSLATIONAL_PID = currentRobot == DriveConstants.RobotType.ALPHA ? new PIDCoefficients(8, 0, 0.003) : new PIDCoefficients(5, 0, 0.1);
+  public static PIDCoefficients HEADING_PID = currentRobot == DriveConstants.RobotType.ALPHA ? new PIDCoefficients(13, 0, 0.07) : new PIDCoefficients(10, 0, 3);
 
   public static double LATERAL_MULTIPLIER = 1.3;
 

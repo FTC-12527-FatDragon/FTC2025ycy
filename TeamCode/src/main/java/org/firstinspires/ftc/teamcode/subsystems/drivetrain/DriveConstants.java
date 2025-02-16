@@ -145,7 +145,7 @@ public class DriveConstants {
         GoBildaLocalizerEncoderResolution =
                 GoBildaPinpointDriver.GoBildaOdometryPods.goBILDA_SWINGARM_POD;
         GoBildaLocalizerPerpendicularOffset = new Translation2dHelperClass(-97, -108);
-        TRACK_WIDTH = 13.78;
+        TRACK_WIDTH = 13.97;
         kV = 0.013;
         kA = 0.0023;
         kStatic = 0.02;
