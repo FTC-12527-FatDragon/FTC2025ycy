@@ -140,7 +140,7 @@ public class AlphaSlide extends MotorPIDSlideSubsystem{
         new ConditionalCommand(
                 setSlideServoPosCommand(SlideServo.HANDOFF, slideRetractFar),
                 setSlideServoPosCommand(SlideServo.HANDOFF, slideRetractNear),
-                () -> slideServo.extensionVal >= SlideServo.MIDDLE.extensionVal
+                this::isSlideForward
         )
     );
   }
@@ -331,8 +331,8 @@ public class AlphaSlide extends MotorPIDSlideSubsystem{
     slideServo = SlideServo.PRE_HANDOFF;
   }
 
-  public boolean isSlideForward() { // TODO: Merge this with handoff condtion
-    return slideServo.extensionVal > SlideServo.PRE_HANDOFF.extensionVal;
+  public boolean isSlideForward() {
+    return slideServo.extensionVal >= SlideServo.MIDDLE.extensionVal;
   }
 
   public void leftTurnServo() {
