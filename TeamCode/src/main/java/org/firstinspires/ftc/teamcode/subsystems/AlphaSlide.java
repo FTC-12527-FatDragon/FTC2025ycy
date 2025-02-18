@@ -40,7 +40,7 @@ public class AlphaSlide extends MotorPIDSlideSubsystem{
   public static long waitGrabTimeout = 300;
   public static long waitGrabTimeout3 = 400;
 
-  public static long slideRetractFar = currentRobot == DriveConstants.RobotType.ALPHA ? 500 : 3000;
+  public static long slideRetractFar = currentRobot == DriveConstants.RobotType.ALPHA ? 500 : 300;
   public static long slideRetractNear = currentRobot == DriveConstants.RobotType.ALPHA ? 150 : 100;
   public static long slideRetractAuto = 500;
   public static long slideExtensionMax = 510;
