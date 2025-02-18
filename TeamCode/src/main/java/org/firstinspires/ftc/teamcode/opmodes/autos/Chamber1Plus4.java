@@ -53,10 +53,11 @@ public class Chamber1Plus4 extends AutoCommandBase {
 
     public static Pose2dHelperClass sample1Observation = new Pose2dHelperClass(48.46, -53, 90);
     public static Pose2dHelperClass EpsilonBotOffset = currentRobot == RobotType.EPSILON ? new Pose2dHelperClass(1.5, -4.375, 0) : new Pose2dHelperClass();
+    public static Translation2dHelperClass slideExtendOffset = currentRobot == RobotType.EPSILON ? new Translation2dHelperClass(26.5, 0) : new Translation2dHelperClass(24.45, 0);
 
     //  public static double startX = 24.43;
     //  public static double startY = -64.95;
-    public static Pose2dHelperClass start = currentRobot == RobotType.EPSILON ? new Pose2dHelperClass(8.2, -64.95, 90) : new Pose2dHelperClass(7.67, -64.95, 90.00);
+    public static Pose2dHelperClass start = currentRobot == RobotType.EPSILON ? new Pose2dHelperClass(8.2, -64.05, 90) : new Pose2dHelperClass(7.67, -64.95, 90.00);
 
     public static long ChamberUp2ExtendSlideToSample1Delay = 900;
     public static double GrabCycleReleaseOffsetSec = -0.5;
@@ -206,8 +207,8 @@ public class Chamber1Plus4 extends AutoCommandBase {
                         ),
 
 
-                pushBlocksCycle(grabSample12Observation2Sample2, GrabCycleAdmissibleTimeoutNormal, new ExtendFromPose(new RectangularArea(Sample2.toVector2d(), SampleValidRect.getX(), SampleValidRect.getY()), new Vector2d(24.45, 0))),
-                pushBlocksCycle(grabSample22Observation2Sample3, GrabCycleAdmissibleTimeoutNormal, new ExtendFromPose(new RectangularArea(Sample3.toVector2d(), SampleValidRect.getX(), SampleValidRect.getY()), new Vector2d(24.45, 0))),
+                pushBlocksCycle(grabSample12Observation2Sample2, GrabCycleAdmissibleTimeoutNormal, new ExtendFromPose(new RectangularArea(Sample2.toVector2d(), SampleValidRect.getX(), SampleValidRect.getY()), slideExtendOffset.toVector2d())),
+                pushBlocksCycle(grabSample22Observation2Sample3, GrabCycleAdmissibleTimeoutNormal, new ExtendFromPose(new RectangularArea(Sample3.toVector2d(), SampleValidRect.getX(), SampleValidRect.getY()), slideExtendOffset.toVector2d())),
                 pushBlocksCycle(grabSample32Observation2Grab, GrabCycleAdmissibleTimeoutNormal, new BooleanArea(false)),
 //                new AutoDriveCommand(drive, observationToGrab).alongWith(),
                 //.alongWith(new WaitCommand(500).deadlineWith(lift.manualResetCommand()))
