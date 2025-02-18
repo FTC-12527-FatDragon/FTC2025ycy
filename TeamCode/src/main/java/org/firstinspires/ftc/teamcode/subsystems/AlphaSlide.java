@@ -38,8 +38,8 @@ public class AlphaSlide extends MotorPIDSlideSubsystem{
   public static long waitGrabTimeout = 300;
   public static long waitGrabTimeout3 = 400;
 
-  public static long slideRetractFar = currentRobot == DriveConstants.RobotType.ALPHA ? 500 : 400;
-  public static long slideRetractNear = currentRobot == DriveConstants.RobotType.ALPHA ? 150 : 200;
+  public static long slideRetractFar = currentRobot == DriveConstants.RobotType.ALPHA ? 500 : 3000;
+  public static long slideRetractNear = currentRobot == DriveConstants.RobotType.ALPHA ? 150 : 100;
   public static long slideRetractAuto = 500;
   public static long slideExtensionMax = 510;
 
@@ -132,16 +132,21 @@ public class AlphaSlide extends MotorPIDSlideSubsystem{
     return new SequentialCommandGroup(
         new InstantCommand(() -> goal = Goal.HANDOFF),
         setTurnServoPosCommand(TurnServo.DEG_0, aimCommand_wristTurn2ArmDelayMs).alongWith(
-                  setServoPosCommand(wristServo, Goal.HANDOFF.wristPos, 100),
+                  setServoPosCommand(wristServo, Goal.HANDOFF.wristPos, 200),
                   setServoPosCommand(slideArmServo, Goal.HANDOFF.slideArmPos, 150)
         ),
-        new InstantCommand(() -> slideServo = SlideServo.HANDOFF).andThen(
-                  new ConditionalCommand(
-                          new WaitCommand(slideRetractFar),
-                          new WaitCommand(slideRetractNear),
-                          () -> slideServo.extensionVal >= SlideServo.MIDDLE.extensionVal
-                  )
-        )
+        new InstantCommand(() -> {
+          slideServo = SlideServo.HANDOFF;
+          telemetry.addLine("SLIDE RETRACT BEGIN");
+        }),
+        new ConditionalCommand(
+                new WaitCommand(slideRetractFar),
+                new WaitCommand(slideRetractNear),
+                () -> slideServo.extensionVal >= SlideServo.MIDDLE.extensionVal
+        ),
+        new InstantCommand(() -> {
+          telemetry.addLine("SLIDE RETRACT END");
+        })
     );
   }
 
@@ -228,8 +233,8 @@ public class AlphaSlide extends MotorPIDSlideSubsystem{
 //  }
 
   public static double slideArmServo_Down = currentRobot==DriveConstants.RobotType.ALPHA?0.5:0.76;
-  public static double intakeClawServo_Open = currentRobot==DriveConstants.RobotType.ALPHA?0.57:0.3;
-  public static double intakeClawServo_Close = currentRobot==DriveConstants.RobotType.ALPHA?0.76:0.7;
+  public static double intakeClawServo_Open = currentRobot==DriveConstants.RobotType.ALPHA?0.57:0.4;
+  public static double intakeClawServo_Close = currentRobot==DriveConstants.RobotType.ALPHA?0.76:0.81;
 
   @Override
   void runOpenLoop(double percent) {
@@ -298,7 +303,7 @@ public class AlphaSlide extends MotorPIDSlideSubsystem{
       default:
         telemetry.addLine("Warning: Unprocessed state: " + slideServo);
     }
-    telemetry.addLine("SLIDESERVO FORWARD");
+//    telemetry.addLine("SLIDESERVO FORWARD");
   }
 
   public void backwardSlideExtension() {
@@ -316,7 +321,7 @@ public class AlphaSlide extends MotorPIDSlideSubsystem{
       default:
         telemetry.addLine("Warning: Unprocessed state: " + slideServo);
     }
-    telemetry.addLine("SLIDESERVO BACKWARD");
+//    telemetry.addLine("SLIDESERVO BACKWARD");
   }
 
   public void autoForwardSlideExtension() {
@@ -415,7 +420,7 @@ public class AlphaSlide extends MotorPIDSlideSubsystem{
   public enum SlideServo {
     FRONT(currentRobot == DriveConstants.RobotType.ALPHA ? 0.61 : slideExtensionMax),
     MIDDLE(currentRobot == DriveConstants.RobotType.ALPHA ? 0.375 : slideExtensionMax*0.5),
-    PRE_HANDOFF(currentRobot == DriveConstants.RobotType.ALPHA ? 0.225 : 150),//slideExtensionMax*0.1),
+    PRE_HANDOFF(currentRobot == DriveConstants.RobotType.ALPHA ? 0.225 : 50),//slideExtensionMax*0.1),
     HANDOFF(currentRobot == DriveConstants.RobotType.ALPHA ? 0.215 : 20),
     BACK(currentRobot == DriveConstants.RobotType.ALPHA ? 0.215 : 0);
 
