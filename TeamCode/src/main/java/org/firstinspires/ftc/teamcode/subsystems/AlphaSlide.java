@@ -258,7 +258,7 @@ public class AlphaSlide extends MotorPIDSlideSubsystem{
 //  public static double slideArmServo_PreGrab = 0.45;
 
   public enum Goal {
-    STOW(-1,                currentRobot==DriveConstants.RobotType.ALPHA?0.4:0.3,  currentRobot==DriveConstants.RobotType.ALPHA?0.39:0.5, 0.4,          intakeClawServo_Open),
+    STOW(-1,                currentRobot==DriveConstants.RobotType.ALPHA?0.4:0.4,  currentRobot==DriveConstants.RobotType.ALPHA?0.39:0.5, 0.4,          intakeClawServo_Open),
     AIM(-1,  currentRobot==DriveConstants.RobotType.ALPHA?0.35:0.6,  currentRobot==DriveConstants.RobotType.ALPHA?0.75:0.74, turnAngleDeg, intakeClawServo_Open),
     GRAB(-1, slideArmServo_Down                                    ,  currentRobot==DriveConstants.RobotType.ALPHA?0.75:0.74, turnAngleDeg, intakeClawServo_Close),
     HANDOFF(-1,           currentRobot==DriveConstants.RobotType.ALPHA?0.11:0.1, currentRobot==DriveConstants.RobotType.ALPHA?0.45:0.37,  0.4,          intakeClawServo_Close);
