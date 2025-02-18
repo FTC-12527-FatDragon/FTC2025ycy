@@ -52,7 +52,7 @@ public class Chamber1Plus4 extends AutoCommandBase {
 
 
     public static Pose2dHelperClass sample1Observation = new Pose2dHelperClass(48.46, -53, 90);
-    public static Pose2dHelperClass EpsilonBotOffset = currentRobot == RobotType.EPSILON ? new Pose2dHelperClass(1.5, -4.375, 0) : new Pose2dHelperClass();
+    public static Pose2dHelperClass EpsilonBotOffset = currentRobot == RobotType.EPSILON ? new Pose2dHelperClass(1.5, -3.475, 0) : new Pose2dHelperClass();
     public static Translation2dHelperClass slideExtendOffset = currentRobot == RobotType.EPSILON ? new Translation2dHelperClass(26.5, 0) : new Translation2dHelperClass(24.45, 0);
 
     //  public static double startX = 24.43;

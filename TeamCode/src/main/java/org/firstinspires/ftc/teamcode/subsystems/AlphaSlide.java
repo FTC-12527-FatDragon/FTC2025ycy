@@ -189,7 +189,7 @@ public class AlphaSlide extends MotorPIDSlideSubsystem{
     }
     slideRightServo.setPosition(SlideServo.BACK.extensionVal);
     intakeClawServo.setPosition(Goal.HANDOFF.clawAngle);
-    wristServo.setPosition(Goal.HANDOFF.wristPos);
+    wristServo.setPosition(Goal.STOW.wristPos);
     wristTurnServo.setPosition(Goal.HANDOFF.turnAngle);
     handoffWristTurn();
     setTurnServoPos(TurnServo.DEG_0);
