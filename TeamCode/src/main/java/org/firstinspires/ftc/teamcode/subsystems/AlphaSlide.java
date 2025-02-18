@@ -21,6 +21,8 @@ import org.firstinspires.ftc.teamcode.subsystems.drivetrain.DriveConstants;
 import org.firstinspires.ftc.teamcode.utils.MathUtils;
 import org.firstinspires.ftc.teamcode.utils.MotorServo;
 
+import java.util.function.BooleanSupplier;
+
 @Config
 public class AlphaSlide extends MotorPIDSlideSubsystem{
 
@@ -55,7 +57,7 @@ public class AlphaSlide extends MotorPIDSlideSubsystem{
 
   private final Telemetry telemetry; // 0 0.5 0.8
 
-  @Getter @Setter private boolean normalHandoff = false;
+//  @Getter @Setter private boolean normalHandoff = false;
 
   @Setter @Getter private SlideServo slideServo = SlideServo.BACK;
 
@@ -135,18 +137,11 @@ public class AlphaSlide extends MotorPIDSlideSubsystem{
                   setServoPosCommand(wristServo, Goal.HANDOFF.wristPos, 200),
                   setServoPosCommand(slideArmServo, Goal.HANDOFF.slideArmPos, 150)
         ),
-        new InstantCommand(() -> {
-          slideServo = SlideServo.HANDOFF;
-          telemetry.addLine("SLIDE RETRACT BEGIN");
-        }),
         new ConditionalCommand(
-                new WaitCommand(slideRetractFar),
-                new WaitCommand(slideRetractNear),
+                setSlideServoPosCommand(SlideServo.HANDOFF, slideRetractFar),
+                setSlideServoPosCommand(SlideServo.HANDOFF, slideRetractNear),
                 () -> slideServo.extensionVal >= SlideServo.MIDDLE.extensionVal
-        ),
-        new InstantCommand(() -> {
-          telemetry.addLine("SLIDE RETRACT END");
-        })
+        )
     );
   }
 
@@ -336,7 +331,7 @@ public class AlphaSlide extends MotorPIDSlideSubsystem{
     slideServo = SlideServo.PRE_HANDOFF;
   }
 
-  public boolean isSlideForward() {
+  public boolean isSlideForward() { // TODO: Merge this with handoff condtion
     return slideServo.extensionVal > SlideServo.PRE_HANDOFF.extensionVal;
   }
 
@@ -397,6 +392,17 @@ public class AlphaSlide extends MotorPIDSlideSubsystem{
         () -> getServoPos() != pos && pos.turnAngleDeg>=0);
   }
 
+  public Command setSlideServoPosCommand(SlideServo pos, long delay) {
+    return new ConditionalCommand(
+            new InstantCommand(
+                    () -> {
+                      slideServo = pos;
+                    })
+                    .andThen(new WaitCommand(delay)),
+            new InstantCommand(() -> {slideServo = pos;}),
+            () -> slideServo.extensionVal != pos.extensionVal);
+  }
+
   public TurnServo getServoPos() {
     return turnAngleDeg == turnServo.turnAngleDeg ? turnServo : TurnServo.UNKNOWN;
   }
@@ -449,9 +455,9 @@ public class AlphaSlide extends MotorPIDSlideSubsystem{
       telemetry.addData("Slide.Current State", goal);
       telemetry.addData("Slide.Current State.Is at handoff", goal == Goal.HANDOFF);
       telemetry.addData("Slide.Claw Position", intakeClawServo.getPosition());
-      telemetry.addData("Slide.Extension", slideServo.extensionVal);
+      telemetry.addData("Slide.Extension.SetPoint", slideServo.extensionVal);
       telemetry.addData("Slide.Turn Angle", turnAngleDeg);
-      telemetry.addData("Slide.Servo Position", slideRightServo.getPosition());
+      telemetry.addData("Slide.Extension.Current Position", slideRightServo.getPosition());
     }
   }
 }
