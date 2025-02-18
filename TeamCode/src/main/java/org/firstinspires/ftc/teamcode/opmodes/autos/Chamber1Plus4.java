@@ -56,7 +56,7 @@ public class Chamber1Plus4 extends AutoCommandBase {
 
     //  public static double startX = 24.43;
     //  public static double startY = -64.95;
-    public static Pose2dHelperClass start = new Pose2dHelperClass(7.67, -64.95, 90.00);
+    public static Pose2dHelperClass start = currentRobot == RobotType.EPSILON ? new Pose2dHelperClass(8.2, -64.95, 90) : new Pose2dHelperClass(7.67, -64.95, 90.00);
 
     public static long ChamberUp2ExtendSlideToSample1Delay = 900;
     public static double GrabCycleReleaseOffsetSec = -0.5;
