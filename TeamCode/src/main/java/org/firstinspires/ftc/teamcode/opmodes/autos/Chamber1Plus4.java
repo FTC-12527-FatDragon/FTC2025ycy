@@ -35,7 +35,7 @@ public class Chamber1Plus4 extends AutoCommandBase {
     public static Pose2dHelperClass grab = new Pose2dHelperClass(40.75, -60, 90.00);
 
     public static double gap = 2.5;
-    public static Pose2dHelperClass chamber = new Pose2dHelperClass(3.5, -28.1, 90.00);
+    public static Pose2dHelperClass chamber = new Pose2dHelperClass(5, -28.1, 90.00);
     public static Pose2dHelperClass chamber1 = new Pose2dHelperClass(chamber.X - gap, chamber.Y, 90.00);
     public static Pose2dHelperClass chamber2 =
             new Pose2dHelperClass(chamber.X - gap * 2, chamber.Y, 90.00);
@@ -156,13 +156,13 @@ public class Chamber1Plus4 extends AutoCommandBase {
         TrajectorySequence grabToChamber1 =
                 drive
                         .trajectorySequenceBuilder(grab.toPose2d())
-                        .setAccelConstraint(getAccelerationConstraint(40))
+                        .setAccelConstraint(getAccelerationConstraint(45))
                         .lineToLinearHeading(chamber1.toPose2d())
                         .build(); // grab to chamber1
         TrajectorySequence grabToChamber2 =
                 drive
                         .trajectorySequenceBuilder(grab.toPose2d())
-                        .setAccelConstraint(getAccelerationConstraint(40))
+                        .setAccelConstraint(getAccelerationConstraint(45))
                         .lineToLinearHeading(chamber2.toPose2d())
                         .build(); // grab to chamber2
         TrajectorySequence grabToChamber3 =

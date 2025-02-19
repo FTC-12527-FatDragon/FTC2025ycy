@@ -148,7 +148,7 @@ public class DriveConstants {
         TRACK_WIDTH = 13.97;
         kV = 0.011;
         kA = 0.0026;
-        kStatic = 0.042;
+        kStatic = 0.043;
         MAX_VEL = 85.65532110468519;
         MAX_ANG_VEL = 2.43857479095459;
         isReflected = false;
