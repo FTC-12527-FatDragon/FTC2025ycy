@@ -63,6 +63,7 @@ public class Chamber1Plus4 extends AutoCommandBase {
     public static double GrabCycleReleaseOffsetSec = -0.5;
     public static long GrabCycleAdmissibleTimeoutNormal = 1000;
     public static long GrabCycleAdmissibleTimeoutFast = 0;
+    public static double Start2ChamberEndTangent = 70;
 
     public Command pushBlocksCycle(TrajectorySequence grab2DropSequence, long admissibleTimeout, PoseArea atGoal){
         return new SequentialCommandGroup(
@@ -139,10 +140,11 @@ public class Chamber1Plus4 extends AutoCommandBase {
 //                .lineToConstantHeading(chamber3.toVector2d().plus(grabOffsetByChamber3.times(0.9)))
 //                .setVelConstraint(getVelocityConstraint(10, MAX_ANG_VEL, TRACK_WIDTH))
 //                .lineToConstantHeading(chamber3.toVector2d().plus(new Vector2d(0, -1)))
-                .lineToConstantHeading(chamber3.toVector2d().plus(grabOffsetByChamber3.times(0.95)))
+                .setAccelConstraint(getAccelerationConstraint(40))
+//                .lineToConstantHeading(chamber3.toVector2d().plus(grabOffsetByChamber3.times(0.95)))
 //                .setAccelConstraint(getAccelerationConstraint(35))
 //                .setVelConstraint(getVelocityConstraint(10, MAX_ANG_VEL, TRACK_WIDTH))
-//                .lineToConstantHeading(grab.toVector2d())
+                .lineToConstantHeading(grab.toVector2d())
                 .build();
 
         TrajectorySequence chamberToGrabFully = drive.trajectorySequenceBuilder(chamber3.toPose2d())
@@ -156,34 +158,35 @@ public class Chamber1Plus4 extends AutoCommandBase {
         TrajectorySequence grabToChamber1 =
                 drive
                         .trajectorySequenceBuilder(grab.toPose2d())
-                        .setAccelConstraint(getAccelerationConstraint(45))
+                        .setAccelConstraint(getAccelerationConstraint(40))
                         .lineToLinearHeading(chamber1.toPose2d())
                         .build(); // grab to chamber1
         TrajectorySequence grabToChamber2 =
                 drive
                         .trajectorySequenceBuilder(grab.toPose2d())
-                        .setAccelConstraint(getAccelerationConstraint(45))
+                        .setAccelConstraint(getAccelerationConstraint(40))
                         .lineToLinearHeading(chamber2.toPose2d())
                         .build(); // grab to chamber2
         TrajectorySequence grabToChamber3 =
                 drive
                         .trajectorySequenceBuilder(grab.toPose2d())
-                        .setAccelConstraint(getAccelerationConstraint(45))
+                        .setAccelConstraint(getAccelerationConstraint(40))
                         .lineToLinearHeading(chamber3.toPose2d())
                         .build(); // grab to chamber3
 
         TrajectorySequence grabToChamber4 =
                 drive
                         .trajectorySequenceBuilder(grab.toPose2d())
-                        .setAccelConstraint(getAccelerationConstraint(45))
+                        .setAccelConstraint(getAccelerationConstraint(40))
                         .lineToLinearHeading(chamber4.toPose2d())
                         .build();
 
         TrajectorySequence startToChamber =
                 drive
                         .trajectorySequenceBuilder(start.toPose2d())
-                        .setAccelConstraint(getAccelerationConstraint(45))
-                        .lineToConstantHeading(chamber.toVector2d())
+//                        .setTangent(Math.toRadians(90))
+//                        .setAccelConstraint(getAccelerationConstraint(45))
+                        .splineToLinearHeading(chamber.toPose2d(), Math.toRadians(Start2ChamberEndTangent))
                         .build(); // start to chamber
 
         telemetry_M.addData("startToChamber.duration", startToChamber.duration());
@@ -223,10 +226,10 @@ public class Chamber1Plus4 extends AutoCommandBase {
 //                new AutoDriveCommand(drive, observationToGrab).alongWith(),
                 //.alongWith(new WaitCommand(500).deadlineWith(lift.manualResetCommand()))
 
-                observationToChamberCycle(grabToChamber4, chamberToGrab, -0.3).alongWith(slide.aimCommand(AlphaSlide.TurnServo.DEG_0)), // To avoid claw pieces hitting barrier and damaging servo
-                observationToChamberCycle(grabToChamber3, chamberToGrab, -0.3),
-                observationToChamberCycle(grabToChamber2, chamberToGrab, -0.3),
-                observationToChamberCycle(grabToChamber1, chamberToGrabFully, -0.3)
+                observationToChamberCycle(grabToChamber4, chamberToGrab, 0).alongWith(slide.aimCommand(AlphaSlide.TurnServo.DEG_0)), // To avoid claw pieces hitting barrier and damaging servo
+                observationToChamberCycle(grabToChamber3, chamberToGrab, 0),
+                observationToChamberCycle(grabToChamber2, chamberToGrab, 0),
+                observationToChamberCycle(grabToChamber1, chamberToGrabFully, 0)
         );
     }
 }
