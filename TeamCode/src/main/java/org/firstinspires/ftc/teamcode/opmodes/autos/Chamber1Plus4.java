@@ -168,20 +168,21 @@ public class Chamber1Plus4 extends AutoCommandBase {
         TrajectorySequence grabToChamber3 =
                 drive
                         .trajectorySequenceBuilder(grab.toPose2d())
-                        .setAccelConstraint(getAccelerationConstraint(40))
+                        .setAccelConstraint(getAccelerationConstraint(45))
                         .lineToLinearHeading(chamber3.toPose2d())
                         .build(); // grab to chamber3
 
         TrajectorySequence grabToChamber4 =
                 drive
                         .trajectorySequenceBuilder(grab.toPose2d())
-                        .setAccelConstraint(getAccelerationConstraint(50))
+                        .setAccelConstraint(getAccelerationConstraint(45))
                         .lineToLinearHeading(chamber4.toPose2d())
                         .build();
 
         TrajectorySequence startToChamber =
                 drive
                         .trajectorySequenceBuilder(start.toPose2d())
+                        .setAccelConstraint(getAccelerationConstraint(45))
                         .lineToConstantHeading(chamber.toVector2d())
                         .build(); // start to chamber
 
