@@ -18,6 +18,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
 import org.firstinspires.ftc.teamcode.commands.AutoDriveCommand;
 import org.firstinspires.ftc.teamcode.lib.roadrunner.trajectorysequence.TrajectorySequence;
+import org.firstinspires.ftc.teamcode.subsystems.AlphaLiftClaw;
 import org.firstinspires.ftc.teamcode.subsystems.AlphaSlide;
 import org.firstinspires.ftc.teamcode.subsystems.Lift;
 import org.firstinspires.ftc.teamcode.subsystems.drivetrain.DriveConstants.RobotType;
@@ -193,6 +194,12 @@ public class Chamber1Plus4 extends AutoCommandBase {
 
         telemetry_M.addData("startToChamber.duration", startToChamber.duration());
 
+        double origVal = AlphaLiftClaw.LiftClaw_Close;
+
+        AlphaLiftClaw.LiftClaw_Close = AlphaLiftClaw.LiftClaw_CloseTight;
+
+        liftClaw.closeClaw();
+
         // Score the first chamber
         // Push all three samples to the observation zone
         return new SequentialCommandGroup(
@@ -235,7 +242,8 @@ public class Chamber1Plus4 extends AutoCommandBase {
                         liftClaw.foldLiftArmCommand(),
                         liftClaw.openClawCommand(),
                         lift.setGoalCommand(Lift.Goal.STOW)
-                ))
+                )),
+                new InstantCommand(() -> AlphaLiftClaw.LiftClaw_Close = origVal)
         );
     }
 }

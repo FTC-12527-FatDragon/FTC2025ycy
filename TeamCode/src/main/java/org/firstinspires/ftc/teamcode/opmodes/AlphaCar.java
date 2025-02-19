@@ -37,6 +37,7 @@ import org.firstinspires.ftc.teamcode.subsystems.Lift;
 import org.firstinspires.ftc.teamcode.subsystems.drivetrain.DriveConstants;
 import org.firstinspires.ftc.teamcode.subsystems.drivetrain.SampleMecanumDrive;
 import org.firstinspires.ftc.teamcode.utils.FunctionalButton;
+import org.firstinspires.ftc.teamcode.utils.ParallelRaceGroup;
 import org.firstinspires.ftc.teamcode.utils.Pose2dHelperClass;
 import static org.firstinspires.ftc.teamcode.subsystems.drivetrain.DriveConstants.currentRobot;
 
@@ -157,6 +158,10 @@ public class AlphaCar extends CommandOpMode {
                             new InstantCommand(),
                             new ParallelCommandGroup(
                                     slide.aimCommand(),
+                                    new ParallelRaceGroup(
+                                            slide.manualResetCommand(),
+                                            new WaitCommand(1000)
+                                    ),
                                     lift.setGoalCommand(Lift.Goal.BASKET, false),
                                     new WaitUntilCommand(() -> lift.getCurrentPosition() > 600)
                                             .andThen(new InstantCommand(liftClaw::upLiftArm)
