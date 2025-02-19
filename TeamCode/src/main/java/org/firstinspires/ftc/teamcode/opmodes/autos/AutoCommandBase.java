@@ -39,7 +39,7 @@ public abstract class AutoCommandBase extends LinearOpMode {
   public static boolean telemetryInDashboard = true;
 
   public static long Grab2PreHangDelay = 0;
-  public static long ChamberUpOffsetMs = -500;
+  public static long ChamberUpOffsetMs = -300;
 
   public static int TelemetryTransmissionIntervalMs = 50;
 
@@ -296,6 +296,10 @@ public abstract class AutoCommandBase extends LinearOpMode {
    * @return The command running these actions
    */
   public Command observationToChamberCycle(TrajectorySequence toChamberSequence, TrajectorySequence chamberToGrab, double chamberToGrabAdmissibleTimeout){
+    return observationToChamberCycle(toChamberSequence, chamberToGrab, chamberToGrabAdmissibleTimeout, chamberToGrab());
+  }
+
+  public Command observationToChamberCycle(TrajectorySequence toChamberSequence, TrajectorySequence chamberToGrab, double chamberToGrabAdmissibleTimeout, Command chamberToGrabCommand){
     // NOTE: This function was shared by Chamber 1+3 and Chamber 1+4, be careful when modifying the code.
     return new SequentialCommandGroup(
             liftClaw.closeClawCommand(),
@@ -305,7 +309,7 @@ public abstract class AutoCommandBase extends LinearOpMode {
                     .alongWith(new WaitCommand((long)(toChamberSequence.duration()*1000)+ChamberUpOffsetMs).andThen(upToChamber())),
 
             drive(chamberToGrab, chamberToGrabAdmissibleTimeout)
-                    .alongWith(chamberToGrab())
+                    .alongWith(chamberToGrabCommand)
     );
   }
 
