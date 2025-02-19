@@ -27,7 +27,7 @@ import static org.firstinspires.ftc.teamcode.subsystems.drivetrain.DriveConstant
 
 @Config
 public class Lift extends MotorPIDSlideSubsystem {
-  public static double kP = 0.008, kI = 0.0, kD = 0.0, kV = 0.0003, kS = 0.12, kG = 0.12;
+  public static double kP = 0.01, kI = 0.0, kD = 0.0001, kV = 0.0003, kS = 0.12, kG = 0.12;
   private final PIDController pidController;
   private final Motor liftMotorUp;
   private final Motor liftMotorDown;
