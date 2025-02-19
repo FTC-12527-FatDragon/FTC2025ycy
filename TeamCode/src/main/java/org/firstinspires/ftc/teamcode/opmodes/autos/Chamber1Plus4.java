@@ -11,6 +11,7 @@ import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.geometry.Vector2d;
 import com.arcrobotics.ftclib.command.Command;
 import com.arcrobotics.ftclib.command.InstantCommand;
+import com.arcrobotics.ftclib.command.ParallelCommandGroup;
 import com.arcrobotics.ftclib.command.SequentialCommandGroup;
 import com.arcrobotics.ftclib.command.WaitCommand;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
@@ -18,6 +19,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import org.firstinspires.ftc.teamcode.commands.AutoDriveCommand;
 import org.firstinspires.ftc.teamcode.lib.roadrunner.trajectorysequence.TrajectorySequence;
 import org.firstinspires.ftc.teamcode.subsystems.AlphaSlide;
+import org.firstinspires.ftc.teamcode.subsystems.Lift;
 import org.firstinspires.ftc.teamcode.subsystems.drivetrain.DriveConstants.RobotType;
 import org.firstinspires.ftc.teamcode.subsystems.drivetrain.SampleMecanumDrive;
 import org.firstinspires.ftc.teamcode.utils.ParallelRaceGroup;
@@ -229,7 +231,11 @@ public class Chamber1Plus4 extends AutoCommandBase {
                 observationToChamberCycle(grabToChamber4, chamberToGrab, -0.3).alongWith(slide.aimCommand(AlphaSlide.TurnServo.DEG_0)), // To avoid claw pieces hitting barrier and damaging servo
                 observationToChamberCycle(grabToChamber3, chamberToGrab, -0.3),
                 observationToChamberCycle(grabToChamber2, chamberToGrab, -0.3),
-                observationToChamberCycle(grabToChamber1, chamberToGrabFully, -0.5, stowArmFromBasket())
+                observationToChamberCycle(grabToChamber1, chamberToGrabFully, -0.5, new ParallelCommandGroup(
+                        liftClaw.foldLiftArmCommand(),
+                        liftClaw.openClawCommand(),
+                        lift.setGoalCommand(Lift.Goal.STOW)
+                ))
         );
     }
 }
