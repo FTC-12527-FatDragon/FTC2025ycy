@@ -96,7 +96,7 @@ public class Chamber1Plus4 extends AutoCommandBase {
 
         TrajectorySequence chamber2Sample1 = drive.trajectorySequenceBuilder(push2Blocks.start())
                 .lineToSplineHeading(new Pose2d(6.46, -36.46, Math.toRadians(26.17)))
-                .splineToLinearHeading(new Pose2d(25.9, -39.8, Math.toRadians(26.17)), Math.toRadians(27.51), getVelocityConstraint(45, MAX_ANG_VEL, TRACK_WIDTH), getAccelerationConstraint(45))
+                .splineToLinearHeading(new Pose2d(25.9, -39.6, Math.toRadians(26.17)), Math.toRadians(27.51), getVelocityConstraint(45, MAX_ANG_VEL, TRACK_WIDTH), getAccelerationConstraint(45))
                 .build();
 
         TrajectorySequence grabSample12Observation2Sample2 = drive.trajectorySequenceBuilder(chamber2Sample1.end())
@@ -231,7 +231,7 @@ public class Chamber1Plus4 extends AutoCommandBase {
                 observationToChamberCycle(grabToChamber4, chamberToGrab, -0.3).alongWith(slide.aimCommand(AlphaSlide.TurnServo.DEG_0)), // To avoid claw pieces hitting barrier and damaging servo
                 observationToChamberCycle(grabToChamber3, chamberToGrab, -0.3),
                 observationToChamberCycle(grabToChamber2, chamberToGrab, -0.3),
-                observationToChamberCycle(grabToChamber1, chamberToGrabFully, -0.5, new ParallelCommandGroup(
+                observationToChamberCycle(grabToChamber1, chamberToGrabFully, -0.9, new ParallelCommandGroup(
                         liftClaw.foldLiftArmCommand(),
                         liftClaw.openClawCommand(),
                         lift.setGoalCommand(Lift.Goal.STOW)
