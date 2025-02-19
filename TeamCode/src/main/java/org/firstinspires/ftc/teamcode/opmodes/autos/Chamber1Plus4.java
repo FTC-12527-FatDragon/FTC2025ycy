@@ -194,7 +194,7 @@ public class Chamber1Plus4 extends AutoCommandBase {
 
         telemetry_M.addData("startToChamber.duration", startToChamber.duration());
 
-        double origVal = AlphaLiftClaw.LiftClaw_Close;
+        origVal = AlphaLiftClaw.LiftClaw_Close;
 
         AlphaLiftClaw.LiftClaw_Close = AlphaLiftClaw.LiftClaw_CloseTight;
 
@@ -242,8 +242,14 @@ public class Chamber1Plus4 extends AutoCommandBase {
                         liftClaw.foldLiftArmCommand(),
                         liftClaw.openClawCommand(),
                         lift.setGoalCommand(Lift.Goal.STOW)
-                )),
-                new InstantCommand(() -> AlphaLiftClaw.LiftClaw_Close = origVal)
+                ))
         );
+    }
+
+    private double origVal;
+
+    @Override
+    public void onAutoStopped() {
+        AlphaLiftClaw.LiftClaw_Close = origVal;
     }
 }

@@ -42,13 +42,13 @@ public class AlphaLiftClaw extends SubsystemBase {
   public void initialize() {
     liftWristServo.setPosition(ServoPositions.STOW.liftWristPosition);
     liftArmServo.setPosition(ServoPositions.STOW.liftArmPosition);
-    liftClawServo.setPosition(ServoPositions.STOW.liftClawPosition);
+    liftClawServo.setPosition(LiftClaw_Close);
   }
 
   public void autoInitialize() {
     liftWristServo.setPosition(ServoPositions.STOW.liftWristPosition);
     liftArmServo.setPosition(ServoPositions.STOW.liftArmPosition);
-    liftClawServo.setPosition(ServoPositions.STOW.liftClawPosition);
+    liftClawServo.setPosition(LiftClaw_Close);
   }
 
   public void grabWrist() {
@@ -84,7 +84,7 @@ public class AlphaLiftClaw extends SubsystemBase {
   }
 
   public void openClaw() {
-    liftClawServo.setPosition(ServoPositions.GRAB.liftClawPosition);
+    liftClawServo.setPosition(LiftClaw_Open);
   }
 
   public Command openClawCommand(long delay) {
@@ -100,11 +100,11 @@ public class AlphaLiftClaw extends SubsystemBase {
   }
 
   public void closeClaw() {
-    liftClawServo.setPosition(ServoPositions.STOW.liftClawPosition);
+    liftClawServo.setPosition(LiftClaw_Close);
   }
 
   public Command closeClawCommand(long delay) {
-    return setServoPosCommand(liftClawServo, ServoPositions.STOW.liftClawPosition, delay);
+    return setServoPosCommand(liftClawServo, LiftClaw_Close, delay);
   }
 
   public Command closeClawCommand() {

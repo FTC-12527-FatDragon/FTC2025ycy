@@ -1,7 +1,6 @@
 package org.firstinspires.ftc.teamcode.opmodes.autos;
 
 import static org.firstinspires.ftc.teamcode.subsystems.AlphaLiftClaw.LiftArm_Handoff2BackwardGrabDelay;
-import static org.firstinspires.ftc.teamcode.subsystems.AlphaSlide.slideRetractAuto;
 import static org.firstinspires.ftc.teamcode.subsystems.AlphaSlide.slideRetractFar;
 
 import com.acmerobotics.dashboard.FtcDashboard;
@@ -27,7 +26,6 @@ import org.firstinspires.ftc.teamcode.utils.ParallelRaceGroup;
 import org.firstinspires.ftc.teamcode.utils.Pose2dHelperClass;
 import org.firstinspires.ftc.teamcode.utils.RoadRunnerPose.BooleanArea;
 import org.firstinspires.ftc.teamcode.utils.RoadRunnerPose.PoseArea;
-import org.firstinspires.ftc.teamcode.utils.RoadRunnerPose.RectangularArea;
 
 public abstract class AutoCommandBase extends LinearOpMode {
   public static long lift2BasketTimeout = 800;
@@ -117,13 +115,15 @@ public abstract class AutoCommandBase extends LinearOpMode {
     );
   }
 
-  public Command initialize() {
+  public Command initializeCommand() {
     return new ParallelCommandGroup(
         new InstantCommand(liftClaw::initialize),
         new InstantCommand(liftClaw::stowWrist),
         liftClaw.foldLiftArmCommand(0),
         liftClaw.closeClawCommand(0),
-        new InstantCommand(slide::initialize));
+        new InstantCommand(slide::initialize),
+        new InstantCommand(this::initialize) // Auto specific initialize program
+    );
   }
 
   public Command endClimbCommand() {
@@ -225,7 +225,7 @@ public abstract class AutoCommandBase extends LinearOpMode {
     );
   }
 
-  public Command initializeForce() {
+  public Command initializeForceCommand() {
     return new ParallelCommandGroup(
         new InstantCommand(liftClaw::initialize),
         new InstantCommand(liftClaw::stowWrist),
@@ -236,7 +236,7 @@ public abstract class AutoCommandBase extends LinearOpMode {
 
   public Command autoFinish() {
     return new SequentialCommandGroup(
-        initialize().andThen(slide.aimCommand()).andThen(new WaitCommand(100)));
+        initializeCommand().andThen(slide.aimCommand()).andThen(new WaitCommand(100)));
   }
 
   /**
@@ -362,7 +362,7 @@ public abstract class AutoCommandBase extends LinearOpMode {
 
 
 //    drive.setPoseEstimate(getStartPose());
-    Command toRun = initialize().andThen(runAutoCommand());//.andThen(autoFinish());
+    Command toRun = initializeCommand().andThen(runAutoCommand());//.andThen(autoFinish());
 
     CommandScheduler.getInstance().schedule(toRun);
 
@@ -375,6 +375,7 @@ public abstract class AutoCommandBase extends LinearOpMode {
       periodic();
     }
 
+    onAutoStopped();
     CommandScheduler.getInstance().reset();
   }
 
@@ -387,4 +388,14 @@ public abstract class AutoCommandBase extends LinearOpMode {
     CommandScheduler.getInstance().run();
     telemetry_M.update();
   }
+
+  /**
+   *  Executes when auto being stooped, either finished executing or stopped on DriverStation.
+   */
+  public void onAutoStopped() {}
+
+  /**
+   *  Executes when auto being initialized, but before runAutoCommand (starting).
+   */
+  public void initialize() {}
 }
