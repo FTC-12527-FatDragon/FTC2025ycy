@@ -48,9 +48,9 @@ public class AlphaSlide extends MotorPIDSlideSubsystem{
   private static double turnAngleDeg = 0;
   private TurnServo turnServo = TurnServo.DEG_0;
 
-  public static long grabTimeout = currentRobot == DriveConstants.RobotType.ALPHA ? 70 : 100;
+  public static long grabTimeout = currentRobot == DriveConstants.RobotType.ALPHA ? 70 : 130;
 
-  public static double resetPower = -0.3;
+  public static double resetPower = -0.5;
 
   @Setter @Getter private Goal goal = Goal.STOW;
 //  private boolean isIntakeClawOpen = false;
@@ -86,7 +86,7 @@ public class AlphaSlide extends MotorPIDSlideSubsystem{
     }else{
       wristTurnServo.setRange(0, 0); // TODO: finish this
 
-      wristServo.setDirection(Servo.Direction.REVERSE);
+      wristServo.setDirection(Servo.Direction.FORWARD);
     }
 
     this.telemetry = telemetry;
@@ -231,9 +231,9 @@ public class AlphaSlide extends MotorPIDSlideSubsystem{
 //    slideArmServo.setPosition(0.6);
 //  }
 
-  public static double slideArmServo_Down = currentRobot==DriveConstants.RobotType.ALPHA?0.5:0.76;
+  public static double slideArmServo_Down = currentRobot==DriveConstants.RobotType.ALPHA?0.5:0.84;
   public static double intakeClawServo_Open = currentRobot==DriveConstants.RobotType.ALPHA?0.57:0.4;
-  public static double intakeClawServo_Close = currentRobot==DriveConstants.RobotType.ALPHA?0.76:0.81;
+  public static double intakeClawServo_Close = currentRobot==DriveConstants.RobotType.ALPHA?0.76:0.85;
 
   @Override
   void runOpenLoop(double percent) {
@@ -262,10 +262,10 @@ public class AlphaSlide extends MotorPIDSlideSubsystem{
 //  public static double slideArmServo_PreGrab = 0.45;
 
   public enum Goal {
-    STOW(-1,                currentRobot==DriveConstants.RobotType.ALPHA?0.4:0.4,  currentRobot==DriveConstants.RobotType.ALPHA?0.39:0.5, 0.4,          intakeClawServo_Open),
-    AIM(-1,  currentRobot==DriveConstants.RobotType.ALPHA?0.35:0.6,  currentRobot==DriveConstants.RobotType.ALPHA?0.75:0.74, turnAngleDeg, intakeClawServo_Open),
+    STOW(-1,                currentRobot==DriveConstants.RobotType.ALPHA?0.4:0.47,  currentRobot==DriveConstants.RobotType.ALPHA?0.39:0.5, 0.4,          intakeClawServo_Open),
+    AIM(-1,  currentRobot==DriveConstants.RobotType.ALPHA?0.35:0.67,  currentRobot==DriveConstants.RobotType.ALPHA?0.75:0.74, turnAngleDeg, intakeClawServo_Open),
     GRAB(-1, slideArmServo_Down                                    ,  currentRobot==DriveConstants.RobotType.ALPHA?0.75:0.74, turnAngleDeg, intakeClawServo_Close),
-    HANDOFF(-1,           currentRobot==DriveConstants.RobotType.ALPHA?0.11:0.1, currentRobot==DriveConstants.RobotType.ALPHA?0.45:0.37,  0.4,          intakeClawServo_Close);
+    HANDOFF(-1,           currentRobot==DriveConstants.RobotType.ALPHA?0.11:0.17, currentRobot==DriveConstants.RobotType.ALPHA?0.45:0.37,  0.4,          intakeClawServo_Close);
     //Arm, Wrist, Wrist Turn
     private final double slideExtension;
     private final double slideArmPos;
