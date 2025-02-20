@@ -38,7 +38,7 @@ public class Chamber1Plus4 extends AutoCommandBase {
     public static Pose2dHelperClass grab = new Pose2dHelperClass(42, -60, 90.00);
 
     public static double gap = 2.5;
-    public static Pose2dHelperClass chamber = new Pose2dHelperClass(5, -29.2, 90.00);
+    public static Pose2dHelperClass chamber = new Pose2dHelperClass(6.5, -29, 90.00);
     public static Pose2dHelperClass chamber1 = new Pose2dHelperClass(chamber.X - gap, chamber.Y, 90.00);
     public static Pose2dHelperClass chamber2 =
             new Pose2dHelperClass(chamber.X - gap * 2, chamber.Y, 90.00);
@@ -199,6 +199,7 @@ public class Chamber1Plus4 extends AutoCommandBase {
         AlphaLiftClaw.LiftClaw_Close = AlphaLiftClaw.LiftClaw_CloseTight;
 
         liftClaw.closeClaw();
+        drive.setPoseEstimate(startToChamber.start());
 
         // Score the first chamber
         // Push all three samples to the observation zone
