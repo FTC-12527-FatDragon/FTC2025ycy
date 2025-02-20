@@ -14,6 +14,7 @@ import com.arcrobotics.ftclib.command.InstantCommand;
 import com.arcrobotics.ftclib.command.ParallelCommandGroup;
 import com.arcrobotics.ftclib.command.SelectCommand;
 import com.arcrobotics.ftclib.command.SequentialCommandGroup;
+import com.arcrobotics.ftclib.command.StartEndCommand;
 import com.arcrobotics.ftclib.command.WaitCommand;
 import com.arcrobotics.ftclib.command.WaitUntilCommand;
 import com.arcrobotics.ftclib.gamepad.GamepadEx;
@@ -241,7 +242,7 @@ public class AlphaCar extends CommandOpMode {
             () ->
                     gamepadEx1.getButton(GamepadKeys.Button.DPAD_RIGHT)
                             && slide.getGoal() == AlphaSlide.Goal.STOW
-                            && lift.getGoal() == Lift.Goal.STOW
+                            && lift.getGoal().setpointTicks == Lift.Goal.STOW.setpointTicks
                             && currentState == OSState.Teleop)
             .whenPressed(
                     new ParallelCommandGroup(

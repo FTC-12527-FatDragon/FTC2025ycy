@@ -41,7 +41,7 @@ public class Lift extends MotorPIDSlideSubsystem {
   private double lastTime;
 
   //  private boolean isResetting = false;
-  public static double resetPower = currentRobot == DriveConstants.RobotType.ALPHA ? -0.7 : -0.35;
+  public static double resetPower = currentRobot == DriveConstants.RobotType.ALPHA ? -0.7 : -0.4;
   public static double hangAddtionalPower = 0;
 
   public static double reasonableUp1000TicksMaxTimeMs = 1500;
@@ -108,7 +108,9 @@ public class Lift extends MotorPIDSlideSubsystem {
     runOpenLoop(0);
     pidController.reset();
     pidController.calculate(0);
-    goal = Goal.STOW;
+    if(goal.setpointTicks != Goal.STOW.setpointTicks){
+      goal = Goal.STOW;
+    }
     // TODO: does this work?
     liftMotorUp.resetEncoder();
     liftMotorDown.resetEncoder();
@@ -200,9 +202,9 @@ public class Lift extends MotorPIDSlideSubsystem {
     BASKET(1520),
     STOW(0),
     PRE_HANG(580.0),
-    HANG(1000.0),
+    HANG(1010.0),
     GRAB(0),
-    OPEN_LOOP(0.0);
+    OPEN_LOOP(-1);
 
     public final double setpointTicks;
 
