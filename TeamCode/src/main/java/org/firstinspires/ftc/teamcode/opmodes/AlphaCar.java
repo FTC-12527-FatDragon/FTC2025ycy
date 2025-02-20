@@ -58,6 +58,7 @@ public class AlphaCar extends CommandOpMode {
   private boolean shouldDisable = false;
 
   public static boolean isSetPose = false;
+  public static boolean halfAutoEnabled = false;
 //  public static double xPose = 0;
 //  public static double yPose = 0;
 //  public static double headingDegree = 0;
@@ -87,14 +88,16 @@ public class AlphaCar extends CommandOpMode {
     gamepadEx1 = new GamepadEx(gamepad1);
     gamepadEx2 = new GamepadEx(gamepad2);
 
-    gamepadEx1.getGamepadButton(GamepadKeys.Button.BACK).whenPressed(
+    new FunctionalButton(() -> gamepadEx1.getButton(GamepadKeys.Button.BACK) && halfAutoEnabled).whenPressed(
             new InstantCommand(() -> {
               switch (currentState) {
                 case Teleop:
                   currentState = OSState.Halfauto;
+                  gamepad1.rumble(10);
                   break;
                 case Halfauto:
                   currentState = OSState.Teleop;
+                  gamepad1.rumble(1, 0, 100);
                   break;
               }
             })
