@@ -38,7 +38,7 @@ public class Chamber1Plus4 extends AutoCommandBase {
     public static Pose2dHelperClass grab = new Pose2dHelperClass(42, -60, 90.00);
 
     public static double gap = 2.5;
-    public static Pose2dHelperClass chamber = new Pose2dHelperClass(5, -28.1, 90.00);
+    public static Pose2dHelperClass chamber = new Pose2dHelperClass(5, -29.2, 90.00);
     public static Pose2dHelperClass chamber1 = new Pose2dHelperClass(chamber.X - gap, chamber.Y, 90.00);
     public static Pose2dHelperClass chamber2 =
             new Pose2dHelperClass(chamber.X - gap * 2, chamber.Y, 90.00);
@@ -56,7 +56,7 @@ public class Chamber1Plus4 extends AutoCommandBase {
 
     public static Pose2dHelperClass sample1Observation = new Pose2dHelperClass(48.46, -53, 90);
 //    public static Pose2dHelperClass EpsilonBotOffset = currentRobot == RobotType.EPSILON ? new Pose2dHelperClass(1.5, -3.475, 0) : new Pose2dHelperClass();
-    public static Translation2dHelperClass slideExtendOffset = currentRobot == RobotType.EPSILON ? new Translation2dHelperClass(27, 0) : new Translation2dHelperClass(24.45, 0);
+    public static Translation2dHelperClass slideExtendOffset = currentRobot == RobotType.EPSILON ? new Translation2dHelperClass(26.9, 0.5) : new Translation2dHelperClass(24.45, 0);
 
     //  public static double startX = 24.43;
     //  public static double startY = -64.95;
@@ -188,7 +188,7 @@ public class Chamber1Plus4 extends AutoCommandBase {
                 drive
                         .trajectorySequenceBuilder(start.toPose2d())
 //                        .setTangent(Math.toRadians(90))
-//                        .setAccelConstraint(getAccelerationConstraint(45))
+                        .setAccelConstraint(getAccelerationConstraint(45))
                         .splineToLinearHeading(chamber.toPose2d(), Math.toRadians(Start2ChamberEndTangent))
                         .build(); // start to chamber
 
