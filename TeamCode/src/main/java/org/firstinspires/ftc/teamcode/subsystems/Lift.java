@@ -204,7 +204,7 @@ public class Lift extends MotorPIDSlideSubsystem {
     GRAB(0),
     OPEN_LOOP(0.0);
 
-    private final double setpointTicks;
+    public final double setpointTicks;
 
     Goal(double setpointTicks) {
       this.setpointTicks = setpointTicks;

@@ -356,7 +356,7 @@ public class AlphaCar extends CommandOpMode {
     new FunctionalButton(
             () ->
                     gamepadEx1.getButton(GamepadKeys.Button.RIGHT_STICK_BUTTON)
-                            && lift.getGoal() == Lift.Goal.STOW
+                            && lift.getGoal().setpointTicks == Lift.Goal.STOW.setpointTicks
                             && currentState == OSState.Teleop)
             .whenHeld(
                     lift.manualResetCommand()
