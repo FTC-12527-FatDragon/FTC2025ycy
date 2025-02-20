@@ -38,8 +38,8 @@ public class Chamber1Plus4 extends AutoCommandBase {
 
     public static Pose2dHelperClass grab = new Pose2dHelperClass(42, -60, 90.00);
 
-    public static double gap = 2.5;
-    public static Pose2dHelperClass chamber = new Pose2dHelperClass(6, -29, 90.00);
+    public static double gap = 2;
+    public static Pose2dHelperClass chamber = new Pose2dHelperClass(4, -29, 90.00);
     public static Pose2dHelperClass chamber1 = new Pose2dHelperClass(chamber.X - gap, chamber.Y, 90.00);
     public static Pose2dHelperClass chamber2 =
             new Pose2dHelperClass(chamber.X - gap * 2, chamber.Y, 90.00);
@@ -54,9 +54,9 @@ public class Chamber1Plus4 extends AutoCommandBase {
     public static Translation2dHelperClass Sample2 = new Translation2dHelperClass(48+10, -24).plus(SampleRect.times(0.5));
     public static Translation2dHelperClass Sample3 = new Translation2dHelperClass(48+20, -24).plus(SampleRect.times(0.5));
 
-    public static Pose2dHelperClass GrabSample1 = new Pose2dHelperClass(new Pose2d(24.6, -39.6, Math.toRadians(26.17)));
-    public static Pose2dHelperClass GrabSample2 = new Pose2dHelperClass(new Pose2d(34.7, -39.96, Math.toRadians(29.81)));
-    public static Pose2dHelperClass GrabSample3 = new Pose2dHelperClass(new Pose2d(45.2, -38.41, Math.toRadians(25.89)));
+    public static Pose2dHelperClass GrabSample1 = new Pose2dHelperClass(new Pose2d(23.9, -38.8, Math.toRadians(26.17)));
+    public static Pose2dHelperClass GrabSample2 = new Pose2dHelperClass(new Pose2d(34.0, -39.96, Math.toRadians(29.81)));
+    public static Pose2dHelperClass GrabSample3 = new Pose2dHelperClass(new Pose2d(44.5, -38.31, Math.toRadians(25.89)));
 
 
     public static Pose2dHelperClass sample1Observation = new Pose2dHelperClass(48.46, -53, 90);
@@ -84,6 +84,10 @@ public class Chamber1Plus4 extends AutoCommandBase {
         );
     }
 
+    public Command blockRelease() {
+        return slide.setAimServoCommand(AlphaSlide.Goal.AIM).andThen(slide.aimCommand());
+    }
+
     @Override
     public Command runAutoCommand() {
 
@@ -107,7 +111,7 @@ public class Chamber1Plus4 extends AutoCommandBase {
 
         TrajectorySequence grabSample12Observation2Sample2 = drive.trajectorySequenceBuilder(chamber2Sample1.end())
                 .lineToLinearHeading(new Pose2d(30.23, -54, Math.toRadians(-20.71)))//, getVelocityConstraint(30, MAX_ANG_VEL, TRACK_WIDTH), SampleMecanumDrive.getACCEL_CONSTRAINT())
-                .UNSTABLE_addTemporalMarkerOffset(GrabCycleReleaseOffsetSec, () -> schedule(slide.aimCommand()))
+                .UNSTABLE_addTemporalMarkerOffset(GrabCycleReleaseOffsetSec, () -> schedule(blockRelease()))
                 .lineToLinearHeading(GrabSample2.toPose2d())
                 .build();
 
@@ -117,7 +121,7 @@ public class Chamber1Plus4 extends AutoCommandBase {
 
         TrajectorySequence grabSample22Observation2Sample3 = drive.trajectorySequenceBuilder(grabSample12Observation2Sample2.end())
                 .lineToLinearHeading(new Pose2d(39.91, -51.14, Math.toRadians(-30)))
-                .UNSTABLE_addTemporalMarkerOffset(GrabCycleReleaseOffsetSec, () -> schedule(slide.aimCommand()))
+                .UNSTABLE_addTemporalMarkerOffset(GrabCycleReleaseOffsetSec, () -> schedule(blockRelease()))
                 .lineToLinearHeading(GrabSample3.toPose2d())
                 .build();
 
@@ -127,7 +131,7 @@ public class Chamber1Plus4 extends AutoCommandBase {
 
         TrajectorySequence grabSample32Observation2Grab = drive.trajectorySequenceBuilder(grabSample22Observation2Sample3.end())
                 .lineToLinearHeading(new Pose2d(36.92, -52.15, Math.toRadians(-25.39)))
-                .UNSTABLE_addTemporalMarkerOffset(GrabCycleReleaseOffsetSec, () -> schedule(slide.aimCommand().andThen(new InstantCommand(() -> slide.autoBackSlideExtension()))))
+                .UNSTABLE_addTemporalMarkerOffset(GrabCycleReleaseOffsetSec, () -> schedule(blockRelease().andThen(new InstantCommand(() -> slide.autoBackSlideExtension()))))
                 .setVelConstraint(getVelocityConstraint(35, MAX_ANG_VEL, TRACK_WIDTH))
                 .UNSTABLE_addTemporalMarkerOffset(0, () -> {
                     telemetry_M.addData("Auto", "Starting to grab 1st specimen");
@@ -148,11 +152,11 @@ public class Chamber1Plus4 extends AutoCommandBase {
 //                .lineToConstantHeading(chamber3.toVector2d().plus(grabOffsetByChamber3.times(0.9)))
 //                .setVelConstraint(getVelocityConstraint(10, MAX_ANG_VEL, TRACK_WIDTH))
 //                .lineToConstantHeading(chamber3.toVector2d().plus(new Vector2d(0, -1)))
-                .setAccelConstraint(getAccelerationConstraint(40))
-//                .lineToConstantHeading(chamber3.toVector2d().plus(grabOffsetByChamber3.times(0.95)))
+//                .setAccelConstraint(getAccelerationConstraint(40))
+                .lineToConstantHeading(chamber3.toVector2d().plus(grabOffsetByChamber3.times(0.95)))
 //                .setAccelConstraint(getAccelerationConstraint(35))
 //                .setVelConstraint(getVelocityConstraint(10, MAX_ANG_VEL, TRACK_WIDTH))
-                .lineToConstantHeading(grab.toVector2d())
+//                .lineToConstantHeading(grab.toVector2d())
                 .build();
 
         TrajectorySequence chamberToGrabFully = drive.trajectorySequenceBuilder(chamber3.toPose2d())
@@ -193,7 +197,7 @@ public class Chamber1Plus4 extends AutoCommandBase {
                 drive
                         .trajectorySequenceBuilder(start.toPose2d())
 //                        .setTangent(Math.toRadians(90))
-                        .setAccelConstraint(getAccelerationConstraint(45))
+                        .setAccelConstraint(getAccelerationConstraint(40))
                         .splineToLinearHeading(chamber.toPose2d(), Math.toRadians(Start2ChamberEndTangent))
                         .build(); // start to chamber
 
@@ -243,9 +247,9 @@ public class Chamber1Plus4 extends AutoCommandBase {
 //                new AutoDriveCommand(drive, observationToGrab).alongWith(),
                 //.alongWith(new WaitCommand(500).deadlineWith(lift.manualResetCommand()))
 
-                observationToChamberCycle(grabToChamber4, chamberToGrab, -0.3).alongWith(slide.aimCommand(AlphaSlide.TurnServo.DEG_0)), // To avoid claw pieces hitting barrier and damaging servo
-                observationToChamberCycle(grabToChamber3, chamberToGrab, -0.3),
-                observationToChamberCycle(grabToChamber2, chamberToGrab, -0.3),
+                observationToChamberCycle(grabToChamber4, chamberToGrab, -0.5).alongWith(slide.handoffCommand()),//slide.aimCommand(AlphaSlide.TurnServo.DEG_0)), // To avoid claw pieces hitting barrier and damaging servo
+                observationToChamberCycle(grabToChamber3, chamberToGrab, -0.5),
+                observationToChamberCycle(grabToChamber2, chamberToGrab, -0.5),
                 observationToChamberCycle(grabToChamber1, chamberToGrabFully, -0.9, stowArmFast())
         );
     }

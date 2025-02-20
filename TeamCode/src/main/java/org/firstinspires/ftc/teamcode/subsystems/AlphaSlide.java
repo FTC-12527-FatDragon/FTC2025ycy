@@ -100,6 +100,10 @@ public class AlphaSlide extends MotorPIDSlideSubsystem{
     return new InstantCommand(() -> goal = newGoal);
   }
 
+  public Command setAimServoCommand(Goal aimPos) {
+    return setServoPosCommand(slideArmServo, aimPos.slideArmPos, aimCommand_Arm2OpenDelayMs);
+  }
+
   public Command aimCommand(TurnServo turnServoPos) {
     return new SequentialCommandGroup(
         setGoalCommand(Goal.AIM),
