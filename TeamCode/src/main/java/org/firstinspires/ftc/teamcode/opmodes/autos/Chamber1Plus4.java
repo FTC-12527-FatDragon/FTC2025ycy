@@ -40,13 +40,13 @@ public class Chamber1Plus4 extends AutoCommandBase {
 
     public static double gap = 2;
     public static Pose2dHelperClass chamber = new Pose2dHelperClass(4, -29, 90.00);
-    public static Pose2dHelperClass chamber1 = new Pose2dHelperClass(chamber.X - gap, chamber.Y, 90.00);
+    public static Pose2dHelperClass chamber1 = new Pose2dHelperClass(chamber.X - 2 - gap, chamber.Y, 90.00);
     public static Pose2dHelperClass chamber2 =
-            new Pose2dHelperClass(chamber.X - gap * 2, chamber.Y, 90.00);
+            new Pose2dHelperClass(chamber.X - 2 - gap * 2, chamber.Y, 90.00);
     public static Pose2dHelperClass chamber3 =
-            new Pose2dHelperClass(chamber.X - gap * 3, chamber.Y, 90.00);
+            new Pose2dHelperClass(chamber.X - 2 - gap * 3, chamber.Y, 90.00);
     public static Pose2dHelperClass chamber4 =
-            new Pose2dHelperClass(chamber.X - gap * 4, chamber.Y, 90.00);
+            new Pose2dHelperClass(chamber.X - 2 - gap * 4, chamber.Y, 90.00);
 
     public static Translation2dHelperClass SampleRect = new Translation2dHelperClass(1.5, -3.5);
     public static Translation2dHelperClass SampleValidRect = new Translation2dHelperClass(2, 3.5);
@@ -71,6 +71,7 @@ public class Chamber1Plus4 extends AutoCommandBase {
     public static double GrabCycleReleaseOffsetSec = -0.5;
     public static long GrabCycleAdmissibleTimeoutNormal = 1000;
     public static long GrabCycleAdmissibleTimeoutFast = 0;
+    public static long ChamberCycleTimeInterval = 0;
     public static double Start2ChamberEndTangent = 70;
 
     public Command pushBlocksCycle(TrajectorySequence grab2DropSequence, long admissibleTimeout, PoseArea atGoal){
@@ -248,8 +249,11 @@ public class Chamber1Plus4 extends AutoCommandBase {
                 //.alongWith(new WaitCommand(500).deadlineWith(lift.manualResetCommand()))
 
                 observationToChamberCycle(grabToChamber4, chamberToGrab, -0.5).alongWith(slide.handoffCommand()),//slide.aimCommand(AlphaSlide.TurnServo.DEG_0)), // To avoid claw pieces hitting barrier and damaging servo
+                new WaitCommand(ChamberCycleTimeInterval),
                 observationToChamberCycle(grabToChamber3, chamberToGrab, -0.5),
+                new WaitCommand(ChamberCycleTimeInterval),
                 observationToChamberCycle(grabToChamber2, chamberToGrab, -0.5),
+                new WaitCommand(ChamberCycleTimeInterval),
                 observationToChamberCycle(grabToChamber1, chamberToGrabFully, -0.9, stowArmFast())
         );
     }
