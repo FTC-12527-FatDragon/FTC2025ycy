@@ -38,7 +38,7 @@ public class Chamber1Plus4 extends AutoCommandBase {
     public static Pose2dHelperClass grab = new Pose2dHelperClass(42, -60, 90.00);
 
     public static double gap = 2.5;
-    public static Pose2dHelperClass chamber = new Pose2dHelperClass(6.5, -29, 90.00);
+    public static Pose2dHelperClass chamber = new Pose2dHelperClass(6, -29, 90.00);
     public static Pose2dHelperClass chamber1 = new Pose2dHelperClass(chamber.X - gap, chamber.Y, 90.00);
     public static Pose2dHelperClass chamber2 =
             new Pose2dHelperClass(chamber.X - gap * 2, chamber.Y, 90.00);
@@ -97,13 +97,13 @@ public class Chamber1Plus4 extends AutoCommandBase {
 
         TrajectorySequence chamber2Sample1 = drive.trajectorySequenceBuilder(push2Blocks.start())
                 .lineToSplineHeading(new Pose2d(6.46, -36.46, Math.toRadians(26.17)))
-                .splineToLinearHeading(new Pose2d(25.9, -39.6, Math.toRadians(26.17)), Math.toRadians(27.51), getVelocityConstraint(45, MAX_ANG_VEL, TRACK_WIDTH), getAccelerationConstraint(45))
+                .splineToLinearHeading(new Pose2d(25.3, -39.6, Math.toRadians(26.17)), Math.toRadians(27.51), getVelocityConstraint(45, MAX_ANG_VEL, TRACK_WIDTH), getAccelerationConstraint(45))
                 .build();
 
         TrajectorySequence grabSample12Observation2Sample2 = drive.trajectorySequenceBuilder(chamber2Sample1.end())
                 .lineToLinearHeading(new Pose2d(30.23, -54, Math.toRadians(-20.71)))//, getVelocityConstraint(30, MAX_ANG_VEL, TRACK_WIDTH), SampleMecanumDrive.getACCEL_CONSTRAINT())
                 .UNSTABLE_addTemporalMarkerOffset(GrabCycleReleaseOffsetSec, () -> schedule(slide.aimCommand()))
-                .lineToLinearHeading(new Pose2d(36.04, -39.96, Math.toRadians(29.81)))
+                .lineToLinearHeading(new Pose2d(35.54, -39.96, Math.toRadians(29.81)))
                 .build();
 
 //        TrajectorySequence observation2Sample2 = drive.trajectorySequenceBuilder(new Pose2d(24.00, -57.46, Math.toRadians(-20.71)))
@@ -113,7 +113,7 @@ public class Chamber1Plus4 extends AutoCommandBase {
         TrajectorySequence grabSample22Observation2Sample3 = drive.trajectorySequenceBuilder(grabSample12Observation2Sample2.end())
                 .lineToLinearHeading(new Pose2d(39.91, -51.14, Math.toRadians(-30)))
                 .UNSTABLE_addTemporalMarkerOffset(GrabCycleReleaseOffsetSec, () -> schedule(slide.aimCommand()))
-                .lineToLinearHeading(new Pose2d(45.7, -38.41, Math.toRadians(25.89)))
+                .lineToLinearHeading(new Pose2d(45.2, -38.41, Math.toRadians(25.89)))
                 .build();
 
 //        TrajectorySequence observation2Sample3 = drive.trajectorySequenceBuilder(grabSample22Observation.end())
