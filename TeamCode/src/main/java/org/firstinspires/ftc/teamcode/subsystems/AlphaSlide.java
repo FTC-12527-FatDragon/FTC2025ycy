@@ -81,8 +81,12 @@ public class AlphaSlide extends MotorPIDSlideSubsystem{
     if(currentRobot == DriveConstants.RobotType.ALPHA){
       wristTurnServo.setInverted(true);
       wristTurnServo.setRange(-176.3408304498271, 119.506920415225);
+
+      wristServo.setDirection(Servo.Direction.FORWARD);
     }else{
       wristTurnServo.setRange(0, 0); // TODO: finish this
+
+      wristServo.setDirection(Servo.Direction.REVERSE);
     }
 
     this.telemetry = telemetry;
