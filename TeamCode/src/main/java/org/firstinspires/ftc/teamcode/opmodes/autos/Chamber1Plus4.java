@@ -238,11 +238,7 @@ public class Chamber1Plus4 extends AutoCommandBase {
                 observationToChamberCycle(grabToChamber4, chamberToGrab, -0.3).alongWith(slide.aimCommand(AlphaSlide.TurnServo.DEG_0)), // To avoid claw pieces hitting barrier and damaging servo
                 observationToChamberCycle(grabToChamber3, chamberToGrab, -0.3),
                 observationToChamberCycle(grabToChamber2, chamberToGrab, -0.3),
-                observationToChamberCycle(grabToChamber1, chamberToGrabFully, -0.9, new ParallelCommandGroup(
-                        liftClaw.foldLiftArmCommand(),
-                        liftClaw.openClawCommand(),
-                        lift.setGoalCommand(Lift.Goal.STOW)
-                ))
+                observationToChamberCycle(grabToChamber1, chamberToGrabFully, -0.9, stowArmFast())
         );
     }
 

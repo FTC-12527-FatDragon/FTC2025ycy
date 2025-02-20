@@ -17,6 +17,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.commands.AutoDriveCommand;
 import org.firstinspires.ftc.teamcode.lib.roadrunner.trajectorysequence.TrajectorySequence;
+import org.firstinspires.ftc.teamcode.subsystems.AlphaLift;
 import org.firstinspires.ftc.teamcode.subsystems.AlphaLiftClaw;
 import org.firstinspires.ftc.teamcode.subsystems.AlphaSlide;
 import org.firstinspires.ftc.teamcode.subsystems.Lift;
@@ -59,6 +60,18 @@ public abstract class AutoCommandBase extends LinearOpMode {
         liftClaw.openClawCommand(),
         liftClaw.foldLiftArmCommand(),
         lift.setGoalCommand(Lift.Goal.STOW));
+  }
+
+  public static Command stowArmFast(Lift lift, AlphaLiftClaw liftClaw) {
+    return new ParallelCommandGroup(
+            liftClaw.foldLiftArmCommand(),
+            liftClaw.openClawCommand(),
+            lift.setGoalCommand(Lift.Goal.STOW)
+    );
+  }
+
+  public Command stowArmFast() {
+    return stowArmFast(lift, liftClaw);
   }
 
   public static Command handoff(AlphaSlide slide, AlphaLiftClaw liftClaw ) {

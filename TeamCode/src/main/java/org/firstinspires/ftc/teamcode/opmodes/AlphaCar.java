@@ -220,8 +220,11 @@ public class AlphaCar extends CommandOpMode {
 
     // Grab when aim
     gamepadEx1.getGamepadButton(GamepadKeys.Button.A)
-            .whenPressed(slide.openClawCommand()
-                    .andThen(slide.grabCommand()), false);
+            .whenPressed(new SequentialCommandGroup(
+                        slide.openClawCommand(),
+                        slide.grabCommand(),
+                        slide.setTurnServoPosCommand(AlphaSlide.TurnServo.DEG_0, 0)
+                    ), false);
 
 
     // Pure Handoff
@@ -241,17 +244,20 @@ public class AlphaCar extends CommandOpMode {
                             && lift.getGoal() == Lift.Goal.STOW
                             && currentState == OSState.Teleop)
             .whenPressed(
-                    new ConditionalCommand(
-                            new InstantCommand(() -> slide.preHandoffSlideExtension()),
-                            new InstantCommand(),
-                            () -> !slide.isSlideForward())
-                            .alongWith(
-                                    new InstantCommand(() -> slide.handoffWristTurn())
-                                            .alongWith(
-                                                    handoffCommand.get()
-                                                            .andThen(new WaitCommand(50))
-                                                            .andThen(new InstantCommand(() -> isPureHandoffComplete = true)))),
-                    false);
+                    new ParallelCommandGroup(
+                            new ConditionalCommand(
+                                    new InstantCommand(() -> slide.preHandoffSlideExtension()),
+                                    new InstantCommand(),
+                                    () -> !slide.isSlideForward()),
+                            new ConditionalCommand(
+                                    AutoCommandBase.stowArmFast(lift, liftClaw),
+                                    new InstantCommand(),
+                                    () -> lift.getGoal() != Lift.Goal.STOW
+                            )
+                    ).andThen(
+                            handoffCommand.get()
+                                    .andThen(new InstantCommand(() -> isPureHandoffComplete = true))
+                    ), false);
 
     // Chamber Command from Grab
     Command preHang = AutoCommandBase.toPreHang(lift, liftClaw);
