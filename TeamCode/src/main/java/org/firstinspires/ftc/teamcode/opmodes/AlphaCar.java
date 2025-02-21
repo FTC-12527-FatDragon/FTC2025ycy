@@ -479,6 +479,7 @@ public class AlphaCar extends CommandOpMode {
 //    }
     CommandScheduler.getInstance().run();
     lift.periodicTest();
+    telemetry_M.addData("Current Robot Pose", drive.getPoseEstimate());
     telemetry_M.update();
     TelemetryPacket packet = new TelemetryPacket();
     packet.fieldOverlay().setStroke("#3F51B5");
