@@ -236,8 +236,8 @@ public class AlphaSlide extends MotorPIDSlideSubsystem{
 //  }
 
   public static double slideArmServo_Down = currentRobot==DriveConstants.RobotType.ALPHA?0.5:0.84;
-  public static double intakeClawServo_Open = currentRobot==DriveConstants.RobotType.ALPHA?0.57:0.5;
-  public static double intakeClawServo_Close = currentRobot==DriveConstants.RobotType.ALPHA?0.76:0.85;
+  public static double intakeClawServo_Open = currentRobot==DriveConstants.RobotType.ALPHA?0.57:0.6;
+  public static double intakeClawServo_Close = currentRobot==DriveConstants.RobotType.ALPHA?0.76:0.25;
 
   @Override
   void runOpenLoop(double percent) {
@@ -416,11 +416,11 @@ public class AlphaSlide extends MotorPIDSlideSubsystem{
   }
 
   public enum TurnServo {
-    LEFT_55(currentRobot == DriveConstants.RobotType.ALPHA ? 0.8 : 0.7),
-    LEFT_45(currentRobot == DriveConstants.RobotType.ALPHA ? 0.75 : 0.65),
-    DEG_0(currentRobot == DriveConstants.RobotType.ALPHA ? 0.59 : 0.55),
-    RIGHT_45(currentRobot == DriveConstants.RobotType.ALPHA ? 0.45 : 0.45),
-    RIGHT_90(currentRobot == DriveConstants.RobotType.ALPHA ? 0.29 : 0.315),
+    LEFT_55(currentRobot == DriveConstants.RobotType.ALPHA ? 0.8 : 0.725),
+    LEFT_45(currentRobot == DriveConstants.RobotType.ALPHA ? 0.75 : 0.675),
+    DEG_0(currentRobot == DriveConstants.RobotType.ALPHA ? 0.59 : 0.575),
+    RIGHT_45(currentRobot == DriveConstants.RobotType.ALPHA ? 0.45 : 0.475),
+    RIGHT_90(currentRobot == DriveConstants.RobotType.ALPHA ? 0.29 : 0.34),
     UNKNOWN(-1),
     DEFAULT(-1);
 
