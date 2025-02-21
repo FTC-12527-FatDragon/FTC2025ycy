@@ -265,5 +265,7 @@ public class Chamber1Plus4 extends AutoCommandBase {
     public void onAutoStopped() {
         AlphaLiftClaw.LiftClaw_Close = origVal;
         AlphaSlide.intakeClawServo_Open = intakeClaw_OpenOrig;
+        telemetry_M.addLine("Auto Stopped");
+        telemetry_M.update();
     }
 }
