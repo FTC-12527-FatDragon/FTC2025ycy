@@ -300,7 +300,7 @@ public class DeltaCar extends CommandOpMode {
         new FunctionalButton(
                 () ->
                         gamepadEx1.getButton(GamepadKeys.Button.Y)
-                                && lift.getGoal() == Lift.Goal.PRE_HANG && currentState == OSState.Teleop)
+                                && !isHangComplete && currentState == OSState.Teleop)
                 .whenPressed(
                         lift.setGoalCommand(Lift.Goal.HANG)
                                 .andThen(new InstantCommand(() -> isHangComplete = true)));
@@ -308,7 +308,7 @@ public class DeltaCar extends CommandOpMode {
         new FunctionalButton(
                 () ->
                         gamepadEx1.getButton(GamepadKeys.Button.Y)
-                                && lift.getGoal() == Lift.Goal.HANG && currentState == OSState.Teleop)
+                                && isHangComplete && currentState == OSState.Teleop)
                 .whenPressed(
                         lift.setGoalCommand(Lift.Goal.PRE_HANG)
                                 .andThen(new InstantCommand(() -> isHangComplete = false)));
@@ -330,7 +330,7 @@ public class DeltaCar extends CommandOpMode {
         //                                .get()
         //                                .andThen(new WaitCommand(200))
         //                                .andThen(new InstantCommand(() -> slide.wristUp()))
-        //                                .andThen(new WaitCommand(200))
+        //                                .andThen(new WaitCommand(200))bhu
         //                                .andThen(
         //                                        new ParallelCommandGroup(
         //                                                new InstantCommand(() ->
