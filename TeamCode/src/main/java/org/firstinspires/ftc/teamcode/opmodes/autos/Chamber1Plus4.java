@@ -207,7 +207,8 @@ public class Chamber1Plus4 extends AutoCommandBase {
         origVal = AlphaLiftClaw.LiftClaw_Close;
 
         AlphaLiftClaw.LiftClaw_Close = AlphaLiftClaw.LiftClaw_CloseTight;
-        intakeClaw_OpenOrig = AlphaSlide.intakeClawServo_Open + 0.1;
+        intakeClaw_OpenOrig = AlphaSlide.intakeClawServo_Open;
+        AlphaSlide.intakeClawServo_Open += 0.1;
 
         liftClaw.closeClaw();
         drive.setPoseEstimate(startToChamber.start());
@@ -265,7 +266,7 @@ public class Chamber1Plus4 extends AutoCommandBase {
     public void onAutoStopped() {
         AlphaLiftClaw.LiftClaw_Close = origVal;
         AlphaSlide.intakeClawServo_Open = intakeClaw_OpenOrig;
-        telemetry_M.addLine("Auto Stopped");
-        telemetry_M.update();
+//        telemetry_M.addLine("Auto Stopped");
+//        telemetry_M.update();
     }
 }
