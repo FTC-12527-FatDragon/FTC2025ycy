@@ -43,7 +43,7 @@ import org.firstinspires.ftc.teamcode.utils.Pose2dHelperClass;
 import static org.firstinspires.ftc.teamcode.subsystems.drivetrain.DriveConstants.currentRobot;
 
 @Config
-@TeleOp(name = "DeltaHAlTeleOp")
+@TeleOp(name = "DeltaHALTeleOp")
 public class DeltaCar extends CommandOpMode {
     //  private ColorSensor intakeClawSensor;
     private Climber climber;
@@ -57,7 +57,6 @@ public class DeltaCar extends CommandOpMode {
     private boolean isPureHandoffComplete = false;
     private boolean isHangComplete = false;
     private boolean shouldDisable = false;
-    private boolean isGrabComplete = true;
 
     public static boolean isSetPose = false;
     public static boolean halfAutoEnabled = false;
@@ -157,7 +156,7 @@ public class DeltaCar extends CommandOpMode {
         new FunctionalButton(
                 () ->
                         gamepadEx1.getButton(GamepadKeys.Button.DPAD_UP)
-                                )
+                                && currentState == OSState.Teleop)
                 .whenPressed(
                         new ConditionalCommand(
                                 new InstantCommand(),
@@ -171,7 +170,8 @@ public class DeltaCar extends CommandOpMode {
                                         new WaitUntilCommand(() -> lift.getCurrentPosition() > 600)
                                                 .andThen(new InstantCommand(liftClaw::upLiftArm)
                                                         .alongWith(new InstantCommand(liftClaw::basketWrist)))),
-                                () -> !isPureHandoffComplete));
+                                () -> !isPureHandoffComplete)
+                );
 //    gamepadEx1
 //        .getGamepadButton(GamepadKeys.Button.X)
 //        .whenPressed(
@@ -188,7 +188,7 @@ public class DeltaCar extends CommandOpMode {
         // Basket Drop and Back
         new FunctionalButton(
                 () ->
-                        gamepadEx1.getButton(GamepadKeys.Button.DPAD_LEFT)
+                        gamepadEx1.getButton(GamepadKeys.Button.DPAD_DOWN)
                                 && currentState == OSState.Teleop)
                 .whenPressed(
                         new ConditionalCommand(
@@ -216,26 +216,16 @@ public class DeltaCar extends CommandOpMode {
         new FunctionalButton(
                 () ->
                         gamepadEx1.getButton(GamepadKeys.Button.A)
-                && isGrabComplete == true
         )
-                .whenPressed(new SequentialCommandGroup(
-                        slide.aimCommand()
-                                .andThen(new InstantCommand(()-> isGrabComplete = false))
-                        ), false);
+                .whenPressed(slide.aimCommand(), false);
 
 
         // Grab when aim
-        new FunctionalButton(
-                () ->
-                        gamepadEx1.getButton(GamepadKeys.Button.A)
-                                && isGrabComplete == false)
-
+        gamepadEx1.getGamepadButton(GamepadKeys.Button.A)
                 .whenPressed(new SequentialCommandGroup(
-
                         slide.openClawCommand(),
                         slide.grabCommand(),
                         slide.setTurnServoPosCommand(AlphaSlide.TurnServo.DEG_0, 0)
-                                .andThen(new InstantCommand(()-> isGrabComplete = true))
                 ), false);
 
 
@@ -304,6 +294,8 @@ public class DeltaCar extends CommandOpMode {
                                 lift.getGoal() != Lift.Goal.BASKET && currentState == OSState.Teleop)
                 .whenPressed(specimenCommands, false);
         //gamepadEx1.getGamepadButton(GamepadKeys.Button.DPAD_LEFT).whenPressed(specimenCommands, false);
+
+
 
         new FunctionalButton(
                 () ->
@@ -418,78 +410,79 @@ public class DeltaCar extends CommandOpMode {
                                 && slide.getGoal() == AlphaSlide.Goal.AIM && currentState == OSState.Teleop)
                 .whenPressed(new InstantCommand(() -> slide.rightTurnServo()));
         // Halfauto part
-//        // Halfauto basket
-//        new FunctionalButton(
-//                () ->
-//                        gamepadEx1.getButton(GamepadKeys.Button.DPAD_LEFT)
-//                                && slide.getGoal() == AlphaSlide.Goal.AIM && currentState == OSState.Halfauto)
-//                .whenPressed( new InstantCommand(() -> shouldDisable = true)
-//                        .alongWith( new AutoDriveCommand(drive, halfautoToBasket))
-//                        .alongWith(AutoCommandBase.handoff(slide,liftClaw)
-//                                .andThen(AutoCommandBase.liftToBasket(lift,liftClaw)))
-//                        .andThen(new WaitCommand(200))
-//                        .andThen(AutoCommandBase.liftBack(lift, liftClaw))
-//                        .alongWith(new InstantCommand(()-> shouldDisable = false))
-//                );
-//        // Halfauto Chamber
-//        new FunctionalButton(
-//                () ->
-//                        gamepadEx1.getButton(GamepadKeys.Button.X)
-//                                && slide.getGoal() == AlphaSlide.Goal.AIM && currentState == OSState.Halfauto)
-//                .whenPressed(
-//                        new InstantCommand(() -> shouldDisable = true)
-//                                .alongWith(new AutoDriveCommand(drive,halfautoToHumanPlayer))
-//                                .alongWith(AutoCommandBase.handoff(slide,liftClaw))
-//                                .andThen(AutoCommandBase.chamberToGrab(lift, liftClaw))
-//                                .alongWith(new InstantCommand(()-> shouldDisable = false))
-//                );
-//        new FunctionalButton(
-//                () ->
-//                        gamepadEx1.getButton(GamepadKeys.Button.B)
-//                                && slide.getGoal() == AlphaSlide.Goal.AIM && currentState == OSState.Halfauto)
-//                .whenPressed(
-//                        new InstantCommand(()-> shouldDisable = true)
-//                                .andThen(new AutoDriveCommand(drive,toGrab))
-//                                .andThen(new AutoDriveCommand(drive,halfautoToChamber))
-//                                .alongWith(AutoCommandBase.toPreHang(lift,liftClaw))
-//                                .andThen(new AutoDriveCommand(drive,transPlace))
-//                                .andThen(AutoCommandBase.upToChamber(lift))
-//                                .andThen(new WaitCommand(300))
-//                                .andThen(AutoCommandBase.liftBack(lift,liftClaw))
-//                                .andThen(new AutoDriveCommand(drive,halfautoToHumanPlayer)
-//                                        .alongWith(AutoCommandBase.handoff(slide,liftClaw))
-//                                        .andThen(AutoCommandBase.chamberToGrab(lift, liftClaw)))
-//                                .alongWith(new InstantCommand(()-> shouldDisable = false))
-//                );
-//
-//        if(climber!=null){
-//            new FunctionalButton(
-//                    () ->
-//                            gamepadEx2.getButton(GamepadKeys.Button.DPAD_UP) &&
-//                                    currentRobot == DriveConstants.RobotType.EPSILON)
-//                    .whenHeld(
-//                            climber.elevateCommand()
-//                    );
-//
-//            new FunctionalButton(
-//                    () ->
-//                            gamepadEx2.getButton(GamepadKeys.Button.DPAD_DOWN) &&
-//                                    currentRobot == DriveConstants.RobotType.EPSILON)
-//                    .whenHeld(
-//                            climber.declineCommand()
-//                    );
-//
-//        }
-//        drive.setPoseEstimate(DriveConstants.robotTeleOpStartPose.toPose2d());
-//    }
+        // Halfauto basket
+        new FunctionalButton(
+                () ->
+                        gamepadEx1.getButton(GamepadKeys.Button.DPAD_LEFT)
+                                && slide.getGoal() == AlphaSlide.Goal.AIM && currentState == OSState.Halfauto)
+                .whenPressed( new InstantCommand(() -> shouldDisable = true)
+                        .alongWith( new AutoDriveCommand(drive, halfautoToBasket))
+                        .alongWith(AutoCommandBase.handoff(slide,liftClaw)
+                                .andThen(AutoCommandBase.liftToBasket(lift,liftClaw)))
+                        .andThen(new WaitCommand(200))
+                        .andThen(AutoCommandBase.liftBack(lift, liftClaw))
+                        .alongWith(new InstantCommand(()-> shouldDisable = false))
+                );
+        // Halfauto Chamber
+        new FunctionalButton(
+                () ->
+                        gamepadEx1.getButton(GamepadKeys.Button.X)
+                                && slide.getGoal() == AlphaSlide.Goal.AIM && currentState == OSState.Halfauto)
+                .whenPressed(
+                        new InstantCommand(() -> shouldDisable = true)
+                                .alongWith(new AutoDriveCommand(drive,halfautoToHumanPlayer))
+                                .alongWith(AutoCommandBase.handoff(slide,liftClaw))
+                                .andThen(AutoCommandBase.chamberToGrab(lift, liftClaw))
+                                .alongWith(new InstantCommand(()-> shouldDisable = false))
+                );
+        new FunctionalButton(
+                () ->
+                        gamepadEx1.getButton(GamepadKeys.Button.B)
+                                && slide.getGoal() == AlphaSlide.Goal.AIM && currentState == OSState.Halfauto)
+                .whenPressed(
+                        new InstantCommand(()-> shouldDisable = true)
+                                .andThen(new AutoDriveCommand(drive,toGrab))
+                                .andThen(new AutoDriveCommand(drive,halfautoToChamber))
+                                .alongWith(AutoCommandBase.toPreHang(lift,liftClaw))
+                                .andThen(new AutoDriveCommand(drive,transPlace))
+                                .andThen(AutoCommandBase.upToChamber(lift))
+                                .andThen(new WaitCommand(300))
+                                .andThen(AutoCommandBase.liftBack(lift,liftClaw))
+                                .andThen(new AutoDriveCommand(drive,halfautoToHumanPlayer)
+                                        .alongWith(AutoCommandBase.handoff(slide,liftClaw))
+                                        .andThen(AutoCommandBase.chamberToGrab(lift, liftClaw)))
+                                .alongWith(new InstantCommand(()-> shouldDisable = false))
+                );
 
-//    @Override
-//    public void run() {
+        if(climber!=null){
+            new FunctionalButton(
+                    () ->
+                            gamepadEx2.getButton(GamepadKeys.Button.DPAD_UP) &&
+                                    currentRobot == DriveConstants.RobotType.EPSILON)
+                    .whenHeld(
+                            climber.elevateCommand()
+                    );
+
+            new FunctionalButton(
+                    () ->
+                            gamepadEx2.getButton(GamepadKeys.Button.DPAD_DOWN) &&
+                                    currentRobot == DriveConstants.RobotType.EPSILON)
+                    .whenHeld(
+                            climber.declineCommand()
+                    );
+
+        }
+        drive.setPoseEstimate(DriveConstants.robotTeleOpStartPose.toPose2d());
+    }
+
+    @Override
+    public void run() {
 //    if (currentRobot==DriveConstants.RobotType.DELTA) {
 //      telemetry_M.addData("blueValue", intakeClawSensor.getColor().blue);
 //    }
         CommandScheduler.getInstance().run();
         lift.periodicTest();
+        telemetry_M.addData("Current Robot Pose", drive.getPoseEstimate());
         telemetry_M.update();
         TelemetryPacket packet = new TelemetryPacket();
         packet.fieldOverlay().setStroke("#3F51B5");

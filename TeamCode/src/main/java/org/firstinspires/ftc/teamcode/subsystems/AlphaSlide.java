@@ -86,7 +86,7 @@ public class AlphaSlide extends MotorPIDSlideSubsystem{
     }else{
       wristTurnServo.setRange(0, 0); // TODO: finish this
 
-      wristServo.setDirection(Servo.Direction.FORWARD);
+      wristServo.setDirection(Servo.Direction.REVERSE);
     }
 
     this.telemetry = telemetry;
