@@ -57,6 +57,7 @@ public class DeltaCar extends CommandOpMode {
     private boolean isPureHandoffComplete = false;
     private boolean isHangComplete = false;
     private boolean shouldDisable = false;
+    private boolean isAimed = false;
 
     public static boolean isSetPose = false;
     public static boolean halfAutoEnabled = false;
@@ -169,7 +170,8 @@ public class DeltaCar extends CommandOpMode {
                                         lift.setGoalCommand(Lift.Goal.BASKET, false),
                                         new WaitUntilCommand(() -> lift.getCurrentPosition() > 600)
                                                 .andThen(new InstantCommand(liftClaw::upLiftArm)
-                                                        .alongWith(new InstantCommand(liftClaw::basketWrist)))),
+                                                        .alongWith(new InstantCommand(liftClaw::basketWrist))))
+                                        .andThen(new InstantCommand(() -> isAimed = true)),
                                 () -> !isPureHandoffComplete)
                 );
 //    gamepadEx1
@@ -215,17 +217,20 @@ public class DeltaCar extends CommandOpMode {
         // Aim
         new FunctionalButton(
                 () ->
-                        gamepadEx1.getButton(GamepadKeys.Button.A)
+                        gamepadEx1.getButton(GamepadKeys.Button.A) && !isAimed
         )
-                .whenPressed(slide.aimCommand(), false);
+                .whenPressed(slide.aimCommand().andThen(new InstantCommand(() -> isAimed = true)), false);
 
 
         // Grab when aim
-        gamepadEx1.getGamepadButton(GamepadKeys.Button.A)
+        new FunctionalButton(
+                () -> gamepadEx1.getButton(GamepadKeys.Button.A) && isAimed
+        )
                 .whenPressed(new SequentialCommandGroup(
                         slide.openClawCommand(),
                         slide.grabCommand(),
-                        slide.setTurnServoPosCommand(AlphaSlide.TurnServo.DEG_0, 0)
+                        slide.setTurnServoPosCommand(AlphaSlide.TurnServo.DEG_0, 0),
+                        new InstantCommand(() -> isAimed = false)
                 ), false);
 
 
@@ -434,6 +439,7 @@ public class DeltaCar extends CommandOpMode {
                                 .alongWith(AutoCommandBase.handoff(slide,liftClaw))
                                 .andThen(AutoCommandBase.chamberToGrab(lift, liftClaw))
                                 .alongWith(new InstantCommand(()-> shouldDisable = false))
+                                .andThen(new InstantCommand(() -> isAimed = true))
                 );
         new FunctionalButton(
                 () ->
