@@ -398,6 +398,7 @@ public abstract class AutoCommandBase extends LinearOpMode {
     lift.periodicTest();
     drive.update();
     CommandScheduler.getInstance().run();
+//    telemetry_M.addData("Drive.isBusy", drive.isBusy());
     telemetry_M.update();
   }
 
