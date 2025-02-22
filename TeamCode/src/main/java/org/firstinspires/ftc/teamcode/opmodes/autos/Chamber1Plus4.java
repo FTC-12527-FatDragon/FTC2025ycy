@@ -56,7 +56,7 @@ public class Chamber1Plus4 extends AutoCommandBase {
 
     public static Pose2dHelperClass GrabSample1 = new Pose2dHelperClass(new Pose2d(24.0, -38.8, Math.toRadians(26.17)));
     public static Pose2dHelperClass GrabSample2 = new Pose2dHelperClass(new Pose2d(33.95, -39.76, Math.toRadians(29.81)));
-    public static Pose2dHelperClass GrabSample3 = new Pose2dHelperClass(new Pose2d(44.5, -38.31, Math.toRadians(25.89)));
+    public static Pose2dHelperClass GrabSample3 = new Pose2dHelperClass(new Pose2d(43, -38.31, Math.toRadians(25.89)));
 
 
     public static Pose2dHelperClass sample1Observation = new Pose2dHelperClass(48.46, -53, 90);
