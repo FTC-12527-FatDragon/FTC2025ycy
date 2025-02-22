@@ -63,11 +63,10 @@ public abstract class AutoCommandBase extends LinearOpMode {
   }
 
   public static Command stowArmFast(Lift lift, AlphaLiftClaw liftClaw) {
-    return new ParallelCommandGroup(
+    return liftClaw.openClawCommand().andThen(new ParallelCommandGroup(
             liftClaw.foldLiftArmCommand(),
-            liftClaw.openClawCommand(),
             lift.setGoalCommand(Lift.Goal.STOW)
-    );
+    ));
   }
 
   public Command stowArmFast() {
