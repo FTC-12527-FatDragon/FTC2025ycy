@@ -22,9 +22,9 @@ import org.firstinspires.ftc.teamcode.utils.Pose2dHelperClass;
 import static org.firstinspires.ftc.teamcode.subsystems.drivetrain.DriveConstants.currentRobot;
 
 @Config
-@Autonomous(name = "Basket 1+4", group = "Autos")
-public class Basket1Plus4 extends AutoCommandBase {
-
+@Autonomous(name = "Basket Joker", group = "Autos")
+public class BasketJokerInf extends AutoCommandBase {
+    public double absY = 0;
     public static Pose2dHelperClass
             start = new Pose2dHelperClass(-31.64, -65.06, 0.00);
     public static Pose2dHelperClass basket =
@@ -39,6 +39,7 @@ public class Basket1Plus4 extends AutoCommandBase {
     public static Pose2dHelperClass grab3 = new Pose2dHelperClass(-49.88, -45.78, 135.00);
     public static Pose2dHelperClass climb = new Pose2dHelperClass(-22.78, -11.10, 180.00);
     public static Pose2dHelperClass grab4 = new Pose2dHelperClass(23.45, -58.82, 0.00);
+    public static Pose2dHelperClass grabX = new Pose2dHelperClass(-22.34, -12.09, Math.toRadians(0.00));
 
     public static long waitDropTimeout = 200;
     public static long liftBackTimeout = 200;
@@ -62,6 +63,11 @@ public class Basket1Plus4 extends AutoCommandBase {
     TrajectorySequence basketToGrab4;
 
     TrajectorySequence grab4ToBasket;
+
+    TrajectorySequence basketToGrabX;
+
+    TrajectorySequence grabXToBasket;
+
 
 
     public Command basket0() {
@@ -103,10 +109,21 @@ public class Basket1Plus4 extends AutoCommandBase {
                 new AutoDriveCommand(drive, basketToGrab4)
                         .alongWith(new WaitCommand(liftBackTimeout)
                                         .andThen(liftBack()),
-                        forwardslideCommand()),
+                                forwardslideCommand()),
                 grabWithoutForwardAndBack(),
                 new AutoDriveCommand(drive, grab4ToBasket).alongWith(liftToBasket((long)grab4ToBasket.duration() * 1000)),
                 new WaitCommand(waitDropTimeout)
+        );
+    }
+
+    public Command basketX() {
+        return new SequentialCommandGroup(
+                new WaitCommand(waitDropTimeout),
+                new AutoDriveCommand(drive, basketToGrabX).alongWith(new WaitCommand(liftBackTimeout).andThen(liftBack())),
+                grabAndBack3(),
+                new AutoDriveCommand(drive, grabXToBasket).alongWith(slide.aimCommand(), liftToBasket()),
+                new WaitCommand(waitDropTimeout),
+                new InstantCommand(() -> absY += 1)
         );
     }
 
@@ -158,13 +175,22 @@ public class Basket1Plus4 extends AutoCommandBase {
         grab4ToBasket = drive.trajectorySequenceBuilder(grab4.toPose2d())
                 .lineToSplineHeading(basket.toPose2d())
                 .build();
+
+        basketToGrabX = drive.trajectorySequenceBuilder(basket.toPose2d())
+                .splineToSplineHeading(grabX.toPose2d(), Math.toRadians(0.00))
+                .build();
+
+        grabXToBasket = drive.trajectorySequenceBuilder(new Pose2d(grabX.X, grabX.Y + absY, grabX.HeadingDeg))
+                .splineToSplineHeading(basket.toPose2d(), Math.toRadians(0.00))
+                .build();
+
         return new SequentialCommandGroup(
                 new InstantCommand(() -> drive.setPoseEstimate(startToBasket.start())),
                 basket0(),
                 basket1(),
                 basket2(),
                 basket3(),
-                basket4(),
+                basketX(),
                 climb()
         );
     }
