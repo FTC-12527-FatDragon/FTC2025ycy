@@ -69,9 +69,10 @@ public class Chamber1Plus4 extends AutoCommandBase {
 
     public static long ChamberUp2ExtendSlideToSample1Delay = 900;
     public static double GrabCycleReleaseOffsetSec = -0.5;
-    public static double GrabCycleAdmissibleTimeoutNormal = 1;
+    public static double GrabCycleAdmissibleTimeoutNormal = 1000;
     public static double GrabCycleAdmissibleTimeoutFast = 0;
     public static long ChamberCycleTimeInterval = 0;
+    public static double ChamberCycleAdmissibleTimeout = -0.5;
     public static double Start2ChamberEndTangent = 65;
 
     public Command pushBlocksCycle(TrajectorySequence grab2DropSequence, double admissibleTimeout, PoseArea atGoal){
@@ -249,11 +250,11 @@ public class Chamber1Plus4 extends AutoCommandBase {
 //                new AutoDriveCommand(drive, observationToGrab).alongWith(),
                 //.alongWith(new WaitCommand(500).deadlineWith(lift.manualResetCommand()))
 
-                observationToChamberCycle(grabToChamber4, chamberToGrab, -0.5).alongWith(slide.handoffCommand()),//slide.aimCommand(AlphaSlide.TurnServo.DEG_0)), // To avoid claw pieces hitting barrier and damaging servo
+                observationToChamberCycle(grabToChamber4, chamberToGrab, ChamberCycleAdmissibleTimeout).alongWith(slide.handoffCommand()),//slide.aimCommand(AlphaSlide.TurnServo.DEG_0)), // To avoid claw pieces hitting barrier and damaging servo
                 new WaitCommand(ChamberCycleTimeInterval),
-                observationToChamberCycle(grabToChamber3, chamberToGrab, -0.5),
+                observationToChamberCycle(grabToChamber3, chamberToGrab, ChamberCycleAdmissibleTimeout),
                 new WaitCommand(ChamberCycleTimeInterval),
-                observationToChamberCycle(grabToChamber2, chamberToGrab, -0.5),
+                observationToChamberCycle(grabToChamber2, chamberToGrab, ChamberCycleAdmissibleTimeout),
                 new WaitCommand(ChamberCycleTimeInterval),
                 observationToChamberCycle(grabToChamber1, chamberToGrabFully, -0.9, stowArmFast())
         );
