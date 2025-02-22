@@ -198,7 +198,7 @@ public class Chamber1Plus4 extends AutoCommandBase {
                 drive
                         .trajectorySequenceBuilder(start.toPose2d())
 //                        .setTangent(Math.toRadians(90))
-                        .setAccelConstraint(getAccelerationConstraint(30))
+                        .setVelConstraint(getVelocityConstraint(30, MAX_ANG_VEL, TRACK_WIDTH))
                         .splineToLinearHeading(chamber.toPose2d(), Math.toRadians(Start2ChamberEndTangent))
                         .build(); // start to chamber
 
@@ -241,7 +241,7 @@ public class Chamber1Plus4 extends AutoCommandBase {
                 new InstantCommand(() -> {
                     telemetry_M.addData("Auto", "Starting last cycle");
                 }),
-                pushBlocksCycle(grabSample32Observation2Grab, GrabCycleAdmissibleTimeoutNormal, new BooleanArea(false)),
+                pushBlocksCycle(grabSample32Observation2Grab, GrabCycleAdmissibleTimeoutFast, new BooleanArea(false)),
                 new InstantCommand(() -> {
                     telemetry_M.addData("Auto", "Finished last cycle");
                 }),
