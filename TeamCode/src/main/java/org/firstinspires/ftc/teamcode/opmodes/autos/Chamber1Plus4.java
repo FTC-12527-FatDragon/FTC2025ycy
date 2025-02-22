@@ -72,7 +72,7 @@ public class Chamber1Plus4 extends AutoCommandBase {
     public static long GrabCycleAdmissibleTimeoutNormal = 1000;
     public static long GrabCycleAdmissibleTimeoutFast = 0;
     public static long ChamberCycleTimeInterval = 0;
-    public static double Start2ChamberEndTangent = 70;
+    public static double Start2ChamberEndTangent = 65;
 
     public Command pushBlocksCycle(TrajectorySequence grab2DropSequence, long admissibleTimeout, PoseArea atGoal){
         return new SequentialCommandGroup(
