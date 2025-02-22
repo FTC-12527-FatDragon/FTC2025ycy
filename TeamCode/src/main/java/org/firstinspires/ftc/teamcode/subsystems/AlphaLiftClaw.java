@@ -121,10 +121,17 @@ public class AlphaLiftClaw extends SubsystemBase {
 
   public Command foldLiftArmCommand(long delay) {
     return setServoPosCommand(liftArmServo, ServoPositions.STOW.liftArmPosition, delay);
+
+  }
+  public Command foldLiftWristCommand(long delay){
+    return setServoPosCommand(liftWristServo, ServoPositions.STOW.liftWristPosition, delay);
   }
 
   public Command foldLiftArmCommand() {
     return foldLiftArmCommand(200);
+  }
+  public Command foldLiftWristCommand (){
+    return foldLiftWristCommand(200);
   }
 
   public void grabLiftArm() {
