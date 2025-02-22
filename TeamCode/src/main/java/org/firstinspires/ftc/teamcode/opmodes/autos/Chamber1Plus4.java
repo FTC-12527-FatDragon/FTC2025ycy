@@ -49,7 +49,7 @@ public class Chamber1Plus4 extends AutoCommandBase {
             new Pose2dHelperClass(chamber.X - 2 - gap * 4, chamber.Y, 90.00);
 
     public static Translation2dHelperClass SampleRect = new Translation2dHelperClass(1.5, -3.5);
-    public static Translation2dHelperClass SampleValidRect = new Translation2dHelperClass(2, 3.5);
+    public static Translation2dHelperClass SampleValidRect = new Translation2dHelperClass(1.875, 2.75);
     public static Translation2dHelperClass Sample1 = new Translation2dHelperClass(48, -24).plus(SampleRect.times(0.5));
     public static Translation2dHelperClass Sample2 = new Translation2dHelperClass(48+10, -24).plus(SampleRect.times(0.5));
     public static Translation2dHelperClass Sample3 = new Translation2dHelperClass(48+20, -24).plus(SampleRect.times(0.5));
@@ -61,7 +61,7 @@ public class Chamber1Plus4 extends AutoCommandBase {
 
     public static Pose2dHelperClass sample1Observation = new Pose2dHelperClass(48.46, -53, 90);
 //    public static Pose2dHelperClass EpsilonBotOffset = currentRobot == RobotType.EPSILON ? new Pose2dHelperClass(1.5, -3.475, 0) : new Pose2dHelperClass();
-    public static Translation2dHelperClass slideExtendOffset = currentRobot == RobotType.EPSILON ? new Translation2dHelperClass(26.9, 0.5) : new Translation2dHelperClass(24.45, 0);
+    public static Translation2dHelperClass slideExtendOffset = currentRobot == RobotType.EPSILON ? new Translation2dHelperClass(27.625, 0.5) : new Translation2dHelperClass(24.45, 0);
 
     //  public static double startX = 24.43;
     //  public static double startY = -64.95;
