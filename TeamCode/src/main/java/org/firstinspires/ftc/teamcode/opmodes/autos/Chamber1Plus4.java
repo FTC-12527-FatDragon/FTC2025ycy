@@ -55,8 +55,8 @@ public class Chamber1Plus4 extends AutoCommandBase {
     public static Translation2dHelperClass Sample3 = new Translation2dHelperClass(48+20, -24).plus(SampleRect.times(0.5));
 
     public static Pose2dHelperClass GrabSample1 = new Pose2dHelperClass(new Pose2d(23, -38.8, Math.toRadians(26.17)));
-    public static Pose2dHelperClass GrabSample2 = new Pose2dHelperClass(new Pose2d(33.95, -39.76, Math.toRadians(29.81)));
-    public static Pose2dHelperClass GrabSample3 = new Pose2dHelperClass(new Pose2d(43, -38.01, Math.toRadians(25.89)));
+    public static Pose2dHelperClass GrabSample2 = new Pose2dHelperClass(new Pose2d(33.95, -39.56, Math.toRadians(29.81)));
+    public static Pose2dHelperClass GrabSample3 = new Pose2dHelperClass(new Pose2d(43, -37.81, Math.toRadians(25.89)));
 
 
     public static Pose2dHelperClass sample1Observation = new Pose2dHelperClass(48.46, -53, 90);
@@ -154,8 +154,9 @@ public class Chamber1Plus4 extends AutoCommandBase {
 //                .lineToConstantHeading(chamber3.toVector2d().plus(grabOffsetByChamber3.times(0.9)))
 //                .setVelConstraint(getVelocityConstraint(10, MAX_ANG_VEL, TRACK_WIDTH))
 //                .lineToConstantHeading(chamber3.toVector2d().plus(new Vector2d(0, -1)))
-//                .setAccelConstraint(getAccelerationConstraint(40))
-                .lineToConstantHeading(chamber3.toVector2d().plus(grabOffsetByChamber3.times(0.95)))
+                .setAccelConstraint(getAccelerationConstraint(20))
+//                .setTangent(Math.toRadians(-40))
+                .lineToConstantHeading(chamber3.toVector2d().plus(grabOffsetByChamber3.times(0.95)))//, Math.toRadians(155))
 //                .setAccelConstraint(getAccelerationConstraint(35))
 //                .setVelConstraint(getVelocityConstraint(10, MAX_ANG_VEL, TRACK_WIDTH))
 //                .lineToConstantHeading(grab.toVector2d())

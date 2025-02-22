@@ -58,7 +58,11 @@ public class AutoDriveCommand extends CommandBase {
   }
 
   @Override
-  public void end(boolean interrupted) {}
+  public void end(boolean interrupted) {
+    if(drive.isBusy()){
+      drive.breakFollowing();
+    }
+  }
 
   public boolean isFinished() {
     return !drive.isBusy();
