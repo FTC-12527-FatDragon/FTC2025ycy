@@ -167,7 +167,7 @@ public class AlphaSlide extends MotorPIDSlideSubsystem{
 
   public Command autoGrabCommand3() {
     return new SequentialCommandGroup(
-            setTurnServoPosCommand(TurnServo.RIGHT_90, 200),
+            setTurnServoPosCommand(TurnServo.RIGHT_45, 200),
             new InstantCommand(() -> intakeClawServo.setPosition(Goal.AIM.clawAngle)),
             new InstantCommand(() -> slideArmServo.setPosition(Goal.GRAB.slideArmPos))
                     .alongWith(new InstantCommand(() -> wristServo.setPosition(Goal.GRAB.wristPos))),

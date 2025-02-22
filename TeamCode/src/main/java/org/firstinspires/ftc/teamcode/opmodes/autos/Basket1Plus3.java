@@ -36,7 +36,7 @@ public class Basket1Plus3 extends AutoCommandBase {
                   new Pose2dHelperClass(-49.25, -52.43, 90.00) :
                   new Pose2dHelperClass(-49.25, -53.43, 90.00);
   public static Pose2dHelperClass grab2 = new Pose2dHelperClass(-60.03, -54.43, 90.00);
-  public static Pose2dHelperClass grab3 = new Pose2dHelperClass(-42, -25.91, 180.00);
+  public static Pose2dHelperClass grab3 = new Pose2dHelperClass(-49.88, -45.78, 135.00);
   public static Pose2dHelperClass climb = new Pose2dHelperClass(-22.78, -11.10, 180.00);
 
   public static long waitDropTimeout = 200;
