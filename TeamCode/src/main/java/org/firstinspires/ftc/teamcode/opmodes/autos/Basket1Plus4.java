@@ -30,13 +30,13 @@ public class Basket1Plus4 extends AutoCommandBase {
     public static Pose2dHelperClass basket =
             currentRobot == DriveConstants.RobotType.ALPHA ?
                     new Pose2dHelperClass(-56.76, -57.25, 45.00) :
-                    new Pose2dHelperClass(-58.76, -59.25, 45.00);
+                    new Pose2dHelperClass(-58.76, -57.25, 45.00);
     public static Pose2dHelperClass grab1 =
             currentRobot == DriveConstants.RobotType.ALPHA ?
                     new Pose2dHelperClass(-49.25, -52.43, 90.00) :
                     new Pose2dHelperClass(-49.25, -53.43, 90.00);
     public static Pose2dHelperClass grab2 = new Pose2dHelperClass(-60.03, -54.43, 90.00);
-    public static Pose2dHelperClass grab3 = new Pose2dHelperClass(-42, -25.41, 180.00);
+    public static Pose2dHelperClass grab3 = new Pose2dHelperClass(-42, -23.91, 180.00);
     public static Pose2dHelperClass climb = new Pose2dHelperClass(-22.78, -11.10, 180.00);
     public static Pose2dHelperClass grab4 = new Pose2dHelperClass(23.45, -58.82, 0.00);
 
