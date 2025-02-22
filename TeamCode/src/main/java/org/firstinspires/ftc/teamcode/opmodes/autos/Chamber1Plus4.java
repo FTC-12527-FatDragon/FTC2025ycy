@@ -69,12 +69,12 @@ public class Chamber1Plus4 extends AutoCommandBase {
 
     public static long ChamberUp2ExtendSlideToSample1Delay = 900;
     public static double GrabCycleReleaseOffsetSec = -0.5;
-    public static long GrabCycleAdmissibleTimeoutNormal = 1000;
-    public static long GrabCycleAdmissibleTimeoutFast = 0;
+    public static double GrabCycleAdmissibleTimeoutNormal = 1;
+    public static double GrabCycleAdmissibleTimeoutFast = 0;
     public static long ChamberCycleTimeInterval = 0;
     public static double Start2ChamberEndTangent = 65;
 
-    public Command pushBlocksCycle(TrajectorySequence grab2DropSequence, long admissibleTimeout, PoseArea atGoal){
+    public Command pushBlocksCycle(TrajectorySequence grab2DropSequence, double admissibleTimeout, PoseArea atGoal){
         return new SequentialCommandGroup(
 //                new WaitCommand(1000),
                 slide.grabCommand(),
@@ -241,7 +241,7 @@ public class Chamber1Plus4 extends AutoCommandBase {
                 new InstantCommand(() -> {
                     telemetry_M.addData("Auto", "Starting last cycle");
                 }),
-                pushBlocksCycle(grabSample32Observation2Grab, GrabCycleAdmissibleTimeoutFast, new BooleanArea(false)),
+                pushBlocksCycle(grabSample32Observation2Grab, GrabCycleAdmissibleTimeoutNormal, new BooleanArea(false)),
                 new InstantCommand(() -> {
                     telemetry_M.addData("Auto", "Finished last cycle");
                 }),
