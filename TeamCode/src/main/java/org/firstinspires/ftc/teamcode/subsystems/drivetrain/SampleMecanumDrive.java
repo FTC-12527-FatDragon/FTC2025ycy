@@ -218,6 +218,11 @@ public class SampleMecanumDrive extends MecanumDrive implements Subsystem {
     waitForIdle();
   }
 
+  public void breakFollowing() {
+    trajectorySequenceRunner.breakFollowing();
+  }
+
+
   public Pose2d getLastError() {
     return trajectorySequenceRunner.getLastPoseError();
   }
