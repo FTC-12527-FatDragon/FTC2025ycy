@@ -19,6 +19,8 @@ import com.arcrobotics.ftclib.command.WaitCommand;
 import com.arcrobotics.ftclib.command.WaitUntilCommand;
 import com.arcrobotics.ftclib.gamepad.GamepadEx;
 import com.arcrobotics.ftclib.gamepad.GamepadKeys;
+import com.pedropathing.follower.Follower;
+import com.pedropathing.localization.Pose;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.NormalizedRGBA;
 
@@ -27,6 +29,7 @@ import org.firstinspires.ftc.teamcode.commands.AutoDriveCommand;
 import java.util.HashMap;
 import java.util.function.Supplier;
 import org.firstinspires.ftc.teamcode.commands.TeleopDriveCommand;
+import org.firstinspires.ftc.teamcode.commands.TeleopMovement;
 import org.firstinspires.ftc.teamcode.lib.roadrunner.drive.opmode.LocalizationTest;
 import org.firstinspires.ftc.teamcode.lib.roadrunner.trajectorysequence.TrajectorySequence;
 import org.firstinspires.ftc.teamcode.opmodes.autos.AutoCommandBase;
@@ -46,6 +49,9 @@ import static org.firstinspires.ftc.teamcode.subsystems.drivetrain.DriveConstant
 @TeleOp(name = "AlphaYCYTeleOp")
 public class AlphaCar extends CommandOpMode {
 //  private ColorSensor intakeClawSensor;
+  public Follower follower;
+  private final Pose startPose = new Pose(0, 0, 0);
+
   private Climber climber;
   private GamepadEx gamepadEx1, gamepadEx2;
   private Lift lift;
@@ -104,6 +110,9 @@ public class AlphaCar extends CommandOpMode {
             })
     );
 
+    follower = new Follower(hardwareMap);
+    follower.setStartingPose(startPose);
+
     lift = new Lift(hardwareMap, telemetry_M);
     liftClaw = new AlphaLiftClaw(hardwareMap, telemetry_M);
     slide = new AlphaSlide(hardwareMap, telemetry_M);
@@ -123,15 +132,20 @@ public class AlphaCar extends CommandOpMode {
 //    lift.setGoal(Lift.Goal.STOW);
 
     // Teleop Drive Command
-    drive.setDefaultCommand(
-            new TeleopDriveCommand(
-                    drive,
-                    () -> gamepadEx1.getLeftY(),
-                    () -> -gamepadEx1.getLeftX(),
-                    () -> -gamepadEx1.getRightX(),
-                    () -> gamepadEx1.getButton(GamepadKeys.Button.LEFT_STICK_BUTTON),
-                    () -> gamepadEx1.getButton(GamepadKeys.Button.START),
-                    () -> currentState==OSState.Halfauto && drive.isBusy()));
+//    drive.setDefaultCommand(
+//            new TeleopDriveCommand(
+//                    drive,
+//                    () -> gamepadEx1.getLeftY(),
+//                    () -> -gamepadEx1.getLeftX(),
+//                    () -> -gamepadEx1.getRightX(),
+//                    () -> gamepadEx1.getButton(GamepadKeys.Button.LEFT_STICK_BUTTON),
+//                    () -> gamepadEx1.getButton(GamepadKeys.Button.START),
+//                    () -> currentState==OSState.Halfauto && drive.isBusy()));
+
+    schedule(new TeleopMovement(follower, false, gamepadEx1));
+
+    new FunctionalButton(() -> gamepadEx1.getButton(GamepadKeys.Button.RIGHT_STICK_BUTTON))
+            .whenPressed(new InstantCommand(() -> follower.setStartingPose(startPose)));
 
     TrajectorySequence halfautoToBasket = drive.trajectorySequenceBuilder(DriveConstants.getRobotTeleOpStartPose().toPose2d())
             .lineToSplineHeading(basket.toPose2d())
