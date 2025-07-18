@@ -12,6 +12,7 @@ import com.arcrobotics.ftclib.command.ParallelCommandGroup;
 import com.arcrobotics.ftclib.command.SequentialCommandGroup;
 import com.arcrobotics.ftclib.command.WaitCommand;
 import com.arcrobotics.ftclib.command.WaitUntilCommand;
+import com.pedropathing.follower.Follower;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
@@ -21,6 +22,8 @@ import org.firstinspires.ftc.teamcode.subsystems.AlphaLift;
 import org.firstinspires.ftc.teamcode.subsystems.AlphaLiftClaw;
 import org.firstinspires.ftc.teamcode.subsystems.AlphaSlide;
 import org.firstinspires.ftc.teamcode.subsystems.Lift;
+import org.firstinspires.ftc.teamcode.subsystems.drive.constants.FConstants;
+import org.firstinspires.ftc.teamcode.subsystems.drive.constants.LConstants;
 import org.firstinspires.ftc.teamcode.subsystems.drivetrain.DriveConstants;
 import org.firstinspires.ftc.teamcode.subsystems.drivetrain.SampleMecanumDrive;
 import org.firstinspires.ftc.teamcode.utils.ParallelRaceGroup;
@@ -46,6 +49,7 @@ public abstract class AutoCommandBase extends LinearOpMode {
   protected AlphaLiftClaw liftClaw;
   protected AlphaSlide slide;
   protected SampleMecanumDrive drive;
+  protected Follower follower;
 
   protected Telemetry telemetry_M;
 
@@ -358,6 +362,8 @@ public abstract class AutoCommandBase extends LinearOpMode {
   @Override
   public void runOpMode() throws InterruptedException {
     drive = new SampleMecanumDrive(hardwareMap);
+    follower = new Follower(hardwareMap);
+    follower.initialize();
 //    telemetry.setAutoClear(false); // FTC Dashboard does not support this, so set it separately.
     if (telemetryInDashboard) {
       telemetry_M = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
