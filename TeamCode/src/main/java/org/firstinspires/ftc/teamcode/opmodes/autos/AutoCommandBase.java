@@ -5,6 +5,7 @@ import static org.firstinspires.ftc.teamcode.subsystems.AlphaSlide.slideRetractF
 
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
+import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.arcrobotics.ftclib.command.Command;
 import com.arcrobotics.ftclib.command.CommandScheduler;
 import com.arcrobotics.ftclib.command.InstantCommand;
@@ -13,10 +14,13 @@ import com.arcrobotics.ftclib.command.SequentialCommandGroup;
 import com.arcrobotics.ftclib.command.WaitCommand;
 import com.arcrobotics.ftclib.command.WaitUntilCommand;
 import com.pedropathing.follower.Follower;
+import com.pedropathing.pathgen.PathChain;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.commands.AutoDriveCommand;
+import org.firstinspires.ftc.teamcode.commands.PPDriveCommand;
+import org.firstinspires.ftc.teamcode.lib.pedropathingutil.PathChainDurationGetter;
 import org.firstinspires.ftc.teamcode.lib.roadrunner.trajectorysequence.TrajectorySequence;
 import org.firstinspires.ftc.teamcode.subsystems.AlphaLift;
 import org.firstinspires.ftc.teamcode.subsystems.AlphaLiftClaw;
@@ -262,6 +266,10 @@ public abstract class AutoCommandBase extends LinearOpMode {
    */
   protected Command drive(TrajectorySequence toFollow) {
     return new AutoDriveCommand(drive, toFollow);
+  }
+
+  protected Command drive(PathChain chain) {
+    return new PPDriveCommand(follower, chain);
   }
 
   private static final BooleanArea FalseArea = new BooleanArea(false);
