@@ -38,6 +38,8 @@ import org.firstinspires.ftc.teamcode.subsystems.AlphaSlide;
 import org.firstinspires.ftc.teamcode.subsystems.Climber;
 import org.firstinspires.ftc.teamcode.subsystems.ColorSensor;
 import org.firstinspires.ftc.teamcode.subsystems.Lift;
+import org.firstinspires.ftc.teamcode.subsystems.drive.constants.FConstants;
+import org.firstinspires.ftc.teamcode.subsystems.drive.constants.LConstants;
 import org.firstinspires.ftc.teamcode.subsystems.drivetrain.DriveConstants;
 import org.firstinspires.ftc.teamcode.subsystems.drivetrain.SampleMecanumDrive;
 import org.firstinspires.ftc.teamcode.utils.FunctionalButton;
@@ -110,7 +112,7 @@ public class AlphaCar extends CommandOpMode {
             })
     );
 
-    follower = new Follower(hardwareMap);
+    follower = new Follower(hardwareMap, FConstants.class, LConstants.class);
     follower.setStartingPose(startPose);
 
     lift = new Lift(hardwareMap, telemetry_M);
