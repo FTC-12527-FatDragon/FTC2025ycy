@@ -6,12 +6,12 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
 public class FConstants {
     static {
-        FollowerConstants.localizers = Localizers.THREE_WHEEL;
+        FollowerConstants.localizers = Localizers.PINPOINT;
 
         FollowerConstants.leftFrontMotorName = "leftFrontMotor";
-        FollowerConstants.leftRearMotorName = "leftRearMotor";
+        FollowerConstants.leftRearMotorName = "leftBackMotor";
         FollowerConstants.rightFrontMotorName = "rightFrontMotor";
-        FollowerConstants.rightRearMotorName = "rightRearMotor";
+        FollowerConstants.rightRearMotorName = "rightBackMotor";
 
         FollowerConstants.leftFrontMotorDirection = DcMotorSimple.Direction.REVERSE;
         FollowerConstants.leftRearMotorDirection = DcMotorSimple.Direction.REVERSE;
