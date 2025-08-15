@@ -370,7 +370,7 @@ public abstract class AutoCommandBase extends LinearOpMode {
   @Override
   public void runOpMode() throws InterruptedException {
     drive = new SampleMecanumDrive(hardwareMap);
-    follower = new Follower(hardwareMap);
+    follower = new Follower(hardwareMap, FConstants.class, LConstants.class);
     follower.initialize();
 //    telemetry.setAutoClear(false); // FTC Dashboard does not support this, so set it separately.
     if (telemetryInDashboard) {
