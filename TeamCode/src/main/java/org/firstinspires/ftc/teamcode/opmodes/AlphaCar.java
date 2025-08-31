@@ -38,6 +38,7 @@ import org.firstinspires.ftc.teamcode.subsystems.AlphaSlide;
 import org.firstinspires.ftc.teamcode.subsystems.Climber;
 import org.firstinspires.ftc.teamcode.subsystems.ColorSensor;
 import org.firstinspires.ftc.teamcode.subsystems.Lift;
+import org.firstinspires.ftc.teamcode.subsystems.drive.FollowerDrive;
 import org.firstinspires.ftc.teamcode.subsystems.drive.constants.FConstants;
 import org.firstinspires.ftc.teamcode.subsystems.drive.constants.LConstants;
 import org.firstinspires.ftc.teamcode.subsystems.drivetrain.DriveConstants;
@@ -52,6 +53,8 @@ import static org.firstinspires.ftc.teamcode.subsystems.drivetrain.DriveConstant
 public class AlphaCar extends CommandOpMode {
 //  private ColorSensor intakeClawSensor;
   public Follower follower;
+
+  public FollowerDrive followerDrive;
   private final Pose startPose = new Pose(0, 0, 0);
 
   private Climber climber;
@@ -114,6 +117,7 @@ public class AlphaCar extends CommandOpMode {
 
     follower = new Follower(hardwareMap, FConstants.class, LConstants.class);
     follower.setStartingPose(startPose);
+    followerDrive = new FollowerDrive();
 
     lift = new Lift(hardwareMap, telemetry_M);
     liftClaw = new AlphaLiftClaw(hardwareMap, telemetry_M);
@@ -144,7 +148,9 @@ public class AlphaCar extends CommandOpMode {
 //                    () -> gamepadEx1.getButton(GamepadKeys.Button.START),
 //                    () -> currentState==OSState.Halfauto && drive.isBusy()));
 
-    schedule(new TeleopMovement(follower, false, gamepadEx1));
+    followerDrive.setDefaultCommand(new TeleopMovement(follower, false, gamepadEx1));
+
+//    schedule(new TeleopMovement(follower, false, gamepadEx1));
 
     new FunctionalButton(() -> gamepadEx1.getButton(GamepadKeys.Button.RIGHT_STICK_BUTTON))
             .whenPressed(new InstantCommand(() -> follower.setStartingPose(startPose)));
