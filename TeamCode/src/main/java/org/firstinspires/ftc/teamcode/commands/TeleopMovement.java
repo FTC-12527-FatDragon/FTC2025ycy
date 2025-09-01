@@ -79,5 +79,10 @@ public class TeleopMovement extends CommandBase {
     public void end(boolean interrupted) {
         follower.breakFollowing();
     }
+
+    @Override
+    public boolean isFinished() {
+        return false;
+    }
 }
 

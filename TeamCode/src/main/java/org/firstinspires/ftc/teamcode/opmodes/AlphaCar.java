@@ -4,8 +4,6 @@ import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
-import com.acmerobotics.roadrunner.geometry.Pose2d;
-import com.acmerobotics.roadrunner.trajectory.Trajectory;
 import com.arcrobotics.ftclib.command.Command;
 import com.arcrobotics.ftclib.command.CommandOpMode;
 import com.arcrobotics.ftclib.command.CommandScheduler;
@@ -14,7 +12,6 @@ import com.arcrobotics.ftclib.command.InstantCommand;
 import com.arcrobotics.ftclib.command.ParallelCommandGroup;
 import com.arcrobotics.ftclib.command.SelectCommand;
 import com.arcrobotics.ftclib.command.SequentialCommandGroup;
-import com.arcrobotics.ftclib.command.StartEndCommand;
 import com.arcrobotics.ftclib.command.WaitCommand;
 import com.arcrobotics.ftclib.command.WaitUntilCommand;
 import com.arcrobotics.ftclib.gamepad.GamepadEx;
@@ -22,12 +19,13 @@ import com.arcrobotics.ftclib.gamepad.GamepadKeys;
 import com.pedropathing.follower.Follower;
 import com.pedropathing.localization.Pose;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.hardware.NormalizedRGBA;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.commands.AutoDriveCommand;
 import java.util.HashMap;
 import java.util.function.Supplier;
+
+import org.firstinspires.ftc.teamcode.commands.FollowerDriveCommand;
 import org.firstinspires.ftc.teamcode.commands.TeleopDriveCommand;
 import org.firstinspires.ftc.teamcode.commands.TeleopMovement;
 import org.firstinspires.ftc.teamcode.lib.roadrunner.drive.opmode.LocalizationTest;
@@ -36,7 +34,6 @@ import org.firstinspires.ftc.teamcode.opmodes.autos.AutoCommandBase;
 import org.firstinspires.ftc.teamcode.subsystems.AlphaLiftClaw;
 import org.firstinspires.ftc.teamcode.subsystems.AlphaSlide;
 import org.firstinspires.ftc.teamcode.subsystems.Climber;
-import org.firstinspires.ftc.teamcode.subsystems.ColorSensor;
 import org.firstinspires.ftc.teamcode.subsystems.Lift;
 import org.firstinspires.ftc.teamcode.subsystems.drive.FollowerDrive;
 import org.firstinspires.ftc.teamcode.subsystems.drive.constants.FConstants;
@@ -52,9 +49,9 @@ import static org.firstinspires.ftc.teamcode.subsystems.drivetrain.DriveConstant
 @TeleOp(name = "AlphaYCYTeleOp")
 public class AlphaCar extends CommandOpMode {
 //  private ColorSensor intakeClawSensor;
-  public Follower follower;
-
+//  public Follower follower;
   public FollowerDrive followerDrive;
+
   private final Pose startPose = new Pose(0, 0, 0);
 
   private Climber climber;
@@ -115,9 +112,10 @@ public class AlphaCar extends CommandOpMode {
             })
     );
 
-    follower = new Follower(hardwareMap, FConstants.class, LConstants.class);
-    follower.setStartingPose(startPose);
-    followerDrive = new FollowerDrive();
+//    follower = new Follower(hardwareMap, FConstants.class, LConstants.class);
+    followerDrive = new FollowerDrive(hardwareMap);
+    followerDrive.setStartingPose(startPose);
+    followerDrive.startTeleopDrive();
 
     lift = new Lift(hardwareMap, telemetry_M);
     liftClaw = new AlphaLiftClaw(hardwareMap, telemetry_M);
@@ -148,12 +146,12 @@ public class AlphaCar extends CommandOpMode {
 //                    () -> gamepadEx1.getButton(GamepadKeys.Button.START),
 //                    () -> currentState==OSState.Halfauto && drive.isBusy()));
 
-    followerDrive.setDefaultCommand(new TeleopMovement(follower, false, gamepadEx1));
 
-//    schedule(new TeleopMovement(follower, false, gamepadEx1));
+//    schedule(new FollowerDriveCommand(follower, gamepadEx1));
+      followerDrive.setDefaultCommand(new FollowerDriveCommand(followerDrive, gamepadEx1));
 
     new FunctionalButton(() -> gamepadEx1.getButton(GamepadKeys.Button.RIGHT_STICK_BUTTON))
-            .whenPressed(new InstantCommand(() -> follower.setStartingPose(startPose)));
+            .whenPressed(new InstantCommand(() -> followerDrive.setStartingPose(startPose)));
 
     TrajectorySequence halfautoToBasket = drive.trajectorySequenceBuilder(DriveConstants.getRobotTeleOpStartPose().toPose2d())
             .lineToSplineHeading(basket.toPose2d())
