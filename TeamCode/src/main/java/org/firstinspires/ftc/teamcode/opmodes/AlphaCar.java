@@ -150,7 +150,7 @@ public class AlphaCar extends CommandOpMode {
 //    schedule(new FollowerDriveCommand(follower, gamepadEx1));
       followerDrive.setDefaultCommand(new FollowerDriveCommand(followerDrive, gamepadEx1));
 
-    new FunctionalButton(() -> gamepadEx1.getButton(GamepadKeys.Button.RIGHT_STICK_BUTTON))
+    new FunctionalButton(() -> gamepadEx1.getButton(GamepadKeys.Button.LEFT_STICK_BUTTON))
             .whenPressed(new InstantCommand(() -> followerDrive.setStartingPose(startPose)));
 
     TrajectorySequence halfautoToBasket = drive.trajectorySequenceBuilder(DriveConstants.getRobotTeleOpStartPose().toPose2d())
